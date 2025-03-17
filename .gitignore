@@ -398,3 +398,15 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Node..js
+node_modules/
+npm-debug.log
+yarn-error.log
+lerna-debug.log
+package-lock.json
+yarn.lock
+build
+dist
+.env
+.env.*
