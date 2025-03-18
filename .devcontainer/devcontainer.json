@@ -30,5 +30,9 @@
         "GitHub.copilot"
       ]
     }
+  },
+  "postCreateCommand": "./.devcontainer/post-create.sh > ~/post-create.log",
+  "hostRequirements": {
+    "memory": "8gb"
   }
 }
