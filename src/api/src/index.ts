@@ -45,7 +45,9 @@ class MCPClient {
 
 (async () => {
   const client = new MCPClient();
-  await client.connectToServer("http://localhost:5000/sse");
+  const serverHost = process.env.services__echo__http__0 ?? "http://localhost:5000";
+  console.log("Connecting to MCP server at: ", serverHost);
+  await client.connectToServer(`${serverHost}/sse`);
   console.log("Connected to MCP server");
 
   const query = "Hello world from the client!";

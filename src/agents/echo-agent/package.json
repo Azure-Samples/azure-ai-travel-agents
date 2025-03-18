@@ -18,6 +18,7 @@
     "echo-agent": "dist/index.js"
   },
   "scripts": {
+    "prestart": "npm run build",
     "start": "node dist/index.js",
     "build": "tsc && shx chmod +x dist/index.js"
   },

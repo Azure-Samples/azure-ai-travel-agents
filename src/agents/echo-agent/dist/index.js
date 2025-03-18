@@ -36,8 +36,9 @@ server.tool("echo", "Echo back the input values", {
         ],
     });
 });
-app.listen(5000, "0.0.0.0", () => {
+const port = process.env.PORT ? parseInt(process.env.PORT) : 5000;
+app.listen(port, "0.0.0.0", () => {
     console.log("Server started and listening for requests...");
     console.log("You can connect to it using the SSEClientTransport.");
-    console.log("For example: new SSEClientTransport(new URL('http://0.0.0.0:5000/sse'))");
+    console.log(`For example: new SSEClientTransport(new URL('http://0.0.0.0:${port}/sse'))`);
 });
