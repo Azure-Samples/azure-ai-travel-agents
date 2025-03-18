@@ -6,7 +6,8 @@ var echoAgent = builder.AddNpmApp("echo", "../agents/echo-agent")
     .WithNodeDefaults()
     .PublishAsDockerFile()
     .WithNpmPackageInstallation()
-    .WithHttpEndpoint(env: "PORT");
+    .WithHttpEndpoint(env: "PORT")
+    .WithMcpHealthCheck();
 
 var api = builder.AddNpmApp("api", "../api")
     .WithNodeDefaults()
