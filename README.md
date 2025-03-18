@@ -21,21 +21,22 @@ The AI Travel Agents is a robust **enterprise application** that leverages multi
 
 ```
 ai-travel-agents/
-│── agents/
-│   ├── customer-query-agent/
-│   ├── destination-recommendation-agent/
-│   ├── itinerary-planning-agent/
-│   ├── code-evaluation-agent/
-│   ├── model-inference-agent/
-│   └── echo-mcp-agent/
+│── src/
+│   ├── agents/
+│   │   ├── customer-query-agent/
+│   │   ├── destination-recommendation-agent/
+│   │   ├── itinerary-planning-agent/
+│   │   ├── code-evaluation-agent/
+│   │   ├── model-inference-agent/
+│   │   └── echo-mcp-agent/
+│   │
+│   ├── api/                # API Gateway for backend services
+│   └── ui/                 # Frontend application
 │
-│── api/                    # API Gateway for backend services
-│── ui/                     # Frontend application
 │── infra/                  # azd-related files
 │── docs/                   # Documentation files
 │
-│── README.md               # Project documentation
-
+│── README.md              # Project documentation
 ```
 
 ## Prerequisites
