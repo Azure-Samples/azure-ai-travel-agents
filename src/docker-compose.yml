@@ -1,5 +1,6 @@
 services:
   customer-query-agent:
+    container_name: customer-query-agent
     build: ./agents/customer-query-agent
     ports:
       - "5001:5000"
@@ -9,6 +10,7 @@ services:
       - ai-network
 
   destination-recommendation-agent:
+    container_name: destination-recommendation-agent
     build: ./agents/destination-recommendation-agent
     ports:
       - "5002:5000"
@@ -16,6 +18,7 @@ services:
       - ai-network
 
   itinerary-planning-agent:
+    container_name: itinerary-planning-agent
     build: ./agents/itinerary-planning-agent
     ports:
       - "5003:5000"
@@ -23,6 +26,7 @@ services:
       - ai-network
 
   code-evaluation-agent:
+    container_name: code-evaluation-agent
     build: ./agents/code-evaluation-agent
     ports:
       - "5004:5000"
@@ -30,6 +34,7 @@ services:
       - ai-network
 
   model-inference-agent:
+    container_name: model-inference-agent
     build: ./agents/model-inference-agent
     ports:
       - "5005:5000"
@@ -37,6 +42,7 @@ services:
       - ai-network
 
   echo-agent:
+    container_name: echo-agent
     build: ./agents/echo-agent
     ports:
       - "5006:5000"
@@ -44,6 +50,7 @@ services:
       - ai-network
 
   api:
+    container_name: api
     build: ./api
     ports:
       - "4000:4000"
@@ -58,6 +65,7 @@ services:
       - ai-network
 
   ui:
+    container_name: ui
     build: ./ui
     ports:
       - "8000:8000"
