@@ -1,6 +1,7 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { SSEClientTransport } from "@modelcontextprotocol/sdk/client/sse.js";
 import { Transport } from "@modelcontextprotocol/sdk/shared/transport.js";
+import { tracer, log } from "./instrumentation.js";
 
 class MCPClient {
   private mcp: Client;
@@ -18,24 +19,28 @@ class MCPClient {
 
       const toolsResult = await this.mcp.listTools();
       this.tools = toolsResult.tools;
-      console.log("Tools: ", toolsResult);
+      log("Tools: ", toolsResult);
     } catch (e) {
-      console.log("Failed to connect to MCP server: ", e);
+      log("Failed to connect to MCP server: ", { error: e }, "ERROR");
       throw e;
     }
   }
 
   async processQuery(query: string) {
-    console.log("Tools: ", JSON.stringify(this.tools, null, 2));
+    return tracer.startActiveSpan("processQuery", async (span) => {
+      log("Tools", this.tools);
 
-    const toolResult = await this.mcp.callTool({
-      name: "echo",
-      arguments: {
-        text: query,
-      },
+      const toolResult = await this.mcp.callTool({
+        name: "echo",
+        arguments: {
+          text: query,
+        },
+      });
+
+      log("Tool result", toolResult);
+      span.end();
+      return toolResult;
     });
-
-    return toolResult;
   }
 
   async cleanup() {
@@ -46,10 +51,10 @@ class MCPClient {
 (async () => {
   const client = new MCPClient();
   await client.connectToServer("http://echo-agent:5000/sse");
-  console.log("Connected to MCP server");
+  log("Connected to MCP server");
 
   const query = "Hello world from the client!";
   const result = await client.processQuery(query);
-  console.log("Result: ", result);
+  log("Result: ", result);
   // await client.cleanup();
 })();

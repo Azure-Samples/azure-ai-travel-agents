@@ -48,6 +48,10 @@ services:
       - "5006:5000"
     networks:
       - ai-network
+    environment:
+      - OTEL_SERVICE_NAME=echo-agent
+      - OTLP_ENDPOINT=http://aspire-dashboard:18889
+      - OTLP_HEADERS=x-otlp-header=header-value
 
   api:
     container_name: api
@@ -63,6 +67,10 @@ services:
       - echo-agent
     networks:
       - ai-network
+    environment:
+      - OTEL_SERVICE_NAME=api
+      - OTLP_ENDPOINT=http://aspire-dashboard:18889
+      - OTLP_HEADERS=x-otlp-header=header-value
 
   ui:
     container_name: ui
@@ -73,6 +81,17 @@ services:
       - api
     networks:
       - ai-network
+
+  aspire-dashboard:
+    container_name: aspire-dashboard
+    image: mcr.microsoft.com/dotnet/aspire-dashboard:9.1
+    ports:
+      - 18888:18888
+      - 4317:18889
+    networks:
+      - ai-network
+    environment:
+      - DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS=true
 
 networks:
   ai-network:
