@@ -1,23 +1,12 @@
-FROM node:22.12-alpine AS builder
+FROM node:20
 
-WORKDIR /app
-
-COPY src /app/src
-COPY ./package*.json ./
-COPY tsconfig.json ./tsconfig.json
-
-RUN --mount=type=cache,target=/root/.npm npm install
+WORKDIR /usr/src/app
+COPY package*.json ./
+RUN npm install
+COPY . .
 RUN npm run build
 
-FROM node:22-alpine AS release
+ENV PORT 4000
+EXPOSE 4000
 
-WORKDIR /app
-
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/package*.json ./
-
-ENV NODE_ENV=production
-
-RUN npm ci --ignore-scripts --omit-dev
-
-CMD ["node", "dist/index.js"]
+CMD ["node", "dist/main"]
