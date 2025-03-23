@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AITravelAgent.CustomerQueryAgent", "AITravelAgent.CustomerQueryAgent\AITravelAgent.CustomerQueryAgent.csproj", "{B8376ECB-BE3E-4B98-B8E1-2870ACE19D95}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AITravelAgent.CustomerQueryServer", "AITravelAgent.CustomerQueryServer\AITravelAgent.CustomerQueryServer.csproj", "{B8376ECB-BE3E-4B98-B8E1-2870ACE19D95}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
