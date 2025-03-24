@@ -1,2 +1,18 @@
+name: C# CodeQL Configuration
+
 paths:
-  - src/tools/destination-recommendation/**
+  - src/tools/customer-query/**
+
+paths-ignore:
+  - '**/obj/**'
+  - '**/bin/**'
+  - '**/*.Tests/**'
+  - '**/TestResults/**'
+  - '**/test/**'
+  - '**/tests/**'
+
+queries:
+  - name: Security and quality queries for C#
+    uses: security-and-quality
+  - name: Security extended queries for C#
+    uses: security-extended

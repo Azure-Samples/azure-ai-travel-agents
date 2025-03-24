@@ -1,0 +1,78 @@
+name: "CodeQL TypeScript"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/api/*.ts'
+      - 'src/api/*.js'
+      - 'src/ui/*.ts'
+      - 'src/ui/*.js'
+      - 'src/tools/code-evaluation/**/*.ts'
+      - 'src/tools/code-evaluation/**/*.js'
+      - 'src/tools/web-search/**/*.ts'
+      - 'src/tools/web-search/**/*.js'
+      - 'src/tools/echo-ping/**/*.ts'
+      - 'src/tools/echo-ping/**/*.js'
+      - 'src/shared/**/*.ts'
+      - 'src/shared/**/*.js'
+      - '.github/workflows/codeql-typescript.yml'
+      - '.github/codeql/typescript-config.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/api/*.ts'
+      - 'src/api/*.js'
+      - 'src/ui/*.ts'
+      - 'src/ui/*.js'
+      - 'src/tools/code-evaluation/**/*.ts'
+      - 'src/tools/code-evaluation/**/*.js'
+      - 'src/tools/web-search/**/*.ts'
+      - 'src/tools/web-search/**/*.js'
+      - 'src/tools/echo-ping/**/*.ts'
+      - 'src/tools/echo-ping/**/*.js'
+      - 'src/shared/**/*.ts'
+      - 'src/shared/**/*.js'
+      - '.github/workflows/codeql-typescript.yml'
+      - '.github/codeql/typescript-config.yml'
+  workflow_dispatch:  # Allow manual triggering
+  schedule:
+    - cron: '0 0 * * 0' # Weekly on Sundays at midnight UTC
+
+jobs:
+  analyze:
+    name: Analyze TypeScript Code
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          
+      - name: Install dependencies
+        run: |
+          for dir in src/tools/code-evaluation src/tools/web-search src/tools/echo-ping src/api src/ui; do
+            if [ -f "$dir/package.json" ]; then
+              cd $dir && npm install && cd -
+            fi
+          done
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: typescript
+          config-file: .github/codeql/typescript-config.yml
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "typescript-analysis"
+          upload: true

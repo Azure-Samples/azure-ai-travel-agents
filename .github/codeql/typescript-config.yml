@@ -1,5 +1,22 @@
+name: TypeScript CodeQL Configuration
+
 paths:
   - src/tools/code-evaluation/**
   - src/tools/web-search/**
   - src/api/**
   - src/ui/**
+
+paths-ignore:
+  - '**/node_modules/**'
+  - '**/*.test.ts'
+  - '**/*.test.js'
+  - '**/tests/**'
+  - '**/test/**'
+  - '**/dist/**'
+  - '**/build/**'
+
+queries:
+  - name: Security and quality queries for TypeScript
+    uses: security-and-quality
+  - name: Security extended queries for TypeScript
+    uses: security-extended

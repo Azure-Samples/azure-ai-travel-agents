@@ -1,0 +1,58 @@
+name: "CodeQL Python"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/tools/itinerary-planning/**/*.py'
+      - 'src/tools/model-inference/**/*.py'
+      - '.github/workflows/codeql-python.yml'
+      - '.github/codeql/python-config.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/tools/itinerary-planning/**/*.py'
+      - 'src/tools/model-inference/**/*.py'
+      - '.github/workflows/codeql-python.yml'
+      - '.github/codeql/python-config.yml'
+  workflow_dispatch:  # Allow manual triggering
+  schedule:
+    - cron: '0 0 * * 0' # Weekly on Sundays at midnight UTC
+
+jobs:
+  analyze:
+    name: Analyze Python Code
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          
+      - name: Install Python dependencies
+        run: |
+          for dir in src/tools/itinerary-planning src/tools/model-inference; do
+            if [ -f "$dir/requirements.txt" ]; then
+              pip install -r $dir/requirements.txt
+            fi
+          done
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: python
+          config-file: .github/codeql/python-config.yml
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "python-analysis"
+          upload: true

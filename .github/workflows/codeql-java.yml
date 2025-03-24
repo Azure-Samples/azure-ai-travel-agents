@@ -1,0 +1,68 @@
+name: "CodeQL Java"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/tools/destination-recommendation/*.java'
+      - 'src/tools/destination-recommendation/pom.xml'
+      - 'src/tools/destination-recommendation/*.gradle'
+      - '.github/workflows/codeql-java.yml'
+      - '.github/codeql/java-config.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/tools/destination-recommendation/*.java'
+      - 'src/tools/destination-recommendation/pom.xml'
+      - 'src/tools/destination-recommendation/*.gradle'
+      - '.github/workflows/codeql-java.yml'
+      - '.github/codeql/java-config.yml'
+  workflow_dispatch:  # Allow manual triggering
+  schedule:
+    - cron: '0 0 * * 0' # Weekly on Sundays at midnight UTC
+
+jobs:
+  analyze:
+    name: Analyze Java Code
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          
+      - name: Cache Maven dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Build Java with Maven
+        run: |
+          for dir in src/tools/*/; do
+            if [ -f "$dir/pom.xml" ]; then
+              mvn clean compile -f $dir/pom.xml
+            fi
+          done
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: java
+          config-file: .github/codeql/java-config.yml
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "java-analysis"
+          upload: true

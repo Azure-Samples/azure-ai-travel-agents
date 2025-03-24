@@ -1,3 +1,20 @@
+name: Python CodeQL Configuration
+
 paths:
   - src/tools/itinerary-planning/**
   - src/tools/model-inference/**
+
+paths-ignore:
+  - '**/venv/**'
+  - '**/__pycache__/**'
+  - '**/tests/**'
+  - '**/test/**'
+  - '**/*.test.py'
+  - '**/dist/**'
+  - '**/build/**'
+
+queries:
+  - name: Security and quality queries for Python
+    uses: security-and-quality
+  - name: Security extended queries for Python
+    uses: security-extended

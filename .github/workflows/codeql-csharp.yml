@@ -1,0 +1,61 @@
+name: "CodeQL C#"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/tools/customer-query/**/*.cs'
+      - 'src/tools/customer-query/**/*.csproj'
+      - 'src/tools/customer-query/**/*.sln'
+      - 'src/tools/customer-query/AITravelAgent.*/**'
+      - '.github/workflows/codeql-csharp.yml'
+      - '.github/codeql/csharp-config.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/tools/customer-query/**/*.cs'
+      - 'src/tools/customer-query/**/*.csproj'
+      - 'src/tools/customer-query/**/*.sln'
+      - 'src/tools/customer-query/AITravelAgent.*/**'
+      - '.github/workflows/codeql-csharp.yml'
+      - '.github/codeql/csharp-config.yml'
+  workflow_dispatch:  # Allow manual triggering
+  schedule:
+    - cron: '0 0 * * 0' # Weekly on Sundays at midnight UTC
+
+jobs:
+  analyze:
+    name: Analyze C# Code
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+          
+      - name: Restore and Build C#
+        run: |
+          if [ -d "src/tools/customer-query" ]; then
+            dotnet restore src/tools/customer-query/AITravelAgent.sln
+            dotnet build src/tools/customer-query/AITravelAgent.sln --configuration Release --no-restore
+          fi
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: csharp
+          config-file: .github/codeql/csharp-config.yml
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "csharp-analysis"
+          upload: true

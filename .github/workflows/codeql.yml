@@ -1,95 +1,53 @@
-name: "CodeQL Analysis"
+name: "CodeQL Coordinator"
 
 on:
   push:
     branches: [main]
+    paths:
+      - '.github/workflows/codeql.yml'
+      - '.github/codeql/**'
   pull_request:
     branches: [main]
+    paths:
+      - '.github/workflows/codeql.yml'
+      - '.github/codeql/**'
+  workflow_dispatch:  # Allow manual triggering of all analyses
   schedule:
-    - cron: '0 0 * * *' # Daily at midnight UTC
+    - cron: '0 0 * * 1' # Weekly on Mondays at midnight UTC
 
 jobs:
-  analyze:
-    name: Analyze Code
+  trigger-analyses:
+    permissions: write-all
+    name: Trigger Language-Specific Analyses
     runs-on: ubuntu-latest
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
-
-    strategy:
-      fail-fast: false
-      matrix:
-        language: ['typescript', 'csharp', 'python', 'java']
-        include:
-          - language: 'typescript'
-            config-path: '.github/codeql/typescript-config.yml'
-          - language: 'csharp'
-            config-path: '.github/codeql/csharp-config.yml'
-          - language: 'python'
-            config-path: '.github/codeql/python-config.yml'
-          - language: 'java'
-            config-path: '.github/codeql/java-config.yml'
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js for TypeScript
-        if: matrix.language == 'typescript'
-        uses: actions/setup-node@v4
+      - name: Trigger TypeScript Analysis
+        uses: benc-uk/workflow-dispatch@v1
         with:
-          node-version: '22'
-      - name: Install TypeScript dependencies
-        if: matrix.language == 'typescript'
-        run: |
-          for dir in packages/tools/code-evaluation packages/tools/web-search packages/api packages/ui; do
-            if [ -f "$dir/package.json" ]; then
-              cd $dir && npm install && cd -
-            fi
-          done
+          workflow: CodeQL TypeScript
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.event.pull_request.head.ref || github.ref }}
 
-      - name: Set up .NET for C#
-        if: matrix.language == 'csharp'
-        uses: actions/setup-dotnet@v4
+      - name: Trigger C# Analysis
+        uses: benc-uk/workflow-dispatch@v1
         with:
-          dotnet-version: '8.0.x'
-      - name: Restore and Build C#
-        if: matrix.language == 'csharp'
-        run: dotnet build packages/tools/destination-recommendation --configuration Release
+          workflow: CodeQL C#
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.event.pull_request.head.ref || github.ref }}
 
-      - name: Set up JDK for Java
-        if: matrix.language == 'java'
-        uses: actions/setup-java@v4
+      - name: Trigger Python Analysis
+        uses: benc-uk/workflow-dispatch@v1
         with:
-          java-version: '17'
-          distribution: 'temurin'
-      - name: Cache Maven dependencies
-        if: matrix.language == 'java'
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
-      - name: Build Java with Maven
-        if: matrix.language == 'java'
-        run: |
-          if [ -f "src/tools/customer-query/pom.xml" ]; then
-            mvn clean compile -f src/tools/customer-query/pom.xml
-          else
-            echo "No pom.xml found in src/tools/customer-query/ - skipping Java build"
-          fi
+          workflow: CodeQL Python
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.event.pull_request.head.ref || github.ref }}
 
-      # Python requires no build step
-
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
+      - name: Trigger Java Analysis
+        uses: benc-uk/workflow-dispatch@v1
         with:
-          languages: ${{ matrix.language }}
-          config-file: ${{ matrix.config-path }}
-
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
-        with:
-          category: "${{ matrix.language }}-analysis"
-          upload: true
+          workflow: CodeQL Java
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.event.pull_request.head.ref || github.ref }}
