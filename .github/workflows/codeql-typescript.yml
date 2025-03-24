@@ -35,6 +35,7 @@ on:
       - 'src/shared/**/*.js'
       - '.github/workflows/codeql-typescript.yml'
       - '.github/codeql/typescript-config.yml'
+  workflow_dispatch:  # Allow manual triggering
   schedule:
     - cron: '0 0 * * 0' # Weekly on Sundays at midnight UTC
 

@@ -15,6 +15,7 @@ on:
       - 'src/tools/model-inference/**/*.py'
       - '.github/workflows/codeql-python.yml'
       - '.github/codeql/python-config.yml'
+  workflow_dispatch:  # Allow manual triggering
   schedule:
     - cron: '0 0 * * 0' # Weekly on Sundays at midnight UTC
 

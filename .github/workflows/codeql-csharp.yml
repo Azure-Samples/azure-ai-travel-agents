@@ -19,6 +19,7 @@ on:
       - 'src/tools/customer-query/AITravelAgent.*/**'
       - '.github/workflows/codeql-csharp.yml'
       - '.github/codeql/csharp-config.yml'
+  workflow_dispatch:  # Allow manual triggering
   schedule:
     - cron: '0 0 * * 0' # Weekly on Sundays at midnight UTC
 

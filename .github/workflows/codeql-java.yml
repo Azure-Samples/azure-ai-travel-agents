@@ -17,6 +17,7 @@ on:
       - 'src/tools/destination-recommendation/*.gradle'
       - '.github/workflows/codeql-java.yml'
       - '.github/codeql/java-config.yml'
+  workflow_dispatch:  # Allow manual triggering
   schedule:
     - cron: '0 0 * * 0' # Weekly on Sundays at midnight UTC
 
