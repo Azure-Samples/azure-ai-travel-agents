@@ -1,0 +1,5 @@
+paths:
+  - src/tools/code-evaluation/**
+  - src/tools/web-search/**
+  - src/api/**
+  - src/ui/**

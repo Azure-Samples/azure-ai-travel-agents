@@ -1,0 +1,3 @@
+paths:
+  - src/tools/itinerary-planning/**
+  - src/tools/model-inference/**
