@@ -1,54 +1,61 @@
 name: "CodeQL Analysis"
 
 on:
-  schedule:
-    - cron: '0 0 * * *' # Daily at midnight UTC
   push:
     branches: [main]
   pull_request:
     branches: [main]
-    #paths:
-    #  - src
+  schedule:
+    - cron: '0 0 * * *' # Daily at midnight UTC
 
 jobs:
   analyze:
-    name: Analyze (${{ matrix.language }})
-    runs-on: 'ubuntu-latest'
+    name: Analyze Code
+    runs-on: ubuntu-latest
     permissions:
-      # required for all workflows
-      security-events: write
-
-      # required to fetch internal or private CodeQL packs
-      packages: read
-
-      # only required for workflows in private repositories
       actions: read
       contents: read
+      security-events: write
 
     strategy:
       fail-fast: false
       matrix:
-        language: ['java', 'python', 'csharp', 'typescript']
-        paths:
-          - 'src/tools/customer-query/**' # Java code
-          - 'src/tools/itinerary-planning/**' # Python code
-          - 'src/tools/model-inference/**' # Python code
-          - 'src/tools/code-evaluation/**' # Typescript code
-          - 'src/tools/web-search/**' # Typescript code
-          - 'src/tools/destination-recommendation/**' # C# code
+        language: ['javascript-typescript', 'csharp', 'python', 'java']
+        include:
+          - language: 'javascript-typescript'
+            paths: |
+              src/tools/code-evaluation/**
+              src/tools/web-search/**
+              src/api/**
+              src/ui/**
+          - language: 'csharp'
+            paths: |
+              src/tools/destination-recommendation/**
+          - language: 'python'
+            paths: |
+              src/tools/itinerary-planning/**
+              src/tools/model-inference/**
+          - language: 'java'
+            paths: |
+              src/tools/customer-query/**
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up Node.js for TypeScript
-        if: matrix.language == 'typescript'
+        if: matrix.language == 'javascript-typescript'
         uses: actions/setup-node@v4
         with:
           node-version: '20'
       - name: Install TypeScript dependencies
-        if: matrix.language == 'typescript'
-        run: cd typescript_folder && npm install
+        if: matrix.language == 'javascript-typescript'
+        run: |
+          for dir in src/tools/code-evaluation src/tools/web-search src/api src/ui; do
+            if [ -f "$dir/package.json" ]; then
+              cd $dir && npm install && cd -
+            fi
+          done
 
       - name: Set up .NET for C#
         if: matrix.language == 'csharp'
@@ -57,7 +64,7 @@ jobs:
           dotnet-version: '8.0.x'
       - name: Restore and Build C#
         if: matrix.language == 'csharp'
-        run: dotnet build csharp_folder --configuration Release
+        run: dotnet build src/tools/destination-recommendation --configuration Release
 
       - name: Set up JDK for Java
         if: matrix.language == 'java'
@@ -74,7 +81,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
       - name: Build Java with Maven
         if: matrix.language == 'java'
-        run: mvn clean compile -f java_folder/pom.xml
+        run: mvn clean compile -f src/tools/customer-query/pom.xml
 
       # Python requires no build step
 
