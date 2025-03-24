@@ -17,9 +17,11 @@ import {
 import { metrics, trace } from "@opentelemetry/api";
 import { OTLPExporterConfigBase } from "@opentelemetry/otlp-exporter-base";
 
-const otlpEndpoint = process.env.OTLP_ENDPOINT || "http://localhost:4317";
-const otlpHeaders = process.env.OTLP_HEADERS || "x-otlp-header=header-value";
-const otlpServiceName = process.env.OTLP_SERVICE_NAME || "tool-echo-ping";
+const otlpEndpoint =
+  process.env.OTEL_EXPORTER_OTLP_ENDPOINT || "http://localhost:4317";
+const otlpHeaders =
+  process.env.OTEL_EXPORTER_OTLP_HEADERS || "x-otlp-header=header-value";
+const otlpServiceName = process.env.OTEL_SERVICE_NAME || "tool-echo-ping";
 const otlpServiceVersion = process.env.OTLP_SERVICE_VERSION || "1.0";
 
 const otlpOptions = {

@@ -1,60 +1,32 @@
-import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { SSEClientTransport } from "@modelcontextprotocol/sdk/client/sse.js";
-import { Transport } from "@modelcontextprotocol/sdk/shared/transport.js";
-import { tracer, log } from "./instrumentation.js";
+import { log } from "./instrumentation.js";
+import { MCPClient } from "./MCPClient.js";
 
-class MCPClient {
-  private mcp: Client;
-  private tools: Array<any> = [];
-  private transport: Transport | null = null;
+async function executeCustomerQuery() {
+  const customerQueryClient = new MCPClient(
+    "mcp-client-customer-query",
+    "1.0.0"
+  );
 
-  constructor() {
-    this.mcp = new Client({ name: "mcp-client-echo-ping", version: "1.0.0" });
-  }
+  await customerQueryClient.connectToServer(
+    "http://tool-customer-query:8080/sse"
+  );
+  log("Connected to customer MCP server");
 
-  async connectToServer(serverUrl: string) {
-    try {
-      this.transport = new SSEClientTransport(new URL(serverUrl));
-      await this.mcp.connect(this.transport);
-
-      const toolsResult = await this.mcp.listTools();
-      this.tools = toolsResult.tools;
-      log("Tools: ", toolsResult);
-    } catch (e) {
-      log("Failed to connect to MCP server: ", { error: e }, "ERROR");
-      throw e;
-    }
-  }
-
-  async processQuery(query: string) {
-    return tracer.startActiveSpan("processQuery", async (span) => {
-      log("Tools", this.tools);
-
-      const toolResult = await this.mcp.callTool({
-        name: "echo",
-        arguments: {
-          text: query,
-        },
-      });
-
-      log("Tool result", toolResult);
-      span.end();
-      return toolResult;
-    });
-  }
-
-  async cleanup() {
-    await this.mcp.close();
-  }
+  const customerQuery = "Hello world from the customer!";
+  const customerResult = await customerQueryClient.processQuery(customerQuery);
+  log("Customer Result: ", customerResult);
+  // await customerQueryClient.cleanup();
 }
 
-(async () => {
-  const client = new MCPClient();
-  await client.connectToServer("http://tool-echo-ping:5000/sse");
-  log("Connected to MCP server");
-
+async function executeEchoQuery() {
+  const echoClient = new MCPClient("mcp-client-echo-ping", "1.0.0");
+  await echoClient.connectToServer("http://tool-echo-ping:5000/sse");
+  log("Connected to echo MCP server");
   const query = "Hello world from the client!";
-  const result = await client.processQuery(query);
+  const result = await echoClient.processQuery(query);
   log("Result: ", result);
-  // await client.cleanup();
-})();
+  // await echoClient.cleanup();
+}
+
+await executeEchoQuery();
+await executeCustomerQuery();

@@ -4,9 +4,12 @@ services:
     container_name: tool-customer-query
     build: ./tools/customer-query
     ports:
-      - "5001:5000"
+      - "5001:8080"
     networks:
       - ai-network
+    environment:
+      - OTEL_SERVICE_NAME=tool-customer-query
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:18889
 
   tool-destination-recommendation:
     container_name: tool-destination-recommendation
@@ -55,9 +58,9 @@ services:
     networks:
       - ai-network
     environment:
-      - OTLP_SERVICE_NAME=tool-echo-ping
-      - OTLP_ENDPOINT=http://aspire-dashboard:18889
-      - OTLP_HEADERS=x-otlp-header=header-value
+      - OTEL_SERVICE_NAME=tool-echo-ping
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:18889
+      - OTEL_EXPORTER_OTLP_HEADERS=x-otlp-header=header-value
 
   web-api:
     container_name: web-api
@@ -75,9 +78,9 @@ services:
     networks:
       - ai-network
     environment:
-      - OTLP_SERVICE_NAME=api
-      - OTLP_ENDPOINT=http://aspire-dashboard:18889
-      - OTLP_HEADERS=x-otlp-header=header-value
+      - OTEL_SERVICE_NAME=api
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:18889
+      - OTEL_EXPORTER_OTLP_HEADERS=x-otlp-header=header-value
 
   web-ui:
     container_name: web-ui
