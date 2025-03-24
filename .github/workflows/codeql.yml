@@ -23,21 +23,21 @@ jobs:
         language: ['javascript-typescript', 'csharp', 'python', 'java']
         include:
           - language: 'javascript-typescript'
-            paths: |
-              src/tools/code-evaluation/**
-              src/tools/web-search/**
-              src/api/**
-              src/ui/**
+            paths:
+              - src/tools/code-evaluation/**
+              - src/tools/web-search/**
+              - src/api/**
+              - src/ui/**
           - language: 'csharp'
-            paths: |
-              src/tools/destination-recommendation/**
+            paths:
+              - src/tools/destination-recommendation/**
           - language: 'python'
-            paths: |
-              src/tools/itinerary-planning/**
-              src/tools/model-inference/**
+            paths:
+              - src/tools/itinerary-planning/**
+              - src/tools/model-inference/**
           - language: 'java'
-            paths: |
-              src/tools/customer-query/**
+            paths:
+              - src/tools/customer-query/**
 
     steps:
       - name: Checkout repository
