@@ -29,21 +29,25 @@ jobs:
         with:
           workflow: CodeQL TypeScript
           token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.event.pull_request.head.ref || github.ref }}
 
       - name: Trigger C# Analysis
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: CodeQL C#
           token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.event.pull_request.head.ref || github.ref }}
 
       - name: Trigger Python Analysis
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: CodeQL Python
           token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.event.pull_request.head.ref || github.ref }}
 
       - name: Trigger Java Analysis
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: CodeQL Java
           token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.event.pull_request.head.ref || github.ref }}
