@@ -20,38 +20,30 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: ['javascript-typescript', 'csharp', 'python', 'java']
+        language: ['typescript', 'csharp', 'python', 'java']
         include:
-          - language: 'javascript-typescript'
-            paths:
-              - src/tools/code-evaluation/**
-              - src/tools/web-search/**
-              - src/api/**
-              - src/ui/**
+          - language: 'typescript'
+            paths: 'src/tools/code-evaluation/**,src/tools/web-search/**,src/api/**,src/ui/**'
           - language: 'csharp'
-            paths:
-              - src/tools/destination-recommendation/**
+            paths: 'src/tools/destination-recommendation/**'
           - language: 'python'
-            paths:
-              - src/tools/itinerary-planning/**
-              - src/tools/model-inference/**
+            paths: 'src/tools/itinerary-planning/**,src/tools/model-inference/**'
           - language: 'java'
-            paths:
-              - src/tools/customer-query/**
+            paths: 'src/tools/customer-query/**'
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up Node.js for TypeScript
-        if: matrix.language == 'javascript-typescript'
+        if: matrix.language == 'typescript'
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
       - name: Install TypeScript dependencies
-        if: matrix.language == 'javascript-typescript'
+        if: matrix.language == 'typescript'
         run: |
-          for dir in src/tools/code-evaluation src/tools/web-search src/api src/ui; do
+          for dir in packages/tools/code-evaluation packages/tools/web-search packages/api packages/ui; do
             if [ -f "$dir/package.json" ]; then
               cd $dir && npm install && cd -
             fi
@@ -64,7 +56,7 @@ jobs:
           dotnet-version: '8.0.x'
       - name: Restore and Build C#
         if: matrix.language == 'csharp'
-        run: dotnet build src/tools/destination-recommendation --configuration Release
+        run: dotnet build packages/tools/destination-recommendation --configuration Release
 
       - name: Set up JDK for Java
         if: matrix.language == 'java'
@@ -81,7 +73,12 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
       - name: Build Java with Maven
         if: matrix.language == 'java'
-        run: mvn clean compile -f src/tools/customer-query/pom.xml
+        run: |
+          if [ -f "src/tools/customer-query/pom.xml" ]; then
+            mvn clean compile -f src/tools/customer-query/pom.xml
+          else
+            echo "No pom.xml found in src/tools/customer-query/ - skipping Java build"
+          fi
 
       # Python requires no build step
 
@@ -89,9 +86,7 @@ jobs:
         uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
-          config: |
-            paths:
-              - ${{ matrix.paths }}
+          config-file: .github/codeql-config-${{ matrix.language }}.yml
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
