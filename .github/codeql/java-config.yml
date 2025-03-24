@@ -1,2 +1,18 @@
+name: Java CodeQL Configuration
+
 paths:
-  - src/tools/customer-query/**
+  - src/tools/destination-recommendation/**
+
+paths-ignore:
+  - '**/target/**'
+  - '**/build/**'
+  - '**/test/**'
+  - '**/tests/**'
+  - '**/*Test.java'
+  - '**/generated/**'
+
+queries:
+  - name: Security and quality queries for Java
+    uses: security-and-quality
+  - name: Security extended queries for Java
+    uses: security-extended
