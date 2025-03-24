@@ -30,7 +30,7 @@ The architecture of the AI Travel Agents application is designed to be modular a
 
 ```
 ai-travel-agents/
-│── src/
+│── packages/
 │   ├── tools/
 │   │   ├── customer-query/
 │   │   ├── destination-recommendation/
@@ -57,7 +57,7 @@ Ensure you have the following installed before running the application:
 
 ## Run the Entire Application
 
-To run the entire application, use the scripts in the root directory. The scripts will build and run all the services defined in the `src/docker-compose.yml` file.
+To run the entire application, use the scripts in the root directory. The scripts will build and run all the services defined in the `packages/docker-compose.yml` file.
 
 ```sh
 ./run.sh

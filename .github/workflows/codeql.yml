@@ -24,20 +24,20 @@ jobs:
         include:
           - language: 'javascript-typescript'
             paths:
-              - src/tools/code-evaluation/**
-              - src/tools/web-search/**
-              - src/api/**
-              - src/ui/**
+              - packages/tools/code-evaluation/**
+              - packages/tools/web-search/**
+              - packages/api/**
+              - packages/ui/**
           - language: 'csharp'
             paths:
-              - src/tools/destination-recommendation/**
+              - packages/tools/destination-recommendation/**
           - language: 'python'
             paths:
-              - src/tools/itinerary-planning/**
-              - src/tools/model-inference/**
+              - packages/tools/itinerary-planning/**
+              - packages/tools/model-inference/**
           - language: 'java'
             paths:
-              - src/tools/customer-query/**
+              - packages/tools/customer-query/**
 
     steps:
       - name: Checkout repository
@@ -51,7 +51,7 @@ jobs:
       - name: Install TypeScript dependencies
         if: matrix.language == 'javascript-typescript'
         run: |
-          for dir in src/tools/code-evaluation src/tools/web-search src/api src/ui; do
+          for dir in packages/tools/code-evaluation packages/tools/web-search packages/api packages/ui; do
             if [ -f "$dir/package.json" ]; then
               cd $dir && npm install && cd -
             fi
@@ -64,7 +64,7 @@ jobs:
           dotnet-version: '8.0.x'
       - name: Restore and Build C#
         if: matrix.language == 'csharp'
-        run: dotnet build src/tools/destination-recommendation --configuration Release
+        run: dotnet build packages/tools/destination-recommendation --configuration Release
 
       - name: Set up JDK for Java
         if: matrix.language == 'java'
@@ -81,7 +81,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
       - name: Build Java with Maven
         if: matrix.language == 'java'
-        run: mvn clean compile -f src/tools/customer-query/pom.xml
+        run: mvn clean compile -f packages/tools/customer-query/pom.xml
 
       # Python requires no build step
 
