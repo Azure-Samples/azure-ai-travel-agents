@@ -1,6 +1,8 @@
 name: "CodeQL Analysis"
 
 on:
+  schedule:
+    - cron: '0 0 * * *' # Daily at midnight UTC
   push:
     branches: [main]
   pull_request:
@@ -26,47 +28,66 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: ['csharp', 'python', 'java', 'javascript-typescript']
-        include:
-          - build-mode: none
+        language: ['java', 'python', 'csharp', 'typescript']
+        paths:
+          - 'src/tools/customer-query/**' # Java code
+          - 'src/tools/itinerary-planning/**' # Python code
+          - 'src/tools/model-inference/**' # Python code
+          - 'src/tools/code-evaluation/**' # Typescript code
+          - 'src/tools/web-search/**' # Typescript code
+          - 'src/tools/destination-recommendation/**' # C# code
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    # Initializes the CodeQL tools for scanning.
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
-      with:
-        languages: ${{ matrix.language }}
-        build-mode: ${{ matrix.build-mode }}
+      - name: Set up Node.js for TypeScript
+        if: matrix.language == 'typescript'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install TypeScript dependencies
+        if: matrix.language == 'typescript'
+        run: cd typescript_folder && npm install
 
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v3
+      - name: Set up .NET for C#
+        if: matrix.language == 'csharp'
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Restore and Build C#
+        if: matrix.language == 'csharp'
+        run: dotnet build csharp_folder --configuration Release
 
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
-      with:
-        category: "/language:${{ matrix.language }}"
-        
-    - name: Run CodeQL for csharp and dotnet
-      if: matrix.language == 'csharp'
-      run: |
-        codeql database create --language=csharp --source-root=src/tools/destination-recommendation
+      - name: Set up JDK for Java
+        if: matrix.language == 'java'
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: Cache Maven dependencies
+        if: matrix.language == 'java'
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: Build Java with Maven
+        if: matrix.language == 'java'
+        run: mvn clean compile -f java_folder/pom.xml
 
-    - name: Run CodeQL for python
-      if: matrix.language == 'python'
-      run: |
-        codeql database create --language=python --source-root=src/tools/itinerary-planning
-        codeql database create --language=python --source-root=src/tools/model-inference
+      # Python requires no build step
 
-    - name: Run CodeQL for java
-      if: matrix.language == 'java'
-      run: |
-        codeql database create --language=java --source-root=src/tools/customer-query
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          config: |
+            paths:
+              - ${{ matrix.paths }}
 
-    - name: Run CodeQL for typescript
-      if: matrix.language == 'javascript-typescript'
-      run: |
-        codeql database create --language=typescript --source-root=src/tools/code-evaluation
-        codeql database create --language=typescript --source-root=src/tools/web-search
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "${{ matrix.language }}-analysis"
+          upload: true
