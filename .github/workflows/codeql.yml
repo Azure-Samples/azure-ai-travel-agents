@@ -23,13 +23,13 @@ jobs:
         language: ['typescript', 'csharp', 'python', 'java']
         include:
           - language: 'typescript'
-            paths: 'src/tools/code-evaluation/**,src/tools/web-search/**,src/api/**,src/ui/**'
+            config-path: '.github/codeql/typescript-config.yml'
           - language: 'csharp'
-            paths: 'src/tools/destination-recommendation/**'
+            config-path: '.github/codeql/csharp-config.yml'
           - language: 'python'
-            paths: 'src/tools/itinerary-planning/**,src/tools/model-inference/**'
+            config-path: '.github/codeql/python-config.yml'
           - language: 'java'
-            paths: 'src/tools/customer-query/**'
+            config-path: '.github/codeql/java-config.yml'
 
     steps:
       - name: Checkout repository
@@ -86,7 +86,7 @@ jobs:
         uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
-          config-file: .github/codeql-config-${{ matrix.language }}.yml
+          config-file: ${{ matrix.config-path }}
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
