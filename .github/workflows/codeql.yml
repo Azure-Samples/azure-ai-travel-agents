@@ -7,8 +7,12 @@ on:
   pull_request:
     branches:
       - '**'
-  schedule:
-    - cron: '33 17 * * 0'
+
+paths:
+  - src
+paths-ignore:
+  - src/node_modules
+  - '**/*.test.js'
 
 jobs:
   analyze:
@@ -28,7 +32,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: ['csharp', 'python', 'java', 'typescript']
+        language: ['csharp', 'python', 'java', 'javascript-typescript']
         include:
           - build-mode: none
 
@@ -68,12 +72,7 @@ jobs:
         codeql database create --language=java --source-root=src/tools/customer-query
 
     - name: Run CodeQL for typescript
-      if: matrix.language == 'typescript'
+      if: matrix.language == 'javascript-typescript'
       run: |
         codeql database create --language=typescript --source-root=src/tools/code-evaluation
         codeql database create --language=typescript --source-root=src/tools/web-search
-
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
-      with:
-        category: "/language:${{matrix.language}}"
