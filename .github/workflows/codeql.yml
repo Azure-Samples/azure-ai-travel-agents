@@ -1,4 +1,4 @@
-name: "CodeQL Analysis Coordinator"
+name: "CodeQL Coordinator"
 
 on:
   push:
@@ -17,6 +17,7 @@ on:
 
 jobs:
   trigger-analyses:
+    permissions: write-all
     name: Trigger Language-Specific Analyses
     runs-on: ubuntu-latest
     steps:
