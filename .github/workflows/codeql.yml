@@ -2,17 +2,14 @@ name: "CodeQL Analysis"
 
 on:
   push:
-    branches:
-      - '**'
+    branches: [main]
   pull_request:
-    branches:
-      - '**'
-
-paths:
-  - src
-paths-ignore:
-  - src/node_modules
-  - '**/*.test.js'
+    branches: [main]
+    paths:
+      - src
+    paths-ignore:
+      - src/node_modules
+      - '**/*.test.js'
 
 jobs:
   analyze:
