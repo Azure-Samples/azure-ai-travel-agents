@@ -52,7 +52,7 @@ jobs:
         category: "/language:${{ matrix.language }}"
         
     - name: Run CodeQL for csharp and dotnet
-      if: matrix.language == 'csharp' || matrix.language == 'dotnet'
+      if: matrix.language == 'csharp'
       run: |
         codeql database create --language=csharp --source-root=src/tools/destination-recommendation
 
