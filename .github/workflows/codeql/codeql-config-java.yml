@@ -1,0 +1,5 @@
+paths:
+  - packages/tools/customer-query/**
+paths-ignore:
+  - '**/target/**'
+  - '**/build/**'

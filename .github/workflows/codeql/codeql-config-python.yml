@@ -1,0 +1,6 @@
+paths:
+  - packages/tools/itinerary-planning/**
+  - packages/tools/model-inference/**
+paths-ignore:
+  - '**/__pycache__/**'
+  - '**/venv/**'

@@ -1,0 +1,8 @@
+paths:
+  - packages/tools/code-evaluation/**
+  - packages/tools/web-search/**
+  - packages/api/**
+  - packages/ui/**
+paths-ignore:
+  - '**/node_modules/**'
+  - '**/dist/**'

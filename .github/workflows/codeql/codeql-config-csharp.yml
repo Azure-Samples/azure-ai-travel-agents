@@ -1,0 +1,5 @@
+paths:
+  - packages/tools/destination-recommendation/**
+paths-ignore:
+  - '**/bin/**'
+  - '**/obj/**'
