@@ -5,13 +5,15 @@
   "main": "dist/index.js",
   "scripts": {
     "prestart": "npm run build",
-    "start": "node dist/lits.js",
+    "start": "node dist/index.js",
     "build": "tsc"
   },
   "files": [
     "dist"
   ],
   "dependencies": {
+    "@azure/ai-projects": "^1.0.0-beta.3",
+    "@azure/identity": "^4.8.0",
     "@llamaindex/openai": "^0.1.61",
     "@modelcontextprotocol/sdk": "^1.6.1",
     "@opentelemetry/api": "^1.9.0",

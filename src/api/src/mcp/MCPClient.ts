@@ -1,7 +1,7 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { SSEClientTransport } from "@modelcontextprotocol/sdk/client/sse.js";
 import { Transport } from "@modelcontextprotocol/sdk/shared/transport.js";
-import { tracer, log } from "./instrumentation.js";
+import { tracer, log } from "../utils/instrumentation.js";
 
 export class MCPClient {
     private mcp: Client;
