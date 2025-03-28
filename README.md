@@ -55,6 +55,50 @@ Ensure you have the following installed before running the application:
 
 - **[Docker](https://www.docker.com/)**
 
+## Environment Variables setup for containerized services
+
+The application uses environment variables to configure the services. You can set them in a `.env` file in the root directory or directly in your terminal. We recommend the following approach:
+1. Create a `.env.dev` file for each containerized service under `src/`, and optionally a `.env.docker` file for Docker-specific configurations:
+    - `src/ui/.env.dev`
+    - `src/ui/.env.docker`
+    - `src/api/.env.dev`
+    - `src/api/.env.docker`
+    - `src/tools/customer-query/.env.dev`
+    - `src/tools/customer-query/.env.docker`
+    - `src/tools/destination-recommendation/.env.dev`
+    - `src/tools/destination-recommendation/.env.docker`
+    - `src/tools/itinerary-planning/.env.dev`
+    - `src/tools/itinerary-planning/.env.docker`
+    - `src/tools/code-evaluation/.env.dev`
+    - `src/tools/code-evaluation/.env.docker`
+    - `src/tools/model-inference/.env.dev`
+    - `src/tools/model-inference/.env.docker`
+    - `src/tools/web-search/.env.dev`
+    - `src/tools/web-search/.env.docker`
+    - `src/tools/echo-ping/.env.dev`
+    - `src/tools/echo-ping/.env.docker`
+
+2. `.env.docker` files are used to set environment variables for Docker containers. These files should contain the same variables as `.env.dev` files, but with values specific to the Docker environment. For example:
+```bash
+# src/api/.env.dev
+TOOL_CUSTOMER_QUERY_URL=http://localhost:8080
+
+# src/api/.env.docker
+TOOL_CUSTOMER_QUERY_URL=http://tool-customer-query:8080
+```
+
+3. Load the environment variable files in `docker-compose.yml` using the `env_file` directive, in the following order:
+```yml
+  web-api:
+    container_name: web-api
+    # ...
+    env_file: 
+      - "./api/.env.dev"
+      - "./api/.env.docker" # override .env with .env.docker
+```
+
+> [!Note] adding the `- environment:` directive to the `docker-compose.yml` file will override the environment variables set in the `.env.*` files.
+
 ## Run the Entire Application
 
 To run the entire application, use the scripts in the root directory. The scripts will build and run all the services defined in the `src/docker-compose.yml` file.

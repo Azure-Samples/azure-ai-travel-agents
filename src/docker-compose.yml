@@ -77,7 +77,9 @@ services:
       - tool-echo-ping
     networks:
       - ai-network
-    env_file: "./api/.env"
+    env_file: 
+      - "./api/.env.dev"
+      - "./api/.env.docker" # override .env with .env.docker
 
   web-ui:
     container_name: web-ui
