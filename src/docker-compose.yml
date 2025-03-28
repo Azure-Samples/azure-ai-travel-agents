@@ -50,6 +50,7 @@ services:
       - "5006:5000"
     networks:
       - ai-network
+      
   tool-echo-ping:
     container_name: tool-echo-ping
     build: ./tools/echo-ping
