@@ -25,21 +25,31 @@ export class MCPClient {
         throw e;
       }
     }
+
+    async listTools() {
+      return tracer.startActiveSpan("listTools", async (span) => {
+        log("Tools", this.tools);
+        const toolsResult = await this.mcp.listTools();
+        this.tools = toolsResult.tools;
+        log("Tools: ", toolsResult);
+        span.end();
+        return toolsResult;
+      });
+    }
   
-    async processQuery(query: string) {
+    async callTool(toolName: string, args: Record<string, any>) {
+      console.log(`Called ${toolName} with params:`, args);
       return tracer.startActiveSpan("processQuery", async (span) => {
         log("Tools", this.tools);
   
         const toolResult = await this.mcp.callTool({
-          name: "echo",
-          arguments: {
-            text: query,
-          },
+          name: toolName,
+          arguments: args,
         });
   
         log("Tool result", toolResult);
         span.end();
-        return toolResult;
+        return {toolResult};
       });
     }
   

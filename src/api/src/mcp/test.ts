@@ -13,7 +13,9 @@ async function executeCustomerQuery() {
   log("Connected to customer MCP server");
 
   const customerQuery = "Hello world from the customer!";
-  const customerResult = await customerQueryClient.processQuery(customerQuery);
+  const customerResult = await customerQueryClient.callTool("echo", {
+    text: customerQuery,
+  });
   log("Customer Result: ", customerResult);
   // await customerQueryClient.cleanup();
 }
@@ -23,7 +25,9 @@ async function executeEchoQuery() {
   await echoClient.connectToServer("http://tool-echo-ping:5000/sse");
   log("Connected to echo MCP server");
   const query = "Hello world from the client!";
-  const result = await echoClient.processQuery(query);
+  const result = await echoClient.callTool("echo", {
+    text: query,
+  });
   log("Result: ", result);
   // await echoClient.cleanup();
 }

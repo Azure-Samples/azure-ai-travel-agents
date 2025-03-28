@@ -1,70 +1,47 @@
-import { agent, tool, multiAgent, openai } from "llamaindex";
-import { z } from "zod";
+import { agent, multiAgent } from "llamaindex";
 
 import dotenv from "dotenv";
+import { mcpTools } from "./mcp-tools.js";
+import { llm } from "./providers/azure-openai.js";
 dotenv.config();
 
-const llm = async () => {
-  return openai({
-    azure: {
-      apiKey: process.env.AZURE_OPENAI_API_KEY,
-      deployment: process.env.AZURE_OPENAI_DEPLOYMENT_NAME,
-    },
-  });
-};
 
 export default async function main() {
-
-  // Define a joke-telling tool
-  const jokeTool = tool(() => "Baby Llama is called cria", {
-    name: "joke",
-    description: "Use this tool to get a joke",
+  const echoAgent = agent({
+    name: "EchoAgent",
+    description: "Echo back the received input. Do no respond with anything else. Alaways call the tools.",
+    tools: await mcpTools(process.env.TOOL_ECHO_PING_URL as string), // TODO: use env var for server URL
+    llm: await llm(),
+    verbose: true,
   });
 
-  // Create a weather agent
-  const weatherAgent = agent({
-    name: "WeatherAgent",
-    description: "Provides weather information for any city",
-    tools: [
-      tool({
-        name: "fetchWeather",
-        description: "Get weather information for a city",
-        parameters: z.object({
-          city: z.string(),
-        }),
-        execute: ({ city }) => `The weather in ${city} is sunny`,
-      }),
-    ],
+  const customerQuery = agent({
+    name: "CustomerQueryAgent",
+    description:
+      "Assists employees in better understanding customer needs, facilitating more accurate and personalized service. This agent is particularly useful for handling nuanced queries, such as specific travel preferences or budget constraints, which are common in travel agency interactions.",
+    tools: await mcpTools(process.env.TOOL_CUSTOMER_QUERY_URL as string), // TODO: use env var for server URL
     llm: await llm(),
-  });
-
-  // Create a joke-telling agent
-  const jokeAgent = agent({
-    name: "JokeAgent",
-    description: "Tells jokes and funny stories",
-    tools: [jokeTool], // Using the joke tool defined earlier
-    llm: await llm(),
-    canHandoffTo: [weatherAgent], // Can hand off to the weather agent
+    canHandoffTo: [echoAgent],
   });
 
   // Create the multi-agent workflow
   const agents = multiAgent({
-    agents: [jokeAgent, weatherAgent],
-    rootAgent: jokeAgent, // Start with the joke agent
+    agents: [
+      customerQuery, 
+      echoAgent
+    ],
+    rootAgent: customerQuery,
   });
 
-  // Run the workflow
-  const context = jokeAgent.run(
-    "Tell me something funny about the weather. Use weatherAgent to get the weather information."
-  );
-  // Stream and handle events
+  const context = agents.run("I want to know about the best travel destinations for a family vacation. Handoff to the EchoAgent if needed.");
   for await (const event of context) {
-    // format as: displayName: "JokeAgent", message: "Tell me something funny", Agent: "JokeAgent"
     const { displayName, data } = event;
-    console.log(
-      `[${(data as any).currentAgentName}] [${displayName}]\t${
-        (data as any).delta
-      }`
-    );
+    if (displayName === "AgentStream") {
+      process.stdout.write((data as any).delta);
+    }
+    else {
+      console.log(`(${(data as any).currentAgentName}::${displayName})`);
+      console.log({data});
+    }
   }
 }
