@@ -9,7 +9,7 @@ dotenv.config();
 export default async function main() {
   const echoAgent = agent({
     name: "EchoAgent",
-    description: "Echo back the received input. Do no respond with anything else. Alaways call the tools.",
+    description: "Echo back the received input. Do not respond with anything else. Always call the tools.",
     tools: await mcpTools(process.env.TOOL_ECHO_PING_URL as string), // TODO: use env var for server URL
     llm: await llm(),
     verbose: true,
