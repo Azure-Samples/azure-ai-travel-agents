@@ -49,7 +49,7 @@ export class MCPClient {
   
         log("Tool result", toolResult);
         span.end();
-        return {toolResult};
+        return toolResult;
       });
     }
   
