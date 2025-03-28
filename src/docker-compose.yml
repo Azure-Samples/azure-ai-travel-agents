@@ -78,10 +78,6 @@ services:
     networks:
       - ai-network
     env_file: "./api/.env"
-    environment:
-      - OTEL_SERVICE_NAME=api
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:18889
-      - OTEL_EXPORTER_OTLP_HEADERS=x-otlp-header=header-value
 
   web-ui:
     container_name: web-ui
