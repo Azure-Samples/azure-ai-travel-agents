@@ -402,7 +402,6 @@ FodyWeavers.xsd
 # Node..js
 node_modules/
 npm-debug.log
-yarn-error.log
 lerna-debug.log
 package-lock.json
 yarn.lock
@@ -410,7 +409,7 @@ build
 dist
 .env
 .env.*
-src\tools\travel-data\target
+src/tools/travel-data/target/
 
 # Java specific
 *.class
@@ -433,28 +432,8 @@ buildNumber.properties
 .mvn/timing.properties
 .mvn/wrapper/maven-wrapper.jar
 
-# Gradle
-.gradle/
-**/build/
-!src/**/build/
-gradle-app.setting
-!gradle-wrapper.jar
-.gradletasknamecache
-
-# Eclipse
-.settings/
-bin/
-tmp/
-.metadata
-.classpath
-.project
-*.tmp
-*.bak
-*.swp
-*~.nib
-local.properties
-.loadpath
-.factorypath
+# Ignore all target directories
+**/target/
 
 # IntelliJ IDEA
 .idea/
@@ -465,15 +444,12 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 
-# NetBeans
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
 
 # VS Code Java extension
 .vscode/
 .code-workspace
 .history/
 .ionide/
+
+# Embedded folders for Java projects
+src/tools/travel-data/target
