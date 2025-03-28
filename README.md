@@ -97,7 +97,8 @@ TOOL_CUSTOMER_QUERY_URL=http://tool-customer-query:8080
       - "./api/.env.docker" # override .env with .env.docker
 ```
 
-> [!Note] adding the `- environment:` directive to the `docker-compose.yml` file will override the environment variables set in the `.env.*` files.
+> [!Note]
+> adding the `- environment:` directive to the `docker-compose.yml` file will override the environment variables set in the `.env.*` files.
 
 ## Run the Entire Application
 
