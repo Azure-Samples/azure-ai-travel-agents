@@ -63,6 +63,18 @@ services:
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:18889
       - OTEL_EXPORTER_OTLP_HEADERS=x-otlp-header=header-value
 
+  tool-travel-data:
+    container_name: tool-travel-data
+    build: ./tools/travel-data
+    ports:
+      - "5008:5008"
+    networks:
+      - ai-network
+    environment:
+      - OTEL_SERVICE_NAME=tool-travel-data
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:18889
+      - OTEL_EXPORTER_OTLP_HEADERS=x-otlp-header=header-value
+
   web-api:
     container_name: web-api
     build: ./api
@@ -76,6 +88,7 @@ services:
       - tool-model-inference
       - tool-web-search
       - tool-echo-ping
+      - tool-travel-data
     networks:
       - ai-network
     env_file: 

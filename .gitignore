@@ -403,7 +403,6 @@ FodyWeavers.xsd
 # Node..js
 node_modules/
 npm-debug.log
-yarn-error.log
 lerna-debug.log
 package-lock.json
 yarn.lock
@@ -411,3 +410,47 @@ build
 dist
 .env
 .env.*
+src/tools/travel-data/target/
+
+# Java specific
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+hs_err_pid*
+replay_pid*
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Ignore all target directories
+**/target/
+
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+
+# VS Code Java extension
+.vscode/
+.code-workspace
+.history/
+.ionide/
+
+# Embedded folders for Java projects
+src/tools/travel-data/target
