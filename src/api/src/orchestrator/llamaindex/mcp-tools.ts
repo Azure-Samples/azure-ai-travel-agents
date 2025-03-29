@@ -30,6 +30,13 @@ function openAiFunctionAdapter(tool: McpToolDefinition, mcpClient: MCPClient): B
 export async function mcpTools(serverUrl: string) {
   const mcpClient = new MCPClient("llamaindex-client", "1.0.0");
   console.log("Connecting to MCP server at ", serverUrl);
+
+  try {
   await mcpClient.connectToServer(`${serverUrl}/sse`);
+  }
+  catch (error) {
+    console.error("Error connecting to MCP server: ", error);
+    throw new Error(`MCP server is not reachable`);
+  }
   return (await mcpClient.listTools()).tools.map(tool => openAiFunctionAdapter(tool, mcpClient));
 }

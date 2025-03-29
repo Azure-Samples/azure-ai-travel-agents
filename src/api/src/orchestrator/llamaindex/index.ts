@@ -3,10 +3,13 @@ import { agent, multiAgent } from "llamaindex";
 import dotenv from "dotenv";
 import { mcpTools } from "./mcp-tools.js";
 import { llm } from "./providers/azure-openai.js";
-dotenv.config();
+dotenv.config({
+  path: "./.env.dev",
+});
 
 
-export default async function main() {
+// Function to set up agents and return the multiAgent instance
+export async function setupAgents() {
   const echoAgent = agent({
     name: "EchoAgent",
     description: "Echo back the received input. Do not respond with anything else. Always call the tools.",
@@ -26,22 +29,9 @@ export default async function main() {
 
   // Create the multi-agent workflow
   const agents = multiAgent({
-    agents: [
-      customerQuery, 
-      echoAgent
-    ],
+    agents: [customerQuery, echoAgent],
     rootAgent: customerQuery,
   });
 
-  const context = agents.run("I want to know about the best travel destinations for a family vacation. Handoff to the EchoAgent if needed.");
-  for await (const event of context) {
-    const { displayName, data } = event;
-    if (displayName === "AgentStream") {
-      process.stdout.write((data as any).delta);
-    }
-    else {
-      console.log(`(${(data as any).currentAgentName}::${displayName})`);
-      console.log({data});
-    }
-  }
+  return agents;
 }
