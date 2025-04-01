@@ -23,11 +23,13 @@
     "@angular/ssr": "^19.2.5",
     "@ng-icons/core": "^29.10.0",
     "@ng-icons/lucide": ">=29.0.0",
-    "@spartan-ng/brain": "0.0.1-alpha.432",
+    "@spartan-ng/brain": "^0.0.1-alpha.433",
+    "@tailwindcss/postcss": "^3.0.17",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "express": "^4.18.2",
     "ngx-scrollbar": ">=16.0.0",
+    "postcss": "^8.5.3",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
@@ -36,7 +38,7 @@
     "@angular-devkit/build-angular": "^19.2.5",
     "@angular/cli": "^19.2.5",
     "@angular/compiler-cli": "^19.2.0",
-    "@spartan-ng/cli": "^0.0.1-alpha.432",
+    "@spartan-ng/cli": "^0.0.1-alpha.433",
     "@types/express": "^4.17.17",
     "@types/jasmine": "~5.1.0",
     "@types/node": "^18.18.0",
@@ -47,7 +49,7 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "tailwind-merge": "^2.2.0",
-    "tailwindcss": "^3.4.1",
+    "tailwindcss": "^3.4.17",
     "tailwindcss-animate": "^1.0.6",
     "typescript": "~5.7.2"
   }

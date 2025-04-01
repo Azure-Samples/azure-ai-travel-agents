@@ -55,22 +55,8 @@
           class="flex items-start gap-3"
           [ngClass]="message.role === 'user' ? 'flex-row-reverse' : 'flex-row'"
         >
-          <hlm-avatar class="flex-shrink-0" variant="large">
-            <ng-icon
-              *ngIf="message.role === 'assistant'"
-              hlmAvatarFallback
-              name="lucideHeadset"
-              class="text-muted-foreground bg-primary/10 h-full w-full"
-            />
-          </hlm-avatar>
-          <hlm-avatar class="flex-shrink-0" variant="large">
-            <ng-icon
-              *ngIf="message.role === 'user'"
-              hlmAvatarFallback
-              name="lucideUser"
-              class="text-muted-foreground bg-primary/10 h-full w-full"
-            />
-          </hlm-avatar>
+          @if (message.role === 'assistant') {<hlm-spinner />}
+
           <div
             class="rounded-md px-4 py-2"
             [ngClass]="

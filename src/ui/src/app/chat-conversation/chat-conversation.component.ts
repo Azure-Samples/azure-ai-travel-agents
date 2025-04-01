@@ -20,8 +20,8 @@ import { HlmCardContentDirective, HlmCardFooterDirective, HlmCardHeaderDirective
 import { HlmIconDirective } from '@spartan-ng/ui-icon-helm';
 import { HlmInputDirective } from '@spartan-ng/ui-input-helm';
 import { HlmScrollAreaDirective } from '@spartan-ng/ui-scrollarea-helm';
+import { HlmSpinnerComponent } from '@spartan-ng/ui-spinner-helm';
 import { ChatService } from './chat-conversation.service';
-
 @Component({
   selector: 'app-chat-conversation',
   standalone: true,
@@ -49,6 +49,7 @@ import { ChatService } from './chat-conversation.service';
     HlmAlertDialogDescriptionDirective,
     HlmAlertDialogActionButtonDirective,
     HlmAlertDialogCancelButtonDirective,
+    HlmSpinnerComponent,
   ],
   providers: [
     provideIcons({ lucideGlobe, lucideRefreshCw, lucideUser, lucideHeadset, lucideCircle })
