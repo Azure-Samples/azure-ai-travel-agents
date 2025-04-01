@@ -1,6 +1,5 @@
 from mcp.server.fastmcp import FastMCP
 
-# Initialize FastMCP server
 mcp = FastMCP("weather")
 
 @mcp.tool()
@@ -28,5 +27,4 @@ async def suggest_flights(from_location: str, to_location: str, departure_date: 
         }]
 
 if __name__ == "__main__":
-    # Initialize and run the server
     mcp.run(transport="sse")

@@ -1,4 +1,3 @@
-
 # Python MCP server for Itinerary Planning
 
 ## Local Environment

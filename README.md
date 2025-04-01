@@ -79,7 +79,6 @@ The application uses environment variables to configure the services. You can se
     - `src/tools/echo-ping/.env.docker`
 
 2. `.env.docker` files are used to set environment variables for Docker containers. These files should contain the same variables as `.env.dev` files, but with values specific to the Docker environment. For example:
-
 ```bash
 # src/api/.env.dev
 TOOL_CUSTOMER_QUERY_URL=http://localhost:8080
