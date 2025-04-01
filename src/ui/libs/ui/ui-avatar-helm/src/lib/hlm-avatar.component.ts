@@ -10,16 +10,10 @@ export const avatarVariants = cva('relative flex shrink-0 overflow-hidden rounde
 			small: 'h-6 w-6 text-xs',
 			medium: 'h-10 w-10',
 			large: 'h-14 w-14 text-lg',
-			full: 'h-full w-full',
-		},
-		fullSize: {
-			true: 'h-full w-full',
-			false: '',
 		},
 	},
 	defaultVariants: {
 		variant: 'medium',
-		fullSize: false,
 	},
 });
 
@@ -44,9 +38,8 @@ export type AvatarVariants = VariantProps<typeof avatarVariants>;
 export class HlmAvatarComponent extends BrnAvatarComponent {
 	public readonly userClass = input<ClassValue>('', { alias: 'class' });
 	public readonly variant = input<AvatarVariants['variant']>('medium');
-	public readonly fullSize = input<boolean>(false);
 
 	protected readonly _computedClass = computed(() =>
-		hlm(avatarVariants({ variant: this.variant(), fullSize: this.fullSize() }), this.userClass()),
+		hlm(avatarVariants({ variant: this.variant() }), this.userClass()),
 	);
 }
