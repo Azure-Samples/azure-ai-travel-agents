@@ -1,0 +1,147 @@
+@import '@angular/cdk/overlay-prebuilt.css';
+/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Set up variable CSS properties */
+:root {
+  --font-family: 'Inter', system-ui, sans-serif;
+  --ng-icon__size: 32px;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 210 40% 96.1%; /* Increased contrast for better readability */
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+  }
+}
+
+/* Light mode support */
+@media (prefers-color-scheme: light) {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
+  }
+}
+
+/* Dark mode class for manual toggling */
+.dark {
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+  --card: 240 10% 3.9%;
+  --card-foreground: 0 0% 98%;
+  --popover: 240 10% 3.9%;
+  --popover-foreground: 0 0% 98%;
+  --primary: 0 0% 98%;
+  --primary-foreground: 240 5.9% 10%;
+  --secondary: 240 3.7% 15.9%;
+  --secondary-foreground: 0 0% 98%;
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 210 40% 96.1%; /* Increased contrast for better readability */
+  --accent: 240 3.7% 15.9%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 240 3.7% 15.9%;
+  --input: 240 3.7% 15.9%;
+  --ring: 240 4.9% 83.9%;
+}
+
+/* Ensure all text is readable in dark mode */
+.dark {
+  color-scheme: dark;
+}
+
+/* Improve readability for all text elements in dark mode */
+.dark .text-muted-foreground {
+  color: hsl(210 40% 96.1%); /* Ensure muted text is still readable */
+}
+
+/* Form inputs dark mode improvements */
+.dark input, .dark textarea, .dark select {
+  color: hsl(0 0% 98%);
+  caret-color: hsl(0 0% 98%);
+}
+
+/* Placeholder text in dark mode */
+.dark input::placeholder, .dark textarea::placeholder {
+  color: hsl(210 40% 85%);
+  opacity: 0.7;
+}
+
+/* Links in dark mode */
+.dark a:not(.btn):not([role="button"]) {
+  color: hsl(217 91% 75%); /* Light blue that stands out in dark mode */
+}
+
+/* Code blocks and inline code in dark mode */
+.dark pre, .dark code {
+  background-color: hsl(220 13% 10%);
+  color: hsl(210 40% 96.1%);
+  border-color: hsl(240 3.7% 25%);
+}
+
+/* Alert dialog text in dark mode */
+.dark hlm-alert-dialog-content {
+  color: hsl(0 0% 98%);
+}
+
+/* Button text in dark mode */
+.dark button.bg-primary, .dark .btn-primary {
+  color: hsl(var(--primary-foreground));
+}
+
+/* Add blur effect to cdk-overlay-container when an alert dialog is shown */
+body:has(.cdk-overlay-container hlm-alert-dialog-content) .cdk-overlay-container:not(:has(hlm-alert-dialog-content)) {
+  filter: blur(4px);
+  transition: filter 0.2s ease-in-out;
+  pointer-events: none;
+}
+
+/* Increase the z-index of alert dialog content to ensure it appears above the blurred overlay */
+hlm-alert-dialog-content {
+  z-index: 1001;
+  position: relative;
+}
+
+/* Add a backdrop effect for alert dialogs */
+.cdk-overlay-backdrop.cdk-overlay-backdrop-showing:has(+ .cdk-overlay-pane hlm-alert-dialog-content) {
+  backdrop-filter: blur(2px);
+  background-color: rgba(0, 0, 0, 0.4);
+}

@@ -1,0 +1,67 @@
+:host {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+  min-height: 100%;
+  box-sizing: border-box;
+}
+.message-bubble {
+  transition: opacity 0.3s ease;
+}
+.user-message {
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+.assistant-message {
+  background-color: hsl(var(--muted));
+  color: hsl(var(--muted-foreground)); /* Explicit text color for assistant messages */
+}
+/* Dark mode specific improvements */
+:host-context(.dark) .assistant-message {
+  color: hsl(210 40% 96.1%); /* Ensure high contrast in dark mode */
+}
+:host-context(.dark) .timestamp {
+  color: hsl(210 40% 90%); /* Brighter timestamp in dark mode */
+  opacity: 0.85; /* Slightly higher opacity for better readability */
+}
+:host-context(.dark) input[hlmInput] {
+  border-color: white !important; /* Override the border color in dark mode */
+}
+.timestamp {
+  opacity: 0.7;
+  font-size: 0.75rem;
+}
+/* Add animation for the loading indicator */
+.loading-indicator {
+  display: inline-block;
+}
+.loading-indicator::after {
+  content: '...';
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% { content: '.'; }
+  33% { content: '..'; }
+  66% { content: '...'; }
+}
+/* Add blur effect to app-root when alert is shown */
+:has(hlm-alert-dialog-content) app-root {
+  filter: blur(4px);
+  transition: filter 0.2s ease-in-out;
+}
+
+/* Custom styles for the alert dialog */
+:host ::ng-deep hlm-alert-dialog-content {
+  width: 400px !important;
+  max-width: 400px !important;
+  border: 1px solid hsl(var(--border));
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark mode border adjustment */
+:host-context(.dark) ::ng-deep hlm-alert-dialog-content {
+  border-color: hsl(var(--border, 240 5% 64%));
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}

@@ -12,9 +12,13 @@ type McpToolDefinition = {
   };
 };
 
-function openAiFunctionAdapter(tool: McpToolDefinition, mcpClient: MCPClient): BaseToolWithCall {
+function openAiFunctionAdapter(
+  tool: McpToolDefinition,
+  mcpClient: MCPClient
+): BaseToolWithCall {
   return {
-    call: async (params: Record<string, any>): Promise<any> => await mcpClient.callTool(tool.name, params),
+    call: async (params: Record<string, any>): Promise<any> =>
+      await mcpClient.callTool(tool.name, params),
     metadata: {
       name: tool.name,
       description: tool.description as string,
@@ -23,20 +27,21 @@ function openAiFunctionAdapter(tool: McpToolDefinition, mcpClient: MCPClient): B
         properties: tool.inputSchema.properties,
         required: tool.inputSchema.required || [],
       },
-    }
-  }
+    },
+  };
 }
 
-export async function mcpTools(serverUrl: string) {
+export async function mcpTools(serverName: string, serverUrl: string) {
   const mcpClient = new MCPClient("llamaindex-client", "1.0.0");
-  console.log("Connecting to MCP server at ", serverUrl);
+  console.log(`Connecting to MCP server ${serverName} at ${serverUrl}`);
 
   try {
-  await mcpClient.connectToServer(`${serverUrl}/sse`);
+    await mcpClient.connectToServer(`${serverUrl}/sse`);
+  } catch (error) {
+    console.error("Error connecting to MCP server: ", serverName, error);
+    throw new Error(`MCP serve ${serverName} is not reachable`);
   }
-  catch (error) {
-    console.error("Error connecting to MCP server: ", error);
-    throw new Error(`MCP server is not reachable`);
-  }
-  return (await mcpClient.listTools()).tools.map(tool => openAiFunctionAdapter(tool, mcpClient));
+  return (await mcpClient.listTools()).tools.map((tool) =>
+    openAiFunctionAdapter(tool, mcpClient)
+  );
 }

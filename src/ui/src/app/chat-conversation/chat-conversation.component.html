@@ -1,0 +1,126 @@
+<div hlmCard class="w-[800px] max-w-3xl h-[700px] flex flex-col">
+  <div hlmCardHeader>
+    <h3
+      hlmCardTitle
+      class="text-center flex justify-between items-center mb-10"
+    >
+      <span>AI Travel Agent Chat</span>
+      <hlm-alert-dialog>
+        <button
+          hlmBtn
+          variant="ghost"
+          size="icon"
+          class="ml-2"
+          title="New Chat"
+          brnAlertDialogTrigger
+        >
+          <ng-icon hlm name="lucideRefreshCw" class="h-4 w-4" />
+        </button>
+        <hlm-alert-dialog-content
+          *brnAlertDialogContent="let ctx"
+          class="w-[400px]"
+        >
+          <hlm-alert-dialog-header>
+            <h3 hlmAlertDialogTitle>Clear chat session?</h3>
+            <p hlmAlertDialogDescription>
+              This will clear all messages from the current chat session and
+              start a new one. This action cannot be undone.
+            </p>
+          </hlm-alert-dialog-header>
+
+          <hlm-alert-dialog-footer>
+            <button hlmAlertDialogCancel (click)="cancelReset(ctx)">
+              Cancel
+            </button>
+            <button hlmAlertDialogAction (click)="confirmReset(ctx)">
+              Continue
+            </button>
+          </hlm-alert-dialog-footer>
+        </hlm-alert-dialog-content>
+      </hlm-alert-dialog>
+    </h3>
+  </div>
+
+  <ng-scrollbar
+    hlmCardContent
+    hlm
+    class="flex-1 h-[700px] overflow-scroll-y p-10"
+  >
+    <div class="flex flex-col gap-4">
+      @for (message of chatService.messages(); track message.timestamp; let idx
+      = $index, last = $last) {
+
+      <ng-container>
+        <div
+          class="flex items-start gap-3"
+          [ngClass]="message.role === 'user' ? 'flex-row-reverse' : 'flex-row'"
+        >
+          <hlm-avatar class="flex-shrink-0" variant="large">
+            <ng-icon
+              *ngIf="message.role === 'assistant'"
+              hlmAvatarFallback
+              name="lucideHeadset"
+              class="text-muted-foreground bg-primary/10 h-full w-full"
+            />
+          </hlm-avatar>
+          <hlm-avatar class="flex-shrink-0" variant="large">
+            <ng-icon
+              *ngIf="message.role === 'user'"
+              hlmAvatarFallback
+              name="lucideUser"
+              class="text-muted-foreground bg-primary/10 h-full w-full"
+            />
+          </hlm-avatar>
+          <div
+            class="rounded-md px-4 py-2"
+            [ngClass]="
+              message.role === 'user'
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-muted'
+            "
+          >
+            @if (message.role === 'assistant') { @if(chatService.isLoading() &&
+            !chatService.assistantMessageInProgress() && $last) {
+            <p class="loading-indicator">{{ message.content }}</p>
+            } @else {
+            <p style="white-space: pre-wrap">{{ message.content }}</p>
+            } } @else {
+            <p style="white-space: pre-wrap">{{ message.content }}</p>
+            }
+          </div>
+        </div>
+        <div
+          class="text-[10px] opacity-60"
+          [ngClass]="message.role === 'user' ? 'text-right' : 'text-left'"
+        >
+          {{ message.timestamp | date : "short" }}
+        </div>
+      </ng-container>
+      }
+    </div>
+  </ng-scrollbar>
+
+  <div hlmCardFooter class="flex flex-col gap-2">
+    <div class="flex gap-2 w-full">
+      <input
+        hlmInput
+        type="text"
+        class="flex-1 !rounded-full border-2 border-black"
+        placeholder="Type your message here..."
+        [(ngModel)]="chatService.userMessage"
+        (keyup.enter)="chatService.sendMessage()"
+      />
+      <button
+        hlmBtn
+        variant="default"
+        class="!rounded-full"
+        [disabled]="
+          chatService.isLoading() || !chatService.userMessage().trim()
+        "
+        (click)="chatService.sendMessage()"
+      >
+        Send
+      </button>
+    </div>
+  </div>
+</div>

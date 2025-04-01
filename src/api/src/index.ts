@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import { pipeline, Readable } from "stream";
 import { setupAgents } from "./orchestrator/llamaindex/index.js";
 
 // Load environment variables
@@ -19,9 +20,9 @@ const apiRouter = express.Router();
 
 // Add request body logging middleware for debugging
 apiRouter.use((req, res, next) => {
-  if (req.path === '/chat' && req.method === 'POST') {
-    console.log('Request Content-Type:', req.headers['content-type']);
-    console.log('Request body:', req.body);
+  if (req.path === "/chat" && req.method === "POST") {
+    console.log("Request Content-Type:", req.headers["content-type"]);
+    console.log("Request body:", req.body);
   }
   next();
 });
@@ -35,72 +36,83 @@ apiRouter.get("/health", (req, res) => {
 // Chat endpoint with Server-Sent Events (SSE) for streaming responses
 // @ts-ignore - Ignoring TypeScript errors for Express route handlers
 apiRouter.post("/chat", async (req, res) => {
+  const abortController = new AbortController();
+  const { signal } = abortController;
+
+  req.on("close", () => {
+    console.log("Client disconnected, aborting...");
+    abortController.abort();
+  });
+
   try {
-    // Check if req.body is undefined
     if (!req.body) {
-      console.error('Request body is undefined. Check Content-Type header in the request.');
-      return res
-        .status(400)
-        .json({ error: "Request body is undefined. Make sure to set Content-Type to application/json." });
+      console.error(
+        "Request body is undefined. Check Content-Type header in the request."
+      );
+      return res.status(400).json({
+        error:
+          "Request body is undefined. Make sure to set Content-Type to application/json.",
+      });
     }
 
-    const messages = req.body.messages;
-    // Model is optional
-    const model = req.body.model;
+    const message = req.body.message;
+    const tools = req.body.tools;
+    console.log("Tools enabled:", tools);
 
-    if (!messages || !Array.isArray(messages) || !messages.length) {
-      return res
-        .status(400)
-        .json({ error: "Messages array is required and must not be empty" });
+    if (!message) {
+      return res.status(400).json({ error: "Message is required" });
     }
 
-    // Extract the user message from the last user message in the array
-    const userMessage = messages
-      .filter((msg) => msg.role === "user")
-      .pop()?.content;
+    const agents = await setupAgents(tools);
 
-    if (!userMessage) {
-      return res
-        .status(400)
-        .json({ error: "At least one user message is required" });
-    }
-
-    const agents = await setupAgents();
-
-    // Set up streaming response using Server-Sent Events
     res.setHeader("Content-Type", "text/event-stream");
     res.setHeader("Cache-Control", "no-cache");
     res.setHeader("Connection", "keep-alive");
 
-    // Process message through agents
-    const context = agents.run(userMessage);
+    const context = agents.run(message);
+    const CHUNK_END = "\n\n";
+    const readableStream = new Readable({
+      async read() {
+        try {
+          for await (const event of context) {
+            if (signal.aborted) {
+              console.log("Aborted by client");
+              break;
+            }
+            const { displayName, data } = event;
+            const serializedData = JSON.stringify({
+              type: "metadata",
+              agent: (data as any)?.currentAgentName || null,
+              event: displayName,
+              data: data ? JSON.parse(JSON.stringify(data)) : null,
+            });
+            // delay the response to simulate streaming
+            await new Promise((resolve) => setTimeout(resolve, 100));
+            this.push(serializedData + CHUNK_END);
+          }
+        } catch (error) {
+          if (!signal.aborted) {
+            this.push(
+              JSON.stringify({
+                type: "error",
+                message: "Serialization error",
+              }) + CHUNK_END
+            );
+          }
+        } finally {
+          this.push(null);
+          console.log("Stream ended");
+        }
+      },
+    });
 
-    for await (const event of context) {
-      const { displayName, data } = event;
-
-      // Send metadata events
-      res.write(
-        `data: ${JSON.stringify({
-          type: "metadata",
-          agent: (data as any).currentAgentName,
-          event: displayName,
-          data: data,
-        })}\n\n`
-      );
-    }
-
-    // End the stream
-    res.write(`data: ${JSON.stringify({ type: "end" })}\n\n`);
-    res.end();
+    await pipeline(readableStream, res);
   } catch (error) {
-    console.error("Error processing chat:", error);
-    // If headers haven't been sent yet, send error response
     if (!res.headersSent) {
       res.status(500).json({ error: (error as any).message });
     } else {
-      // If we're in the middle of streaming, send error as event
       res.write(
-        `data: ${JSON.stringify({
+        `${JSON.stringify({
           type: "error",
           message: (error as any).message,
         })}\n\n`
