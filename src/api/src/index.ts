@@ -1,8 +1,9 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import { pipeline, Readable } from "stream";
+import { pipeline } from "node:stream/promises";
 import { setupAgents } from "./orchestrator/llamaindex/index.js";
+import { Readable } from "node:stream";
 
 // Load environment variables
 dotenv.config();
@@ -36,12 +37,9 @@ apiRouter.get("/health", (req, res) => {
 // Chat endpoint with Server-Sent Events (SSE) for streaming responses
 // @ts-ignore - Ignoring TypeScript errors for Express route handlers
 apiRouter.post("/chat", async (req, res) => {
-  const abortController = new AbortController();
-  const { signal } = abortController;
 
   req.on("close", () => {
     console.log("Client disconnected, aborting...");
-    abortController.abort();
   });
 
   try {
@@ -75,10 +73,6 @@ apiRouter.post("/chat", async (req, res) => {
       async read() {
         try {
           for await (const event of context) {
-            if (signal.aborted) {
-              console.log("Aborted by client");
-              break;
-            }
             const { displayName, data } = event;
             const serializedData = JSON.stringify({
               type: "metadata",
@@ -91,23 +85,20 @@ apiRouter.post("/chat", async (req, res) => {
             this.push(serializedData + CHUNK_END);
           }
         } catch (error) {
-          if (!signal.aborted) {
-            this.push(
-              JSON.stringify({
-                type: "error",
-                message: "Serialization error",
-              }) + CHUNK_END
-            );
-          }
-        } finally {
-          this.push(null);
-          console.log("Stream ended");
+          this.push(
+            JSON.stringify({
+              type: "error",
+              message: "Serialization error",
+            }) + CHUNK_END
+          );
         }
+        this.push(null); // Close the stream
       },
     });
 
     await pipeline(readableStream, res);
   } catch (error) {
+    console.error("Error occurred:", error);
     if (!res.headersSent) {
       res.status(500).json({ error: (error as any).message });
     } else {
