@@ -4,6 +4,8 @@ import { environment } from '../../environments/environment';
 
 export type Tools = {
   search: boolean;
+  echo: boolean;
+  customer_query: boolean;
 };
 
 // Interface for SSE event types
@@ -58,37 +60,26 @@ export class ApiService {
         );
       }
 
-      const reader = response.body.getReader();
       const decoder = new TextDecoder('utf-8');
-      const CHUNK_END = '\n\n';
-      let buffer = '';
+      for await (const chunk of response.body) {
+        const value = decoder.decode(chunk, { stream: true });
+        console.log('Received chunk:', value);
 
-      let done = false;
-      while (!done) {
-        const { value, done: streamDone } = await reader.read();
-        done = streamDone;
+        // Split the chunk by double newlines to handle multiple JSON values
+        const jsonValues = value.trim().split(/\n\n+/);
 
-        if (value) {
-          buffer += decoder.decode(value, { stream: true });
-          let boundary = buffer.indexOf(CHUNK_END);
-
-          while (boundary !== -1) {
-            const chunk = buffer.slice(0, boundary).trim();
-            buffer = buffer.slice(boundary + 2);
-
-            try {
-              const parsedData = JSON.parse(chunk);
-              this.chatStreamState.next({
-                events: [parsedData],
-              });
-            } catch (error) {
-              console.error('Error parsing JSON chunk:', error);
-            }
-
-            boundary = buffer.indexOf(CHUNK_END);
+        for (const jsonValue of jsonValues) {
+          try {
+            const parsedData = JSON.parse(jsonValue);
+            this.chatStreamState.next({
+              events: [parsedData],
+            });
+          } catch (error) {
+            console.error('Error parsing JSON chunk:', error);
           }
         }
       }
+
     } catch (error) {
       this.handleApiError(error, 0);
     }
@@ -96,7 +87,6 @@ export class ApiService {
   private handleApiError(error: unknown, statusCode: number) {
     console.error('Fetch error:', error);
 
-    let errorMessage = 'Failed to connect to the server';
     let errorType: ChatEventErrorType = 'general';
     const state = this.chatStreamState.getValue();
     let errorContent = state?.error?.message || 'Unknown error';
@@ -106,7 +96,7 @@ export class ApiService {
       hasError: true,
       error: {
         type: errorType,
-        message: errorMessage,
+        message: errorContent,
         statusCode,
       },
     });

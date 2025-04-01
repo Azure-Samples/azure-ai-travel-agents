@@ -1,12 +1,19 @@
-import { ElementRef, Injectable, signal, WritableSignal } from '@angular/core';
+import {
+  ElementRef,
+  Injectable,
+  NgZone,
+  signal,
+  WritableSignal,
+} from '@angular/core';
 import { ApiService, ChatEvent, Tools } from '../services/api.service';
+import { BehaviorSubject, delay } from 'rxjs';
+import { debounceTime, Subject } from 'rxjs';
 
 interface ChatMessage {
   role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
   metadata?: {
-    agent?: string;
     event?: string;
   };
 }
@@ -16,20 +23,30 @@ interface ChatMessage {
 })
 export class ChatService {
   userMessage = signal('');
+  agentMessage = new BehaviorSubject<string>('');
   messages = signal<ChatMessage[]>([]);
+  agentMessageBuffer = '';
 
   isLoading = signal(false);
-  tools: WritableSignal<Tools> = signal({ search: false });
+  tools: WritableSignal<Tools> = signal({ search: false, echo: false, customer_query: false });
   currentAgentName = signal<string | null>(null);
   assistantMessageInProgress = signal(false);
+  private agentMessageSubject = new Subject<string>();
 
-  private chatContainerRef: ElementRef | null = null;
-
-  constructor(private apiService: ApiService) {
-    this.apiService.chatStreamState.subscribe((state) => {
+  constructor(private apiService: ApiService, private zone: NgZone) {
+    this.agentMessageBuffer = '';
+    this.apiService.chatStreamState.pipe(
+      delay(100)
+    ).subscribe((state) => {
+      console.log('Chat stream state:', state);
       for (const event of state?.events || []) {
         this.processStreamEvent(event);
       }
+    });
+
+    // Buffer agentMessage emissions to smoothen typing effect
+    this.agentMessageSubject.pipe(debounceTime(50)).subscribe((bufferedMessage) => {
+      this.agentMessage.next(bufferedMessage);
     });
   }
 
@@ -46,7 +63,7 @@ export class ChatService {
       },
       {
         role: 'assistant',
-        content: 'Thinking', // Placeholder for assistant message
+        content: '',
         timestamp: new Date(),
       },
     ]);
@@ -55,6 +72,7 @@ export class ChatService {
     this.isLoading.set(true);
     this.assistantMessageInProgress.set(false);
     await this.apiService.streamChatMessage(messageText, this.tools());
+    this.isLoading.set(false);
   }
 
   private processStreamEvent(event: ChatEvent): ChatMessage | null {
@@ -63,10 +81,10 @@ export class ChatService {
       const role = event.data?.response?.role || 'assistant';
       const delta = event.data?.delta || '';
 
+      console.warn('Processing event type=', event.event, { event });
       switch (event.event) {
         case 'StartEvent':
           this.assistantMessageInProgress.set(false);
-          this.isLoading.set(true);
           break;
         case 'StopEvent':
           this.assistantMessageInProgress.set(false);
@@ -76,11 +94,13 @@ export class ChatService {
           this.assistantMessageInProgress.set(true);
 
           if (delta.trim()) {
-            this.prependDeltaMessage(delta, role);
+            this.agentMessageBuffer += delta;
+            this.agentMessageSubject.next(this.agentMessageBuffer);
+            console.log('Agent message buffer:', this.agentMessageBuffer);
           }
           break;
         default:
-          console.warn('Unhandled event type:', event.event);
+        // console.warn('Unhandled event type:', event.event);
       }
     }
 
