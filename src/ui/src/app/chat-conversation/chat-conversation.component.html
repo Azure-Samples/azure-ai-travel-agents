@@ -51,11 +51,11 @@
 
       <ng-container>
         <div
-          class="flex items-start gap-3"
+          class="flex gap-3"
           [ngClass]="message.role === 'user' ? 'flex-row-reverse' : 'flex-row'"
         >
           @if (message.role === 'user') {
-          <div class="rounded-md px-4 py-2 bg-primary text-primary-foreground">
+          <div class="items-end rounded-md px-4 py-2 bg-primary text-primary-foreground">
             <p style="white-space: pre-wrap">{{ message.content }}</p>
           </div>
           }
@@ -64,13 +64,20 @@
           <skeleton-preview></skeleton-preview>
           } @else {  -->
           @if ($last && message.role === 'assistant') {
-          <div class="bg-muted">
-            <p style="white-space: pre-wrap">
-              <alert-preview>
+          <section class="flex flex-col gap-2">
+            <div class="rounded-md px-4 py-2 bg-muted">
+              <p style="white-space: pre-wrap">
                 {{ agentMessageStream() }}
-              </alert-preview>
-            </p>
-          </div>
+              </p>
+              <!-- <alert-preview></alert-preview> -->
+            </div>
+            <accordion-preview class="rounded-md px-4 py-2 bg-muted">
+              @for (event of agentAllEventsStream(); track $index) {
+                <div hlmBadge variant="outline" class="agent-event-{{ event.event }}">{{ event.event }}</div>
+                <brn-separator hlmSeparator/>
+              }
+            </accordion-preview>
+          </section>
           }
           <!-- } -->
         </div>
@@ -129,3 +136,46 @@
     </div>
   </div>
 </div>
+
+<style>
+  .agent-event-StartEvent {
+    background-color: #ffff00; /* Bright Yellow */
+    color: #000000; /* Black */
+  }
+  .agent-event-StopEvent {
+    background-color: #ff0000; /* Bright Red */
+    color: #ffffff; /* White */
+  }
+  .agent-event-AgentInput {
+    background-color: #0000ff; /* Bright Blue */
+    color: #ffffff; /* White */
+  }
+  .agent-event-AgentOutput {
+    background-color: #00ff00; /* Bright Green */
+    color: #000000; /* Black */
+  }
+  .agent-event-AgentSetup {
+    background-color: #ff4500; /* Bright Orange-Red */
+    color: #ffffff; /* White */
+  }
+  .agent-event-AgentStepEvent {
+    background-color: #ffd700; /* Bright Gold */
+    color: #000000; /* Black */
+  }
+  .agent-event-AgentToolCallResult {
+    background-color: #20b2aa; /* Bright Light Sea Green */
+    color: #000000; /* Black */
+  }
+  .agent-event-AgentToolCall {
+    background-color: #ffa07a; /* Bright Light Salmon */
+    color: #000000; /* Black */
+  }
+  .agent-event-ToolResultsEvent {
+    background-color: #4682b4; /* Bright Steel Blue */
+    color: #ffffff; /* White */
+  }
+  .agent-event-ToolCallsEvent {
+    background-color: #ff69b4; /* Bright Hot Pink */
+    color: #000000; /* Black */
+  }
+</style>
