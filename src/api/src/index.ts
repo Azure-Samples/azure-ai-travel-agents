@@ -80,10 +80,10 @@ apiRouter.post("/chat", async (req, res) => {
               event: displayName,
               data: data ? JSON.parse(JSON.stringify(data)) : null,
             });
-            // delay the response to simulate streaming
-            await new Promise((resolve) => setTimeout(resolve, 100));
             this.push(serializedData + CHUNK_END);
+            console.log("Pushed event:", serializedData);
           }
+          this.push(null); // Close the stream
         } catch (error) {
           this.push(
             JSON.stringify({
@@ -92,7 +92,6 @@ apiRouter.post("/chat", async (req, res) => {
             }) + CHUNK_END
           );
         }
-        this.push(null); // Close the stream
       },
     });
 
