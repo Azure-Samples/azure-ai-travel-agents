@@ -15,7 +15,7 @@ services:
     container_name: tool-destination-recommendation
     build: ./tools/destination-recommendation
     ports:
-      - "5002:5000"
+      - "8080:8080"
     networks:
       - ai-network
 
