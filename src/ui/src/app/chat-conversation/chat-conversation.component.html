@@ -1,4 +1,4 @@
-<div hlmCard class="w-[800px] max-w-3xl h-[700px] flex flex-col">
+<div hlmCard class="w-[900px] h-[1000px] flex flex-col">
   <div hlmCardHeader>
     <h3
       hlmCardTitle
@@ -44,7 +44,7 @@
   <ng-scrollbar
     hlmCardContent
     hlm
-    class="flex-1 h-[700px] overflow-scroll-y p-10"
+    class="flex-1 h-[650px] overflow-scroll-y p-10 overflow-y-scroll"
   >
     <div class="flex flex-col gap-4">
       @for (message of chatService.messages(); track message.timestamp) {
@@ -61,25 +61,11 @@
             <p style="white-space: pre-wrap">{{ message.content }}</p>
           </div>
           }
-          <!-- } @else if ($last && message.role === 'assistant' &&
-          chatService.isLoading()) {
-          <skeleton-preview></skeleton-preview>
-          } @else {  -->
+
           @if ($last && message.role === 'assistant') {
           <section class="flex flex-col gap-2 w-full">
-            @if (chatService.isLoading()) {
-              <skeleton-preview></skeleton-preview>
-            }
-            @else {
-              <div class="rounded-md px-4 py-2 bg-muted">
-                <p style="white-space: pre-wrap">
-                  {{ agentMessageStream() }}
-                </p>
-              </div>
-            }
-
             <accordion-preview
-              class="flex flex-row rounded-md px-4 py-2 bg-muted w-full"
+              class="flex flex-row rounded-md px-4 py-2 bg-muted w-full overflow-y-scroll"
             >
               @for (event of agentAllEventsStream(); track $index) {
               <div
@@ -95,9 +81,20 @@
             }
             <span #eot class="font-mono text-xs">End Of Thought</span>
             </accordion-preview>
+
+            @if (chatService.isLoading()) {
+              <skeleton-preview></skeleton-preview>
+            }
+            @else {
+              <div class="rounded-md px-4 py-2 bg-muted">
+                <p style="white-space: pre-wrap">
+                  {{ agentMessageStream() }}
+                </p>
+              </div>
+            }
+
           </section>
           }
-          <!-- } -->
         </div>
         <div
           class="text-[10px] opacity-60"

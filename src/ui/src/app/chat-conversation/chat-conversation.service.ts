@@ -1,20 +1,13 @@
-import {
-  ElementRef,
-  Injectable,
-  NgZone,
-  signal,
-  WritableSignal,
-} from '@angular/core';
+import { computed, Injectable, signal, WritableSignal } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { ApiService, ChatEvent, Tools } from '../services/api.service';
-import { BehaviorSubject, delay } from 'rxjs';
-import { debounceTime, Subject } from 'rxjs';
 
 interface ChatMessage {
   role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
   metadata?: {
-    event?: string;
+    events?: ChatEvent[] | null;
   };
 }
 
@@ -25,8 +18,12 @@ export class ChatService {
   userMessage = signal('');
   agentMessage = new BehaviorSubject<string>('');
   agentEventStream = new BehaviorSubject<ChatEvent | null>(null);
-  messages = signal<ChatMessage[]>([]);
+  messages = computed(() => {
+    return this.nextConversationTurn();
+  });
+  nextConversationTurn = signal<ChatMessage[]>([]);
   agentMessageBuffer = '';
+  agentEventsBuffer: ChatEvent[] = [];
 
   isLoading = signal(false);
   tools: WritableSignal<Tools> = signal({
@@ -37,11 +34,33 @@ export class ChatService {
   currentAgentName = signal<string | null>(null);
   assistantMessageInProgress = signal(false);
 
-  constructor(private apiService: ApiService, private zone: NgZone) {
+  constructor(private apiService: ApiService) {
     this.agentMessageBuffer = '';
-    this.apiService.chatStreamState.pipe(delay(100)).subscribe((state) => {
-      for (const event of state?.events || []) {
-        this.processStreamEvent(event);
+    this.apiService.chatStreamState.subscribe((state) => {
+      if (state.isStart) {
+        this.nextConversationTurn.update((msgs: ChatMessage[]) => [
+          ...msgs,
+          {
+            role: 'assistant',
+            content: this.agentMessageBuffer,
+            timestamp: new Date(),
+          }
+        ]);
+      }
+      else if (state.isEnd) {
+        this.nextConversationTurn.update((msgs: ChatMessage[]) => {
+          const lastMessage = msgs[msgs.length - 1];
+          if (lastMessage && lastMessage.role === 'assistant') {
+            lastMessage.content += this.agentMessageBuffer;
+            lastMessage.metadata = {
+              events: this.agentEventsBuffer,
+            };
+          }
+          return [...msgs];
+        });
+      }
+      else {
+        this.processStreamEvent(state.event);
       }
     });
   }
@@ -50,18 +69,13 @@ export class ChatService {
     const messageText = this.userMessage();
     if (!messageText.trim()) return;
 
-    this.messages.update((msgs) => [
+    this.nextConversationTurn.update((msgs: ChatMessage[]) => [
       ...msgs,
       {
         role: 'user',
         content: messageText,
         timestamp: new Date(),
-      },
-      {
-        role: 'assistant',
-        content: '',
-        timestamp: new Date(),
-      },
+      }
     ]);
 
     this.userMessage.set('');
@@ -71,9 +85,13 @@ export class ChatService {
     this.isLoading.set(false);
   }
 
-  private processStreamEvent(event: ChatEvent): ChatMessage | null {
+  private processStreamEvent(event?: ChatEvent): ChatMessage | null {
+    if (!event) return null;
+
     if (event.type === 'metadata') {
       this.currentAgentName.set(event.data?.agentName || null);
+      this.agentEventsBuffer.push(event);
+
       const delta = event.data?.delta || '';
 
       console.info('Processing event type=', event.event, { event });
@@ -115,7 +133,6 @@ export class ChatService {
   }
 
   resetChat() {
-    this.messages.set([]);
     this.agentMessageBuffer = '';
     this.userMessage.set('');
     this.agentMessage.next('');
