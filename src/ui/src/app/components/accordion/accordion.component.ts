@@ -28,7 +28,7 @@ import { HlmIconDirective } from '@spartan-ng/ui-icon-helm';
 		<div hlmAccordion class="w-full">
 			<div hlmAccordionItem class="max-h-[300px]" isOpened="true">
 				<button hlmAccordionTrigger>
-					<span>Agent Thought Process</span>
+					<span>Agents Thought Process</span>
 					<ng-icon name="lucideChevronDown" hlm hlmAccIcon />
 				</button>
 				<hlm-accordion-content class="overflow-y-scroll">
