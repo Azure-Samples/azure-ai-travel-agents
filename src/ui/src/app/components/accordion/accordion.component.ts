@@ -25,7 +25,7 @@ import { HlmIconDirective } from '@spartan-ng/ui-icon-helm';
 	],
 	viewProviders: [provideIcons({ lucideChevronDown })],
 	template: `
-		<div hlmAccordion>
+		<div hlmAccordion class="w-full">
 			<div hlmAccordionItem class="max-h-[300px]" isOpened="true">
 				<button hlmAccordionTrigger>
 					<span>Agent Thought Process</span>
