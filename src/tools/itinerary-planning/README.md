@@ -17,7 +17,7 @@
 3. Run the MCP server:
 
     ```shell
-    uv run src/tools/itinerary-planning/src/server.py
+    uv run src/tools/itinerary-planning/src/app.py
     ```
 
 ## Debug with MCP Inspector

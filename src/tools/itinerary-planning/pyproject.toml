@@ -11,7 +11,7 @@ dependencies = [
 ]
 
 [project.scripts]
-start = "server:run"
+start = "app:run"
 
 [build-system]
 requires = ["setuptools"]
