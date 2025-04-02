@@ -20,8 +20,10 @@ export interface ChatEvent {
 
 export type ChatEventErrorType = 'client' | 'server' | 'general' | undefined;
 export interface ChatStreamState {
-  events: ChatEvent[];
+  event: ChatEvent;
   hasError: boolean;
+  isStart: boolean;
+  isEnd: boolean;
   error: {
     type: ChatEventErrorType;
     message: string;
@@ -35,7 +37,7 @@ export interface ChatStreamState {
 export class ApiService {
   private apiUrl = environment.apiServerUrl;
 
-  chatStreamState = new BehaviorSubject<Partial<ChatStreamState> | null>(null);
+  chatStreamState = new BehaviorSubject<Partial<ChatStreamState>>({});
 
   async streamChatMessage(message: string, tools: Tools) {
 
@@ -61,6 +63,9 @@ export class ApiService {
       }
 
       const decoder = new TextDecoder('utf-8');
+
+      this.chatStreamState.next({ isStart: true });
+
       for await (const chunk of response.body) {
         const value = decoder.decode(chunk, { stream: true });
         console.log('Received chunk:', value);
@@ -72,12 +77,14 @@ export class ApiService {
           try {
             const parsedData = JSON.parse(jsonValue);
             this.chatStreamState.next({
-              events: [parsedData],
+              event: parsedData,
             });
           } catch (error) {
             console.error('Error parsing JSON chunk:', error);
           }
         }
+
+        this.chatStreamState.next({ isEnd: true });
       }
 
     } catch (error) {
