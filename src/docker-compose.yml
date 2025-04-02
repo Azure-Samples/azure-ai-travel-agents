@@ -23,7 +23,7 @@ services:
     container_name: tool-itinerary-planning
     build: ./tools/itinerary-planning
     ports:
-      - "5003:5000"
+      - "5003:8000"
     networks:
       - ai-network
 
