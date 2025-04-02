@@ -113,4 +113,14 @@ export class ChatService {
 
     return null;
   }
+
+  resetChat() {
+    this.messages.set([]);
+    this.agentMessageBuffer = '';
+    this.userMessage.set('');
+    this.agentMessage.next('');
+    this.agentEventStream.next(null);
+    this.assistantMessageInProgress.set(false);
+    this.isLoading.set(false);
+  }
 }

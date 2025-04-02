@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit, signal } from '@angular/core';
+import { CommonModule, JsonPipe } from '@angular/common';
+import { Component, ElementRef, OnInit, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
@@ -14,6 +14,7 @@ import {
   BrnAlertDialogContentDirective,
   BrnAlertDialogTriggerDirective,
 } from '@spartan-ng/brain/alert-dialog';
+import { BrnSeparatorComponent } from '@spartan-ng/brain/separator';
 import {
   HlmAlertDialogActionButtonDirective,
   HlmAlertDialogCancelButtonDirective,
@@ -24,6 +25,7 @@ import {
   HlmAlertDialogHeaderComponent,
   HlmAlertDialogTitleDirective,
 } from '@spartan-ng/ui-alertdialog-helm';
+import { HlmBadgeDirective } from '@spartan-ng/ui-badge-helm';
 import { HlmButtonDirective } from '@spartan-ng/ui-button-helm';
 import {
   HlmCardContentDirective,
@@ -38,11 +40,10 @@ import { HlmInputDirective } from '@spartan-ng/ui-input-helm';
 import { HlmLabelDirective } from '@spartan-ng/ui-label-helm';
 import { HlmScrollAreaDirective } from '@spartan-ng/ui-scrollarea-helm';
 import { HlmSeparatorDirective } from '@spartan-ng/ui-separator-helm';
-import { BrnSeparatorComponent } from '@spartan-ng/brain/separator';
 import { AccordionPreviewComponent } from '../components/accordion/accordion.component';
+import { SkeletonPreviewComponent } from '../components/skeleton-preview/skeleton-preview.component';
 import { ChatEvent } from '../services/api.service';
 import { ChatService } from './chat-conversation.service';
-import { HlmBadgeDirective } from '@spartan-ng/ui-badge-helm';
 @Component({
   selector: 'app-chat-conversation',
   standalone: true,
@@ -50,6 +51,7 @@ import { HlmBadgeDirective } from '@spartan-ng/ui-badge-helm';
     CommonModule,
     FormsModule,
     NgIcon,
+    JsonPipe,
     HlmButtonDirective,
     HlmInputDirective,
     HlmFormFieldModule,
@@ -75,6 +77,7 @@ import { HlmBadgeDirective } from '@spartan-ng/ui-badge-helm';
     HlmCheckboxComponent,
     HlmLabelDirective,
     AccordionPreviewComponent,
+    SkeletonPreviewComponent
   ],
   providers: [
     provideIcons({
@@ -92,6 +95,7 @@ import { HlmBadgeDirective } from '@spartan-ng/ui-badge-helm';
 export class ChatConversationComponent implements OnInit {
   agentMessageStream = signal<string>('');
   agentAllEventsStream = signal<ChatEvent[]>([]);
+  eot = viewChild<ElementRef<HTMLElement>>('eot');
 
   constructor(public chatService: ChatService) {
     this.chatService.agentMessage.subscribe((message) => {
@@ -104,6 +108,11 @@ export class ChatConversationComponent implements OnInit {
           return [...events, event];
         }
         return events;
+      });
+
+      this.eot()?.nativeElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
       });
     });
   }
@@ -129,8 +138,6 @@ export class ChatConversationComponent implements OnInit {
   }
 
   private resetChat() {
-    this.chatService.messages.set([]);
-    this.chatService.userMessage.set('');
-    this.chatService.isLoading.set(false);
+    this.chatService.resetChat();
   }
 }
