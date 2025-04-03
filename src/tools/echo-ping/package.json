@@ -19,6 +19,7 @@
   },
   "scripts": {
     "start": "node dist/index.js",
+    "prestart": "npm run build",
     "build": "tsc && shx chmod +x dist/index.js"
   },
   "files": [
