@@ -1,42 +1,42 @@
 {
   "inputs": [],
   "servers": {
-        "tool-echo-ping": {
-          "env": {
-            "OTEL_SERVICE_NAME": "tool-echo-ping",
-            "OTEL_EXPORTER_OTLP_ENDPOINT": "http://aspire-dashboard:18889",
-            "OTEL_EXPORTER_OTLP_HEADERS": "x-otlp-header=header-value"
-          },
-          "type": "sse",
-          "url": "http://localhost:5007/"
-        },
-        "tool-web-search": {
-          "type": "sse",
-          "url": "http://localhost:5006/"
-        },
-        "tool-model-inference": {
-          "type": "sse",
-          "url": "http://localhost:5005/"
-        },
-        "tool-code-evaluation": {
-          "type": "sse",
-          "url": "http://localhost:5004/"
-        },
-        "tool-itinerary-planning": {
-          "type": "sse",
-          "url": "http://localhost:5003/"
-        },
-        "tool-destination-recommendation": {
-          "type": "sse",
-          "url": "http://localhost:5002/"
-        },
-        "tool-customer-query": {
-          "env": {
-            "OTEL_SERVICE_NAME": "tool-customer-query",
-            "OTEL_EXPORTER_OTLP_ENDPOINT": "http://aspire-dashboard:18889"
-          },
-          "type": "sse",
-          "url": "http://localhost:5001/"
-        },
+    "tool-echo-ping": {
+      "env": {
+        "OTEL_SERVICE_NAME": "tool-echo-ping",
+        "OTEL_EXPORTER_OTLP_ENDPOINT": "http://aspire-dashboard:18889",
+        "OTEL_EXPORTER_OTLP_HEADERS": "x-otlp-header=header-value"
+      },
+      "type": "sse",
+      "url": "http://localhost:5007/sse"
+    },
+    "tool-web-search": {
+      "type": "sse",
+      "url": "http://localhost:5006/sse"
+    },
+    "tool-model-inference": {
+      "type": "sse",
+      "url": "http://localhost:5005/sse"
+    },
+    "tool-code-evaluation": {
+      "type": "sse",
+      "url": "http://localhost:5004/sse"
+    },
+    "tool-itinerary-planning": {
+      "type": "sse",
+      "url": "http://localhost:5003/sse"
+    },
+    "tool-destination-recommendation": {
+      "type": "sse",
+      "url": "http://localhost:5002/sse"
+    },
+    "tool-customer-query": {
+      "env": {
+        "OTEL_SERVICE_NAME": "tool-customer-query",
+        "OTEL_EXPORTER_OTLP_ENDPOINT": "http://aspire-dashboard:18889"
+      },
+      "type": "sse",
+      "url": "http://localhost:5001/sse"
     }
   }
+}
