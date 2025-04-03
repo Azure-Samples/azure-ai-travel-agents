@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable, NgZone } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { environment } from '../../environments/environment';
 
@@ -21,26 +21,33 @@ export interface ChatEvent {
 export type ChatEventErrorType = 'client' | 'server' | 'general' | undefined;
 export interface ChatStreamState {
   event: ChatEvent;
-  hasError: boolean;
-  isStart: boolean;
-  isEnd: boolean;
-  error: {
+  type: 'START' | 'END' | 'ERROR' | 'MESSAGE';
+  error?: {
     type: ChatEventErrorType;
     message: string;
     statusCode: number;
   };
 }
 
+export interface ChatMessage {
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: Date;
+  metadata?: {
+    events?: ChatEvent[] | null;
+  };
+}
+
+
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
+  ngZone = inject(NgZone);
   private apiUrl = environment.apiServerUrl;
-
   chatStreamState = new BehaviorSubject<Partial<ChatStreamState>>({});
 
   async streamChatMessage(message: string, tools: Tools) {
-
     try {
       const response = await fetch(`${this.apiUrl}/api/chat`, {
         method: 'POST',
@@ -49,10 +56,6 @@ export class ApiService {
         },
         body: JSON.stringify({ message, tools }),
       });
-
-      if (!response.body) {
-        throw new Error('Readable stream not supported');
-      }
 
       if (!response.ok) {
         const { error } = await response.json();
@@ -64,11 +67,14 @@ export class ApiService {
 
       const decoder = new TextDecoder('utf-8');
 
-      this.chatStreamState.next({ isStart: true });
+      if (!response.body) {
+        throw new Error('Readable stream not supported');
+      }
+
+      this.chatStreamState.next({ type: 'START' });
 
       for await (const chunk of response.body) {
         const value = decoder.decode(chunk, { stream: true });
-        console.log('Received chunk:', value);
 
         // Split the chunk by double newlines to handle multiple JSON values
         const jsonValues = value.trim().split(/\n\n+/);
@@ -77,33 +83,29 @@ export class ApiService {
           try {
             const parsedData = JSON.parse(jsonValue);
             this.chatStreamState.next({
+              type: 'MESSAGE',
               event: parsedData,
             });
           } catch (error) {
             console.error('Error parsing JSON chunk:', error);
           }
         }
-
-        this.chatStreamState.next({ isEnd: true });
       }
 
+      this.chatStreamState.next({ type: 'END' });
     } catch (error) {
       this.handleApiError(error, 0);
     }
   }
   private handleApiError(error: unknown, statusCode: number) {
     console.error('Fetch error:', error);
-
     let errorType: ChatEventErrorType = 'general';
-    const state = this.chatStreamState.getValue();
-    let errorContent = state?.error?.message || 'Unknown error';
 
     this.chatStreamState.next({
-      ...state,
-      hasError: true,
+      type: 'ERROR',
       error: {
         type: errorType,
-        message: errorContent,
+        message: (error as Error).toString(),
         statusCode,
       },
     });
