@@ -1,29 +1,23 @@
-import { computed, Injectable, signal, WritableSignal } from '@angular/core';
+import { Injectable, signal, WritableSignal } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { ApiService, ChatEvent, Tools } from '../services/api.service';
-
-interface ChatMessage {
-  role: 'user' | 'assistant';
-  content: string;
-  timestamp: Date;
-  metadata?: {
-    events?: ChatEvent[] | null;
-  };
-}
+import {
+  ApiService,
+  ChatEvent,
+  ChatMessage,
+  ChatStreamState,
+  Tools,
+} from '../services/api.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChatService {
   userMessage = signal('');
-  agentMessage = new BehaviorSubject<string>('');
-  agentEventStream = new BehaviorSubject<ChatEvent | null>(null);
-  messages = computed(() => {
-    return this.nextConversationTurn();
-  });
-  nextConversationTurn = signal<ChatMessage[]>([]);
-  agentMessageBuffer = '';
-  agentEventsBuffer: ChatEvent[] = [];
+  // agentMessageStream = new BehaviorSubject<string>('');
+  // agentEventStream = new BehaviorSubject<ChatEvent | null>(null);
+  messagesStream = new BehaviorSubject<ChatMessage[]>([]);
+  private messagesBuffer: ChatMessage[] = [];
+  private agentEventsBuffer: ChatEvent[] = [];
 
   isLoading = signal(false);
   tools: WritableSignal<Tools> = signal({
@@ -33,76 +27,90 @@ export class ChatService {
   });
   currentAgentName = signal<string | null>(null);
   assistantMessageInProgress = signal(false);
+  agentMessageBuffer: string = '';
 
   constructor(private apiService: ApiService) {
-    this.agentMessageBuffer = '';
-    this.apiService.chatStreamState.subscribe((state) => {
-      if (state.isStart) {
-        this.nextConversationTurn.update((msgs: ChatMessage[]) => [
-          ...msgs,
-          {
-            role: 'assistant',
-            content: this.agentMessageBuffer,
-            timestamp: new Date(),
-          }
-        ]);
+    this.apiService.chatStreamState.subscribe(
+      (state: Partial<ChatStreamState>) => {
+        switch (state.type) {
+          case 'START':
+            this.agentEventsBuffer = [];
+            this.messagesBuffer.push({
+              role: 'assistant',
+              content: '',
+              timestamp: new Date(),
+            });
+            this.messagesStream.next(this.messagesBuffer);
+            break;
+
+          case 'END':
+            this.updateAndNotifyAgentChatMessageState('', {
+              metadata: {
+                events: this.agentEventsBuffer,
+              },
+            });
+            this.isLoading.set(false);
+            break;
+
+          case 'MESSAGE':
+            this.processAgentEvents(state.event);
+            break;
+
+          default:
+            break;
+        }
       }
-      else if (state.isEnd) {
-        this.nextConversationTurn.update((msgs: ChatMessage[]) => {
-          const lastMessage = msgs[msgs.length - 1];
-          if (lastMessage && lastMessage.role === 'assistant') {
-            lastMessage.content += this.agentMessageBuffer;
-            lastMessage.metadata = {
-              events: this.agentEventsBuffer,
-            };
-          }
-          return [...msgs];
-        });
-      }
-      else {
-        this.processStreamEvent(state.event);
-      }
-    });
+    );
   }
 
   async sendMessage() {
     const messageText = this.userMessage();
     if (!messageText.trim()) return;
 
-    this.nextConversationTurn.update((msgs: ChatMessage[]) => [
-      ...msgs,
-      {
-        role: 'user',
-        content: messageText,
-        timestamp: new Date(),
-      }
-    ]);
+    this.messagesBuffer.push({
+      role: 'user',
+      content: messageText,
+      timestamp: new Date(),
+    });
 
     this.userMessage.set('');
     this.isLoading.set(true);
     this.assistantMessageInProgress.set(false);
+
+    // // clear all buffers
+    // this.agentMessageStream.next('');
+    // this.agentEventStream.next(null);
+    // this.agentEventsBuffer = [];
+    // this.messagesStream.next(this.messagesBuffer);
+    // this.currentAgentName.set(null);
+
     await this.apiService.streamChatMessage(messageText, this.tools());
-    this.isLoading.set(false);
   }
 
-  private processStreamEvent(event?: ChatEvent): ChatMessage | null {
-    if (!event) return null;
-
-    if (event.type === 'metadata') {
+  private processAgentEvents(event?: ChatEvent) {
+    if (event && event.type === 'metadata') {
       this.currentAgentName.set(event.data?.agentName || null);
       this.agentEventsBuffer.push(event);
 
-      const delta = event.data?.delta || '';
-
-      console.info('Processing event type=', event.event, { event });
+      const delta: string = event.data?.delta || '';
 
       switch (event.event) {
         case 'StartEvent':
-          this.agentEventStream.next(event);
+          this.updateAndNotifyAgentChatMessageState(delta, {
+            metadata: {
+              events: this.agentEventsBuffer,
+            },
+          });
+
           this.assistantMessageInProgress.set(false);
           break;
         case 'StopEvent':
-          this.agentEventStream.next(event);
+          this.updateAndNotifyAgentChatMessageState(delta, {
+            metadata: {
+              events: this.agentEventsBuffer,
+            },
+          });
+
           this.assistantMessageInProgress.set(false);
           this.isLoading.set(false);
           break;
@@ -114,30 +122,50 @@ export class ChatService {
         case 'AgentToolCall':
         case 'ToolResultsEvent':
         case 'ToolCallsEvent':
-          this.agentEventStream.next(event);
+          this.updateAndNotifyAgentChatMessageState(delta, {
+            metadata: {
+              events: this.agentEventsBuffer,
+            },
+          });
           break;
 
         case 'AgentStream':
           this.assistantMessageInProgress.set(true);
 
           if (delta.trim()) {
-            this.agentMessageBuffer += delta;
-            this.agentMessage.next(this.agentMessageBuffer);
-            console.log('Agent message buffer:', this.agentMessageBuffer);
+            this.agentEventsBuffer.push(event);
+            this.updateAndNotifyAgentChatMessageState(delta, {
+              metadata: {
+                events: this.agentEventsBuffer,
+              },
+            });
           }
           break;
       }
     }
+  }
 
-    return null;
+  updateAndNotifyAgentChatMessageState(delta: string, state?: Partial<ChatMessage>) {
+    const lastMessage = this.messagesBuffer[this.messagesBuffer.length - 1];
+    if (lastMessage?.role === 'assistant') {
+      lastMessage.content += delta;
+      lastMessage.metadata = {
+      ...lastMessage.metadata,
+      ...state?.metadata,
+      events: state?.metadata?.events,
+      };
+      lastMessage.timestamp = new Date();
+      this.messagesStream.next([...this.messagesBuffer]);
+    }
   }
 
   resetChat() {
-    this.agentMessageBuffer = '';
     this.userMessage.set('');
-    this.agentMessage.next('');
-    this.agentEventStream.next(null);
-    this.assistantMessageInProgress.set(false);
+    this.messagesBuffer = [];
+    this.messagesStream.next(this.messagesBuffer);
+    this.agentEventsBuffer = [];
     this.isLoading.set(false);
+    this.assistantMessageInProgress.set(false);
+    this.currentAgentName.set(null);
   }
 }

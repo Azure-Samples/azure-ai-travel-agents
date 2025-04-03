@@ -1,4 +1,4 @@
-<div hlmCard class="w-[900px] h-[1000px] flex flex-col">
+<div hlmCard class="w-[900px] h-full max-h-[900px] flex flex-col">
   <div hlmCardHeader>
     <h3
       hlmCardTitle
@@ -47,12 +47,13 @@
     class="flex-1 h-[650px] overflow-scroll-y p-10 overflow-y-scroll"
   >
     <div class="flex flex-col gap-4">
-      @for (message of chatService.messages(); track message.timestamp) {
+      <!-- loop over all messages -->
+      @for (message of (chatService.messagesStream | async); track message) {
 
       <ng-container>
         <div
           class="flex gap-3"
-          [ngClass]="message.role === 'user' ? 'flex-row-reverse' : 'flex-row'"
+          [ngClass]="message.role === 'user' ? 'flex-row-reverse' : 'flex-col'"
         >
           @if (message.role === 'user') {
           <div
@@ -60,14 +61,14 @@
           >
             <p style="white-space: pre-wrap">{{ message.content }}</p>
           </div>
-          }
+          } @else if (message.role === 'assistant') {
 
-          @if ($last && message.role === 'assistant') {
           <section class="flex flex-col gap-2 w-full">
             <accordion-preview
+              [isOpened]="$last"
               class="flex flex-row rounded-md px-4 py-2 bg-muted w-full overflow-y-scroll"
             >
-              @for (event of agentAllEventsStream(); track $index) {
+              @for (event of message.metadata?.events; track $index) {
               <div
                 hlmBadge
                 brnHoverCardTrigger
@@ -78,23 +79,21 @@
               </div>
               <pre><code>{{event.data | json}}</code></pre>
               <brn-separator hlmSeparator />
-            }
-            <span #eot class="font-mono text-xs">End Of Thought</span>
+              }
+
+              <span #eot class="font-mono text-xs">End Of Thought</span>
             </accordion-preview>
-
-            @if (chatService.isLoading()) {
-              <skeleton-preview></skeleton-preview>
-            }
-            @else {
-              <div class="rounded-md px-4 py-2 bg-muted">
-                <p style="white-space: pre-wrap">
-                  {{ agentMessageStream() }}
-                </p>
-              </div>
-            }
-
           </section>
+
+
+          @if ($last && chatService.isLoading()) {
+          <skeleton-preview></skeleton-preview>
+          } @else {
+          <p class="rounded-md px-4 py-2 bg-muted" #agentMessages>
+            <markdown>{{ message.content }}</markdown>
+          </p>
           }
+        }
         </div>
         <div
           class="text-[10px] opacity-60"
@@ -193,5 +192,9 @@
   .agent-event-ToolCallsEvent {
     background-color: #ff69b4; /* Bright Hot Pink */
     color: #000000; /* Black */
+  }
+  .agent-event-AgentStream {
+    background-color: #8a2be2; /* Bright Blue Violet */
+    color: #ffffff; /* White */
   }
 </style>

@@ -1,5 +1,12 @@
-import { CommonModule, JsonPipe } from '@angular/common';
-import { Component, ElementRef, OnInit, signal, viewChild } from '@angular/core';
+import { AsyncPipe, CommonModule, JsonPipe } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  OnInit,
+  viewChild,
+  viewChildren
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
@@ -40,9 +47,9 @@ import { HlmInputDirective } from '@spartan-ng/ui-input-helm';
 import { HlmLabelDirective } from '@spartan-ng/ui-label-helm';
 import { HlmScrollAreaDirective } from '@spartan-ng/ui-scrollarea-helm';
 import { HlmSeparatorDirective } from '@spartan-ng/ui-separator-helm';
+import { MarkdownComponent, provideMarkdown } from 'ngx-markdown';
 import { AccordionPreviewComponent } from '../components/accordion/accordion.component';
 import { SkeletonPreviewComponent } from '../components/skeleton-preview/skeleton-preview.component';
-import { ChatEvent } from '../services/api.service';
 import { ChatService } from './chat-conversation.service';
 @Component({
   selector: 'app-chat-conversation',
@@ -52,6 +59,7 @@ import { ChatService } from './chat-conversation.service';
     FormsModule,
     NgIcon,
     JsonPipe,
+    AsyncPipe,
     HlmButtonDirective,
     HlmInputDirective,
     HlmFormFieldModule,
@@ -77,9 +85,11 @@ import { ChatService } from './chat-conversation.service';
     HlmCheckboxComponent,
     HlmLabelDirective,
     AccordionPreviewComponent,
-    SkeletonPreviewComponent
+    SkeletonPreviewComponent,
+    MarkdownComponent,
   ],
   providers: [
+    provideMarkdown(),
     provideIcons({
       lucideGlobe,
       lucideRefreshCw,
@@ -91,29 +101,27 @@ import { ChatService } from './chat-conversation.service';
   ],
   templateUrl: './chat-conversation.component.html',
   styleUrl: './chat-conversation.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChatConversationComponent implements OnInit {
-  agentMessageStream = signal<string>('');
-  agentAllEventsStream = signal<ChatEvent[]>([]);
+  // agentAllEventsStream = signal<ChatEvent[]>([]);
   eot = viewChild<ElementRef<HTMLElement>>('eot');
+  agentMessages = viewChildren<ElementRef<HTMLElement>>('agentMessages');
 
-  constructor(public chatService: ChatService) {
-    this.chatService.agentMessage.subscribe((message) => {
-      this.agentMessageStream.set(message);
-    });
-    this.chatService.agentEventStream.subscribe((event) => {
-      console.log('Event:', event);
-      this.agentAllEventsStream.update((events) => {
-        if (event) {
-          return [...events, event];
-        }
-        return events;
-      });
-
-      this.eot()?.nativeElement.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      });
+  constructor(
+    public chatService: ChatService
+  ) {
+    this.chatService.messagesStream.subscribe((messages) => {
+      if (messages.length === 0) return;
+      console.log(this.agentMessages());
+      setTimeout(() => {
+        // this.agentMessages()?.at(-1)?.nativeElement.scrollIntoView({
+        //   behavior: 'smooth',
+        // });
+        this.eot()?.nativeElement.scrollIntoView({
+          behavior: 'smooth',
+        });
+      }, 0);
     });
   }
 
