@@ -1,5 +1,4 @@
-import { NgClass } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideChevronDown } from '@ng-icons/lucide';
 import {
@@ -26,7 +25,7 @@ import { HlmIconDirective } from '@spartan-ng/ui-icon-helm';
 	viewProviders: [provideIcons({ lucideChevronDown })],
 	template: `
 		<div hlmAccordion class="w-full">
-			<div hlmAccordionItem class="max-h-[300px]" isOpened="true">
+			<div hlmAccordionItem class="max-h-[300px]" [isOpened]="isOpened()">
 				<button hlmAccordionTrigger>
 					<span>Agents Thought Process</span>
 					<ng-icon name="lucideChevronDown" hlm hlmAccIcon />
@@ -45,4 +44,6 @@ import { HlmIconDirective } from '@spartan-ng/ui-icon-helm';
     `,
   ]
 })
-export class AccordionPreviewComponent {}
+export class AccordionPreviewComponent {
+  isOpened = input<boolean>(false);
+}
