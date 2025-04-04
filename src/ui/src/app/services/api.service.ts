@@ -59,7 +59,7 @@ export class ApiService {
 
       if (!response.ok) {
         const { error } = await response.json();
-        this.handleApiError(
+        return this.handleApiError(
           new Error(error || 'An error occurred'),
           response.status
         );
