@@ -1,6 +1,6 @@
 import { Component, input } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideChevronDown } from '@ng-icons/lucide';
+import { lucideBrain, lucideChevronDown } from '@ng-icons/lucide';
 import {
   HlmAccordionContentComponent,
   HlmAccordionDirective,
@@ -22,12 +22,15 @@ import { HlmIconDirective } from '@spartan-ng/ui-icon-helm';
 		HlmIconDirective,
     NgIcon,
 	],
-	viewProviders: [provideIcons({ lucideChevronDown })],
+	viewProviders: [provideIcons({ lucideChevronDown, lucideBrain })],
 	template: `
 		<div hlmAccordion class="w-full">
-			<div hlmAccordionItem class="max-h-[300px]" [isOpened]="isOpened()">
-				<button hlmAccordionTrigger>
-					<span>Agents Thought Process</span>
+			<div hlmAccordionItem class="max-h-[300px] !border-b-0" [isOpened]="isOpened()">
+        <button hlmAccordionTrigger class>
+					<span class="flex gap-2">
+            <ng-icon hlm hlmAlertIcon name="lucideBrain" />
+            <span>Agents Thought Process</span>
+          </span>
 					<ng-icon name="lucideChevronDown" hlm hlmAccIcon />
 				</button>
 				<hlm-accordion-content class="overflow-y-scroll">
