@@ -1,3 +1,4 @@
+<hlm-toaster />
 <div hlmCard class="w-[900px] h-full max-h-[900px] flex flex-col">
   <div hlmCardHeader>
     <h3
@@ -66,7 +67,7 @@
           <section class="flex flex-col gap-2 w-full">
             <accordion-preview
               [isOpened]="$last"
-              class="flex flex-row rounded-md px-4 py-2 bg-muted w-full overflow-y-scroll"
+              class="flex flex-row rounded-3xl px-4 py-2 w-full overflow-y-scroll"
             >
               @for (event of message.metadata?.events; track $index) {
               <div
@@ -89,9 +90,11 @@
           @if ($last && chatService.isLoading()) {
           <skeleton-preview></skeleton-preview>
           } @else {
-          <p class="rounded-md px-4 py-2 bg-muted" #agentMessages>
-            <markdown>{{ message.content }}</markdown>
-          </p>
+          <div hlmAlert class="bg-muted gap-10">
+            <p hlmAlertDesc>
+              <markdown>{{ message.content }}</markdown>
+            </p>
+          </div>
           }
         }
         </div>
@@ -110,37 +113,37 @@
     <div class="flex gap-2">
       Available Agents:
       <label class="flex items-center" hlmLabel>
-        <hlm-checkbox class="mr-2" [(ngModel)]="chatService.tools().echo" />
+        <hlm-switch class="mr-2" [(ngModel)]="chatService.tools().echo" />
         Echo
       </label>
       <label class="flex items-center" hlmLabel>
-        <hlm-checkbox
+        <hlm-switch
           class="mr-2"
           [(ngModel)]="chatService.tools().customer_query"
         />
         Customer Query
       </label>
       <label class="flex items-center" hlmLabel>
-        <hlm-checkbox class="mr-2" [(ngModel)]="chatService.tools().search" />
+        <hlm-switch class="mr-2" [(ngModel)]="chatService.tools().search" />
         Search
       </label>
     </div>
     <div class="flex gap-2 w-full">
       <hlm-form-field class="flex-col flex w-full">
-        <input
+        <textarea
           hlmInput
           type="text"
-          class="flex-1 !rounded-full border-2 border-black"
-          placeholder="Type your message here..."
+          class="flex-1 border-2 rounded-3xl border-black min-h-[80px] w-full"
+          placeholder="Type your message here (Shift + Enter for new line)..."
           [(ngModel)]="chatService.userMessage"
           (keyup.enter)="chatService.sendMessage()"
-        />
+        ></textarea>
         <hlm-hint></hlm-hint>
       </hlm-form-field>
       <button
         hlmBtn
         variant="default"
-        class="!rounded-full"
+        class="rounded-full"
         [disabled]="
           chatService.isLoading() || !chatService.userMessage().trim()
         "

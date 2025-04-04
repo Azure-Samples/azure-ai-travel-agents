@@ -7,6 +7,7 @@ import {
   ChatStreamState,
   Tools,
 } from '../services/api.service';
+import { toast } from 'ngx-sonner';
 
 @Injectable({
   providedIn: 'root',
@@ -56,6 +57,10 @@ export class ChatService {
             this.processAgentEvents(state.event);
             break;
 
+          case 'ERROR':
+            this.showErrorMessage(state.error);
+            break;
+
           default:
             break;
         }
@@ -85,6 +90,17 @@ export class ChatService {
     // this.currentAgentName.set(null);
 
     await this.apiService.streamChatMessage(messageText, this.tools());
+  }
+
+  showErrorMessage(error: unknown) {
+    toast.error('Oops! Something went wrong.', {
+      duration: 5000,
+      description: (error as Error).message,
+      action: {
+        label: 'Close',
+        onClick: () => console.log('Closed'),
+      }
+    })
   }
 
   private processAgentEvents(event?: ChatEvent) {

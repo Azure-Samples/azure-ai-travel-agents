@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideBox,
+  lucideBrain,
   lucideCircle,
   lucideGlobe,
   lucideHeadset,
@@ -40,6 +41,8 @@ import {
   HlmCardHeaderDirective,
   HlmCardTitleDirective,
 } from '@spartan-ng/ui-card-helm';
+import { HlmToasterComponent } from '@spartan-ng/ui-sonner-helm';
+
 import { HlmCheckboxComponent } from '@spartan-ng/ui-checkbox-helm';
 import { HlmFormFieldModule } from '@spartan-ng/ui-formfield-helm';
 import { HlmIconDirective } from '@spartan-ng/ui-icon-helm';
@@ -51,6 +54,9 @@ import { MarkdownComponent, provideMarkdown } from 'ngx-markdown';
 import { AccordionPreviewComponent } from '../components/accordion/accordion.component';
 import { SkeletonPreviewComponent } from '../components/skeleton-preview/skeleton-preview.component';
 import { ChatService } from './chat-conversation.service';
+import { toast } from 'ngx-sonner';
+import { HlmSwitchComponent } from '@spartan-ng/ui-switch-helm';
+import { HlmAlertDescriptionDirective, HlmAlertDirective, HlmAlertIconDirective, HlmAlertTitleDirective } from '@spartan-ng/ui-alert-helm';
 @Component({
   selector: 'app-chat-conversation',
   standalone: true,
@@ -80,10 +86,13 @@ import { ChatService } from './chat-conversation.service';
     HlmAlertDialogDescriptionDirective,
     HlmAlertDialogActionButtonDirective,
     HlmAlertDialogCancelButtonDirective,
+    HlmAlertDirective,
+    HlmAlertDescriptionDirective,
+    HlmToasterComponent,
     HlmSeparatorDirective,
     BrnSeparatorComponent,
-    HlmCheckboxComponent,
     HlmLabelDirective,
+    HlmSwitchComponent,
     AccordionPreviewComponent,
     SkeletonPreviewComponent,
     MarkdownComponent,
@@ -91,12 +100,8 @@ import { ChatService } from './chat-conversation.service';
   providers: [
     provideMarkdown(),
     provideIcons({
-      lucideGlobe,
+      lucideBrain,
       lucideRefreshCw,
-      lucideUser,
-      lucideHeadset,
-      lucideCircle,
-      lucideBox,
     }),
   ],
   templateUrl: './chat-conversation.component.html',

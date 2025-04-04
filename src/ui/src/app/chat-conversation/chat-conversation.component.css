@@ -24,7 +24,7 @@
   color: hsl(210 40% 90%); /* Brighter timestamp in dark mode */
   opacity: 0.85; /* Slightly higher opacity for better readability */
 }
-:host-context(.dark) input[hlmInput] {
+:host-context(.dark) *[hlmInput] {
   border-color: white !important; /* Override the border color in dark mode */
 }
 .timestamp {
