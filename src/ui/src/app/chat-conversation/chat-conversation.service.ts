@@ -21,11 +21,7 @@ export class ChatService {
   private agentEventsBuffer: ChatEvent[] = [];
 
   isLoading = signal(false);
-  tools: WritableSignal<Tools> = signal({
-    search: false,
-    echo: false,
-    customer_query: false,
-  });
+  tools = signal<Tools[]>([]);
   currentAgentName = signal<string | null>(null);
   assistantMessageInProgress = signal(false);
   agentMessageBuffer: string = '';
@@ -68,6 +64,13 @@ export class ChatService {
     );
   }
 
+  async fetchAvailableTools() {
+    const toolsResult = await this.apiService.fetchAvailableTools();
+    if (toolsResult) {
+      this.tools.set(toolsResult.tools);
+    }
+  }
+
   async sendMessage() {
     const messageText = this.userMessage();
     if (!messageText.trim()) return;
@@ -89,7 +92,7 @@ export class ChatService {
     // this.messagesStream.next(this.messagesBuffer);
     // this.currentAgentName.set(null);
 
-    await this.apiService.streamChatMessage(messageText, this.tools());
+    await this.apiService.streamChatMessage(messageText, this.tools().filter(tool => tool.selected));
   }
 
   showErrorMessage(error: unknown) {
@@ -99,8 +102,8 @@ export class ChatService {
       action: {
         label: 'Close',
         onClick: () => console.log('Closed'),
-      }
-    })
+      },
+    });
   }
 
   private processAgentEvents(event?: ChatEvent) {
@@ -161,14 +164,17 @@ export class ChatService {
     }
   }
 
-  updateAndNotifyAgentChatMessageState(delta: string, state?: Partial<ChatMessage>) {
+  updateAndNotifyAgentChatMessageState(
+    delta: string,
+    state?: Partial<ChatMessage>
+  ) {
     const lastMessage = this.messagesBuffer[this.messagesBuffer.length - 1];
     if (lastMessage?.role === 'assistant') {
       lastMessage.content += delta;
       lastMessage.metadata = {
-      ...lastMessage.metadata,
-      ...state?.metadata,
-      events: state?.metadata?.events,
+        ...lastMessage.metadata,
+        ...state?.metadata,
+        events: state?.metadata?.events,
       };
       lastMessage.timestamp = new Date();
       this.messagesStream.next([...this.messagesBuffer]);

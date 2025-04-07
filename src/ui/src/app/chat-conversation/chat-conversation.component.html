@@ -112,11 +112,15 @@
   <div hlmCardFooter class="flex-col items-start gap-2">
     <div class="flex gap-2">
       Available Agents:
+
+      @for(tool of chatService.tools(); track tool) {
       <label class="flex items-center" hlmLabel>
-        <hlm-switch class="mr-2" [(ngModel)]="chatService.tools().echo" />
-        Echo
+        <hlm-switch class="mr-2" [disabled]="!tool.reachable" [(ngModel)]="tool.selected"/>
+        {{tool.serverName}}
       </label>
-      <label class="flex items-center" hlmLabel>
+      }
+
+      <!-- <label class="flex items-center" hlmLabel>
         <hlm-switch
           class="mr-2"
           [(ngModel)]="chatService.tools().customer_query"
@@ -126,7 +130,7 @@
       <label class="flex items-center" hlmLabel>
         <hlm-switch class="mr-2" [(ngModel)]="chatService.tools().search" />
         Search
-      </label>
+      </label> -->
     </div>
     <div class="flex gap-2 w-full">
       <hlm-form-field class="flex-col flex w-full">

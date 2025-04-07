@@ -4,20 +4,13 @@ import {
   Component,
   ElementRef,
   OnInit,
+  signal,
   viewChild,
-  viewChildren
+  viewChildren,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import {
-  lucideBox,
-  lucideBrain,
-  lucideCircle,
-  lucideGlobe,
-  lucideHeadset,
-  lucideRefreshCw,
-  lucideUser,
-} from '@ng-icons/lucide';
+import { lucideBrain, lucideRefreshCw } from '@ng-icons/lucide';
 import {
   BrnAlertDialogContentDirective,
   BrnAlertDialogTriggerDirective,
@@ -43,20 +36,21 @@ import {
 } from '@spartan-ng/ui-card-helm';
 import { HlmToasterComponent } from '@spartan-ng/ui-sonner-helm';
 
-import { HlmCheckboxComponent } from '@spartan-ng/ui-checkbox-helm';
+import {
+  HlmAlertDescriptionDirective,
+  HlmAlertDirective,
+} from '@spartan-ng/ui-alert-helm';
 import { HlmFormFieldModule } from '@spartan-ng/ui-formfield-helm';
 import { HlmIconDirective } from '@spartan-ng/ui-icon-helm';
 import { HlmInputDirective } from '@spartan-ng/ui-input-helm';
 import { HlmLabelDirective } from '@spartan-ng/ui-label-helm';
 import { HlmScrollAreaDirective } from '@spartan-ng/ui-scrollarea-helm';
 import { HlmSeparatorDirective } from '@spartan-ng/ui-separator-helm';
+import { HlmSwitchComponent } from '@spartan-ng/ui-switch-helm';
 import { MarkdownComponent, provideMarkdown } from 'ngx-markdown';
 import { AccordionPreviewComponent } from '../components/accordion/accordion.component';
 import { SkeletonPreviewComponent } from '../components/skeleton-preview/skeleton-preview.component';
 import { ChatService } from './chat-conversation.service';
-import { toast } from 'ngx-sonner';
-import { HlmSwitchComponent } from '@spartan-ng/ui-switch-helm';
-import { HlmAlertDescriptionDirective, HlmAlertDirective, HlmAlertIconDirective, HlmAlertTitleDirective } from '@spartan-ng/ui-alert-helm';
 @Component({
   selector: 'app-chat-conversation',
   standalone: true,
@@ -109,13 +103,11 @@ import { HlmAlertDescriptionDirective, HlmAlertDirective, HlmAlertIconDirective,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChatConversationComponent implements OnInit {
-  // agentAllEventsStream = signal<ChatEvent[]>([]);
+  agents = signal<{}>({});
   eot = viewChild<ElementRef<HTMLElement>>('eot');
   agentMessages = viewChildren<ElementRef<HTMLElement>>('agentMessages');
 
-  constructor(
-    public chatService: ChatService
-  ) {
+  constructor(public chatService: ChatService) {
     this.chatService.messagesStream.subscribe((messages) => {
       if (messages.length === 0) return;
       console.log(this.agentMessages());
@@ -130,15 +122,12 @@ export class ChatConversationComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.resetChat();
+    await this.chatService.fetchAvailableTools();
   }
 
-  toggleSearch() {
-    this.chatService.tools.update((tools) => ({
-      ...tools,
-      search: !tools.search,
-    }));
+  toggleTool() {
   }
 
   cancelReset(ctx: any) {
