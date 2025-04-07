@@ -2,10 +2,20 @@ import { inject, Injectable, NgZone } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { environment } from '../../environments/environment';
 
+export type ServerName =
+  | 'echo-ping'
+  | 'customer-query'
+  | 'web-search'
+  | 'itinerary-planning'
+  | 'model-inference'
+  | 'code-evaluation';
+
 export type Tools = {
-  search: boolean;
-  echo: boolean;
-  customer_query: boolean;
+  serverName: ServerName;
+  serverUrl: string;
+  reachable: boolean;
+  tools: object[];
+  selected: boolean;
 };
 
 // Interface for SSE event types
@@ -38,7 +48,6 @@ export interface ChatMessage {
   };
 }
 
-
 @Injectable({
   providedIn: 'root',
 })
@@ -47,7 +56,28 @@ export class ApiService {
   private apiUrl = environment.apiServerUrl;
   chatStreamState = new BehaviorSubject<Partial<ChatStreamState>>({});
 
-  async streamChatMessage(message: string, tools: Tools) {
+  async fetchAvailableTools(): Promise<{tools: Tools[]} | void> {
+    try {
+      const response = await fetch(`${this.apiUrl}/api/tools`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok) {
+        const { error } = await response.json();
+        return this.handleApiError(
+          new Error(error || 'An error occurred while fetching tools'),
+          response.status
+        );
+      }
+      return (await response.json());
+    } catch (error) {
+      return this.handleApiError(error, 0);
+    }
+  }
+
+  async streamChatMessage(message: string, tools: Tools[]) {
     try {
       const response = await fetch(`${this.apiUrl}/api/chat`, {
         method: 'POST',
