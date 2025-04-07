@@ -20,7 +20,7 @@ The architecture of the AI Travel Agents application is designed to be modular a
 
 - All components are containerized using **Docker** so that they can be easily deployed and managed by **[Azure Container Apps](https://learn.microsoft.com/azure/container-apps/)**.
 - All agents tools are available as MCP ([Model Context Protocol](https://github.com/modelcontextprotocol)) servers and are called by the MCP clients.
-- MCP servers are implemented indenpendently using variant technologies, such as **Python**, **Node.js**, **Java**, and **.NET**.
+- MCP servers are implemented independently using variant technologies, such as **Python**, **Node.js**, **Java**, and **.NET**.
 - The Agent Workflow Service orchestrates the interaction between the agents and MCP clients, allowing them to work together seamlessly.
 - The Aspire Dashboard is used to monitor the application, providing insights into the performance and behavior of the agents (through the [OpenTelemetry integration](https://opentelemetry.io/ecosystem/integrations/)).
 
