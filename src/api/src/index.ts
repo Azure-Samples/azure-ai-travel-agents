@@ -1,14 +1,14 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
 import { pipeline } from "node:stream/promises";
 import { setupAgents } from "./orchestrator/llamaindex/index.js";
 import { Readable } from "node:stream";
+import { mcpToolsList } from "./mcp/mcp-tools.js";
+import { McpToolsConfig } from "./orchestrator/llamaindex/tools/index.js";
 
-// Load environment variables
-dotenv.config();
-
-// Create Express application
 const app = express();
 const PORT = process.env.PORT || 4000;
 
@@ -16,7 +16,6 @@ const PORT = process.env.PORT || 4000;
 app.use(cors());
 app.use(express.json());
 
-// Define API router with /api prefix
 const apiRouter = express.Router();
 
 // Add request body logging middleware for debugging
@@ -29,10 +28,34 @@ apiRouter.use((req, res, next) => {
 });
 
 // Health check endpoint
-// @ts-ignore - Ignoring TypeScript errors for Express route handlers
 apiRouter.get("/health", (req, res) => {
   res.status(200).json({ status: "OK" });
 });
+
+// MCP tools
+apiRouter.get("/tools", async (req, res) => {
+  try {
+    const tools = await mcpToolsList(Object.values(McpToolsConfig()));
+    console.log("Available tools:", tools);
+    res.status(200).json({ tools });
+  } catch (error) {
+    console.error("Error fetching MCP tools:", error);
+    res.status(500).json({ error: "Error fetching MCP tools" });
+  }
+});
+
+// // Agents endpoint
+// apiRouter.get("/agents", async (req, res) => {
+//   try {
+//     const agents = (await setupAgents(Object.keys(McpToolsConfig()))).getAgents();
+//     console.log("Available agents:", agents);
+//     res.status(200).json({ agents });
+//   } catch (error) {
+//     console.error("Error fetching MCP tools:", error);
+//     res.status(500).json({ error: "Error fetching MCP tools" });
+//   }
+// });
+
 
 // Chat endpoint with Server-Sent Events (SSE) for streaming responses
 // @ts-ignore - Ignoring TypeScript errors for Express route handlers
@@ -55,19 +78,21 @@ apiRouter.post("/chat", async (req, res) => {
 
     const message = req.body.message;
     const tools = req.body.tools;
-    console.log("Tools enabled:", tools);
+    console.log("Tools to use:", tools);
 
     if (!message) {
       return res.status(400).json({ error: "Message is required" });
     }
-
-    const agents = await setupAgents(tools);
-
+ 
     res.setHeader("Content-Type", "text/event-stream");
     res.setHeader("Cache-Control", "no-cache");
     res.setHeader("Connection", "keep-alive");
 
-    const context = agents.run(message);
+    const agents = await setupAgents(tools);
+    const context = agents.run(message, {
+      chatHistory: [],
+    });
+
     const CHUNK_END = "\n\n";
     const readableStream = new Readable({
       async read() {
@@ -131,6 +156,7 @@ app.get("/", (req, res) => {
 app.listen(PORT, () => {
   console.log(`API server running on port ${PORT}`);
   console.log(`API endpoints:`);
-  console.log(`  - Health check: http://localhost:${PORT}/api/health`);
+  console.log(`  - Health check: http://localhost:${PORT}/api/health (GET)`);
+  console.log(`  - MCP Tools: http://localhost:${PORT}/api/tools (GET)`);
   console.log(`  - Chat: http://localhost:${PORT}/api/chat (POST)`);
 });
