@@ -1,6 +1,7 @@
 name: "CodeQL Java"
 
-on:  push:
+on:
+  push:
     branches: [main]
     paths:
       - 'src/tools/destination-recommendation/src/main/java/**/*.java'
