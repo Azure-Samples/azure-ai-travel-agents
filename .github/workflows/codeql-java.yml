@@ -47,21 +47,16 @@ jobs:
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
-
-      - name: Build Java with Maven
-        run: |
-          for dir in src/tools/*/; do
-            if [ -f "$dir/pom.xml" ]; then
-              mvn clean compile -f $dir/pom.xml
-            fi
-          done
-
-      - name: Initialize CodeQL
+          restore-keys: ${{ runner.os }}-m2      - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: java
           config-file: .github/codeql/java-config.yml
+          
+      - name: Build Java with Maven
+        run: |
+          cd src/tools/destination-recommendation
+          mvn clean compile -B
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
