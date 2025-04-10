@@ -47,7 +47,9 @@ jobs:
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2      - name: Initialize CodeQL
+          restore-keys: ${{ runner.os }}-m2      
+          
+      - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: java
