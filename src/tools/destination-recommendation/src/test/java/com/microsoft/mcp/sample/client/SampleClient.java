@@ -19,7 +19,6 @@ public class SampleClient {
 	public void run() {
 
 		var client = McpClient.sync(this.transport).build();
-
 		client.initialize();
 
 		client.ping();
@@ -27,11 +26,10 @@ public class SampleClient {
 		// List and demonstrate tools
 		ListToolsResult toolsList = client.listTools();
 		System.out.println("Available Tools = " + toolsList);
-
-		// Test echo service with plain text
-		CallToolResult echoMessageResult = client.callTool(new CallToolRequest("echoMessage", 
-				Map.of("message", "Hello, this is a plain text message to echo!")));
-		System.out.println("Echo Message Result (Plain Text): " + echoMessageResult);
+		// Call the getDestinationsByBudget tool
+		CallToolResult destinationsResult = client.callTool(new CallToolRequest("getDestinationsByBudget", 
+				Map.of("budget", "MODERATE")));
+		System.out.println("Get Destinations By Budget Result: " + destinationsResult);
 
 		client.closeGracefully();
 	}

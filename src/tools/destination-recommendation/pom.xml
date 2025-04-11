@@ -12,10 +12,10 @@
 
     <groupId>com.example</groupId>
 
-    <artifactId>mcp-echo-starter-webflux-server</artifactId>
+    <artifactId>destination-server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
-    <name>Spring AI MCP echo Sample</name>
+    <name>Destination Server</name>
     <description>Sample Spring Boot application demonstrating MCP client and server usage</description>
 
     <licenses>

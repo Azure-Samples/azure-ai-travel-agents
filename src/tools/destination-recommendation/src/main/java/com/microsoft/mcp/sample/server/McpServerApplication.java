@@ -6,6 +6,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import com.microsoft.mcp.sample.server.service.DestinationService;
+
 @SpringBootApplication
 public class McpServerApplication {
 
@@ -14,8 +16,8 @@ public class McpServerApplication {
 	}
 	
 	@Bean
-	public ToolCallbackProvider echoTools(EchoService echoService) {
-		return MethodToolCallbackProvider.builder().toolObjects(echoService).build();
+	public ToolCallbackProvider destinationTools(DestinationService destinationService) {
+		return MethodToolCallbackProvider.builder().toolObjects(destinationService).build();
 	}
 
 }
