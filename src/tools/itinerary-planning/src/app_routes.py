@@ -1,4 +1,3 @@
-
 from mcp.server.sse import SseServerTransport
 from starlette.responses import HTMLResponse
 from starlette.routing import Mount, Route
@@ -15,16 +14,13 @@ async def handle_sse(request):
         read_stream,
         write_stream,
     ):
-        await mcp._mcp_server.run(
-            read_stream, write_stream, mcp._mcp_server.create_initialization_options()
-        )
+        await mcp._mcp_server.run(read_stream, write_stream, mcp._mcp_server.create_initialization_options())
 
 
 # Not strictly necessary
 async def homepage(request):
-    return HTMLResponse(
-        "Itinerary planning MCP server"
-    )
+    return HTMLResponse("Itinerary planning MCP server")
+
 
 routes = [
     Route("/", endpoint=homepage),

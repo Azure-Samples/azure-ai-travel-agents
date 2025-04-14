@@ -11,7 +11,7 @@
 2. Install the the MCP server packages:
 
     ```bash
-    uv pip install src/tools/itinerary-planning
+    uv pip install -e src/tools/itinerary-planning
     ```
 
 3. Run the MCP server:
