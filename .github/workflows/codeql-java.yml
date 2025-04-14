@@ -4,7 +4,8 @@ on:
   push:
     branches: [main]
     paths:
-      - 'src/tools/destination-recommendation/*.java'
+      - 'src/tools/destination-recommendation/src/main/java/**/*.java'
+      - 'src/tools/destination-recommendation/src/test/java/**/*.java'
       - 'src/tools/destination-recommendation/pom.xml'
       - 'src/tools/destination-recommendation/*.gradle'
       - '.github/workflows/codeql-java.yml'
@@ -12,7 +13,8 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - 'src/tools/destination-recommendation/*.java'
+      - 'src/tools/destination-recommendation/src/main/java/**/*.java'
+      - 'src/tools/destination-recommendation/src/test/java/**/*.java'
       - 'src/tools/destination-recommendation/pom.xml'
       - 'src/tools/destination-recommendation/*.gradle'
       - '.github/workflows/codeql-java.yml'
@@ -37,7 +39,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
           
       - name: Cache Maven dependencies
@@ -45,21 +47,18 @@ jobs:
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
-
-      - name: Build Java with Maven
-        run: |
-          for dir in src/tools/*/; do
-            if [ -f "$dir/pom.xml" ]; then
-              mvn clean compile -f $dir/pom.xml
-            fi
-          done
-
+          restore-keys: ${{ runner.os }}-m2      
+          
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: java
           config-file: .github/codeql/java-config.yml
+          
+      - name: Build Java with Maven
+        run: |
+          cd src/tools/destination-recommendation
+          mvn clean compile -B
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
