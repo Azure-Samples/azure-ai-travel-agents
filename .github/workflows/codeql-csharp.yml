@@ -40,6 +40,12 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '9.x'
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: csharp
+          config-file: .github/codeql/csharp-config.yml
           
       - name: Restore and Build C#
         run: |
@@ -48,14 +54,8 @@ jobs:
             dotnet build src/tools/customer-query/AITravelAgent.sln --configuration Release --no-restore
           fi
 
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
-        with:
-          languages: csharp
-          config-file: .github/codeql/csharp-config.yml
-
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
         with:
           category: "csharp-analysis"
-          # upload: true
+          upload: true
