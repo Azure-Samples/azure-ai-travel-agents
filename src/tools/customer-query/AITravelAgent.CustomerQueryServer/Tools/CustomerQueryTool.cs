@@ -13,7 +13,7 @@ public class CustomerQueryTool(ILogger<CustomerQueryTool> logger)
     private static readonly string[] intents = [ "book_flight", "cancel_flight", "change_flight", "inquire", "complaint" ];
     private static readonly string[] requirements = [ "business", "economy", "first_class" ];
     private static readonly string[] preferences = [ "window", "aisle", "extra_legroom" ];
-    private static readonly Random random = new();
+    private static readonly Random random = Random.Shared;
 
     [McpServerTool(Name = "analyze_customer_query", Title = "Analyze Customer Query")]
     [Description("Analyzes the customer query and provides a response.")]
