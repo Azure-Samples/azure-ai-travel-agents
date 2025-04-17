@@ -58,4 +58,4 @@ jobs:
         uses: github/codeql-action/analyze@v3
         with:
           category: "csharp-analysis"
-          upload: true
+          # upload: true
