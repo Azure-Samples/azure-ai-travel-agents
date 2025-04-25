@@ -16,27 +16,27 @@ export class ThemeService {
     this.isBrowser = isPlatformBrowser(this.platformId);
     if (this.isBrowser) {
       this.HTML_ELEMENT = document.documentElement;
-      // Initialize with stored preference or use dark as default
+      // Initialize with stored preference or use light as default
       const storedTheme = localStorage.getItem(this.THEME_KEY);
-      // Use stored preference if available, otherwise default to dark mode
-      const initialTheme = storedTheme ? storedTheme === 'dark' : true; // Default to dark mode
+      // Use stored preference if available, otherwise default to light mode
+      const initialTheme = storedTheme ? storedTheme === 'dark' : false; // Default to light mode
       this._isDarkMode = signal(initialTheme);
       // Setup effect to update theme when signal changes
       effect(() => {
         this.applyTheme(this._isDarkMode());
       });
-      // Listen for system preference changes
-      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-        // Only update if user hasn't explicitly set a preference
-        if (!localStorage.getItem(this.THEME_KEY)) {
-          this._isDarkMode.set(e.matches);
-        }
-      });
+      // TODO: Listen for system preference changes
+      // window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      //   // Only update if user hasn't explicitly set a preference
+      //   if (!localStorage.getItem(this.THEME_KEY)) {
+      //     this._isDarkMode.set(e.matches);
+      //   }
+      // });
       // Apply theme on initialization
       this.applyTheme(initialTheme);
     } else {
-      // Default theme signal for server-side rendering - now defaulting to dark
-      this._isDarkMode = signal(true);
+      // Default theme signal for server-side rendering - now defaulting to light
+      this._isDarkMode = signal(false);
     }
   }
 
