@@ -22,7 +22,9 @@ const apiRouter = express.Router();
 apiRouter.use((req, res, next) => {
   if (req.path === "/chat" && req.method === "POST") {
     const contentType = req.headers["content-type"]?.replace(/\n|\r/g, "");
-    const body = req.body.replace(/\n|\r/g, "");
+    const body = typeof req.body === "string" 
+      ? req.body.replace(/\n|\r/g, "") 
+      : JSON.stringify(req.body).replace(/\n|\r/g, "");
     console.log("Request Content-Type:", contentType);
     console.log("Request body:", body);
   }
