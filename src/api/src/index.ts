@@ -21,8 +21,10 @@ const apiRouter = express.Router();
 // Add request body logging middleware for debugging
 apiRouter.use((req, res, next) => {
   if (req.path === "/chat" && req.method === "POST") {
-    console.log("Request Content-Type:", req.headers["content-type"]);
-    console.log("Request body:", req.body);
+    const contentType = req.headers["content-type"]?.replace(/\n|\r/g, "");
+    const body = req.body.replace(/\n|\r/g, "");
+    console.log("Request Content-Type:", contentType);
+    console.log("Request body:", body);
   }
   next();
 });
@@ -78,7 +80,7 @@ apiRouter.post("/chat", async (req, res) => {
 
     const message = req.body.message;
     const tools = req.body.tools;
-    console.log("Tools to use:", tools);
+    console.log("Tools to use:", JSON.stringify(tools, null, 2));
 
     if (!message) {
       return res.status(400).json({ error: "Message is required" });

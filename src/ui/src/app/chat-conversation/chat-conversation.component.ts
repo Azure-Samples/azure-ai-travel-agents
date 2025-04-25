@@ -127,8 +127,7 @@ export class ChatConversationComponent implements OnInit {
     await this.chatService.fetchAvailableTools();
   }
 
-  toggleTool() {
-  }
+  toggleTool() {}
 
   cancelReset(ctx: any) {
     ctx.close();

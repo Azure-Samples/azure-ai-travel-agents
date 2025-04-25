@@ -1,4 +1,5 @@
-import { Injectable, signal, WritableSignal } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
+import { toast } from 'ngx-sonner';
 import { BehaviorSubject } from 'rxjs';
 import {
   ApiService,
@@ -7,7 +8,6 @@ import {
   ChatStreamState,
   Tools,
 } from '../services/api.service';
-import { toast } from 'ngx-sonner';
 
 @Injectable({
   providedIn: 'root',
@@ -92,7 +92,10 @@ export class ChatService {
     // this.messagesStream.next(this.messagesBuffer);
     // this.currentAgentName.set(null);
 
-    await this.apiService.streamChatMessage(messageText, this.tools().filter(tool => tool.selected));
+    await this.apiService.streamChatMessage(
+      messageText,
+      this.tools().filter((tool) => tool.selected)
+    );
   }
 
   showErrorMessage(error: unknown) {
