@@ -26,7 +26,7 @@ export async function setupAgents(
   try {
     llm = await llmProvider();
   } catch (error) {
-    throw new Error(error as string);
+    throw new Error(error instanceof Error ? error.message : String(error));
   }
 
   if (tools["echo-ping"]) {
