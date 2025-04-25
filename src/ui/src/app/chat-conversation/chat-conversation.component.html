@@ -1,5 +1,5 @@
 <hlm-toaster />
-<div hlmCard class="w-[900px] h-full max-h-[900px] flex flex-col">
+<div hlmCard class="w-[1200px] h-full max-h-[900px] flex flex-col">
   <div hlmCardHeader>
     <h3
       hlmCardTitle
@@ -45,7 +45,7 @@
   <ng-scrollbar
     hlmCardContent
     hlm
-    class="flex-1 h-[650px] overflow-scroll-y p-10 overflow-y-scroll"
+    class="flex-1 h-[650px] overflow-scroll-y p-10 overflow-y-scroll mb-10"
   >
     <div class="flex flex-col gap-4">
       <!-- loop over all messages -->
@@ -119,20 +119,8 @@
         {{tool.serverName}}
       </label>
       }
-
-      <!-- <label class="flex items-center" hlmLabel>
-        <hlm-switch
-          class="mr-2"
-          [(ngModel)]="chatService.tools().customer_query"
-        />
-        Customer Query
-      </label>
-      <label class="flex items-center" hlmLabel>
-        <hlm-switch class="mr-2" [(ngModel)]="chatService.tools().search" />
-        Search
-      </label> -->
     </div>
-    <div class="flex gap-2 w-full">
+    <div class="flex gap-2 w-full mt-10">
       <hlm-form-field class="flex-col flex w-full">
         <textarea
           hlmInput
