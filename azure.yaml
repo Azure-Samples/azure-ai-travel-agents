@@ -1,0 +1,39 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+
+name: ai-travel-agents
+metadata:
+    template: azd-init@1.13.1
+services:
+    api:
+        project: src/api
+        host: containerapp
+        language: js
+        docker:
+            path: Dockerfile
+    customer-query:
+        project: src/tools/customer-query/AITravelAgent.CustomerQueryServer/
+        host: containerapp
+        language: dotnet
+        docker:
+            context: ..
+            path: ../Dockerfile
+            remoteBuild: true   
+    destination-recommendation:
+        project: src/tools/destination-recommendation
+        host: containerapp
+        language: java
+    echo-ping:
+        project: src/tools/echo-ping
+        host: containerapp
+        language: ts
+    itinerary-planning:
+        project: src/tools/itinerary-planning
+        host: containerapp
+        language: python
+    ui:
+        project: src/ui
+        host: containerapp
+        language: ts
+        dist: dist/ui
+        docker:
+            path: Dockerfile
