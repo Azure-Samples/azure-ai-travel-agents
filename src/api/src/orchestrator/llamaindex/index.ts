@@ -1,24 +1,23 @@
-import { agent, multiAgent, ToolCallLLM } from "llamaindex";
+import { mcp } from "@llamaindex/tools";
 import dotenv from "dotenv";
-import { McpServerDefinition, mcpTools } from "../../mcp/mcp-tools.js";
-import { type McpServerName, McpToolsConfig } from "./tools/index.js";
+import { agent, multiAgent, ToolCallLLM } from "llamaindex";
+import { McpServerDefinition } from "../../mcp/mcp-tools.js";
 import { llm as llmProvider } from "./providers/azure-openai.js";
+import { McpToolsConfig } from "./tools/index.js";
 dotenv.config({
   path: "./.env.dev",
 });
 
 // Function to set up agents and return the multiAgent instance
-export async function setupAgents(
-  filteredTools: McpServerDefinition[] = []
-) {
-  
+export async function setupAgents(filteredTools: McpServerDefinition[] = []) {
   const tools = Object.fromEntries(
-    filteredTools.map((tool) => [tool.serverName, true])
+    filteredTools.map((tool) => [tool.id, true])
   );
   console.log("Filtered tools:", tools);
 
   let agentsList = [];
   let handoffTargets = [];
+  let toolsList = [];
   const verbose = false;
   const mcpToolsConfig = McpToolsConfig();
 
@@ -30,124 +29,125 @@ export async function setupAgents(
   }
 
   if (tools["echo-ping"]) {
+    const mcpServerConfig = mcpToolsConfig["echo-ping"].config;
+    const tools = await mcp(mcpServerConfig).tools();
     const echoAgent = agent({
       name: "EchoAgent",
-      description:
+      systemPrompt:
         "Echo back the received input. Do not respond with anything else. Always call the tools.",
-      tools: await mcpTools(mcpToolsConfig["echo-ping"]),
+      tools,
       llm,
       verbose,
     });
     agentsList.push(echoAgent);
     handoffTargets.push(echoAgent);
+    toolsList.push(...tools);
   }
 
   if (tools["customer-query"]) {
+    const mcpServerConfig = mcpToolsConfig["customer-query"];
+    const tools = await mcp(mcpServerConfig.config).tools();
     const customerQuery = agent({
       name: "CustomerQueryAgent",
-      description:
+      systemPrompt:
         "Assists employees in better understanding customer needs, facilitating more accurate and personalized service. This agent is particularly useful for handling nuanced queries, such as specific travel preferences or budget constraints, which are common in travel agency interactions.",
-      tools: await mcpTools(mcpToolsConfig["customer-query"]),
+      tools,
       llm,
       verbose,
     });
     agentsList.push(customerQuery);
     handoffTargets.push(customerQuery);
+    toolsList.push(...tools);
   }
 
   if (tools["web-search"]) {
+    const mcpServerConfig = mcpToolsConfig["web-search"];
+    const tools = await mcp(mcpServerConfig.config).tools();
     console.log("Including Web Search Agent in the workflow");
     const webSearchAgent = agent({
       name: "WebSearchAgent",
-      description:
+      systemPrompt:
         "Searches the web for up-to-date travel information using Bing Search.",
-      tools: await mcpTools(mcpToolsConfig["web-search"]),
+      tools,
       llm,
       verbose,
     });
     agentsList.push(webSearchAgent);
     handoffTargets.push(webSearchAgent);
+    toolsList.push(...tools);
   }
 
   if (tools["itinerary-planning"]) {
+    const mcpServerConfig = mcpToolsConfig["itinerary-planning"];
+    const tools = await mcp(mcpServerConfig.config).tools();
     const itineraryPlanningAgent = agent({
       name: "ItineraryPlanningAgent",
-      description:
+      systemPrompt:
         "Creates a travel itinerary based on user preferences and requirements.",
-      tools: await mcpTools(mcpToolsConfig["itinerary-planning"]),
+      tools,
       llm,
       verbose,
     });
     agentsList.push(itineraryPlanningAgent);
     handoffTargets.push(itineraryPlanningAgent);
+    toolsList.push(...tools);
   }
 
   if (tools["model-inference"]) {
+    const mcpServerConfig = mcpToolsConfig["model-inference"];
+    const tools = await mcp(mcpServerConfig.config).tools();
     const modelInferenceAgent = agent({
       name: "ModelInferenceAgent",
-      description:
+      systemPrompt:
         "Performs model inference tasks based on user input and requirements.",
-      tools: await mcpTools(mcpToolsConfig["model-inference"]),
+      tools,
       llm,
       verbose,
     });
     agentsList.push(modelInferenceAgent);
     handoffTargets.push(modelInferenceAgent);
+    toolsList.push(...tools);
   }
 
   if (tools["code-evaluation"]) {
+    const mcpServerConfig = mcpToolsConfig["code-evaluation"];
+    const tools = await mcp(mcpServerConfig.config).tools();
     const codeEvaluationAgent = agent({
       name: "CodeEvaluationAgent",
-      description:
+      systemPrompt:
         "Evaluates code snippets and provides feedback or suggestions.",
-      tools: await mcpTools(mcpToolsConfig["code-evaluation"]),
+      tools,
       llm,
       verbose,
     });
     agentsList.push(codeEvaluationAgent);
     handoffTargets.push(codeEvaluationAgent);
+    toolsList.push(...tools);
   }
 
   // Define the triage agent taht will determine the best course of action
-  
-  const triageAgent = agent({
+
+  const travelAgent = agent({
     name: "TriageAgent",
-    description:
+    systemPrompt:
       "Acts as a triage agent to determine the best course of action for the user's query. If you cannot handle the query, please pass it to the next agent. If you can handle the query, please do so.",
-    tools: [
-      {
-        call: async (query: any) => query,
-        metadata: {
-          name: "Identity",
-          description: "Returns the input as is.",
-          parameters: {
-            type: "object",
-            properties: {
-              query: {
-                type: "string",
-                description: "The input query to be returned as is.",
-              },
-            },
-            required: ["query"],
-          },
-        },
-      },
-    ],
-    canHandoffTo: handoffTargets.map(target => target.getAgents().map(agent => agent.name)).flat(),
+    tools: [...toolsList],
+    canHandoffTo: handoffTargets
+      .map((target) => target.getAgents().map((agent) => agent.name))
+      .flat(),
     llm,
     verbose,
   });
-  agentsList.push(triageAgent);
+  agentsList.push(travelAgent);
 
   console.log("Agents list:", agentsList);
   console.log("Handoff targets:", handoffTargets);
+  console.log("Tools list:", JSON.stringify(toolsList, null, 2));
 
   // Create the multi-agent workflow
-  const agents = multiAgent({
+  return multiAgent({
     agents: agentsList,
-    rootAgent: triageAgent,
+    rootAgent: travelAgent,
     verbose,
   });
-
-  return agents;
 }

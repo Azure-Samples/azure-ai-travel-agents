@@ -1,6 +1,20 @@
 import { BaseToolWithCall } from "llamaindex";
 import { z } from "zod";
 import { MCPClient } from "./mcp-client.js";
+import type { SSEClientTransportOptions } from "@modelcontextprotocol/sdk/client/sse.js";
+
+// Copied from src/api/node_modules/@llamaindex/tools/dist/index.d.ts
+// TODO: Remove these types when they are exported from the package
+type MCPCommonOptions = {
+  toolNamePrefix?: string;
+  clientName?: string;
+  clientVersion?: string;
+  verbose?: boolean;
+};
+type LlamaIndexSSEMCPClientOptions = SSEClientTransportOptions &
+  MCPCommonOptions & {
+    url: string;
+  };
 
 type McpToolDefinition = {
   name: string;
@@ -13,8 +27,9 @@ type McpToolDefinition = {
 };
 
 export type McpServerDefinition = {
-  serverUrl: string;
-  serverName: string;
+  name: string;
+  id: string;
+  config: LlamaIndexSSEMCPClientOptions;
 };
 
 function openAiFunctionAdapter(
@@ -40,15 +55,15 @@ function client(): MCPClient {
   return new MCPClient("llamaindex-client", "1.0.0");
 }
 
-export async function mcpTools({ serverName, serverUrl }: McpServerDefinition) {
+export async function mcpTools({ id, config }: McpServerDefinition) {
   const mcpClient = client();
-  console.log(`Connecting to MCP server ${serverName} at ${serverUrl}`);
+  console.log(`Connecting to MCP server ${id} at ${config.url}`);
 
   try {
-    await mcpClient.connectToServer(serverUrl);
+    await mcpClient.connectToServer(config.url);
   } catch (error: unknown) {
     console.error(
-      `MCP server ${serverName} is not reachable`,
+      `MCP server ${id} is not reachable`,
       (error as Error).message
     );
     return [];
@@ -61,31 +76,33 @@ export async function mcpTools({ serverName, serverUrl }: McpServerDefinition) {
 
 export async function mcpToolsList(config: McpServerDefinition[]) {
   return await Promise.all(
-    config.map(async ({ serverName, serverUrl }) => {
+    config.map(async ({ id, name, config }) => {
       const mcpClient = client();
-      console.log(`Connecting to MCP server ${serverName} at ${serverUrl}`);
+      console.log(`Connecting to MCP server ${name} at ${config.url}`);
 
       try {
-        await mcpClient.connectToServer(serverUrl);
-        console.log(`MCP server ${serverName} is reachable`);
+        await mcpClient.connectToServer(config.url);
+        console.log(`MCP server ${name} is reachable`);
         const { tools } = await mcpClient.listTools();
 
-        console.log(`MCP server ${serverName} has ${tools.length} tools`);
+        console.log(`MCP server ${name} has ${tools.length} tools`);
         return {
-          serverName,
-          serverUrl,
+          id,
+          name,
+          url: config.url,
           reachable: true,
-          selected: serverName !== 'echo-ping',
+          selected: id !== "echo-ping",
           tools,
         };
       } catch (error: unknown) {
         console.error(
-          `MCP server ${serverName} is not reachable`,
+          `MCP server ${name} is not reachable`,
           (error as Error).message
         );
         return {
-          serverName,
-          serverUrl,
+          id,
+          name,
+          url: config.url,
           reachable: false,
           selected: false,
           tools: [],

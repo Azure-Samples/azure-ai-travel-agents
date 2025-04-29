@@ -1,12 +1,12 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import express from "express";
 import cors from "cors";
-import { pipeline } from "node:stream/promises";
-import { setupAgents } from "./orchestrator/llamaindex/index.js";
+import express from "express";
 import { Readable } from "node:stream";
+import { pipeline } from "node:stream/promises";
 import { mcpToolsList } from "./mcp/mcp-tools.js";
+import { setupAgents } from "./orchestrator/llamaindex/index.js";
 import { McpToolsConfig } from "./orchestrator/llamaindex/tools/index.js";
 
 const app = express();
@@ -93,9 +93,7 @@ apiRouter.post("/chat", async (req, res) => {
     res.setHeader("Connection", "keep-alive");
 
     const agents = await setupAgents(tools);
-    const context = agents.run(message, {
-      chatHistory: [],
-    });
+    const context = agents.run(message);
 
     const CHUNK_END = "\n\n";
     const readableStream = new Readable({

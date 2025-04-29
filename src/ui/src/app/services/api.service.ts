@@ -11,8 +11,8 @@ export type ServerName =
   | 'code-evaluation';
 
 export type Tools = {
-  serverName: ServerName;
-  serverUrl: string;
+  name: ServerName;
+  url: string;
   reachable: boolean;
   tools: object[];
   selected: boolean;

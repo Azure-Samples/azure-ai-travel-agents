@@ -13,31 +13,59 @@ export const McpToolsConfig = (): {
   [k in McpServerName]: McpServerDefinition;
 } => ({
   "echo-ping": {
-    serverUrl: process.env["TOOL_ECHO_PING_URL"] as string,
-    serverName: "echo-ping",
+    config: {
+      url: process.env["TOOL_ECHO_PING_URL"] as string,
+      verbose: true,
+    },
+    id: "echo-ping",
+    name: "Echo Test",
   },
   "customer-query": {
-    serverUrl: process.env["TOOL_CUSTOMER_QUERY_URL"] as string,
-    serverName: "customer-query",
+    config: {
+      url: process.env["TOOL_CUSTOMER_QUERY_URL"] as string,
+      verbose: true,
+    },
+    id: "customer-query",
+    name: "Customer Query",
   },
   "web-search": {
-    serverUrl: process.env["TOOL_WEB_SEARCH_URL"] as string,
-    serverName: "web-search",
+    config: {
+      url: process.env["TOOL_WEB_SEARCH_URL"] as string,
+      verbose: true,
+    },
+    id: "web-search",
+    name: "Web Search",
   },
   "itinerary-planning": {
-    serverUrl: process.env["TOOL_ITINERARY_PLANNING_URL"] as string,
-    serverName: "itinerary-planning",
+    config: {
+      url: process.env["TOOL_ITINERARY_PLANNING_URL"] as string,
+      verbose: true,
+    },
+    id: "itinerary-planning",
+    name: "Itinerary Planning",
   },
   "model-inference": {
-    serverUrl: process.env["TOOL_MODEL_INFERENCE_URL"] as string,
-    serverName: "model-inference",
+    config: {
+      url: process.env["TOOL_MODEL_INFERENCE_URL"] as string,
+      verbose: true,
+    },
+    id: "model-inference",
+    name: "Model Inference",
   },
   "code-evaluation": {
-    serverUrl: process.env["TOOL_CODE_EVALUATION_URL"] as string,
-    serverName: "code-evaluation",
+    config: {
+      url: process.env["TOOL_CODE_EVALUATION_URL"] as string,
+      verbose: true,
+    },
+    id: "code-evaluation",
+    name: "Code Evaluation",
   },
   "destination-recommendation": {
-    serverUrl: process.env["TOOL_DESTINATION_RECOMMENDATION_URL"] as string,
-    serverName: "destination-recommendation",
+    config: {
+      url: process.env["TOOL_DESTINATION_RECOMMENDATION_URL"] as string,
+      verbose: true,
+    },
+    id: "destination-recommendation",
+    name: "Destination Recommendation",
   },
 });

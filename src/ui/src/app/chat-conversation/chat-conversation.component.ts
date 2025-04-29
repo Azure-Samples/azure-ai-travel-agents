@@ -37,6 +37,11 @@ import {
 import { HlmToasterComponent } from '@spartan-ng/ui-sonner-helm';
 
 import {
+  BrnPopoverComponent,
+  BrnPopoverContentDirective,
+  BrnPopoverTriggerDirective,
+} from '@spartan-ng/brain/popover';
+import {
   HlmAlertDescriptionDirective,
   HlmAlertDirective,
 } from '@spartan-ng/ui-alert-helm';
@@ -44,6 +49,7 @@ import { HlmFormFieldModule } from '@spartan-ng/ui-formfield-helm';
 import { HlmIconDirective } from '@spartan-ng/ui-icon-helm';
 import { HlmInputDirective } from '@spartan-ng/ui-input-helm';
 import { HlmLabelDirective } from '@spartan-ng/ui-label-helm';
+import { HlmPopoverContentDirective } from '@spartan-ng/ui-popover-helm';
 import { HlmScrollAreaDirective } from '@spartan-ng/ui-scrollarea-helm';
 import { HlmSeparatorDirective } from '@spartan-ng/ui-separator-helm';
 import { HlmSwitchComponent } from '@spartan-ng/ui-switch-helm';
@@ -70,6 +76,10 @@ import { ChatService } from './chat-conversation.service';
     HlmScrollAreaDirective,
     HlmIconDirective,
     HlmBadgeDirective,
+    BrnPopoverComponent,
+    BrnPopoverTriggerDirective,
+    BrnPopoverContentDirective,
+    HlmPopoverContentDirective,
     BrnAlertDialogTriggerDirective,
     BrnAlertDialogContentDirective,
     HlmAlertDialogComponent,
