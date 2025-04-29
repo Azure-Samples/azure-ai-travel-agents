@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --port 8000",
     "build": "ng build",
-    "watch": "ng build --watch --configuration development",
+    "watch": "ng build --watch --configuration development --port 8000",
     "test": "ng test",
     "serve:ssr:ai-travel-agents-ui": "node dist/ai-travel-agents-ui/server/server.mjs"
   },

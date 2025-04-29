@@ -26,9 +26,17 @@
       "type": "sse",
       "url": "http://localhost:5003/sse"
     },
+    "tool-itinerary-planning-REMOTE": {
+      "type": "sse",
+      "url": "https://itinerary-planning.jollypebble-b7767743.swedencentral.azurecontainerapps.io/sse"
+    },
     "tool-destination-recommendation": {
       "type": "sse",
       "url": "http://localhost:5002/sse"
+    },
+    "tool-destination-recommendation-REMOTE": {
+      "type": "sse",
+      "url": "https://destination-recommendation.jollypebble-b7767743.swedencentral.azurecontainerapps.io/sse"
     },
     "tool-customer-query": {
       "env": {
@@ -37,6 +45,14 @@
       },
       "type": "sse",
       "url": "http://localhost:5001/sse"
+    },
+    "tool-customer-query-REMOTE": {
+      "env": {
+        "OTEL_SERVICE_NAME": "tool-customer-query",
+        "OTEL_EXPORTER_OTLP_ENDPOINT": "http://aspire-dashboard:18889"
+      },
+      "type": "sse",
+      "url": "https://customer-query.jollypebble-b7767743.swedencentral.azurecontainerapps.io/sse"
     }
   }
 }
