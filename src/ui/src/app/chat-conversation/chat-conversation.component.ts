@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
+  HostListener,
   OnInit,
   signal,
   viewChild,
@@ -10,7 +11,11 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideBrain, lucideRefreshCw } from '@ng-icons/lucide';
+import {
+  lucideBrain,
+  lucideRefreshCw,
+  lucideSendHorizontal,
+} from '@ng-icons/lucide';
 import {
   BrnAlertDialogContentDirective,
   BrnAlertDialogTriggerDirective,
@@ -57,6 +62,15 @@ import { MarkdownComponent, provideMarkdown } from 'ngx-markdown';
 import { AccordionPreviewComponent } from '../components/accordion/accordion.component';
 import { SkeletonPreviewComponent } from '../components/skeleton-preview/skeleton-preview.component';
 import { ChatService } from './chat-conversation.service';
+
+const SAMPLE_PROMPT = `Hello! I am planning a trip to Iceland and would appreciate your help in building a detailed itinerary. I amm especially interested in destination recommendations and a well-structured day-by-day plan. Please use your travel planning tools and destination insights to suggest:
+	•	The best regions and towns to visit based on my interests
+	•	Top natural attractions (e.g., waterfalls, glaciers, hot springs)
+	•	Unique local experiences or hidden gems
+	•	A balanced mix of adventure (e.g., hiking, caves) and relaxation (e.g., scenic drives, hot springs, culture)
+
+Feel free to factor in optimal travel routes, local weather patterns, and seasonal highlights. I amm looking for a well-informed, tool-assisted plan to help me make the most of the trip!`;
+
 @Component({
   selector: 'app-chat-conversation',
   standalone: true,
@@ -105,6 +119,7 @@ import { ChatService } from './chat-conversation.service';
     provideMarkdown(),
     provideIcons({
       lucideBrain,
+      lucideSendHorizontal,
       lucideRefreshCw,
     }),
   ],
@@ -129,6 +144,17 @@ export class ChatConversationComponent implements OnInit {
   async ngOnInit() {
     this.resetChat();
     await this.chatService.fetchAvailableTools();
+  }
+
+  @HostListener('window:keyup.shift.p', ['$event'])
+  insertPrompt(event: any) {
+    event.preventDefault();
+    this.chatService.userMessage.set(SAMPLE_PROMPT);
+  }
+  @HostListener('window:keyup.shift.enter', ['$event'])
+  sendMessage(event: any) {
+    event.preventDefault();
+    this.chatService.sendMessage();
   }
 
   scrollToBottom() {

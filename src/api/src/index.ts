@@ -11,6 +11,7 @@ import { McpToolsConfig } from "./orchestrator/llamaindex/tools/index.js";
 
 const app = express();
 const PORT = process.env.PORT || 4000;
+const CHUNK_END = "\n\n";
 
 // Middleware
 app.use(cors());
@@ -22,9 +23,10 @@ const apiRouter = express.Router();
 apiRouter.use((req, res, next) => {
   if (req.path === "/chat" && req.method === "POST") {
     const contentType = req.headers["content-type"]?.replace(/\n|\r/g, "");
-    const body = typeof req.body === "string" 
-      ? req.body.replace(/\n|\r/g, "") 
-      : JSON.stringify(req.body).replace(/\n|\r/g, "");
+    const body =
+      typeof req.body === "string"
+        ? req.body.replace(/\n|\r/g, "")
+        : JSON.stringify(req.body).replace(/\n|\r/g, "");
     console.log("Request Content-Type:", contentType);
     console.log("Request body:", body);
   }
@@ -60,42 +62,39 @@ apiRouter.get("/tools", async (req, res) => {
 //   }
 // });
 
-
 // Chat endpoint with Server-Sent Events (SSE) for streaming responses
 // @ts-ignore - Ignoring TypeScript errors for Express route handlers
 apiRouter.post("/chat", async (req, res) => {
-
   req.on("close", () => {
     console.log("Client disconnected, aborting...");
   });
 
+  if (!req.body) {
+    console.error(
+      "Request body is undefined. Check Content-Type header in the request."
+    );
+    return res.status(400).json({
+      error:
+        "Request body is undefined. Make sure to set Content-Type to application/json.",
+    });
+  }
+
+  const message = req.body.message;
+  const tools = req.body.tools;
+  console.log("Tools to use:", JSON.stringify(tools, null, 2));
+
+  if (!message) {
+    return res.status(400).json({ error: "Message is required" });
+  }
+
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+
   try {
-    if (!req.body) {
-      console.error(
-        "Request body is undefined. Check Content-Type header in the request."
-      );
-      return res.status(400).json({
-        error:
-          "Request body is undefined. Make sure to set Content-Type to application/json.",
-      });
-    }
-
-    const message = req.body.message;
-    const tools = req.body.tools;
-    console.log("Tools to use:", JSON.stringify(tools, null, 2));
-
-    if (!message) {
-      return res.status(400).json({ error: "Message is required" });
-    }
- 
-    res.setHeader("Content-Type", "text/event-stream");
-    res.setHeader("Cache-Control", "no-cache");
-    res.setHeader("Connection", "keep-alive");
-
     const agents = await setupAgents(tools);
     const context = agents.run(message);
 
-    const CHUNK_END = "\n\n";
     const readableStream = new Readable({
       async read() {
         try {
@@ -111,13 +110,15 @@ apiRouter.post("/chat", async (req, res) => {
             console.log("Pushed event:", serializedData);
           }
           this.push(null); // Close the stream
-        } catch (error) {
-          this.push(
-            JSON.stringify({
-              type: "error",
-              message: "Serialization error",
-            }) + CHUNK_END
-          );
+        } catch (error: any) {
+          console.error("Error during streaming:", error?.message);
+          // this.push(
+          //   JSON.stringify({
+          //     type: "error",
+          //     message: "Serialization error",
+          //     error,
+          //   }) + CHUNK_END
+          // );
         }
       },
     });
@@ -132,7 +133,7 @@ apiRouter.post("/chat", async (req, res) => {
         `${JSON.stringify({
           type: "error",
           message: (error as any).message,
-        })}\n\n`
+        })}` + CHUNK_END
       );
       res.end();
     }

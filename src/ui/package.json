@@ -23,7 +23,7 @@
     "@angular/ssr": "^19.2.5",
     "@ng-icons/core": "^29.10.0",
     "@ng-icons/lucide": ">=29.0.0",
-    "@spartan-ng/brain": "^0.0.1-alpha.433",
+    "@spartan-ng/brain": "^0.0.1-alpha.4500",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "embla-carousel-angular": "19.0.0",

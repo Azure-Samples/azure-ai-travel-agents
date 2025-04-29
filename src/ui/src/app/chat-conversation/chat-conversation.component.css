@@ -12,14 +12,6 @@
   background-color: hsl(var(--primary));
   color: hsl(var(--primary-foreground));
 }
-.assistant-message {
-  background-color: hsl(var(--muted));
-  color: hsl(var(--muted-foreground)); /* Explicit text color for assistant messages */
-}
-/* Dark mode specific improvements */
-:host-context(.dark) .assistant-message {
-  color: hsl(210 40% 96.1%); /* Ensure high contrast in dark mode */
-}
 :host-context(.dark) .timestamp {
   color: hsl(210 40% 90%); /* Brighter timestamp in dark mode */
   opacity: 0.85; /* Slightly higher opacity for better readability */

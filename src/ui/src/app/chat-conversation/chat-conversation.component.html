@@ -1,6 +1,6 @@
 <hlm-toaster />
 <div hlmCard class="w-[1200px] h-full max-h-[900px] flex flex-col">
-  <div hlmCardHeader>
+  <div hlmCardHeader class="sticky top-0 z-10 bg-background">
     <h3
       hlmCardTitle
       class="text-center flex justify-between items-center mb-10"
@@ -67,7 +67,7 @@
           <section class="flex flex-col gap-2 w-full">
             <accordion-preview
               [isOpened]="false"
-              class="flex flex-row rounded-3xl px-4 py-2 w-full overflow-y-scroll"
+              class="flex flex-row rounded-3xl px-4 py-2 w-full"
             >
               @for (evt of message.metadata?.events; track $index) {
               @if(evt.event !== 'AgentStream') {
@@ -92,11 +92,9 @@
           @if ($last && chatService.isLoading()) {
           <skeleton-preview></skeleton-preview>
           } @else { @for(reason of message.reasoning; track reason) {
-          <div hlmAlert class="bg-white gap-10">
+          <div hlmAlert class="gap-10">
             <p hlmAlertDesc>
-              <markdown class="italic">{{
-                reason.content
-              }}</markdown>
+              <markdown class="italic">{{ reason.content }}</markdown>
             </p>
           </div>
           }
@@ -139,8 +137,9 @@
           <div class="grid gap-2">
             @for(tool of chatService.tools(); track tool) {
             <div class="items-center">
-              <label hlmLabel for="width">
+              <label hlmLabel for="agent-event-{{ tool.id }}">
                 <hlm-switch
+                  id="agent-event-{{ tool.id }}"
                   class="mr-2"
                   [disabled]="!tool.reachable"
                   [(ngModel)]="tool.selected"
@@ -163,18 +162,18 @@
           [(ngModel)]="chatService.userMessage"
           (keyup.shift.enter)="chatService.sendMessage()"
         ></textarea>
-        <hlm-hint></hlm-hint>
+        <hlm-hint>Hint: Hold Shift+P to insert a sample prompt.</hlm-hint>
       </hlm-form-field>
       <button
         hlmBtn
-        variant="default"
+        variant="secondary"
         class="rounded-full"
         [disabled]="
           chatService.isLoading() || !chatService.userMessage().trim()
         "
         (click)="chatService.sendMessage()"
       >
-        Send
+        <ng-icon hlm size="lg" name="lucideSendHorizontal" />
       </button>
     </div>
   </div>

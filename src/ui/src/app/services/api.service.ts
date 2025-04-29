@@ -2,7 +2,7 @@ import { inject, Injectable, NgZone } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { environment } from '../../environments/environment';
 
-export type ServerName =
+export type ServerID =
   | 'echo-ping'
   | 'customer-query'
   | 'web-search'
@@ -11,7 +11,8 @@ export type ServerName =
   | 'code-evaluation';
 
 export type Tools = {
-  name: ServerName;
+  id: ServerID;
+  name: string;
   url: string;
   reachable: boolean;
   tools: object[];
