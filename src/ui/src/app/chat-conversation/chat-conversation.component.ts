@@ -12,6 +12,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
+  lucideBot,
   lucideBrain,
   lucideRefreshCw,
   lucideSendHorizontal,
@@ -63,13 +64,22 @@ import { AccordionPreviewComponent } from '../components/accordion/accordion.com
 import { SkeletonPreviewComponent } from '../components/skeleton-preview/skeleton-preview.component';
 import { ChatService } from './chat-conversation.service';
 
-const SAMPLE_PROMPT = `Hello! I am planning a trip to Iceland and would appreciate your help in building a detailed itinerary. I amm especially interested in destination recommendations and a well-structured day-by-day plan. Please use your travel planning tools and destination insights to suggest:
-	•	The best regions and towns to visit based on my interests
-	•	Top natural attractions (e.g., waterfalls, glaciers, hot springs)
-	•	Unique local experiences or hidden gems
-	•	A balanced mix of adventure (e.g., hiking, caves) and relaxation (e.g., scenic drives, hot springs, culture)
+const SAMPLE_PROMPT_1 = `Hello! I'm planning a trip to Iceland and would like your expertise to create a custom itinerary. Please use your destination planning tools and internal resources to suggest a day-by-day plan based on:
+	•	Top must-see natural sites (glaciers, waterfalls, geothermal spots, etc.)
+	•	Unique local experiences (culture, food, hidden gems)
+	•	Efficient travel routes and realistic timing
+	•	A mix of adventure and relaxation
 
-Feel free to factor in optimal travel routes, local weather patterns, and seasonal highlights. I amm looking for a well-informed, tool-assisted plan to help me make the most of the trip!`;
+I'm aiming for an itinerary that balances scenic exploration with comfort. Feel free to tailor recommendations based on the best time to visit and local logistics. Thank you!`;
+
+const SAMPLE_PROMPT_2 = `Hi there! I'd love help planning a trip to Iceland. I'm looking for destination suggestions and a full itinerary tailored to an unforgettable experience. Please use your planning tools and destination insights to recommend:
+	•	Where to go and why
+	•	What to do each day (including any unique or off-the-beaten-path experiences)
+	•	Best ways to get around and where to stay
+
+I'm open to all kinds of adventures—whether it's chasing waterfalls, soaking in hot springs, or discovering small Icelandic towns. A tool-informed, creative itinerary would be amazing!`;
+
+const SAMPLE_PROMPT_3 = `I'm planning a trip to Morocco and would appreciate a complete, tool-assisted itinerary. Please use your travel planning systems to recommend key destinations, daily activities, and a logical route. I'm looking for a balanced experience that includes cultural landmarks, natural scenery, and time to relax. Efficient travel logistics and seasonal considerations would be great to include.`;
 
 @Component({
   selector: 'app-chat-conversation',
@@ -119,6 +129,7 @@ Feel free to factor in optimal travel routes, local weather patterns, and season
     provideMarkdown(),
     provideIcons({
       lucideBrain,
+      lucideBot,
       lucideSendHorizontal,
       lucideRefreshCw,
     }),
@@ -131,6 +142,7 @@ export class ChatConversationComponent implements OnInit {
   agents = signal<{}>({});
   eot = viewChild<ElementRef<HTMLElement>>('eot');
   agentMessages = viewChildren<ElementRef<HTMLElement>>('agentMessages');
+  samplePrompts = [SAMPLE_PROMPT_1, SAMPLE_PROMPT_2, SAMPLE_PROMPT_3];
 
   constructor(public chatService: ChatService) {
     this.chatService.messagesStream.subscribe((messages) => {
@@ -146,11 +158,6 @@ export class ChatConversationComponent implements OnInit {
     await this.chatService.fetchAvailableTools();
   }
 
-  @HostListener('window:keyup.shift.p', ['$event'])
-  insertPrompt(event: any) {
-    event.preventDefault();
-    this.chatService.userMessage.set(SAMPLE_PROMPT);
-  }
   @HostListener('window:keyup.shift.enter', ['$event'])
   sendMessage(event: any) {
     event.preventDefault();

@@ -1,5 +1,5 @@
 <hlm-toaster />
-<div hlmCard class="w-[1200px] h-full max-h-[900px] flex flex-col">
+<div hlmCard class="w-[1200px] h-full max-h-[1000px] flex flex-col">
   <div hlmCardHeader class="sticky top-0 z-10 bg-background">
     <h3
       hlmCardTitle
@@ -45,9 +45,23 @@
   <ng-scrollbar
     hlmCardContent
     hlm
-    class="flex-1 h-[650px] overflow-scroll-y p-10 overflow-y-scroll mb-10"
+    class="flex-1 h-[800px] p-10 overflow-y-auto mb-10"
   >
     <div class="flex flex-col gap-4">
+
+      @if ((chatService.messagesStream | async)?.length === 0) {
+        <div class="flex flex-row gap-4">
+          @for(prompt of samplePrompts; track prompt) {
+            <div
+              class="p-10 bg-muted rounded-md flex items-center justify-center cursor-pointer border hover:border-red"
+              (click)="chatService.userMessage.set(prompt)"
+            >
+              <p class="display-box max-w-200 line-clamp-4 box-orient-vertical overflow-hidden text-ellipsis">
+                {{ prompt }}
+            </div>
+          }
+        </div>
+      }
       <!-- loop over all messages -->
       @for (message of (chatService.messagesStream | async); track message) {
 
@@ -118,40 +132,7 @@
   </ng-scrollbar>
 
   <div hlmCardFooter class="flex-col items-start gap-2">
-    <div class="flex gap-2">
-      <brn-popover sideOffset="5">
-        <button id="edit-profile" variant="outline" brnPopoverTrigger hlmBtn>
-          Agents
-        </button>
-        <div
-          hlmPopoverContent
-          class="w-80 grid gap-4"
-          *brnPopoverContent="let ctx"
-        >
-          <div class="space-y-2">
-            <h4 class="font-medium leading-none">Available Agents</h4>
-            <p class="text-sm text-muted-foreground">
-              Choose which agents to use
-            </p>
-          </div>
-          <div class="grid gap-2">
-            @for(tool of chatService.tools(); track tool) {
-            <div class="items-center">
-              <label hlmLabel for="agent-event-{{ tool.id }}">
-                <hlm-switch
-                  id="agent-event-{{ tool.id }}"
-                  class="mr-2"
-                  [disabled]="!tool.reachable"
-                  [(ngModel)]="tool.selected"
-                />
-              </label>
-              {{ tool.name }}
-            </div>
-            }
-          </div>
-        </div>
-      </brn-popover>
-    </div>
+    <div class="flex gap-2"></div>
     <div class="flex gap-2 w-full mt-10">
       <hlm-form-field class="flex-col flex w-full">
         <textarea
@@ -164,17 +145,51 @@
         ></textarea>
         <hlm-hint>Hint: Hold Shift+P to insert a sample prompt.</hlm-hint>
       </hlm-form-field>
-      <button
-        hlmBtn
-        variant="secondary"
-        class="rounded-full"
-        [disabled]="
-          chatService.isLoading() || !chatService.userMessage().trim()
-        "
-        (click)="chatService.sendMessage()"
-      >
-        <ng-icon hlm size="lg" name="lucideSendHorizontal" />
-      </button>
+      <div class="flex flex-col gap-2">
+        <button
+          hlmBtn
+          variant="ghost"
+          class="rounded-full"
+          [disabled]="
+            chatService.isLoading() || !chatService.userMessage().trim()
+          "
+          (click)="chatService.sendMessage()"
+        >
+          <ng-icon hlm size="lg" name="lucideSendHorizontal" />
+        </button>
+        <brn-popover sideOffset="5">
+          <button id="edit-profile" variant="ghost" brnPopoverTrigger hlmBtn>
+            <ng-icon hlm size="lg" name="lucideBot" />
+          </button>
+          <div
+            hlmPopoverContent
+            class="w-80 grid gap-4"
+            *brnPopoverContent="let ctx"
+          >
+            <div class="space-y-2">
+              <h4 class="font-medium leading-none">Available Agents</h4>
+              <p class="text-sm text-muted-foreground">
+                Choose which agents to use
+              </p>
+            </div>
+            <div class="grid gap-2">
+              @for(tool of chatService.tools(); track tool) {
+              <div class="items-center">
+                <label hlmLabel for="agent-event-{{ tool.id }}">
+                  <hlm-switch
+                    id="agent-event-{{ tool.id }}"
+                    class="mr-2"
+                    [disabled]="!tool.reachable"
+                    [(ngModel)]="tool.selected"
+                  />
+                </label>
+                {{ tool.name }}
+              </div>
+              }
+            </div>
+          </div>
+        </brn-popover>
+      </div>
     </div>
   </div>
 </div>
