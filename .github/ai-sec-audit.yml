@@ -60,10 +60,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          curl -s "https://models.github.ai/inference/chat/completions" \
+          curl -s -w "%{http_code}" -o response.json "https://models.github.ai/inference/chat/completions" \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer $GITHUB_TOKEN" \
-            -d @- <<'JSON' > response.json
+            -d @- <<'JSON' > curl_output.txt
           {
             "model": "azure-openai/o3",
             "messages": [
