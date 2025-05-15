@@ -58,22 +58,20 @@ jobs:
       - name: 🤖  Call Model o3
         id: call-model
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AUDIT_GITHUB_TOKEN: ${{ secrets.AUDIT_GITHUB_TOKEN }}
         run: |
-          curl -s -w "%{http_code}" -o response.json "https://models.github.ai/inference/chat/completions" \
+          curl -s -w "%{http_code}" -o response.json -X POST "https://models.github.ai/inference/chat/completions" \
             -H "Content-Type: application/json" \
-            -H "Authorization: Bearer $GITHUB_TOKEN" \
-            -d @- <<'JSON' > curl_output.txt
-          {
-            "model": "azure-openai/o3",
-            "messages": [
-              { "role": "system",
-                "content": "You are a senior cloud-security auditor producing structured markdown." },
-              { "role": "user",
-                "content": "$(cat prompt.txt)" }
-            ]
-          }
-          JSON
+            -H "Authorization: Bearer $AUDIT_GITHUB_TOKEN" \
+            -d '{
+              "model": "azure-openai/o3",
+              "messages": [
+                { "role": "system",
+                  "content": "You are a senior cloud-security auditor producing structured markdown." },
+                { "role": "user",
+                  "content": "$(cat prompt.txt)" }
+              ]
+            }'
 
       - name: 📄  Extract markdown report
         run: |
