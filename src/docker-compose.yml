@@ -86,7 +86,7 @@ services:
     container_name: web-ui
     build: ./ui
     ports:
-      - "8000:8000"
+      - "4200:4200"
     depends_on:
       - web-api
     networks:
