@@ -32,7 +32,7 @@ jobs:
         run: |
           cat > prompt.txt <<'EOF'
           You are an experienced cloud-security engineer with deep knowledge of Azure, DevSecOps, and secure software design.
-          Task: Perform a full security audit of the GitHub repository https://github.com/Azure-Samples/azure-ai-travel-agents.
+          Task: Perform a full security audit of the GitHub repository https://github.com/${{ github.repository }}.
           
           Scope to cover:
           1-Source-code vulnerabilities - input validation, secrets, insecure API usage, error handling.
