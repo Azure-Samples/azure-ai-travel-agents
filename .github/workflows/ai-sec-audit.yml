@@ -64,7 +64,7 @@ jobs:
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer $AUDIT_GITHUB_TOKEN" \
             -d '{
-              "model": "azure-openai/o3",
+              "model": "openai/o3",
               "messages": [
                 { "role": "system",
                   "content": "You are a senior cloud-security auditor producing structured markdown." },
