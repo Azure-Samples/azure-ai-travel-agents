@@ -58,7 +58,7 @@ jobs:
           AUDIT_GITHUB_TOKEN: ${{ secrets.AUDIT_GITHUB_TOKEN }}
         run: |
           prompt_content=$(cat prompt.txt)
-          curl -s -w "%{http_code}" -o response.json -X POST "https://models.github.ai/inference/chat/completions" \
+          curl -v -s -w "%{http_code}" -o response.json -X POST "https://models.github.ai/inference/chat/completions" \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer $AUDIT_GITHUB_TOKEN" \
             -d '{
@@ -67,7 +67,7 @@ jobs:
                 { "role": "system",
                   "content": "You are an expert in cloud-security auditing producing structured and actionable markdown reports." },
                 { "role": "user",
-                  "content": \"$prompt_content\"
+                  "content": "'"$prompt_content"'"
                 }
               ]
             }'
