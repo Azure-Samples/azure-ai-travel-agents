@@ -57,20 +57,23 @@ jobs:
         env:
           AUDIT_GITHUB_TOKEN: ${{ secrets.AUDIT_GITHUB_TOKEN }}
         run: |
-          prompt_content=$(cat prompt.txt)
+          prompt_content=$(jq -Rs . prompt.txt)
+          cat > payload.json <<EOF
+          {
+            "model": "openai/o3",
+            "messages": [
+              { "role": "system",
+                "content": "You are an expert in cloud-security auditing producing structured and actionable markdown reports." },
+              { "role": "user",
+                "content": $prompt_content
+              }
+            ]
+          }
+          EOF
           curl -v -s -w "%{http_code}" -o response.json -X POST "https://models.github.ai/inference/chat/completions" \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer $AUDIT_GITHUB_TOKEN" \
-            -d '{
-              "model": "openai/o3",
-              "messages": [
-                { "role": "system",
-                  "content": "You are an expert in cloud-security auditing producing structured and actionable markdown reports." },
-                { "role": "user",
-                  "content": "'"$prompt_content"'"
-                }
-              ]
-            }'
+            -d @payload.json
 
       - name: 📄  Extract markdown report
         run: |
