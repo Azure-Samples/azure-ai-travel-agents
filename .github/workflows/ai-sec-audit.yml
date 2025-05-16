@@ -125,46 +125,29 @@ jobs:
       - name: 🤖  Call Model o3
         id: call-model
         env:
-          WASSIM_OPENAI_API_KEY: ${{ secrets.WASSIM_OPENAI_API_KEY }}
+          RORY_AOAI_API_KEY: ${{ secrets.RORY_AOAI_API_KEY }}
         run: |
           prompt_content=$(jq -Rs . prompt.txt)
           repomix_output=$(jq -Rs . repomix-output.txt)
           cat > payload.json <<EOF
           {
-            "model": "o1",
-            "text": {
-            "format": {
-                "type": "text"
-              }
-            },
-            "reasoning": {
-              "effort": "medium"
-            },
-            "input": [
+            "model": "o3",
+            "messages": [
               { "role": "system",
-                "content": [{
-                  "type": "input_text",
-                  "text": "You are an expert in cloud-security auditing producing structured and actionable markdown reports."
-                }]
+                "content": "You are an expert in cloud-security auditing producing structured and actionable markdown reports."
               },
               { "role": "developer",
-                "content": [{
-                  "type": "input_text",
-                  "text": $prompt_content
-                }]
+                "content": $prompt_content
               },
               { "role": "user",
-                "content": [{
-                  "type": "input_text",
-                  "text": $repomix_output
-                }]
+                "content": $repomix_output
               }
             ]
           }
           EOF
-          curl -v -s -w "%{http_code}" -o response.json -X POST "https://api.openai.com/v1/responses" \
+          curl -v -s -w "%{http_code}" -o response.json -X POST "https://ai-ropreddy3379ai919719377179.openai.azure.com/openai/deployments/o3/chat/completions?api-version=2025-01-01-preview" \
             -H "Content-Type: application/json" \
-            -H "Authorization: Bearer $WASSIM_OPENAI_API_KEY" \
+            -H "Authorization: Bearer $RORY_AOAI_API_KEY" \
             -d @payload.json
 
       - name: 📄  Extract markdown report
