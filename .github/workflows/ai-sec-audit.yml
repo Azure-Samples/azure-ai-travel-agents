@@ -29,7 +29,17 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Pack repository with Repomix
-        run: npx repomix --config .github/workflows/repomix.config.json
+        run: |
+          npx --yes repomix \
+          --include "src,infra" \
+          --ignore "**/*.{mvn,cache,angular,svg,gitignore,dockerignore,spec.json,config.js,editorconfig,css,sln,xml,lock,spec.ts,sln},**/*tsconfig.json,**/*angular.json,**/CODE_OF_CONDUCT.md,**/README.md,**/LICENSE,**/.env*,**/mvnw,**/mvnw.cmd" \
+          --output repomix-output.txt \
+          --header-text "Project codebase to audit" \
+          --no-file-summary \
+          --remove-comments \
+          --remove-empty-lines \
+          --style plain \
+          --output-show-line-numbers
 
       - name: Upload Repomix output
         uses: actions/upload-artifact@v4
@@ -125,7 +135,8 @@ jobs:
       - name: 🤖  Call Model o3
         id: call-model
         env:
-          RORY_AOAI_API_KEY: ${{ secrets.RORY_AOAI_API_KEY }}
+          WASSIM_AOAI_API_KEY: ${{ secrets.WASSIM_AOAI_API_KEY }}
+          AZURE_OPENAI_ENDPOINT: ${{ secrets.AZURE_OPENAI_ENDPOINT }}
         run: |
           prompt_content=$(jq -Rs . prompt.txt)
           repomix_output=$(jq -Rs . repomix-output.txt)
@@ -145,9 +156,9 @@ jobs:
             ]
           }
           EOF
-          curl -v -s -w "%{http_code}" -o response.json -X POST "https://ai-ropreddy3379ai919719377179.openai.azure.com/openai/deployments/o3/chat/completions?api-version=2025-01-01-preview" \
+          curl -v -s -w "%{http_code}" -o response.json -X POST "$AZURE_OPENAI_ENDPOINT" \
             -H "Content-Type: application/json" \
-            -H "Authorization: Bearer $RORY_AOAI_API_KEY" \
+            -H "Authorization: Bearer $WASSIM_AOAI_API_KEY" \
             -d @payload.json
 
       - name: 📄  Extract markdown report
