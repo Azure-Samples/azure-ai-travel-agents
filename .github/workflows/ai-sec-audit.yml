@@ -30,7 +30,7 @@ jobs:
 
       - name: 📝  Build audit prompt
         run: |
-          cat > prompt.txt <<'EOF'
+          cat > prompt.txt <<EOF
           You are an experienced cloud-security engineer with deep knowledge of Azure, DevSecOps, and secure software design.
             Task: Perform a full security audit of the GitHub repository https://github.com/azure-ai-travel-agents/azure-ai-travel-agents.
             Scope to cover
@@ -64,7 +64,7 @@ jobs:
               "model": "openai/o3",
               "messages": [
                 { "role": "system",
-                  "content": "You are a senior cloud-security auditor producing structured markdown." },
+                  "content": "You are an expert in cloud-security auditing producing structured and actionable markdown reports." },
                 { "role": "user",
                   "content": "$(cat prompt.txt)"
                 }
