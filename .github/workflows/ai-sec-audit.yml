@@ -70,27 +70,25 @@ jobs:
                   "content": "You are a senior cloud-security auditor producing structured markdown." },
                 { "role": "user",
                   "content": "You are an experienced cloud-security engineer with deep knowledge of Azure, DevSecOps, and secure software design.
-          Task: Perform a full security audit of the GitHub repository https://github.com/${{ github.repository }}.
-          
-          Scope to cover:
-          1-Source-code vulnerabilities - input validation, secrets, insecure API usage, error handling.
-          2-Dependency risks - outdated or vulnerable libraries (direct & transitive).
-          3-Configuration and secrets management - hard-coded credentials, Key Vault/ENV usage, IaC misconfigs.
-          4-Identity & access control (IAM) - GitHub Actions permissions, Azure roles, service principals, workflow secrets.
-          5-Cloud posture - network exposure, HTTPS enforcement, logging, private endpoints, managed identity usage.
-          6-Best-practice alignment - OWASP Top 10, NIST, Azure Well-Architected Framework.
-          
-          Deliverable (Markdown):
-          * Introduction (what you audited & methodology).
-          * Detailed Findings under each scope area.
-          * Key-findings table with columns: Severity · Issue · File/Location · Recommendation.
-          * Conclusion & prioritized action list.
-          
-          Style:
-          * Clear headings, concise bullets, code snippets where helpful.
-          * Severity levels: High / Medium / Low.
-          * Use a landscape-friendly table for key findings.
-          * Output only the report — no extraneous commentary." }
+                    Task: Perform a full security audit of the GitHub repository https://github.com/roryp/azure-ai-travel-agents.
+                    Scope to cover
+                    Source-code vulnerabilities - input validation, secrets, insecure API usage, error handling.
+                    Dependency risks - outdated or vulnerable libraries (direct & transitive).
+                    Configuration and secrets management - hard-coded credentials, Key Vault/ENV usage, IaC misconfigs.
+                    Identity & access control (IAM) - GitHub Actions permissions, Azure roles, service principals, workflow secrets.
+                    Cloud posture - network exposure, HTTPS enforcement, logging, private endpoints, managed identity usage.
+                    Best-practice alignment - OWASP Top 10, NIST, Azure Well-Architected Framework.
+                    Deliverable (Markdown):
+                    Introduction (what you audited & methodology).
+                    Detailed Findings under each scope area.
+                    Key-findings table with columns: Severity · Issue · File/Location · Recommendation.
+                    Conclusion & prioritized action list.
+                    Style:
+                    Clear headings, concise bullets, code snippets where helpful.
+                    Severity levels: High / Medium / Low.
+                    Use a landscape-friendly table for key findings.
+                    Output only the report — no extraneous commentary." 
+                }
               ]
             }'
 
