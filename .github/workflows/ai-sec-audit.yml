@@ -125,7 +125,7 @@ jobs:
       - name: 🤖  Call Model o3
         id: call-model
         env:
-          AUDIT_GITHUB_TOKEN: ${{ secrets.AUDIT_GITHUB_TOKEN }}
+          WASSIM_OPENAI_API_KEY: ${{ secrets.WASSIM_OPENAI_API_KEY }}
         run: |
           prompt_content=$(jq -Rs . prompt.txt)
           repomix_output=$(jq -Rs . repomix-output.txt)
