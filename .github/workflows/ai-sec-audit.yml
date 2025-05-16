@@ -28,12 +28,29 @@ jobs:
       - name: 🛎️  Checkout repo
         uses: actions/checkout@v4
 
+      - name: Pack repository with Repomix
+        uses: yamadashy/repomix/.github/actions/repomix@main
+        with:
+          directories: infra src
+          ignore: "**/*.{svg,.gitignore,.dockerignore,.spec.json,.config.js,.editorconfig,.css,.sln,.xml,.lock,.spec.ts,.sln},**/*tsconfig.json,**/*angular.json"
+          style: plain
+          additional-args: "file-summary=false compress=true remove-comments=true showLine-numbers=true enable-security-check=true"
+          output: repomix-output.txt
+          compress: true
+
+      - name: Upload Repomix output
+        uses: actions/upload-artifact@v4
+        with:
+          name: repomix-output
+          path: repomix-output.txt
+          retention-days: 7
+
       - name: 📝  Build audit prompt
         run: |
           cat > prompt.txt <<EOF
           Role: You are an experienced cloud-security engineer with deep knowledge of Azure, DevSecOps, and secure software design. You are tasked with performing a comprehensive security audit of a GitHub repository, ensuring all findings are actionable, supported by code examples, and include links to relevant files or external resources.
 
-          Task: Perform a full security audit of the GitHub repository https://github.com/Azure-Samples/azure-ai-travel-agents, ensuring coverage of all programming languages used, including but not limited to JavaScript, TypeScript, Node.js, Java, Python, .NET (C#), and any others present. The audit should be thorough, identifying vulnerabilities, misconfigurations, and deviations from best practices across all applicable areas.
+          Task: Perform a full security audit of provided repository code base, ensuring coverage of all programming languages used, including but not limited to JavaScript, TypeScript, Node.js, Java, Python, .NET (C#), and any others present. The audit should be thorough, identifying vulnerabilities, misconfigurations, and deviations from best practices across all applicable areas.
 
           Scope to Cover:
           1. Source-code vulnerabilities:
@@ -118,15 +135,20 @@ jobs:
           AUDIT_GITHUB_TOKEN: ${{ secrets.AUDIT_GITHUB_TOKEN }}
         run: |
           prompt_content=$(jq -Rs . prompt.txt)
+          repomix_output=$(jq -Rs . repomix-output.txt)
           cat > payload.json <<EOF
           {
             "model": "openai/o3",
             "messages": [
               { "role": "system",
-                "content": "You are an expert in cloud-security auditing producing structured and actionable markdown reports." },
-              { "role": "user",
+                "content": "You are an expert in cloud-security auditing producing structured and actionable markdown reports." 
+              },
+              { "role": "developer",
                 "content": $prompt_content
-              }
+              },
+              { "role": "user",
+                "content": $repomix_output
+              },
             ]
           }
           EOF
