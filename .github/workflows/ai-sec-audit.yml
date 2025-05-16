@@ -1,4 +1,4 @@
-name: Security Audit (o3 deep research)
+name: AI Security Audit
 
 on:
   workflow_dispatch:
@@ -132,11 +132,11 @@ jobs:
           -  private enAudit ARM and Bicep templates for public endpoint exposures, suggestingdpoints with references to Azure Private Endpoints (https://docs.microsoft.com/en-us/azure/private-link/private-endpoint-overview).
           EOF
 
-      - name: 🤖  Call Model o3
+      - name: 🤖  Call Model
         id: call-model
         env:
           WASSIM_AOAI_API_KEY: ${{ secrets.WASSIM_AOAI_API_KEY }}
-          AZURE_OPENAI_ENDPOINT: ${{ secrets.AZURE_OPENAI_ENDPOINT }}
+          WASSIM_AZURE_OPENAI_ENDPOINT: ${{ secrets.AZURE_OPENAI_ENDPOINT }}
         run: |
           prompt_content=$(jq -Rs . prompt.txt)
           repomix_output=$(jq -Rs . repomix-output.txt)
@@ -156,7 +156,7 @@ jobs:
             ]
           }
           EOF
-          curl -v -s -w "%{http_code}" -o response.json -X POST "$AZURE_OPENAI_ENDPOINT" \
+          curl -v -s -w "%{http_code}" -o response.json -X POST "$WASSIM_AZURE_OPENAI_ENDPOINT" \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer $WASSIM_AOAI_API_KEY" \
             -d @payload.json
@@ -184,3 +184,6 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           path: security-audit.md
+          hide_and_recreate: true
+          hide_classify: "OUTDATED"
+
