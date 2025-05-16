@@ -131,23 +131,40 @@ jobs:
           repomix_output=$(jq -Rs . repomix-output.txt)
           cat > payload.json <<EOF
           {
-            "model": "openai/o3",
-            "messages": [
+            "model": "o1",
+            "text": {
+            "format": {
+                "type": "text"
+              }
+            },
+            "reasoning": {
+              "effort": "medium"
+            },
+            "input": [
               { "role": "system",
-                "content": "You are an expert in cloud-security auditing producing structured and actionable markdown reports." 
+                "content": [{
+                  "type": "input_text",
+                  "text": "You are an expert in cloud-security auditing producing structured and actionable markdown reports."
+                }]
               },
               { "role": "developer",
-                "content": $prompt_content
+                "content": [{
+                  "type": "input_text",
+                  "text": $prompt_content
+                }]
               },
               { "role": "user",
-                "content": $repomix_output
+                "content": [{
+                  "type": "input_text",
+                  "text": $repomix_output
+                }]
               }
             ]
           }
           EOF
-          curl -v -s -w "%{http_code}" -o response.json -X POST "https://models.github.ai/inference/chat/completions" \
+          curl -v -s -w "%{http_code}" -o response.json -X POST "https://api.openai.com/v1/responses" \
             -H "Content-Type: application/json" \
-            -H "Authorization: Bearer $AUDIT_GITHUB_TOKEN" \
+            -H "Authorization: Bearer $WASSIM_OPENAI_API_KEY" \
             -d @payload.json
 
       - name: 📄  Extract markdown report
