@@ -141,7 +141,7 @@ jobs:
               },
               { "role": "user",
                 "content": $repomix_output
-              },
+              }
             ]
           }
           EOF
