@@ -29,14 +29,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Pack repository with Repomix
-        uses: yamadashy/repomix/.github/actions/repomix@main
-        with:
-          directories: infra src
-          ignore: "**/*.{svg,.gitignore,.dockerignore,.spec.json,.config.js,.editorconfig,.css,.sln,.xml,.lock,.spec.ts,.sln},**/*tsconfig.json,**/*angular.json"
-          style: plain
-          additional-args: "file-summary=false compress=true remove-comments=true showLine-numbers=true enable-security-check=true"
-          output: repomix-output.txt
-          compress: true
+        run: npx repomix --config .github/workflows/repomix.config.json
 
       - name: Upload Repomix output
         uses: actions/upload-artifact@v4
