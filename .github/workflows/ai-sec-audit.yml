@@ -31,25 +31,85 @@ jobs:
       - name: 📝  Build audit prompt
         run: |
           cat > prompt.txt <<EOF
-          You are an experienced cloud-security engineer with deep knowledge of Azure, DevSecOps, and secure software design.
-            Task: Perform a full security audit of the GitHub repository https://github.com/azure-ai-travel-agents/azure-ai-travel-agents.
-            Scope to cover
-            Source-code vulnerabilities - input validation, secrets, insecure API usage, error handling.
-            Dependency risks - outdated or vulnerable libraries (direct & transitive).
-            Configuration and secrets management - hard-coded credentials, Key Vault/ENV usage, IaC misconfigs.
-            Identity & access control (IAM) - GitHub Actions permissions, Azure roles, service principals, workflow secrets.
-            Cloud posture - network exposure, HTTPS enforcement, logging, private endpoints, managed identity usage.
-            Best-practice alignment - OWASP Top 10, NIST, Azure Well-Architected Framework.
-            Deliverable (Markdown):
-            Introduction (what you audited & methodology).
-            Detailed Findings under each scope area.
-            Key-findings table with columns: Severity · Issue · File/Location · Recommendation.
-            Conclusion & prioritized action list.
-            Style:
-            Clear headings, concise bullets, code snippets where helpful.
-            Severity levels: High / Medium / Low.
-            Use a landscape-friendly table for key findings.
-            Output only the report — no extraneous commentary.
+          Role: You are an experienced cloud-security engineer with deep knowledge of Azure, DevSecOps, and secure software design. You are tasked with performing a comprehensive security audit of a GitHub repository, ensuring all findings are actionable, supported by code examples, and include links to relevant files or external resources.
+
+          Task: Perform a full security audit of the GitHub repository https://github.com/Azure-Samples/azure-ai-travel-agents, ensuring coverage of all programming languages used, including but not limited to JavaScript, TypeScript, Node.js, Java, Python, .NET (C#), and any others present. The audit should be thorough, identifying vulnerabilities, misconfigurations, and deviations from best practices across all applicable areas.
+
+          Scope to Cover:
+          1. Source-code vulnerabilities:
+            - Input validation (e.g., SQL injection, XSS, CSRF).
+            - Secrets management (e.g., no hard-coded credentials).
+            - Insecure API usage (e.g., improper authentication, authorization).
+            - Error handling (e.g., avoiding information leakage).
+          2. Dependency risks:
+            - Outdated or vulnerable libraries (direct and transitive dependencies).
+            - Use tools like npm audit (for Node.js), safety (for Python), or similar for other languages.
+          3. Configuration and secrets management:
+            - Hard-coded credentials.
+            - Proper use of Key Vault, environment variables, or other secret managers.
+            - Infrastructure as Code (IaC) misconfigurations (e.g., Terraform, ARM templates).
+          4. Identity & access control (IAM):
+            - GitHub Actions permissions (e.g., least privilege principle).
+            - Azure roles and permissions.
+            - Service principals and their configurations.
+            - Workflow secrets management (e.g., no exposure in code).
+          5. Cloud posture:
+            - Network exposure (e.g., public endpoints).
+            - HTTPS enforcement.
+            - Logging and monitoring configurations.
+            - Use of private endpoints.
+            - Managed identity usage.
+          6. Best-practice alignment:
+            - OWASP Top 10 for web application security.
+            - NIST guidelines for general security.
+            - Azure Well-Architected Framework for cloud security.
+
+          Deliverable (Markdown):
+          - Introduction:
+            - Briefly describe what was audited (e.g., the repository, its components, and programming languages).
+            - Outline the methodology used (e.g., static code analysis, dependency scanning, manual review, reference to standard checklists like OWASP, NIST, etc.).
+          - Detailed Findings:
+            - For each scope area, provide subsections with findings.
+            - Each finding should include:
+              - Description of the issue.
+              - Severity (High, Medium, Low) based on potential impact (e.g., data breach, service disruption, best-practice deviation).
+              - File/Location (path to the file in the repository).
+              - Code snippet (where applicable) to illustrate the issue.
+              - Recommendation with actionable steps and links to relevant security guidelines, documentation, or best practices (e.g., OWASP pages, Azure documentation, CVE advisories).
+          - Key Findings Table:
+            - Use a landscape-friendly table with columns: Severity, Issue, File/Location, Recommendation.
+          - Conclusion & Prioritized Action List:
+            - Summarize the audit results.
+            - Provide a prioritized list of actions based on severity and impact.
+
+          Style:
+          - Use clear headings and concise bullet points.
+          - Include code snippets where helpful, formatted with triple backticks for Markdown.
+          - Use absolute URLs for links to files or external resources.
+          - Ensure the report is self-contained, with all necessary information included.
+          - Output only the report—no extraneous commentary.
+
+          Language-Specific Considerations
+          - JavaScript/TypeScript/Node.js: Focus on XSS, CSRF, and insecure npm dependencies. Use tools like npm audit and Retire.js for dependency checks.
+          - Java: Check for SQL injection, insecure deserialization, and vulnerable libraries using OWASP Dependency-Check.
+          - Python: Audit for insecure third-party modules using safety or pip-audit, and verify proper input validation.
+          - .NET/C#: Ensure secure ASP.NET configurations, check for XSS in MVC applications, and use tools like Security Code Scan for static analysis.
+
+          The prompt incorporates industry-standard resources to guide the audit:
+          - OWASP Top 10 for web application vulnerabilities.
+          - NIST Cybersecurity Framework for general security guidelines.
+          - Language-specific checklists, such as Node.js Security Cheat Sheet and Java Code Review Checklist.
+
+          Additional Guidelines:
+          - Ensure all source code in the repository is audited, regardless of programming language.
+          - For each finding, provide specific examples from the code and link to the exact file and line number where possible.
+          - Where applicable, include links to external resources (e.g., OWASP, NIST, Azure documentation) to support recommendations.
+          - If the repository includes GitHub Actions workflows, thoroughly audit them for security issues, such as overly permissive permissions, use of untrusted actions, or exposure of secrets.
+          - If IaC files (e.g., Terraform, ARM and Bicep templates) are present, audit them for misconfigurations that could lead to insecure deployments.
+          - Analyze JavaScript, TypeScript, or Node.js code for XSS vulnerabilities, providing a code snippet.
+          - Check npm dependencies using npm audit, identifying outdated libraries and linking to CVE advisories.
+          - Review GitHub Actions workflows for overly permissive permissions, recommending least privilege configurations with links to GitHub Actions Security Best Practices (https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions).
+          -  private enAudit ARM and Bicep templates for public endpoint exposures, suggestingdpoints with references to Azure Private Endpoints (https://docs.microsoft.com/en-us/azure/private-link/private-endpoint-overview).
           EOF
 
       - name: 🤖  Call Model o3
