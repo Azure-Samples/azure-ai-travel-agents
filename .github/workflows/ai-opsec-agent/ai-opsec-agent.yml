@@ -1,4 +1,4 @@
-name: AI Security Audit
+name: AI OpSec Agent
 
 on:
   workflow_dispatch:
@@ -18,7 +18,6 @@ on:
 permissions:
   contents: read
   pull-requests: write # so we can comment on PRs
-  models: read # <--- needed to call GitHub Models :contentReference[oaicite:0]{index=0}
 
 jobs:
   audit:
@@ -135,14 +134,14 @@ jobs:
       - name: 🤖  Call Model
         id: call-model
         env:
-          WASSIM_AOAI_API_KEY: ${{ secrets.WASSIM_AOAI_API_KEY }}
-          WASSIM_AZURE_OPENAI_ENDPOINT: ${{ secrets.AZURE_OPENAI_ENDPOINT }}
+          AZURE_OPENAI_ENDPOINT: ${{ secrets.AZURE_OPENAI_ENDPOINT }}
+          AZURE_OPENAI_API_KEY: ${{ secrets.WASSIM_AOAI_API_KEY }}
         run: |
           prompt_content=$(jq -Rs . prompt.txt)
           repomix_output=$(jq -Rs . repomix-output.txt)
           cat > payload.json <<EOF
           {
-            "model": "o3",
+            "model": "o3-mini",
             "messages": [
               { "role": "system",
                 "content": "You are an expert in cloud-security auditing producing structured and actionable markdown reports."
@@ -156,9 +155,9 @@ jobs:
             ]
           }
           EOF
-          curl -v -s -w "%{http_code}" -o response.json -X POST "$WASSIM_AZURE_OPENAI_ENDPOINT" \
+          curl -v -s -w "%{http_code}" -o response.json -X POST "$AZURE_OPENAI_ENDPOINT" \
             -H "Content-Type: application/json" \
-            -H "Authorization: Bearer $WASSIM_AOAI_API_KEY" \
+            -H "Authorization: Bearer $AZURE_OPENAI_API_KEY" \
             -d @payload.json
 
       - name: 📄  Extract markdown report
