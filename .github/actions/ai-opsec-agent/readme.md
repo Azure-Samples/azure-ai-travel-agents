@@ -19,14 +19,14 @@ This OpSec Agent automates comprehensive security audits for your repository usi
 
 1. **Copy the Workflow**
 
-Copy the [`ai-opsec-agent.yml`](./ai-opsec-agent.yml) file into your repository under `.github/workflows/ai-opsec-agent/ai-opsec-agent.yml`.
+Copy the [`ai-opsec-agent.yml`](./../../workflows/ai-opsec-agent.yml) file into your repository under `.github/workflows/ai-opsec-agent/ai-opsec-agent.yml`.
 
 2. **Create and deploy o3-mini LLM model**
    
 In Azure AI Foundry, create a new o3-mini model. This model will be used for the security audit. Ensure it is deployed and accessible.
 For more details on creating and deploying models, refer to the [Azure AI Foundry documentation](https://learn.microsoft.com/azure/ai-foundry/).
 
-> [!NOTE]
+> [!IMPORTANT]
 > If you get rate limit errors, consider increasing the TPM (tokens per minute) for your model in Azure AI Foundry.
 
 3. **Set Required Secrets**
@@ -34,6 +34,7 @@ For more details on creating and deploying models, refer to the [Azure AI Foundr
 In your repository settings, add the following secrets:
 - `AZURE_OPENAI_API_KEY`: Your Azure OpenAI API key.
 - `AZURE_OPENAI_ENDPOINT`: Your Azure OpenAI endpoint URL.
+- `GITHUB_TOKEN`: Your GitHub token.
 
 For more details on managing secrets, refer to the [GitHub documentation](https://docs.github.com/en/actions/security-guides/encrypted-secrets).
 
