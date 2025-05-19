@@ -1,0 +1,181 @@
+name: 'Azure AI OpSec Agent'
+description: 'GitHub Action for Azure AI OpSec Agent'
+author: "Microsoft"
+branding:
+  icon: "shield"
+  color: "blue"
+
+inputs:
+  who-to-greet:  # id of input
+    description: 'Who to greet'
+    required: true
+    default: 'World'
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+    - name: Pack repository with Repomix
+      shell: bash
+      run: |
+        npx --yes repomix \
+        --include "src,infra" \
+        --ignore "**/*.{mvn,cache,angular,svg,gitignore,dockerignore,spec.json,config.js,editorconfig,css,sln,xml,lock,spec.ts,sln},**/*tsconfig.json,**/*angular.json,**/CODE_OF_CONDUCT.md,**/README.md,**/LICENSE,**/.env*,**/mvnw,**/mvnw.cmd" \
+        --output repomix-output.txt \
+        --header-text "Project codebase to audit" \
+        --no-file-summary \
+        --remove-comments \
+        --remove-empty-lines \
+        --style plain \
+        --output-show-line-numbers
+
+    - name: Upload Repomix output
+      uses: actions/upload-artifact@v4
+      with:
+        name: repomix-output
+        path: repomix-output.txt
+        retention-days: 7
+
+    - name: 📝  Build audit prompt
+      shell: bash
+      run: |
+        cat > prompt.txt <<EOF
+        Role: You are an experienced cloud-security engineer with deep knowledge of Azure, DevSecOps, and secure software design. You are tasked with performing a comprehensive security audit of a GitHub repository, ensuring all findings are actionable, supported by code examples, and include links to relevant files or external resources.
+
+        Task: Perform a full security audit of provided repository code base, ensuring coverage of all programming languages used, including but not limited to JavaScript, TypeScript, Node.js, Java, Python, .NET (C#), and any others present. The audit should be thorough, identifying vulnerabilities, misconfigurations, and deviations from best practices across all applicable areas.
+
+        Scope to Cover:
+        1. Source-code vulnerabilities:
+          - Input validation (e.g., SQL injection, XSS, CSRF).
+          - Secrets management (e.g., no hard-coded credentials).
+          - Insecure API usage (e.g., improper authentication, authorization).
+          - Error handling (e.g., avoiding information leakage).
+        2. Dependency risks:
+          - Outdated or vulnerable libraries (direct and transitive dependencies).
+          - Use tools like npm audit (for Node.js), safety (for Python), or similar for other languages.
+        3. Configuration and secrets management:
+          - Hard-coded credentials.
+          - Proper use of Key Vault, environment variables, or other secret managers.
+          - Infrastructure as Code (IaC) misconfigurations (e.g., Terraform, ARM templates).
+        4. Identity & access control (IAM):
+          - GitHub Actions permissions (e.g., least privilege principle).
+          - Azure roles and permissions.
+          - Service principals and their configurations.
+          - Workflow secrets management (e.g., no exposure in code).
+        5. Cloud posture:
+          - Network exposure (e.g., public endpoints).
+          - HTTPS enforcement.
+          - Logging and monitoring configurations.
+          - Use of private endpoints.
+          - Managed identity usage.
+        6. Best-practice alignment:
+          - OWASP Top 10 for web application security.
+          - NIST guidelines for general security.
+          - Azure Well-Architected Framework for cloud security.
+
+        Deliverable (Markdown):
+        - Introduction:
+          - Briefly describe what was audited (e.g., the repository, its components, and programming languages).
+          - Outline the methodology used (e.g., static code analysis, dependency scanning, manual review, reference to standard checklists like OWASP, NIST, etc.).
+        - Detailed Findings:
+          - For each scope area, provide subsections with findings.
+          - Each finding should include:
+            - Description of the issue.
+            - Severity (High, Medium, Low) based on potential impact (e.g., data breach, service disruption, best-practice deviation).
+            - File/Location (path to the file in the repository).
+            - Code snippet (where applicable) to illustrate the issue.
+            - Recommendation with actionable steps and links to relevant security guidelines, documentation, or best practices (e.g., OWASP pages, Azure documentation, CVE advisories).
+        - Key Findings Table:
+          - Use a landscape-friendly table with columns: Severity, Issue, File/Location, Recommendation.
+        - Conclusion & Prioritized Action List:
+          - Summarize the audit results.
+          - Provide a prioritized list of actions based on severity and impact.
+
+        Style:
+        - Use clear headings and concise bullet points.
+        - Include code snippets where helpful, formatted with triple backticks for Markdown.
+        - Use absolute URLs for links to files or external resources.
+        - Ensure the report is self-contained, with all necessary information included.
+        - Output only the report—no extraneous commentary.
+
+        Language-Specific Considerations
+        - JavaScript/TypeScript/Node.js: Focus on XSS, CSRF, and insecure npm dependencies. Use tools like npm audit and Retire.js for dependency checks.
+        - Java: Check for SQL injection, insecure deserialization, and vulnerable libraries using OWASP Dependency-Check.
+        - Python: Audit for insecure third-party modules using safety or pip-audit, and verify proper input validation.
+        - .NET/C#: Ensure secure ASP.NET configurations, check for XSS in MVC applications, and use tools like Security Code Scan for static analysis.
+
+        The prompt incorporates industry-standard resources to guide the audit:
+        - OWASP Top 10 for web application vulnerabilities.
+        - NIST Cybersecurity Framework for general security guidelines.
+        - Language-specific checklists, such as Node.js Security Cheat Sheet and Java Code Review Checklist.
+
+        Additional Guidelines:
+        - Ensure all source code in the repository is audited, regardless of programming language.
+        - For each finding, provide specific examples from the code and link to the exact file and line number where possible.
+        - Where applicable, include links to external resources (e.g., OWASP, NIST, Azure documentation) to support recommendations.
+        - If the repository includes GitHub Actions workflows, thoroughly audit them for security issues, such as overly permissive permissions, use of untrusted actions, or exposure of secrets.
+        - If IaC files (e.g., Terraform, ARM and Bicep templates) are present, audit them for misconfigurations that could lead to insecure deployments.
+        - Analyze JavaScript, TypeScript, or Node.js code for XSS vulnerabilities, providing a code snippet.
+        - Check npm dependencies using npm audit, identifying outdated libraries and linking to CVE advisories.
+        - Review GitHub Actions workflows for overly permissive permissions, recommending least privilege configurations with links to GitHub Actions Security Best Practices (https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions).
+        -  private enAudit ARM and Bicep templates for public endpoint exposures, suggestingdpoints with references to Azure Private Endpoints (https://docs.microsoft.com/en-us/azure/private-link/private-endpoint-overview).
+        EOF
+
+    - name: 🤖  Call Model
+      shell: bash
+      id: call-model
+      env:
+        AZURE_OPENAI_ENDPOINT: ${{ secrets.AZURE_OPENAI_ENDPOINT }}
+        AZURE_OPENAI_API_KEY: ${{ secrets.WASSIM_AOAI_API_KEY }}
+      run: |
+        prompt_content=$(jq -Rs . prompt.txt)
+        repomix_output=$(jq -Rs . repomix-output.txt)
+        cat > payload.json <<EOF
+        {
+          "model": "o3-mini",
+          "messages": [
+            { "role": "system",
+              "content": "You are an expert in cloud-security auditing producing structured and actionable markdown reports."
+            },
+            { "role": "developer",
+              "content": $prompt_content
+            },
+            { "role": "user",
+              "content": $repomix_output
+            }
+          ]
+        }
+        EOF
+        curl -v -s -w "%{http_code}" -o response.json -X POST "$AZURE_OPENAI_ENDPOINT" \
+          -H "Content-Type: application/json" \
+          -H "Authorization: Bearer $AZURE_OPENAI_API_KEY" \
+          -d @payload.json
+
+    - name: 📄  Extract markdown report
+      shell: bash
+      run: |
+        cat response.json
+        output=$(jq -r '.choices[0].message.content' response.json)
+        if [ "$output" == "null" ]; then
+          echo "Model response is empty or null. Exiting."
+          exit 1
+        fi
+        echo "Extracting markdown report from model response..."
+        echo "$output" > security-audit.md
+
+    - name: 📦  Upload as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: security-audit
+        path: security-audit.md
+
+    - name: 💬  Comment on PR
+      if: github.event_name == 'pull_request'
+      uses: marocchino/sticky-pull-request-comment@v2
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        path: security-audit.md
+        hide_and_recreate: true
+        hide_classify: "OUTDATED"
+

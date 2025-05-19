@@ -25,5 +25,5 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: ./ai-opsec-agent/ai-opsec-agent-action@v1
+      uses: ./ai-opsec-agent@v1
 
