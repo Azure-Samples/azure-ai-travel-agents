@@ -22,8 +22,9 @@ permissions:
 jobs:
   audit:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout repository
+    - name: Audit Codebase
       uses: Azure-Samples/azure-ai-travel-agents/.github/workflows/ai-opsec-agent@main
+      
+
 
