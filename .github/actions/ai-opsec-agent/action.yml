@@ -15,7 +15,6 @@ inputs:
   GITHUB_TOKEN:
     description: 'GitHub token for authentication'
     required: true
-    default: '${{ secrets.GITHUB_TOKEN }}'
   output: 
     description: 'The output of the action, a security audit report in Markdown format'
     required: true
