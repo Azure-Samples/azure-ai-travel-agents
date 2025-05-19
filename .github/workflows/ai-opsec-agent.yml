@@ -23,8 +23,16 @@ jobs:
   audit:
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout code 
+      uses: actions/checkout@v4
     - name: Audit Codebase
       uses: Azure-Samples/azure-ai-travel-agents/.github/workflows/ai-opsec-agent@main
+      with:
+          output: security-audit.md
       
-
+    - name: Upload as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: security-audit
+        path: security-audit.md
 

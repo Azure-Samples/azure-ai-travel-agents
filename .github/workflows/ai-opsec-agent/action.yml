@@ -6,16 +6,14 @@ branding:
   color: "blue"
 
 inputs:
-  who-to-greet:  # id of input
-    description: 'Who to greet'
+  output: 
+    description: 'The output of the action, a security audit report in Markdown format'
     required: true
-    default: 'World'
+    default: 'security-audit.md'
+
 runs:
   using: "composite"
   steps:
-    - name: Checkout repo
-      uses: actions/checkout@v4
-
     - name: Pack repository with Repomix
       shell: bash
       run: |
@@ -163,12 +161,6 @@ runs:
         fi
         echo "Extracting markdown report from model response..."
         echo "$output" > security-audit.md
-
-    - name: 📦  Upload as artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: security-audit
-        path: security-audit.md
 
     - name: 💬  Comment on PR
       if: github.event_name == 'pull_request'
