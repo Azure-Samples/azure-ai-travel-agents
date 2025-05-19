@@ -12,6 +12,10 @@ inputs:
   AZURE_OPENAI_API_KEY:
     description: 'The API key for the Azure OpenAI service'
     required: true
+  GITHUB_TOKEN:
+    description: 'GitHub token for authentication'
+    required: true
+    default: '${{ secrets.GITHUB_TOKEN }}'
   output: 
     description: 'The output of the action, a security audit report in Markdown format'
     required: true
@@ -166,14 +170,14 @@ runs:
           exit 1
         fi
         echo "Extracting markdown report from model response..."
-        echo "$output" > security-audit.md
+        echo "$output" > ${{ inputs.output }}
 
     - name: Comment on PR
       if: github.event_name == 'pull_request'
       uses: marocchino/sticky-pull-request-comment@v2
       with:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        path: security-audit.md
+        GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
+        path: ${{ inputs.output }}
         hide_and_recreate: true
         hide_classify: "OUTDATED"
 
