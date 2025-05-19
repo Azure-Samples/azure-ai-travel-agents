@@ -29,6 +29,8 @@ jobs:
       - name: Audit Codebase
         uses: ./.github/actions/ai-opsec-agent
         with:
+            AZURE_OPENAI_ENDPOINT: ${{ secrets.AZURE_OPENAI_ENDPOINT }}
+            AZURE_OPENAI_API_KEY: ${{ secrets.WASSIM_AOAI_API_KEY }}
             output: security-audit.md
         
       - name: Upload as artifact

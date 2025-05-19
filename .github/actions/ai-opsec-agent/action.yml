@@ -6,6 +6,12 @@ branding:
   color: "blue"
 
 inputs:
+  AZURE_OPENAI_ENDPOINT:
+    description: 'The endpoint for the Azure OpenAI service'
+    required: true
+  AZURE_OPENAI_API_KEY:
+    description: 'The API key for the Azure OpenAI service'
+    required: true
   output: 
     description: 'The output of the action, a security audit report in Markdown format'
     required: true
@@ -124,8 +130,8 @@ runs:
       shell: bash
       id: call-model
       env:
-        AZURE_OPENAI_ENDPOINT: ${{ secrets.AZURE_OPENAI_ENDPOINT }}
-        AZURE_OPENAI_API_KEY: ${{ secrets.WASSIM_AOAI_API_KEY }}
+        AZURE_OPENAI_ENDPOINT: ${{ inputs.AZURE_OPENAI_ENDPOINT }}
+        AZURE_OPENAI_API_KEY: ${{ inputs.AZURE_OPENAI_API_KEY }}
       run: |
         prompt_content=$(jq -Rs . prompt.txt)
         repomix_output=$(jq -Rs . repomix-output.txt)
