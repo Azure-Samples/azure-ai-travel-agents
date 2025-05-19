@@ -10,7 +10,7 @@ inputs:
     description: 'The output of the action, a security audit report in Markdown format'
     required: true
     default: 'security-audit.md'
-
+    
 runs:
   using: "composite"
   steps:
@@ -35,7 +35,7 @@ runs:
         path: repomix-output.txt
         retention-days: 7
 
-    - name: 📝  Build audit prompt
+    - name: Build audit prompt
       shell: bash
       run: |
         cat > prompt.txt <<EOF
@@ -120,7 +120,7 @@ runs:
         -  private enAudit ARM and Bicep templates for public endpoint exposures, suggestingdpoints with references to Azure Private Endpoints (https://docs.microsoft.com/en-us/azure/private-link/private-endpoint-overview).
         EOF
 
-    - name: 🤖  Call Model
+    - name: Call Model
       shell: bash
       id: call-model
       env:
@@ -150,7 +150,7 @@ runs:
           -H "Authorization: Bearer $AZURE_OPENAI_API_KEY" \
           -d @payload.json
 
-    - name: 📄  Extract markdown report
+    - name: Extract markdown report
       shell: bash
       run: |
         cat response.json
@@ -162,7 +162,7 @@ runs:
         echo "Extracting markdown report from model response..."
         echo "$output" > security-audit.md
 
-    - name: 💬  Comment on PR
+    - name: Comment on PR
       if: github.event_name == 'pull_request'
       uses: marocchino/sticky-pull-request-comment@v2
       with:

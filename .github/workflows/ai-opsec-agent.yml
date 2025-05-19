@@ -22,11 +22,12 @@ permissions:
 jobs:
   audit:
     runs-on: ubuntu-latest
+    name: "Audit Codebase"
     steps:
       - name: Checkout code 
         uses: actions/checkout@v4
       - name: Audit Codebase
-        uses: Azure-Samples/azure-ai-travel-agents/.github/workflows/ai-opsec-agent@main
+        uses: ./.github/actions/ai-opsec-agent
         with:
             output: security-audit.md
         
