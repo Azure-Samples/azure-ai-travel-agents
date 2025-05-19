@@ -25,5 +25,5 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: ./ai-opsec-agent@v1
+      uses: Azure-Samples/azure-ai-travel-agents/.github/workflows/ai-opsec-agent@main
 
