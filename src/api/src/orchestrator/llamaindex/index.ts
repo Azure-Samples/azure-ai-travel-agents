@@ -1,12 +1,13 @@
-import { mcp } from "@llamaindex/tools";
 import dotenv from "dotenv";
-import { agent, multiAgent, ToolCallLLM } from "llamaindex";
-import { McpServerDefinition } from "../../mcp/mcp-tools.js";
-import { llm as llmProvider } from "./providers/azure-openai.js";
-import { McpToolsConfig } from "./tools/index.js";
 dotenv.config({
   path: "./.env.dev",
 });
+
+import { mcp } from "@llamaindex/tools";
+import { agent, multiAgent, ToolCallLLM } from "llamaindex";
+import { McpServerDefinition } from "../../mcp/mcp-tools.js";
+import { llm as llmProvider } from "./providers/index.js";
+import { McpToolsConfig } from "./tools/index.js";
 
 // Function to set up agents and return the multiAgent instance
 export async function setupAgents(filteredTools: McpServerDefinition[] = []) {

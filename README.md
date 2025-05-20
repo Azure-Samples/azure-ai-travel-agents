@@ -43,7 +43,7 @@ ai-travel-agents/
 │   ├── api/                # API Gateway for backend services
 │   └── ui/                 # Frontend application
 │
-│── infra/                  # azd-related files
+│── infra/                  # azd and iac related files
 │── docs/                   # Documentation files
 │
 │── README.md              # Project documentation
@@ -54,64 +54,46 @@ ai-travel-agents/
 Ensure you have the following installed before running the application:
 
 - **[Docker](https://www.docker.com/)**
+- **[Foundry Local](https://github.com/microsoft/Foundry-Local)** (works on Windows and macOS only)
+- **[Node.js](https://nodejs.org/en/download)** (for the UI and API services)
 
-## Environment Variables setup for containerized services
+To speed up the local development experience during the initial setup, you can use the **Foundry Local** CLI to download and cache the model used in the application (default is `phi-3.5-mini`). This will allow you to run the application locally without needing to download the models at runtime.
 
-The application uses environment variables to configure the services. You can set them in a `.env` file in the root directory or directly in your terminal. We recommend the following approach:
-1. Create a `.env.dev` file for each containerized service under `src/`, and optionally a `.env.docker` file for Docker-specific configurations:
-    - `src/ui/.env.dev`
-    - `src/ui/.env.docker`
-    - `src/api/.env.dev`
-    - `src/api/.env.docker`
-    - `src/tools/customer-query/.env.dev`
-    - `src/tools/customer-query/.env.docker`
-    - `src/tools/destination-recommendation/.env.dev`
-    - `src/tools/destination-recommendation/.env.docker`
-    - `src/tools/itinerary-planning/.env.dev`
-    - `src/tools/itinerary-planning/.env.docker`
-    - `src/tools/code-evaluation/.env.dev`
-    - `src/tools/code-evaluation/.env.docker`
-    - `src/tools/model-inference/.env.dev`
-    - `src/tools/model-inference/.env.docker`
-    - `src/tools/web-search/.env.dev`
-    - `src/tools/web-search/.env.docker`
-    - `src/tools/echo-ping/.env.dev`
-    - `src/tools/echo-ping/.env.docker`
-
-2. `.env.docker` files are used to set environment variables for Docker containers. These files should contain the same variables as `.env.dev` files, but with values specific to the Docker environment. For example:
 ```bash
-# src/api/.env.dev
-TOOL_CUSTOMER_QUERY_URL=http://localhost:8080
-
-# src/api/.env.docker
-TOOL_CUSTOMER_QUERY_URL=http://tool-customer-query:8080
+foundry model download phi-3.5-mini
 ```
 
-3. Load the environment variable files in `docker-compose.yml` using the `env_file` directive, in the following order:
-```yml
-  web-api:
-    container_name: web-api
-    # ...
-    env_file: 
-      - "./api/.env.dev"
-      - "./api/.env.docker" # override .env with .env.docker
+
+## Try the demo locally (Local Agent Experience) with Foundry Local
+
+To run the application locally, make sure you have **Docker**, **Node.js** and **Foundry Local** installed. The application is designed to run in a containerized environment, so you can easily set up and run the services using Docker.
+
+1. After cloning the repository, navigate to the root directory of the project and start the MCP servers:
+```bash
+./run.sh # or run.ps1 on Windows
 ```
 
-> [!Note]
-> adding the `- environment:` directive to the `docker-compose.yml` file will override the environment variables set in the `.env.*` files.
-
-## Run the Entire Application
-
-To run the entire application, use the scripts in the root directory. The scripts will build and run all the services defined in the `src/docker-compose.yml` file.
-
-```sh
-./run.sh
+2. Open a new terminal and run the following command to start the API:
+```bash
+npm run start --prefix=src/api
 ```
 
-> On Windows, you may need to use `run.ps1` instead of `run.sh`.
+3. Open a new terminal and run the following command to start the UI:
+```bash
+npm run start --prefix=src/ui
+```
 
-Alternatively, if you're in VS Code you can use the **Run Task** command (Ctrl+Shift+P) and select the `Run AI Travel Agents` task.
+4. Navigate to the UI in your web browser at `http://localhost:4200`.
 
-This command will build and start all the services defined in the `docker-compose.yml` file.
+![UI Screenshot](docs/azure-ai-travel-demo-1.png)
 
-Once all services are up and running, you can view the messages (currently logging messages) via the [Aspire Dashboard](https://aspiredashboard.com/) at http://localhost:18888. On `Structured` tab you'll see the logging messages from the **tool-echo-ping** and **api** services. The `Traces` tab will show the traces across the services, such as the call from **api** to **echo-agent**.
+> [!IMPORTANT]
+> Make sure your computer has a compatible CPU or GPU for running LLM models locally. If you are experiencing issues with the model inference service, please try a different smaller model.
+
+## Advanced Setup
+
+To run the application in a more advanced local setup or deploy to Azure, please refer to the [Advanced Setup](docs/advanced-setup.md) documentation. This includes setting up the Azure Container Apps environment, configuring the services, and deploying the application to Azure.
+
+## Contributing
+
+We welcome contributions to the AI Travel Agents project! If you have suggestions, bug fixes, or new features, please feel free to submit a pull request. For more information on contributing, please refer to the [CONTRIBUTING.md](CONTRIBUTING.md) file.
