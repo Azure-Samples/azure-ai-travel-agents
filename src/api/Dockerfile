@@ -3,14 +3,6 @@ FROM node:22.12-alpine AS builder
 RUN apk add --update python3 make g++\
    && rm -rf /var/cache/apk/*
 
-# Install Homebrew which is needed for Foundry Local: https://github.com/microsoft/Foundry-Local
-RUN /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-RUN echo >> /home/vscode/.bashrc \
-    echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/vscode/.bashrc \
-    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-RUN sudo apt-get install build-essential
-RUN brew install --build-from-source glibc
-
 
 WORKDIR /app
 
