@@ -43,7 +43,7 @@ ai-travel-agents/
 │   ├── api/                # API Gateway for backend services
 │   └── ui/                 # Frontend application
 │
-│── infra/                  # azd and iac related files
+│── infra/                  # azd and IaC related files
 │── docs/                   # Documentation files
 │
 │── README.md              # Project documentation
