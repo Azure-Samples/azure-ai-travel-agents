@@ -70,7 +70,7 @@ To run the application locally, make sure you have **Docker**, **Node.js** and *
 
 1. After cloning the repository, navigate to the root directory of the project and start the MCP servers:
 ```bash
-./run.sh # or run.ps1 on Windows
+./run-mcp-servers.sh # or run-mcp-servers.ps1 on Windows
 ```
 
 2. Open a new terminal and run the following command to start the API:
