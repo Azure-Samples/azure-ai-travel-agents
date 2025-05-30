@@ -31,6 +31,8 @@ param echoPingDefinition object
 @description('Id of the user or app to assign application roles')
 param principalId string
 
+param isContinuousIntegration bool // Set in main.parameters.json
+
 // Tags that should be applied to all resources.
 // 
 // Note that 'azd-service-name' tags should be applied separately to service host resources.
@@ -47,6 +49,25 @@ resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   tags: tags
 }
 
+var llamaIndexConfig = {
+  chat: {
+    model: 'gpt-4o'
+    version: '2024-11-20'
+    capacity: 50
+  }
+  embedding: {
+    model: 'text-embedding-3-large'
+    version: '1'
+    dim: '1024'
+    capacity: 10
+  }
+  model_provider: 'openai'
+  llm_temperature: '0.7'
+  llm_max_tokens: '100'
+  top_k: '3'
+}
+
+
 module resources 'resources.bicep' = {
   scope: rg
   name: 'resources'
@@ -58,6 +79,8 @@ module resources 'resources.bicep' = {
     apiDefinition: apiDefinition
     uiExists: uiExists
     uiDefinition: uiDefinition
+    llamaIndexConfig: llamaIndexConfig
+    isContinuousIntegration: isContinuousIntegration
     itineraryPlanningExists: itineraryPlanningExists
     itineraryPlanningDefinition: itineraryPlanningDefinition
     customerQueryExists: customerQueryExists
@@ -76,3 +99,13 @@ output AZURE_RESOURCE_ITINERARY_PLANNING_ID string = resources.outputs.AZURE_RES
 output AZURE_RESOURCE_CUSTOMER_QUERY_ID string = resources.outputs.AZURE_RESOURCE_CUSTOMER_QUERY_ID
 output AZURE_RESOURCE_DESTINATION_RECOMMENDATION_ID string = resources.outputs.AZURE_RESOURCE_DESTINATION_RECOMMENDATION_ID
 output AZURE_RESOURCE_ECHO_PING_ID string = resources.outputs.AZURE_RESOURCE_ECHO_PING_ID
+output NG_API_URL string = resources.outputs.NG_API_URL
+output AZURE_OPENAI_ENDPOINT string = resources.outputs.AZURE_OPENAI_ENDPOINT
+output AZURE_OPENAI_DEPLOYMENT string = llamaIndexConfig.chat.model
+output AZURE_OPENAI_API_VERSION string = llamaIndexConfig.chat.version
+
+//  LlamaIndex configuration
+output EMBEDDING_MODEL string = llamaIndexConfig.embedding.model
+output EMBEDDING_DIM string = llamaIndexConfig.embedding.dim
+output AZURE_CLIENT_ID string = resources.outputs.AZURE_CLIENT_ID
+output AZURE_TENANT_ID string = tenant().tenantId

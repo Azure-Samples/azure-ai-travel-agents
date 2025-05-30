@@ -27,6 +27,12 @@ param echoPingDefinition object
 @description('Id of the user or app to assign application roles')
 param principalId string
 
+@description('The configuration for the LlamaIndex application')
+param llamaIndexConfig object = {}
+
+param isContinuousIntegration bool
+var principalType = isContinuousIntegration ? 'ServicePrincipal' : 'User'
+
 var abbrs = loadJsonContent('./abbreviations.json')
 var resourceToken = uniqueString(subscription().id, resourceGroup().id, location)
 
@@ -133,11 +139,11 @@ module api 'br/public:avm/res/app/container-app:0.8.0' = {
         'https://ui.${containerAppsEnvironment.outputs.defaultDomain}'
       ]
       allowedMethods: [
-        '*'
+        'GET', 'POST'
       ]
     }
     scaleMinReplicas: 1
-    scaleMaxReplicas: 10
+    scaleMaxReplicas: 1
     secrets: {
       secureList:  union([
       ],
@@ -156,12 +162,60 @@ module api 'br/public:avm/res/app/container-app:0.8.0' = {
         }
         env: union([
           {
+            name: 'DEBUG'
+            value: 'true'
+          }
+          {
             name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
             value: monitoring.outputs.applicationInsightsConnectionString
           }
           {
             name: 'AZURE_CLIENT_ID'
             value: apiIdentity.outputs.clientId
+          }
+          {
+            name: 'LLM_PROVIDER'
+            value: 'azure-openai'
+          }
+          {
+            name: 'AZURE_OPENAI_ENDPOINT' 
+            value: openAi.outputs.endpoint
+          }
+          {
+            name: 'AZURE_OPENAI_DEPLOYMENT' 
+            value: llamaIndexConfig.chat.model
+          }
+          {
+            name: 'AZURE_OPENAI_API_VERSION' 
+            value: llamaIndexConfig.chat.version
+          }
+          {
+            name: 'MCP_ITINERARY_PLANNING_URL'
+            value: 'https://itinerary-planning.internal.${containerAppsEnvironment.outputs.defaultDomain}'
+          }
+          {
+            name: 'MCP_CUSTOMER_QUERY_URL'
+            value: 'https://customer-query.internal.${containerAppsEnvironment.outputs.defaultDomain}'
+          }
+          {
+            name: 'MCP_DESTINATION_RECOMMENDATION_URL'
+            value: 'https://destination-recommendation.internal.${containerAppsEnvironment.outputs.defaultDomain}'
+          }
+          {
+            name: 'MCP_ECHO_PING_URL'
+            value: 'https://echo-ping.internal.${containerAppsEnvironment.outputs.defaultDomain}'
+          }
+          {
+            name: 'MCP_WEB_SEARCH_URL'
+            value: 'https://web-search.internal.${containerAppsEnvironment.outputs.defaultDomain}'
+          }
+          {
+            name: 'MCP_MODEL_INFERENCE_URL'
+            value: 'https://model-inference.internal.${containerAppsEnvironment.outputs.defaultDomain}'
+          }
+          {
+            name: 'MCP_CODE_EVALUATION_URL'
+            value: 'https://code-evaluation.internal.${containerAppsEnvironment.outputs.defaultDomain}'
           }
           {
             name: 'PORT'
@@ -222,9 +276,9 @@ module ui 'br/public:avm/res/app/container-app:0.8.0' = {
   name: 'ui'
   params: {
     name: 'ui'
-    ingressTargetPort: 8000
+    ingressTargetPort: 80
     scaleMinReplicas: 1
-    scaleMaxReplicas: 10
+    scaleMaxReplicas: 1
     secrets: {
       secureList:  union([
       ],
@@ -251,28 +305,8 @@ module ui 'br/public:avm/res/app/container-app:0.8.0' = {
             value: uiIdentity.outputs.clientId
           }
           {
-            name: 'API_BASE_URL'
-            value: 'https://api.${containerAppsEnvironment.outputs.defaultDomain}'
-          }
-          {
-            name: 'ITINERARY-PLANNING_BASE_URL'
-            value: 'https://itinerary-planning.${containerAppsEnvironment.outputs.defaultDomain}'
-          }
-          {
-            name: 'CUSTOMER-QUERY_BASE_URL'
-            value: 'https://customer-query.${containerAppsEnvironment.outputs.defaultDomain}'
-          }
-          {
-            name: 'DESTINATION-RECOMMENDATION_BASE_URL'
-            value: 'https://destination-recommendation.${containerAppsEnvironment.outputs.defaultDomain}'
-          }
-          {
-            name: 'ECHO-PING_BASE_URL'
-            value: 'https://echo-ping.${containerAppsEnvironment.outputs.defaultDomain}'
-          }
-          {
             name: 'PORT'
-            value: '8000'
+            value: '80'
           }
         ],
         uiEnv,
@@ -329,17 +363,12 @@ module itineraryPlanning 'br/public:avm/res/app/container-app:0.8.0' = {
   name: 'itineraryPlanning'
   params: {
     name: 'itinerary-planning'
-    ingressTargetPort: 80
-    corsPolicy: {
-      allowedOrigins: [
-        'https://ui.${containerAppsEnvironment.outputs.defaultDomain}'
-      ]
-      allowedMethods: [
-        '*'
-      ]
-    }
+    ingressTargetPort: 8000
+    ingressExternal: false
+    stickySessionsAffinity: 'none'
+    ingressTransport: 'http'
     scaleMinReplicas: 1
-    scaleMaxReplicas: 10
+    scaleMaxReplicas: 1
     secrets: {
       secureList:  union([
       ],
@@ -367,7 +396,7 @@ module itineraryPlanning 'br/public:avm/res/app/container-app:0.8.0' = {
           }
           {
             name: 'PORT'
-            value: '80'
+            value: '8000'
           }
         ],
         itineraryPlanningEnv,
@@ -425,16 +454,11 @@ module customerQuery 'br/public:avm/res/app/container-app:0.8.0' = {
   params: {
     name: 'customer-query'
     ingressTargetPort: 8080
-    corsPolicy: {
-      allowedOrigins: [
-        'https://ui.${containerAppsEnvironment.outputs.defaultDomain}'
-      ]
-      allowedMethods: [
-        '*'
-      ]
-    }
+    ingressExternal: false
+    stickySessionsAffinity: 'none'
+    ingressTransport: 'http'
     scaleMinReplicas: 1
-    scaleMaxReplicas: 10
+    scaleMaxReplicas: 1
     secrets: {
       secureList:  union([
       ],
@@ -520,16 +544,11 @@ module destinationRecommendation 'br/public:avm/res/app/container-app:0.8.0' = {
   params: {
     name: 'destination-recommendation'
     ingressTargetPort: 8080
-    corsPolicy: {
-      allowedOrigins: [
-        'https://ui.${containerAppsEnvironment.outputs.defaultDomain}'
-      ]
-      allowedMethods: [
-        '*'
-      ]
-    }
+    ingressExternal: false
+    stickySessionsAffinity: 'none'
+    ingressTransport: 'http'
     scaleMinReplicas: 1
-    scaleMaxReplicas: 10
+    scaleMaxReplicas: 1
     secrets: {
       secureList:  union([
       ],
@@ -614,17 +633,12 @@ module echoPing 'br/public:avm/res/app/container-app:0.8.0' = {
   name: 'echoPing'
   params: {
     name: 'echo-ping'
-    ingressTargetPort: 80
-    corsPolicy: {
-      allowedOrigins: [
-        'https://ui.${containerAppsEnvironment.outputs.defaultDomain}'
-      ]
-      allowedMethods: [
-        '*'
-      ]
-    }
+    ingressTargetPort: 5000
+    ingressExternal: false
+    stickySessionsAffinity: 'none'
+    ingressTransport: 'http'
     scaleMinReplicas: 1
-    scaleMaxReplicas: 10
+    scaleMaxReplicas: 1
     secrets: {
       secureList:  union([
       ],
@@ -652,7 +666,7 @@ module echoPing 'br/public:avm/res/app/container-app:0.8.0' = {
           }
           {
             name: 'PORT'
-            value: '80'
+            value: '5000'
           }
         ],
         echoPingEnv,
@@ -677,6 +691,61 @@ module echoPing 'br/public:avm/res/app/container-app:0.8.0' = {
     tags: union(tags, { 'azd-service-name': 'echo-ping' })
   }
 }
+
+module openAi 'br/public:avm/res/cognitive-services/account:0.10.2' =  {
+  name: 'openai'
+  params: {
+    name: '${abbrs.cognitiveServicesAccounts}${resourceToken}'
+    tags: tags
+    location: location
+    kind: 'AIServices'
+    // kind: 'OpenAI'
+    disableLocalAuth: false
+    customSubDomainName: '${abbrs.cognitiveServicesAccounts}${resourceToken}'
+    publicNetworkAccess: 'Enabled'
+    deployments: [
+      {
+        name: llamaIndexConfig.chat.model
+        model: {
+          format: 'OpenAI'
+          name: llamaIndexConfig.chat.model
+          version: llamaIndexConfig.chat.version
+        }
+        sku: {
+          capacity: llamaIndexConfig.chat.capacity
+          name: 'GlobalStandard'
+        }
+        versionUpgradeOption: 'OnceCurrentVersionExpired'
+      }
+      {
+        name: llamaIndexConfig.embedding.model
+        model: {
+          format: 'OpenAI'
+          name: llamaIndexConfig.embedding.model
+          version: llamaIndexConfig.embedding.version
+        }
+        sku: {
+          capacity: llamaIndexConfig.embedding.capacity
+          name: 'Standard'
+        }
+        versionUpgradeOption: 'OnceCurrentVersionExpired'
+      }
+    ]
+    roleAssignments: [
+      {
+        principalId: principalId
+        principalType: principalType
+        roleDefinitionIdOrName: 'Cognitive Services OpenAI User'
+      }
+      {
+        principalId: apiIdentity.outputs.principalId
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Cognitive Services OpenAI User'
+      }
+    ]
+  }
+}
+
 output AZURE_CONTAINER_REGISTRY_ENDPOINT string = containerRegistry.outputs.loginServer
 output AZURE_RESOURCE_API_ID string = api.outputs.resourceId
 output AZURE_RESOURCE_UI_ID string = ui.outputs.resourceId
@@ -684,3 +753,6 @@ output AZURE_RESOURCE_ITINERARY_PLANNING_ID string = itineraryPlanning.outputs.r
 output AZURE_RESOURCE_CUSTOMER_QUERY_ID string = customerQuery.outputs.resourceId
 output AZURE_RESOURCE_DESTINATION_RECOMMENDATION_ID string = destinationRecommendation.outputs.resourceId
 output AZURE_RESOURCE_ECHO_PING_ID string = echoPing.outputs.resourceId
+output AZURE_OPENAI_ENDPOINT string = openAi.outputs.endpoint
+output NG_API_URL string = 'https://api.${containerAppsEnvironment.outputs.defaultDomain}'
+output AZURE_CLIENT_ID string = apiIdentity.outputs.clientId

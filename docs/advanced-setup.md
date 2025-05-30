@@ -2,42 +2,36 @@
 
 This section provides advanced setup instructions for running the application in a containerized environment using Docker. It is recommended to use the provided scripts for a smoother experience, but if you prefer to run the services manually, follow these steps.
 
-## Prerequisites
-
-Ensure you have the following installed before running the application:
-- **[Docker](https://www.docker.com/)**
-  
-
 ## Environment Variables setup for containerized services
 
 The application uses environment variables to configure the services. You can set them in a `.env` file in the root directory or directly in your terminal. We recommend the following approach:
-1. Create a `.env.dev` file for each containerized service under `src/`, and optionally a `.env.docker` file for Docker-specific configurations:
-    - `src/ui/.env.dev`
+1. Create a `.env.development` file for each containerized service under `src/`, and optionally a `.env.docker` file for Docker-specific configurations:
+    - `src/ui/.env.development`
     - `src/ui/.env.docker`
-    - `src/api/.env.dev`
+    - `src/api/.env.development`
     - `src/api/.env.docker`
-    - `src/tools/customer-query/.env.dev`
+    - `src/tools/customer-query/.env.development`
     - `src/tools/customer-query/.env.docker`
-    - `src/tools/destination-recommendation/.env.dev`
+    - `src/tools/destination-recommendation/.env.development`
     - `src/tools/destination-recommendation/.env.docker`
-    - `src/tools/itinerary-planning/.env.dev`
+    - `src/tools/itinerary-planning/.env.development`
     - `src/tools/itinerary-planning/.env.docker`
-    - `src/tools/code-evaluation/.env.dev`
+    - `src/tools/code-evaluation/.env.development`
     - `src/tools/code-evaluation/.env.docker`
-    - `src/tools/model-inference/.env.dev`
+    - `src/tools/model-inference/.env.development`
     - `src/tools/model-inference/.env.docker`
-    - `src/tools/web-search/.env.dev`
+    - `src/tools/web-search/.env.development`
     - `src/tools/web-search/.env.docker`
-    - `src/tools/echo-ping/.env.dev`
+    - `src/tools/echo-ping/.env.development`
     - `src/tools/echo-ping/.env.docker`
 
-2. `.env.docker` files are used to set environment variables for Docker containers. These files should contain the same variables as `.env.dev` files, but with values specific to the Docker environment. For example:
+2. `.env.docker` files are used to set environment variables for Docker containers. These files should contain the same variables as `.env.development` files, but with values specific to the Docker environment. For example:
 ```bash
-# src/api/.env.dev
-TOOL_CUSTOMER_QUERY_URL=http://localhost:8080
+# src/api/.env.development
+MCP_CUSTOMER_QUERY_URL=http://localhost:8080
 
 # src/api/.env.docker
-TOOL_CUSTOMER_QUERY_URL=http://tool-customer-query:8080
+MCP_CUSTOMER_QUERY_URL=http://tool-customer-query:8080
 ```
 
 3. Load the environment variable files in `docker-compose.yml` using the `env_file` directive, in the following order:
@@ -46,14 +40,21 @@ TOOL_CUSTOMER_QUERY_URL=http://tool-customer-query:8080
     container_name: web-api
     # ...
     env_file: 
-      - "./api/.env.dev"
+      - "./api/.env.development"
       - "./api/.env.docker" # override .env with .env.docker
 ```
 
 > [!Note]
 > Adding the `- environment:` directive to the `docker-compose.yml` file will override the environment variables set in the `.env.*` files.
 
-## Run the Entire Application
+## Preview the application in a containerized environment locally
+
+### Prerequisites
+
+Ensure you have the following installed before running the application:
+- **[Docker](https://www.docker.com/)**
+
+### Start the application
 
 To run the entire application, run the following command to build and run all the services defined in the `src/docker-compose.yml` file.
 
@@ -75,6 +76,29 @@ Once all services are up and running, you can:
 
 ## Deploy to Azure
 
-To deploy the application to Azure, you can use the provided `azd` commands. The `azd` CLI is a command-line interface for deploying applications to Azure. It simplifies the process of deploying and managing Azure resources.
 
-This is still work in progress, see opened PR [here](https://github.com/Azure-Samples/azure-ai-travel-agents/pull/53) for more details.
+### Prerequisites
+
+Ensure you have the following installed before deploying the application:
+- **[Docker](https://www.docker.com/)**
+- **[Azure Developer CLI (azd)](https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/install-azd)**
+  
+### Deploy the application
+
+To deploy the application to Azure, you can use the provided `azd` and Bicep infrastruction-as-code configuration (see `/infra` folder). The `azd` CLI is a command-line interface for deploying applications to Azure. It simplifies the process of provisioning, deploying and managing Azure resources.
+
+To deploy the application, follow these steps:
+1. Open a terminal and navigate to the root directory of the project.
+2. Run the following command to initialize the Azure Developer CLI:
+
+```sh
+azd auth login
+```
+
+3. Run the following command to deploy the application:
+
+```sh
+azd up
+```
+
+This command will provision the necessary Azure resources and deploy the application to Azure.

@@ -142,6 +142,9 @@
       },
       "principalId": {
         "value": "${AZURE_PRINCIPAL_ID}"
+      },
+      "isContinuousIntegration": {
+        "value": "${GITHUB_ACTIONS=false}"
       }
     }
 }

@@ -1,14 +1,13 @@
+import dotenv from "dotenv";
+dotenv.config();
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
-import dotenv from "dotenv";
 import express from "express";
 import { z } from "zod";
 import { log, tracer, meter } from "./instrumentation.js";
 
-dotenv.config();
-
+const PORT = parseInt(String(process.env.PORT), 10) || 5000;
 const app = express();
-
 const server = new McpServer(
   {
     name: "mcp-server-echo-ping",
@@ -74,7 +73,7 @@ server.tool(
   }
 );
 
-app.listen(5000, "0.0.0.0", () => {
+app.listen(PORT, "0.0.0.0", () => {
   log("Server started and listening for requests...");
   log("You can connect to it using the SSEClientTransport.");
   log(

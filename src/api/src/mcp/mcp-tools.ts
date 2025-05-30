@@ -77,11 +77,12 @@ export async function mcpTools({ id, config }: McpServerDefinition) {
 export async function mcpToolsList(config: McpServerDefinition[]) {
   return await Promise.all(
     config.map(async ({ id, name, config }) => {
+      const { url } = config;
       const mcpClient = client();
-      console.log(`Connecting to MCP server ${name} at ${config.url}`);
+      console.log(`Connecting to MCP server ${name} at ${url}`);
 
       try {
-        await mcpClient.connectToServer(config.url);
+        await mcpClient.connectToServer(url);
         console.log(`MCP server ${name} is reachable`);
         const { tools } = await mcpClient.listTools();
 
@@ -89,7 +90,7 @@ export async function mcpToolsList(config: McpServerDefinition[]) {
         return {
           id,
           name,
-          url: config.url,
+          url,
           reachable: true,
           selected: id !== "echo-ping",
           tools,

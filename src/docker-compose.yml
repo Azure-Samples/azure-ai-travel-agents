@@ -63,8 +63,11 @@ services:
       - tool-web-search
       - tool-echo-ping
     env_file: 
-      - "./api/.env.dev"
+      - "./api/.env.development"
       - "./api/.env.docker" # override .env with .env.docker
+    environment:
+      - IS_LOCAL_DOCKER_ENV=true 
+      - DEBUG=true # Enable Azure JS SDK debug logging
 
   web-ui:
     container_name: web-ui
@@ -73,6 +76,9 @@ services:
       - "4200:4200"
     depends_on:
       - web-api
+    env_file: 
+      - "./api/.env.development"
+      - "./api/.env.docker" # override .env with .env.docker
 
   aspire-dashboard:
     container_name: aspire-dashboard

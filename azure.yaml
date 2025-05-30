@@ -2,38 +2,82 @@
 
 name: ai-travel-agents
 metadata:
-    template: azd-init@1.13.1
+  template: ai-travel-agents@1.13.1
 services:
-    api:
-        project: src/api
-        host: containerapp
-        language: js
-        docker:
-            path: Dockerfile
-    customer-query:
-        project: src/tools/customer-query/AITravelAgent.CustomerQueryServer/
-        host: containerapp
-        language: dotnet
-        docker:
-            context: ..
-            path: ../Dockerfile
-            remoteBuild: true   
-    destination-recommendation:
-        project: src/tools/destination-recommendation
-        host: containerapp
-        language: java
-    echo-ping:
-        project: src/tools/echo-ping
-        host: containerapp
-        language: ts
-    itinerary-planning:
-        project: src/tools/itinerary-planning
-        host: containerapp
-        language: python
-    ui:
-        project: src/ui
-        host: containerapp
-        language: ts
-        dist: dist/ui
-        docker:
-            path: Dockerfile
+  api:
+    project: src/api
+    host: containerapp
+    language: ts
+    docker:
+      context: .
+      path: Dockerfile
+    hooks:
+      postdeploy:
+        windows:
+          shell: pwsh
+          run: '$env:NG_API_URL = azd env get-value NG_API_URL; "NG_API_URL=`"$env:NG_API_URL`"" | Set-Content .env.production'
+        posix:
+          shell: sh
+          run: 'echo NG_API_URL=\"$(azd env get-value NG_API_URL)\" > .env.production && set -a && source .env.production && set +a'
+  
+  ui:
+    project: src/ui
+    host: containerapp
+    language: ts
+    docker:
+      context: .
+      path: Dockerfile.production
+    hooks:
+      prebuild:
+        windows:
+          shell: pwsh
+          run: 'echo "NG_API_URL=""$env:NG_API_URL""" > .env.production'
+        posix:
+          shell: sh
+          run: 'echo NG_API_URL=\"$NG_API_URL\" > .env.production'
+
+  customer-query:
+    project: src/tools/customer-query/AITravelAgent.CustomerQueryServer/
+    host: containerapp
+    language: dotnet
+    docker:
+      context: ..
+      path: ../Dockerfile
+      remoteBuild: true
+
+  destination-recommendation:
+    project: src/tools/destination-recommendation
+    host: containerapp
+    language: java
+    docker:
+      path: ./Dockerfile
+      context: .
+      remoteBuild: true
+
+  itinerary-planning:
+    project: src/tools/itinerary-planning
+    host: containerapp
+    language: python
+    docker:
+      path: ./Dockerfile
+      context: .
+      remoteBuild: true
+
+  echo-ping:
+    project: src/tools/echo-ping
+    language: ts
+    host: containerapp
+    docker:
+      path: ./Dockerfile
+      context: .
+
+workflows:
+  up:
+    steps:
+      - azd: provision
+      - azd: deploy api
+      - azd: deploy ui
+      - azd: deploy customer-query
+      - azd: deploy destination-recommendation
+      - azd: deploy itinerary-planning
+      - azd: deploy echo-ping

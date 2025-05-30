@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 dotenv.config({
-  path: "./.env.dev",
+  path: "./.env.development",
 });
 
 import { mcp } from "@llamaindex/tools";
