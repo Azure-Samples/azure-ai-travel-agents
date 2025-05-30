@@ -186,10 +186,6 @@ module api 'br/public:avm/res/app/container-app:0.8.0' = {
             value: llamaIndexConfig.chat.model
           }
           {
-            name: 'AZURE_OPENAI_API_VERSION' 
-            value: llamaIndexConfig.chat.version
-          }
-          {
             name: 'MCP_ITINERARY_PLANNING_URL'
             value: 'https://itinerary-planning.internal.${containerAppsEnvironment.outputs.defaultDomain}'
           }
