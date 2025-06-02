@@ -7,8 +7,8 @@
         "OTEL_EXPORTER_OTLP_ENDPOINT": "http://aspire-dashboard:18889",
         "OTEL_EXPORTER_OTLP_HEADERS": "x-otlp-header=header-value"
       },
-      "type": "sse",
-      "url": "http://localhost:5007/sse"
+      "type": "http",
+      "url": "http://localhost:3000/mcp"
     },
     "tool-web-search": {
       "type": "sse",

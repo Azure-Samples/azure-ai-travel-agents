@@ -10,14 +10,17 @@ export type McpServerName =
   | "destination-recommendation";
 
 const MCP_API_SSE_PATH = "/sse";
+const MCP_API_HTTP_PATH = "/mcp";
 
 export const McpToolsConfig = (): {
   [k in McpServerName]: McpServerDefinition;
 } => ({
   "echo-ping": {
     config: {
-      url: process.env["MCP_ECHO_PING_URL"] + MCP_API_SSE_PATH,
+      url: process.env["MCP_ECHO_PING_URL"] + MCP_API_HTTP_PATH,
+      type: "http",
       verbose: true,
+      accessToken: process.env["MCP_ECHO_PING_ACCESS_TOKEN"],
     },
     id: "echo-ping",
     name: "Echo Test",
@@ -25,6 +28,7 @@ export const McpToolsConfig = (): {
   "customer-query": {
     config: {
       url: process.env["MCP_CUSTOMER_QUERY_URL"] + MCP_API_SSE_PATH,
+      type: "sse",
       verbose: true,
     },
     id: "customer-query",
@@ -33,6 +37,7 @@ export const McpToolsConfig = (): {
   "web-search": {
     config: {
       url: process.env["MCP_WEB_SEARCH_URL"] + MCP_API_SSE_PATH,
+      type: "sse",
       verbose: true,
     },
     id: "web-search",
@@ -41,6 +46,7 @@ export const McpToolsConfig = (): {
   "itinerary-planning": {
     config: {
       url: process.env["MCP_ITINERARY_PLANNING_URL"] + MCP_API_SSE_PATH,
+      type: "sse",
       verbose: true,
     },
     id: "itinerary-planning",
@@ -49,6 +55,7 @@ export const McpToolsConfig = (): {
   "model-inference": {
     config: {
       url: process.env["MCP_MODEL_INFERENCE_URL"] + MCP_API_SSE_PATH,
+      type: "sse",
       verbose: true,
     },
     id: "model-inference",
@@ -57,6 +64,7 @@ export const McpToolsConfig = (): {
   "code-evaluation": {
     config: {
       url: process.env["MCP_CODE_EVALUATION_URL"] + MCP_API_SSE_PATH,
+      type: "sse",
       verbose: true,
     },
     id: "code-evaluation",
@@ -65,6 +73,7 @@ export const McpToolsConfig = (): {
   "destination-recommendation": {
     config: {
       url: process.env["MCP_DESTINATION_RECOMMENDATION_URL"] + MCP_API_SSE_PATH,
+      type: "sse",
       verbose: true,
     },
     id: "destination-recommendation",

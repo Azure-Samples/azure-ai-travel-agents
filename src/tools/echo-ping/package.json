@@ -18,15 +18,14 @@
     "tool-echo-ping": "dist/index.js"
   },
   "scripts": {
-    "start": "node dist/index.js",
-    "prestart": "npm run build",
-    "build": "tsc && shx chmod +x dist/index.js"
+    "start": "tsx --watch src/index.ts",
+    "build": "tsc"
   },
   "files": [
     "dist"
   ],
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.6.1",
+    "@modelcontextprotocol/sdk": "^1.12.1",
     "@opentelemetry/api": "^1.9.0",
     "@opentelemetry/auto-instrumentations-node": "^0.57.0",
     "@opentelemetry/exporter-metrics-otlp-grpc": "^0.200.0",
@@ -36,7 +35,7 @@
     "@opentelemetry/sdk-metrics": "^2.0.0",
     "@opentelemetry/sdk-node": "^0.200.0",
     "@opentelemetry/sdk-trace-node": "^2.0.0",
-    "dotenv": "^16.4.7",
+    "dotenv": "^16.5.0",
     "express": "^5.0.1",
     "openai": "^4.86.2",
     "type": "^2.7.3",
@@ -46,6 +45,7 @@
     "@types/express": "^5.0.0",
     "@types/node": "^20.11.24",
     "shx": "^0.3.4",
+    "tsx": "^4.19.4",
     "typescript": "^5.3.3"
   }
 }

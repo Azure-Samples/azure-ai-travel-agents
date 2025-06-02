@@ -1,92 +1,96 @@
 import dotenv from "dotenv";
-dotenv.config();
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
-import express from "express";
-import { z } from "zod";
-import { log, tracer, meter } from "./instrumentation.js";
+dotenv.config({
+  path: '.env.development',
+});
 
-const PORT = parseInt(String(process.env.PORT), 10) || 5000;
-const app = express();
-const server = new McpServer(
-  {
-    name: "mcp-server-echo-ping",
-    version: "1.0.0",
-  },
-  {
-    capabilities: {
-      tools: {},
+import { meter } from "./instrumentation.js";
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import express, { Request, Response } from 'express';
+import { EchoMCPServer } from "./server.js";
+import { tokenProvider } from "./token-provider.js";
+
+const server = new EchoMCPServer(
+  new Server(
+    {
+      name: 'echo-ping-http-server',
+      version: '1.0.0',
     },
-  }
+    {
+      capabilities: {
+        tools: {},
+      },
+    }
+  )
 );
-let transport: SSEServerTransport | null = null;
-
-const connectionCount = meter.createCounter("connection", {
-  description: "Number of connections to the server",
-});
-
-app.get("/sse", (req, res) => {
-  log("Received SSE connection request");
-  connectionCount.add(1, {
-    method: "GET",
-  });
-  transport = new SSEServerTransport("/messages", res);
-  server.connect(transport);
-});
-
 const messageMeter = meter.createCounter("message", {
   description: "Number of messages sent",
 });
-app.post("/messages", (req, res) => {
-  if (transport) {
-    messageMeter.add(1, {
-      method: "POST",
-    });
-    transport.handlePostMessage(req, res);
-  } else {
-    res.status(400).send("No active transport available.");
+const connectionCount = meter.createCounter("connection", {
+  description: "Number of connections to the server",
+});
+const app = express();
+app.use(express.json());
+
+
+const router = express.Router();
+const MCP_ENDPOINT = '/mcp';
+
+// Breaker token authentication middleware
+router.use((req, res, next) => {
+  console.log(`Received ${req.method} request for ${req.originalUrl}`);
+  const expectedToken = tokenProvider().getToken();
+  const authHeader = req.headers['authorization'];
+  if (!expectedToken) {
+    console.error('MCP_ECHO_PING_ACCESS_TOKEN is not set in environment.');
+    res.status(500).json({ error: 'Server misconfiguration.' });
+    return;
   }
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    res.status(401).json({ error: 'Missing or invalid Authorization header.' });
+    return;
+  }
+  const token = authHeader.substring('Bearer '.length);
+  if (token !== expectedToken) {
+    res.status(401).json({ error: 'Invalid breaker token.' });
+    return;
+  }
+
+  console.log(`Successfully authenticated request with bearer token.`);
+  next();
 });
 
-server.tool(
-  "echo",
-  "Echo back the input values",
-  {
-    text: z.string(),
-  },
-  (args) => {
-    return tracer.startActiveSpan("echo", async (span) => {
-      log("Received request to echo:", args);
-      span.addEvent("echo");
-      span.end();
-      return await Promise.resolve({
-        content: [
-          {
-            type: "text" as const,
-            text: `Echoed text: ${
-              args.text
-            } - from the server at ${new Date().toISOString()}`,
-          },
-        ],
-      });
-    });
-  }
-);
-
-app.listen(PORT, "0.0.0.0", () => {
-  log("Server started and listening for requests...");
-  log("You can connect to it using the SSEClientTransport.");
-  log(
-    "For example: new SSEClientTransport(new URL('http://0.0.0.0:5000/sse'))"
-  );
+router.get('/', (req: Request, res: Response) => {
+  res.status(200).json({
+    message: 'MCP Stateless Streamable HTTP Server is running',
+    endpoint: MCP_ENDPOINT,
+  });
 });
 
-process.on('SIGINT', () => {
-  log("Received SIGINT. Cleaning up...");
-  if (transport) {
-    transport.close();
-  }
-  server.close();
-  log("Server closed.");
+router.post(MCP_ENDPOINT, async (req: Request, res: Response) => {
+  messageMeter.add(1, {
+    method: "POST",
+  });
+  await server.handlePostRequest(req, res);
+});
+
+router.get(MCP_ENDPOINT, async (req: Request, res: Response) => {
+  connectionCount.add(1, {
+    method: "GET",
+  });
+  await server.handleGetRequest(req, res);
+});
+
+app.use('/', router);
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`MCP Stateless Streamable HTTP Server`);
+  console.log(`MCP endpoint: http://localhost:${PORT}${MCP_ENDPOINT}`);
+  console.log(`Press Ctrl+C to stop the server`);
+});
+
+process.on('SIGINT', async () => {
+  console.error('Shutting down server...');
+  await server.close();
   process.exit(0);
 });

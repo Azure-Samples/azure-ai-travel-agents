@@ -1,23 +1,21 @@
-FROM node:22.12-alpine AS builder
-
+# Build stage
+FROM node:23-slim AS builder
 WORKDIR /app
-
-COPY src /app/src
-COPY ./package*.json ./
-COPY tsconfig.json ./tsconfig.json
-
-RUN --mount=type=cache,target=/root/.npm npm install
+COPY package*.json ./
+RUN npm ci
+COPY . .
 RUN npm run build
 
-FROM node:22-alpine AS release
-
+# Production stage
+FROM node:23-slim AS production
 WORKDIR /app
-
-COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/dist ./dist
+# Remove dev dependencies and cache
+RUN npm ci --omit=dev && npm cache clean --force
+# Use a non-root user for security
+RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
+USER appuser
 
-ENV NODE_ENV=production
-
-RUN npm ci --ignore-scripts --omit-dev
-
-CMD ["node", "dist/index.js"]
+EXPOSE 3000
+CMD ["node", "./dist/index.js"]

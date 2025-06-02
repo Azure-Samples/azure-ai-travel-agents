@@ -1,2 +1,2 @@
-export { MCPClient } from "./mcp-client.js";
-export { mcpTools, mcpToolsList } from "./mcp-tools.js";
+export { MCPClient as MCPSSEClient } from "./mcp-sse-client.js";
+export { MCPClient as MCPHTTPClient } from "./mcp-http-client.js";

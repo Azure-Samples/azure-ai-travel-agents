@@ -43,7 +43,12 @@ services:
     container_name: tool-echo-ping
     build: ./tools/echo-ping
     ports:
-      - "5007:5000"
+      - "5007:3000"
+    depends_on:
+      - aspire-dashboard
+    env_file:
+      - "./tools/echo-ping/.env.development"
+      - "./tools/echo-ping/.env.docker" # override .env with .env.docker
     environment:
       - OTEL_SERVICE_NAME=tool-echo-ping
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:18889

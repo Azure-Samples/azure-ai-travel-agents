@@ -1,98 +1,55 @@
-import { BaseToolWithCall } from "llamaindex";
-import { z } from "zod";
-import { MCPClient } from "./mcp-client.js";
 import type { SSEClientTransportOptions } from "@modelcontextprotocol/sdk/client/sse.js";
+import { MCPClient as MCPHTTPClient } from "./mcp-http-client.js";
+import { MCPClient as MCPSSEClient } from "./mcp-sse-client.js";
 
-// Copied from src/api/node_modules/@llamaindex/tools/dist/index.d.ts
-// TODO: Remove these types when they are exported from the package
 type MCPCommonOptions = {
   toolNamePrefix?: string;
   clientName?: string;
   clientVersion?: string;
   verbose?: boolean;
 };
-type LlamaIndexSSEMCPClientOptions = SSEClientTransportOptions &
+type LlamaIndexMCPClientOptions = SSEClientTransportOptions &
   MCPCommonOptions & {
     url: string;
+    type: "sse" | "http";
+    accessToken?: string;
   };
-
-type McpToolDefinition = {
-  name: string;
-  description?: string;
-  inputSchema: {
-    type: string;
-    properties?: any;
-    required?: z.ZodTypeAny;
-  };
-};
 
 export type McpServerDefinition = {
   name: string;
   id: string;
-  config: LlamaIndexSSEMCPClientOptions;
+  config: LlamaIndexMCPClientOptions;
 };
 
-function openAiFunctionAdapter(
-  tool: McpToolDefinition,
-  mcpClient: MCPClient
-): BaseToolWithCall {
-  return {
-    call: async (params: Record<string, any>): Promise<any> =>
-      await mcpClient.callTool(tool.name, params),
-    metadata: {
-      name: tool.name,
-      description: tool.description as string,
-      parameters: {
-        type: "object",
-        properties: tool.inputSchema.properties,
-        required: tool.inputSchema.required || [],
-      },
-    },
-  };
-}
-
-function client(): MCPClient {
-  return new MCPClient("llamaindex-client", "1.0.0");
-}
-
-export async function mcpTools({ id, config }: McpServerDefinition) {
-  const mcpClient = client();
-  console.log(`Connecting to MCP server ${id} at ${config.url}`);
-
-  try {
-    await mcpClient.connectToServer(config.url);
-  } catch (error: unknown) {
-    console.error(
-      `MCP server ${id} is not reachable`,
-      (error as Error).message
-    );
-    return [];
+function client(config: LlamaIndexMCPClientOptions): MCPSSEClient | MCPHTTPClient {
+  if (config.type === "sse") {
+    // legacy implementation using SSE
+    return new MCPSSEClient("llamaindex-sse-client", config.url);
+  } else {
+    return new MCPHTTPClient("llamaindex-http-client", config.url, config.accessToken);
   }
-
-  return (await mcpClient.listTools()).tools.map((tool) =>
-    openAiFunctionAdapter(tool, mcpClient)
-  );
 }
 
 export async function mcpToolsList(config: McpServerDefinition[]) {
   return await Promise.all(
     config.map(async ({ id, name, config }) => {
-      const { url } = config;
-      const mcpClient = client();
-      console.log(`Connecting to MCP server ${name} at ${url}`);
-
+      const { url, type } = config;
+      const mcpClient = client(config);
+      
       try {
-        await mcpClient.connectToServer(url);
+        console.log(`Connecting to MCP server ${name} at ${url}`);
+        await mcpClient.connect();
         console.log(`MCP server ${name} is reachable`);
-        const { tools } = await mcpClient.listTools();
+        const tools = await mcpClient.listTools();
 
         console.log(`MCP server ${name} has ${tools.length} tools`);
         return {
           id,
           name,
           url,
+          type,
           reachable: true,
-          selected: id !== "echo-ping",
+          selected: true,
           tools,
         };
       } catch (error: unknown) {
@@ -103,10 +60,12 @@ export async function mcpToolsList(config: McpServerDefinition[]) {
         return {
           id,
           name,
-          url: config.url,
+          url,
+          type,
           reachable: false,
           selected: false,
           tools: [],
+          error: (error as Error).message,
         };
       }
     })
