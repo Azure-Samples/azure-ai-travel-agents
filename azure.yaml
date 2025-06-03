@@ -18,7 +18,10 @@ services:
           run: '$env:NG_API_URL = azd env get-value NG_API_URL; "NG_API_URL=`"$env:NG_API_URL`"" | Set-Content .env.production'
         posix:
           shell: sh
-          run: 'echo NG_API_URL=\"$(azd env get-value NG_API_URL)\" > .env.production && set -a && source .env.production && set +a'
+          run: |
+            NG_API_URL=$(azd env get-value NG_API_URL)
+            echo "NG_API_URL=\"$NG_API_URL\"" > .env.production
+            export NG_API_URL
   
   ui:
     project: src/ui
