@@ -80,12 +80,12 @@ Once all services are up and running, you can:
 ### Prerequisites
 
 Ensure you have the following installed before deploying the application:
-- **[Docker](https://www.docker.com/)**
-- **[Azure Developer CLI (azd)](https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/install-azd)**
+- **[Docker](https://docs.docker.com/get-started/get-docker/)**
+- **[Azure Developer CLI (azd)](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd)**
   
 ### Deploy the application
 
-To deploy the application to Azure, you can use the provided `azd` and Bicep infrastruction-as-code configuration (see `/infra` folder). The `azd` CLI is a command-line interface for deploying applications to Azure. It simplifies the process of provisioning, deploying and managing Azure resources.
+To deploy the application to Azure, you can use the provided `azd` and Bicep infrastructure-as-code configuration (see `/infra` folder). The `azd` CLI is a command-line interface for deploying applications to Azure. It simplifies the process of provisioning, deploying and managing Azure resources.
 
 To deploy the application, follow these steps:
 1. Open a terminal and navigate to the root directory of the project.

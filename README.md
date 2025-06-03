@@ -75,11 +75,13 @@ To run the application locally, make sure you have **Docker**, **Node.js** and *
 
 2. Open a new terminal and run the following command to start the API:
 ```bash
+npm install --prefix=src/api
 npm run start --prefix=src/api
 ```
 
 3. Open a new terminal and run the following command to start the UI:
 ```bash
+npm install --prefix=src/ui
 npm run start --prefix=src/ui
 ```
 
