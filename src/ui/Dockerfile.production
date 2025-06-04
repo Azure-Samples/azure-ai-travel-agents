@@ -13,12 +13,6 @@ FROM nginx:alpine
 COPY --from=build /app/dist/app/browser /usr/share/nginx/html
 RUN mv /usr/share/nginx/html/index.csr.html /usr/share/nginx/html/index.html
 
-# Replace string 'NG_API_URL' with the value of the environment variable 'NG_API_URL'
-# This env variable should be set at runtime by Azure Container Apps
-# ARG NG_API_URL
-# ENV NG_API_URL=$NG_API_URL
-# RUN sed -i "s|{{NG_API_URL}}|$NG_API_URL|g" /usr/share/nginx/html/main-*.js
-
 EXPOSE 80
 
 # Start NGINX server

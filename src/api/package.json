@@ -1,5 +1,5 @@
 {
-  "name": "api",
+  "name": "azure-ai-travel-agents-api",
   "version": "1.0.0",
   "type": "module",
   "main": "dist/index.js",
@@ -13,8 +13,7 @@
   "dependencies": {
     "@azure/ai-projects": "^1.0.0-beta.5",
     "@azure/identity": "^4.9.1",
-    "@llamaindex/openai": "^0.3.5",
-    "@llamaindex/tools": "^0.0.8",
+    "@llamaindex/tools": "0.0.8",
     "@modelcontextprotocol/sdk": "^1.10.2",
     "@opentelemetry/api": "^1.9.0",
     "@opentelemetry/auto-instrumentations-node": "^0.57.0",
@@ -31,7 +30,7 @@
     "dotenv": "^16.4.7",
     "express": "^5.0.1",
     "foundry-local-sdk": "^0.3.1",
-    "llamaindex": "^0.10.3",
+    "llamaindex": "0.10.3",
     "openai": "^4.96.0",
     "type": "^2.7.3",
     "zod": "^3.24.2"
@@ -40,5 +39,8 @@
     "@types/node": "^20.11.24",
     "tsx": "^4.19.4",
     "typescript": "^5.3.3"
+  },
+  "volta": {
+    "node": "22.16.0"
   }
 }

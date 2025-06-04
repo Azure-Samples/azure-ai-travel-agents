@@ -1,7 +1,5 @@
 import dotenv from "dotenv";
-dotenv.config({
-  path: "./.env.development",
-});
+dotenv.config();
 
 import { llm as azureOpenAI } from "./azure-openai.js";
 import { llm as githubModels } from "./github-models.js";

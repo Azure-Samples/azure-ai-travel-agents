@@ -721,19 +721,6 @@ module openAi 'br/public:avm/res/cognitive-services/account:0.10.2' =  {
         }
         versionUpgradeOption: 'OnceCurrentVersionExpired'
       }
-      {
-        name: llamaIndexConfig.embedding.model
-        model: {
-          format: 'OpenAI'
-          name: llamaIndexConfig.embedding.model
-          version: llamaIndexConfig.embedding.version
-        }
-        sku: {
-          capacity: llamaIndexConfig.embedding.capacity
-          name: 'Standard'
-        }
-        versionUpgradeOption: 'OnceCurrentVersionExpired'
-      }
     ]
     roleAssignments: [
       {

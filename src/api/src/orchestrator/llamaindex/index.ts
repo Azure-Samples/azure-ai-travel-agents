@@ -1,7 +1,5 @@
 import dotenv from "dotenv";
-dotenv.config({
-  path: "./.env.development",
-});
+dotenv.config();
 
 import { mcp } from "@llamaindex/tools";
 import { agent, multiAgent, ToolCallLLM } from "llamaindex";

@@ -50,18 +50,6 @@ apiRouter.get("/tools", async (req, res) => {
   }
 });
 
-// // Agents endpoint
-// apiRouter.get("/agents", async (req, res) => {
-//   try {
-//     const agents = (await setupAgents(Object.keys(McpToolsConfig()))).getAgents();
-//     console.log("Available agents:", agents);
-//     res.status(200).json({ agents });
-//   } catch (error) {
-//     console.error("Error fetching MCP tools:", error);
-//     res.status(500).json({ error: "Error fetching MCP tools" });
-//   }
-// });
-
 // Chat endpoint with Server-Sent Events (SSE) for streaming responses
 // @ts-ignore - Ignoring TypeScript errors for Express route handlers
 apiRouter.post("/chat", async (req, res) => {

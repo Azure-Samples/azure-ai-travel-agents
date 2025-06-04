@@ -11,17 +11,6 @@ services:
     docker:
       context: .
       path: Dockerfile
-    hooks:
-      postdeploy:
-        windows:
-          shell: pwsh
-          run: '$env:NG_API_URL = azd env get-value NG_API_URL; "NG_API_URL=`"$env:NG_API_URL`"" | Set-Content .env.production'
-        posix:
-          shell: sh
-          run: |
-            NG_API_URL=$(azd env get-value NG_API_URL)
-            echo "NG_API_URL=\"$NG_API_URL\"" > .env.production
-            export NG_API_URL
   
   ui:
     project: src/ui
@@ -73,6 +62,15 @@ services:
     docker:
       path: ./Dockerfile
       context: .
+
+hooks:
+  postprovision:
+    windows:
+      shell: pwsh
+      run: ./infra/hooks/postprovision.ps1
+    posix:
+      shell: sh
+      run: ./infra/hooks/postprovision.sh
 
 workflows:
   up:

@@ -1,7 +1,5 @@
 import dotenv from "dotenv";
-dotenv.config({
-  path: '.env.development',
-});
+dotenv.config();
 
 import { meter } from "./instrumentation.js";
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';

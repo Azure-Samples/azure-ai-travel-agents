@@ -52,6 +52,6 @@ Each tool is containerized using Docker and can be deployed independently or as 
 
 To add a new tool, create a new directory with a descriptive name and implement the MCP server according to the protocol specifications. Make sure to:
 - Include a README.md file with a description of the tool and its functionality.
-- Include a .env.development and .env.docker file for environment variables.
+- Include a .env and .env.docker file for environment variables.
 - Use [OpenTelemetry documentation](https://opentelemetry.io/docs/) for performance monitoring and tracing. See [./echo-ping](./echo-ping) for an example.
 - Check that the tool is containerized and can be run independently. The server also needs to be able to run directly in the host (outside of the container) for local development. 

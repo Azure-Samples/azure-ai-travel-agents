@@ -5,29 +5,31 @@ This section provides advanced setup instructions for running the application in
 ## Environment Variables setup for containerized services
 
 The application uses environment variables to configure the services. You can set them in a `.env` file in the root directory or directly in your terminal. We recommend the following approach:
-1. Create a `.env.development` file for each containerized service under `src/`, and optionally a `.env.docker` file for Docker-specific configurations:
-    - `src/ui/.env.development`
+
+1. Create a `.env` file for each containerized service under `src/`, and optionally a `.env.docker` file for Docker-specific configurations:
+    - `src/ui/.env`
     - `src/ui/.env.docker`
-    - `src/api/.env.development`
+    - `src/api/.env`
     - `src/api/.env.docker`
-    - `src/tools/customer-query/.env.development`
+    - `src/tools/customer-query/.env`
     - `src/tools/customer-query/.env.docker`
-    - `src/tools/destination-recommendation/.env.development`
+    - `src/tools/destination-recommendation/.env`
     - `src/tools/destination-recommendation/.env.docker`
-    - `src/tools/itinerary-planning/.env.development`
+    - `src/tools/itinerary-planning/.env`
     - `src/tools/itinerary-planning/.env.docker`
-    - `src/tools/code-evaluation/.env.development`
+    - `src/tools/code-evaluation/.env`
     - `src/tools/code-evaluation/.env.docker`
-    - `src/tools/model-inference/.env.development`
+    - `src/tools/model-inference/.env`
     - `src/tools/model-inference/.env.docker`
-    - `src/tools/web-search/.env.development`
+    - `src/tools/web-search/.env`
     - `src/tools/web-search/.env.docker`
-    - `src/tools/echo-ping/.env.development`
+    - `src/tools/echo-ping/.env`
     - `src/tools/echo-ping/.env.docker`
 
-2. `.env.docker` files are used to set environment variables for Docker containers. These files should contain the same variables as `.env.development` files, but with values specific to the Docker environment. For example:
+2. `.env.docker` files are used to set environment variables for Docker containers. These files should contain the same variables as `.env` files, but with values specific to the Docker environment. For example:
+  
 ```bash
-# src/api/.env.development
+# src/api/.env
 MCP_CUSTOMER_QUERY_URL=http://localhost:8080
 
 # src/api/.env.docker
@@ -40,7 +42,7 @@ MCP_CUSTOMER_QUERY_URL=http://tool-customer-query:8080
     container_name: web-api
     # ...
     env_file: 
-      - "./api/.env.development"
+      - "./api/.env"
       - "./api/.env.docker" # override .env with .env.docker
 ```
 
@@ -76,7 +78,6 @@ Once all services are up and running, you can:
 
 ## Deploy to Azure
 
-
 ### Prerequisites
 
 Ensure you have the following installed before deploying the application:
@@ -101,4 +102,62 @@ azd auth login
 azd up
 ```
 
-This command will provision the necessary Azure resources and deploy the application to Azure.
+This command will provision the necessary Azure resources and deploy the application to Azure. To troubleshoot any issues, see [troubleshooting](#troubleshooting).
+
+### Configure environment variables for running services
+
+Configure environment variables for running services by updating `settings` in [main.parameters.json](../infra/main.parameters.json).
+
+### Configure CI/CD pipeline
+
+Run `azd pipeline config` to configure the deployment pipeline to connect securely to Azure. 
+
+- Deploying with `GitHub Actions`: Select `GitHub` when prompted for a provider. If your project lacks the `azure-dev.yml` file, accept the prompt to add it and proceed with pipeline configuration.
+
+- Deploying with `Azure DevOps Pipeline`: Select `Azure DevOps` when prompted for a provider. If your project lacks the `azure-dev.yml` file, accept the prompt to add it and proceed with pipeline configuration.
+
+## What's included in the infrastructure configuration
+
+### Infrastructure configuration
+
+To describe the infrastructure and application, `azure.yaml` along with Infrastructure as Code files using Bicep were added with the following directory structure:
+
+```yaml
+- azure.yaml        # azd project configuration
+- infra/            # Infrastructure-as-code Bicep files
+  - main.bicep      # Subscription level resources
+  - resources.bicep # Primary resource group resources
+  - modules/        # Library modules
+```
+
+The resources declared in [resources.bicep](../infra/resources.bicep) are provisioned when running `azd up` or `azd provision`.
+This includes:
+
+- Azure Container App to host the 'api' service.
+- Azure Container App to host the 'ui' service.
+- Azure Container App to host the 'itinerary-planning' service.
+- Azure Container App to host the 'customer-query' service.
+- Azure Container App to host the 'destination-recommendation' service.
+- Azure Container App to host the 'echo-ping' service.
+- Azure OpenAI resource to host the 'model-inference' service.
+
+More information about [Bicep](https://aka.ms/bicep) language.
+
+## Troubleshooting
+
+Q: I visited the service endpoint listed, and I'm seeing a blank page, a generic welcome page, or an error page.
+
+A: Your service may have failed to start, or it may be missing some configuration settings. To investigate further:
+
+1. Run `azd show`. Click on the link under "View in Azure Portal" to open the resource group in Azure Portal.
+2. Navigate to the specific Container App service that is failing to deploy.
+3. Click on the failing revision under "Revisions with Issues".
+4. Review "Status details" for more information about the type of failure.
+5. Observe the log outputs from Console log stream and System log stream to identify any errors.
+6. If logs are written to disk, use *Console* in the navigation to connect to a shell within the running container.
+
+For more troubleshooting information, visit [Container Apps troubleshooting](https://learn.microsoft.com/azure/container-apps/troubleshooting). 
+
+### Additional information
+
+For additional information about setting up your `azd` project, visit our official [docs](https://learn.microsoft.com/azure/developer/azure-developer-cli/make-azd-compatible?pivots=azd-convert).

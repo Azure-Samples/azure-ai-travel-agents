@@ -47,7 +47,7 @@ services:
     depends_on:
       - aspire-dashboard
     env_file:
-      - "./tools/echo-ping/.env.development"
+      - "./tools/echo-ping/.env"
       - "./tools/echo-ping/.env.docker" # override .env with .env.docker
 
   web-api:
@@ -64,7 +64,7 @@ services:
       - tool-web-search
       - tool-echo-ping
     env_file: 
-      - "./api/.env.development"
+      - "./api/.env"
       - "./api/.env.docker" # override .env with .env.docker
     environment:
       - IS_LOCAL_DOCKER_ENV=true 
@@ -78,7 +78,7 @@ services:
     depends_on:
       - web-api
     env_file: 
-      - "./api/.env.development"
+      - "./api/.env"
       - "./api/.env.docker" # override .env with .env.docker
 
   aspire-dashboard:
