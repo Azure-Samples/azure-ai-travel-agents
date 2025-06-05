@@ -143,9 +143,15 @@ This includes:
 - Azure Container App to host the 'customer-query' service.
 - Azure Container App to host the 'destination-recommendation' service.
 - Azure Container App to host the 'echo-ping' service.
+- Azure Container App to host the 'web-search' service.
+- Azure Container App to host the 'model-inference' service.
+- Azure Container App to host the 'code-evaluation' service.
+- Azure API Management (APIM) to secure and manage all endpoints with GenAI capabilities.
 - Azure OpenAI resource to host the 'model-inference' service.
 
 More information about [Bicep](https://aka.ms/bicep) language.
+
+For detailed information about the API Management integration, see [APIM Integration Guide](./apim-integration.md).
 
 ## Troubleshooting
 
