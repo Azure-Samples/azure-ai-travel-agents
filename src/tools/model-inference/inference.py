@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """
-Simple ONNX inference server for Azure Container Apps.
-This service provides HTTP endpoints for model inference using ONNX Runtime.
+OpenAI-compliant ONNX inference server for Azure Container Apps.
+This service provides OpenAI-compatible HTTP endpoints for model inference using ONNX Runtime.
 """
 
 import json
 import os
 import logging
+import time
+import uuid
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import urlparse, parse_qs
 import numpy as np
@@ -26,13 +28,14 @@ except ImportError:
     import onnxruntime as ort
 
 
-class ONNXInferenceHandler(BaseHTTPRequestHandler):
-    """HTTP request handler for ONNX model inference."""
+class OpenAICompatibleHandler(BaseHTTPRequestHandler):
+    """HTTP request handler for OpenAI-compatible ONNX model inference."""
     
     def __init__(self, *args, **kwargs):
         # Initialize ONNX session
         self.session = None
         self.model_path = "/app/model.onnx"
+        self.model_name = "onnx-model"
         self.load_model()
         super().__init__(*args, **kwargs)
     
@@ -62,6 +65,8 @@ class ONNXInferenceHandler(BaseHTTPRequestHandler):
             self.handle_health()
         elif parsed_path.path == "/info":
             self.handle_info()
+        elif parsed_path.path == "/v1/models":
+            self.handle_models()
         else:
             self.handle_root()
     
@@ -71,6 +76,10 @@ class ONNXInferenceHandler(BaseHTTPRequestHandler):
         
         if parsed_path.path == "/predict":
             self.handle_predict()
+        elif parsed_path.path == "/v1/chat/completions":
+            self.handle_chat_completions()
+        elif parsed_path.path == "/v1/completions":
+            self.handle_completions()
         else:
             self.send_error(404, "Endpoint not found")
     
@@ -111,6 +120,214 @@ class ONNXInferenceHandler(BaseHTTPRequestHandler):
         
         self.wfile.write(json.dumps(model_info).encode())
     
+    def handle_models(self):
+        """OpenAI-compatible models endpoint."""
+        self.send_response(200)
+        self.send_header('Content-type', 'application/json')
+        self.end_headers()
+        
+        models_response = {
+            "object": "list",
+            "data": [
+                {
+                    "id": self.model_name,
+                    "object": "model",
+                    "created": int(time.time()),
+                    "owned_by": "onnx-inference",
+                    "permission": [],
+                    "root": self.model_name,
+                    "parent": None
+                }
+            ]
+        }
+        
+        self.wfile.write(json.dumps(models_response).encode())
+
+    def handle_chat_completions(self):
+        """OpenAI-compatible chat completions endpoint."""
+        try:
+            # Read request body
+            content_length = int(self.headers['Content-Length'])
+            post_data = self.rfile.read(content_length)
+            request_data = json.loads(post_data.decode('utf-8'))
+            
+            # Extract OpenAI parameters
+            messages = request_data.get('messages', [])
+            model = request_data.get('model', self.model_name)
+            max_tokens = request_data.get('max_tokens', 100)
+            temperature = request_data.get('temperature', 0.7)
+            stream = request_data.get('stream', False)
+            
+            # Generate response using ONNX model or mock response
+            if self.session and self.is_text_model():
+                # Use ONNX model for text generation
+                response_text = self.generate_text_with_onnx(messages)
+            else:
+                # Mock response for non-text models or demo mode
+                response_text = self.generate_mock_response(messages)
+            
+            # Create OpenAI-compatible response
+            response = {
+                "id": f"chatcmpl-{uuid.uuid4().hex[:8]}",
+                "object": "chat.completion",
+                "created": int(time.time()),
+                "model": model,
+                "choices": [
+                    {
+                        "index": 0,
+                        "message": {
+                            "role": "assistant",
+                            "content": response_text
+                        },
+                        "finish_reason": "stop"
+                    }
+                ],
+                "usage": {
+                    "prompt_tokens": self.count_tokens(messages),
+                    "completion_tokens": self.count_tokens([{"content": response_text}]),
+                    "total_tokens": self.count_tokens(messages) + self.count_tokens([{"content": response_text}])
+                }
+            }
+            
+            self.send_response(200)
+            self.send_header('Content-type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps(response).encode())
+            
+        except Exception as e:
+            logger.error(f"Chat completion error: {e}")
+            self.send_openai_error(500, "internal_server_error", f"Internal server error: {str(e)}")
+
+    def handle_completions(self):
+        """OpenAI-compatible completions endpoint."""
+        try:
+            # Read request body
+            content_length = int(self.headers['Content-Length'])
+            post_data = self.rfile.read(content_length)
+            request_data = json.loads(post_data.decode('utf-8'))
+            
+            # Extract OpenAI parameters
+            prompt = request_data.get('prompt', '')
+            model = request_data.get('model', self.model_name)
+            max_tokens = request_data.get('max_tokens', 100)
+            temperature = request_data.get('temperature', 0.7)
+            
+            # Generate response using ONNX model or mock response
+            if self.session and self.is_text_model():
+                # Use ONNX model for text generation
+                response_text = self.generate_text_with_onnx([{"role": "user", "content": prompt}])
+            else:
+                # Mock response for non-text models or demo mode
+                response_text = self.generate_mock_completion(prompt)
+            
+            # Create OpenAI-compatible response
+            response = {
+                "id": f"cmpl-{uuid.uuid4().hex[:8]}",
+                "object": "text_completion",
+                "created": int(time.time()),
+                "model": model,
+                "choices": [
+                    {
+                        "text": response_text,
+                        "index": 0,
+                        "logprobs": None,
+                        "finish_reason": "stop"
+                    }
+                ],
+                "usage": {
+                    "prompt_tokens": len(prompt.split()),
+                    "completion_tokens": len(response_text.split()),
+                    "total_tokens": len(prompt.split()) + len(response_text.split())
+                }
+            }
+            
+            self.send_response(200)
+            self.send_header('Content-type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps(response).encode())
+            
+        except Exception as e:
+            logger.error(f"Completion error: {e}")
+            self.send_openai_error(500, "internal_server_error", f"Internal server error: {str(e)}")
+
+    def is_text_model(self):
+        """Check if the loaded ONNX model is suitable for text generation."""
+        if not self.session:
+            return False
+        
+        # Simple heuristic: check if model has text-like input/output shapes
+        # This is a placeholder - in practice, you'd check model metadata
+        try:
+            inputs = self.session.get_inputs()
+            outputs = self.session.get_outputs()
+            
+            # For now, assume it's not a text model if it's the demo linear regression
+            # In practice, you'd check model metadata or input/output characteristics
+            return False  # Default to False for demo model
+        except:
+            return False
+
+    def generate_text_with_onnx(self, messages):
+        """Generate text using the ONNX model (placeholder implementation)."""
+        # This is a placeholder for actual ONNX text generation
+        # You would implement proper tokenization and inference here
+        return "This would be generated by your ONNX language model."
+
+    def generate_mock_response(self, messages):
+        """Generate a mock response for chat completion."""
+        if not messages:
+            return "Hello! How can I help you with your travel plans?"
+        
+        last_message = messages[-1].get('content', '').lower()
+        
+        # Simple travel-themed responses
+        if 'travel' in last_message or 'trip' in last_message:
+            return "I'd be happy to help with your travel plans! Where would you like to go?"
+        elif 'hotel' in last_message or 'accommodation' in last_message:
+            return "I can help you find great accommodation options. What's your destination and preferred dates?"
+        elif 'flight' in last_message or 'airline' in last_message:
+            return "Let me help you find the best flight options. What are your departure and arrival cities?"
+        elif 'restaurant' in last_message or 'food' in last_message:
+            return "I can recommend some excellent dining options! What type of cuisine are you interested in?"
+        else:
+            return "I'm an AI travel assistant powered by ONNX inference. How can I help you plan your next adventure?"
+
+    def generate_mock_completion(self, prompt):
+        """Generate a mock completion for the completions endpoint."""
+        prompt_lower = prompt.lower()
+        
+        if 'travel' in prompt_lower:
+            return " planning can be exciting! Consider factors like budget, season, and activities you enjoy."
+        elif 'destination' in prompt_lower:
+            return " recommendations depend on your interests. Popular options include cultural cities, beach resorts, and mountain retreats."
+        else:
+            return " - I'm an ONNX-powered travel assistant ready to help with your questions."
+
+    def count_tokens(self, messages):
+        """Simple token counting (placeholder implementation)."""
+        total = 0
+        for message in messages:
+            content = message.get('content', '')
+            total += len(content.split())
+        return max(total, 1)  # Ensure at least 1 token
+
+    def send_openai_error(self, status_code, error_type, message):
+        """Send OpenAI-compatible error response."""
+        self.send_response(status_code)
+        self.send_header('Content-type', 'application/json')
+        self.end_headers()
+        
+        error_response = {
+            "error": {
+                "message": message,
+                "type": error_type,
+                "param": None,
+                "code": None
+            }
+        }
+        
+        self.wfile.write(json.dumps(error_response).encode())
+
     def handle_root(self):
         """Root endpoint with usage information."""
         self.send_response(200)
@@ -118,14 +335,19 @@ class ONNXInferenceHandler(BaseHTTPRequestHandler):
         self.end_headers()
         
         usage_info = {
-            "service": "ONNX Inference Server",
+            "service": "OpenAI-Compatible ONNX Inference Server",
+            "description": "This server provides OpenAI-compatible API endpoints for ONNX model inference",
             "endpoints": {
                 "/": "This usage information",
                 "/health": "Health check",
                 "/info": "Model information",
-                "/predict": "POST endpoint for model inference"
+                "/predict": "POST endpoint for raw ONNX model inference",
+                "/v1/models": "GET endpoint listing available models (OpenAI compatible)",
+                "/v1/chat/completions": "POST endpoint for chat completions (OpenAI compatible)", 
+                "/v1/completions": "POST endpoint for text completions (OpenAI compatible)"
             },
-            "model_loaded": self.session is not None
+            "model_loaded": self.session is not None,
+            "openai_compatible": True
         }
         
         self.wfile.write(json.dumps(usage_info, indent=2).encode())
@@ -195,14 +417,17 @@ class ONNXInferenceHandler(BaseHTTPRequestHandler):
 def run_server(port=5000):
     """Run the HTTP server."""
     server_address = ('', port)
-    httpd = HTTPServer(server_address, ONNXInferenceHandler)
+    httpd = HTTPServer(server_address, OpenAICompatibleHandler)
     
-    logger.info(f"Starting ONNX inference server on port {port}")
+    logger.info(f"Starting OpenAI-compatible ONNX inference server on port {port}")
     logger.info("Available endpoints:")
-    logger.info("  GET  /        - Usage information")
-    logger.info("  GET  /health  - Health check")
-    logger.info("  GET  /info    - Model information")
-    logger.info("  POST /predict - Model inference")
+    logger.info("  GET  /                    - Usage information")
+    logger.info("  GET  /health              - Health check")
+    logger.info("  GET  /info                - Model information")
+    logger.info("  POST /predict             - Raw ONNX model inference")
+    logger.info("  GET  /v1/models          - List models (OpenAI compatible)")
+    logger.info("  POST /v1/chat/completions - Chat completions (OpenAI compatible)")
+    logger.info("  POST /v1/completions     - Text completions (OpenAI compatible)")
     
     try:
         httpd.serve_forever()
