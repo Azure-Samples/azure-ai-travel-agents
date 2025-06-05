@@ -1,4 +1,4 @@
-name: Build All Packages
+name: Build
 
 on:
   workflow_dispatch:
@@ -9,7 +9,7 @@ on:
 
 jobs:
   build-api:
-    name: Build Node.js API (Express)
+    name: API
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -23,7 +23,7 @@ jobs:
       - run: npm run build
 
   build-ui:
-    name: Build Angular UI
+    name: UI
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -37,7 +37,7 @@ jobs:
       - run: npm run build
 
   build-customer-query:
-    name: Build .NET Customer Query API
+    name: MCP Customer Query (.NET)
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -51,7 +51,7 @@ jobs:
       - run: dotnet build --configuration Release --no-restore
 
   build-destination-recommendation:
-    name: Build Java Destination Recommendation API
+    name: MCP Destination Recommendation (Java)
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -63,10 +63,10 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '24'
-      - run: ./mvnw clean install -DskipTests
+      - run: mvnw clean install -DskipTests
 
   build-echo-ping:
-    name: Build Node.js Echo Ping API
+    name: MCP Echo Ping (Node.js)
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -80,7 +80,7 @@ jobs:
       - run: npm run build
 
   build-itinerary-planning:
-    name: Build Python Itinerary Planning API
+    name: MCP Itinerary Planning (Python)
     runs-on: ubuntu-latest
     defaults:
       run:
