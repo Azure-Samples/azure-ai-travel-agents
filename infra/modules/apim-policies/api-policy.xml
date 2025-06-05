@@ -1,0 +1,121 @@
+<!--
+    API-level policy for backend services
+    Includes GenAI-specific routing and monitoring
+-->
+<policies>
+    <inbound>
+        <!-- Authentication and authorization for internal services -->
+        <validate-jwt header-name="Authorization" failed-validation-httpcode="401" failed-validation-error-message="Unauthorized" require-expiration-time="true" require-scheme="Bearer" require-signed-tokens="true">
+            <issuer-signing-keys>
+                <key>{{jwt-signing-key}}</key>
+            </issuer-signing-keys>
+            <audiences>
+                <audience>azure-ai-travel-agents</audience>
+            </audiences>
+        </validate-jwt>
+        
+        <!-- For MCP servers, add specific routing and transformation -->
+        <choose>
+            <when condition="@(context.Request.Url.Path.StartsWith("/mcp/"))">
+                <!-- MCP-specific transformations -->
+                <set-header name="Content-Type" exists-action="override">
+                    <value>application/json</value>
+                </set-header>
+                
+                <!-- Add MCP protocol headers -->
+                <set-header name="MCP-Version" exists-action="override">
+                    <value>1.0</value>
+                </set-header>
+                
+                <!-- Rate limiting for AI services -->
+                <rate-limit calls="100" renewal-period="60" />
+                
+                <!-- Circuit breaker for backend resilience -->
+                <retry condition="@(context.Response.StatusCode >= 500)" count="3" interval="1" />
+            </when>
+            <when condition="@(context.Request.Url.Path.StartsWith("/api/"))">
+                <!-- API-specific rate limiting -->
+                <rate-limit calls="500" renewal-period="60" />
+            </when>
+            <when condition="@(context.Request.Url.Path.StartsWith("/ui/"))">
+                <!-- UI-specific handling -->
+                <rate-limit calls="200" renewal-period="60" />
+            </when>
+        </choose>
+        
+        <!-- GenAI monitoring and metrics -->
+        <log-to-eventhub logger-id="genai-logger" partition-id="0">
+            @{
+                return new JObject(
+                    new JProperty("timestamp", DateTime.UtcNow.ToString()),
+                    new JProperty("correlationId", context.RequestId),
+                    new JProperty("apiPath", context.Request.Url.Path),
+                    new JProperty("method", context.Request.Method),
+                    new JProperty("userAgent", context.Request.Headers.GetValueOrDefault("User-Agent", "")),
+                    new JProperty("clientIp", context.Request.IpAddress)
+                ).ToString();
+            }
+        </log-to-eventhub>
+    </inbound>
+    <backend>
+        <!-- Backend request modifications -->
+        <choose>
+            <when condition="@(context.Request.Url.Path.StartsWith("/mcp/"))">
+                <!-- For MCP servers, ensure proper routing -->
+                <set-backend-service base-url="@{
+                    var path = context.Request.Url.Path;
+                    if (path.StartsWith("/mcp/customer-query")) return "https://customer-query.internal." + context.Variables["containerAppsDefaultDomain"];
+                    if (path.StartsWith("/mcp/destination-recommendation")) return "https://destination-recommendation.internal." + context.Variables["containerAppsDefaultDomain"];
+                    if (path.StartsWith("/mcp/itinerary-planning")) return "https://itinerary-planning.internal." + context.Variables["containerAppsDefaultDomain"];
+                    if (path.StartsWith("/mcp/echo-ping")) return "https://echo-ping.internal." + context.Variables["containerAppsDefaultDomain"];
+                    if (path.StartsWith("/mcp/web-search")) return "https://web-search.internal." + context.Variables["containerAppsDefaultDomain"];
+                    if (path.StartsWith("/mcp/model-inference")) return "https://model-inference.internal." + context.Variables["containerAppsDefaultDomain"];
+                    if (path.StartsWith("/mcp/code-evaluation")) return "https://code-evaluation.internal." + context.Variables["containerAppsDefaultDomain"];
+                    return "https://api.internal." + context.Variables["containerAppsDefaultDomain"];
+                }" />
+                
+                <!-- Remove /mcp/{service} prefix for backend routing -->
+                <rewrite-uri template="@{
+                    var path = context.Request.Url.Path;
+                    if (path.StartsWith("/mcp/")) {
+                        var segments = path.Split('/');
+                        if (segments.Length > 3) {
+                            return "/" + string.Join("/", segments.Skip(3));
+                        }
+                        return "/";
+                    }
+                    return path;
+                }" />
+            </when>
+        </choose>
+        
+        <forward-request timeout="30" />
+    </backend>
+    <outbound>
+        <!-- Response transformations -->
+        <choose>
+            <when condition="@(context.Request.Url.Path.StartsWith("/mcp/"))">
+                <!-- Add MCP response headers -->
+                <set-header name="MCP-Server" exists-action="override">
+                    <value>Azure AI Travel Agents</value>
+                </set-header>
+            </when>
+        </choose>
+        
+        <!-- Performance monitoring -->
+        <set-header name="X-Response-Time" exists-action="override">
+            <value>@(DateTime.UtcNow.Subtract(context.Timestamp).TotalMilliseconds.ToString())</value>
+        </set-header>
+    </outbound>
+    <on-error>
+        <!-- Error handling and logging -->
+        <set-status code="500" reason="Internal Server Error" />
+        <set-body>@{
+            return new JObject(
+                new JProperty("error", "Internal server error"),
+                new JProperty("correlationId", context.RequestId),
+                new JProperty("timestamp", DateTime.UtcNow.ToString("O"))
+            ).ToString();
+        }</set-body>
+    </on-error>
+</policies>
