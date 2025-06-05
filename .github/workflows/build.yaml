@@ -1,0 +1,95 @@
+name: Build All Packages
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-api:
+    name: Build Node.js API (Express)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./src/api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci
+      - run: npm run build
+
+  build-ui:
+    name: Build Angular UI
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./src/ui
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci
+      - run: npm run build
+
+  build-customer-query:
+    name: Build .NET Customer Query API
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./src/tools/customer-query
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+      - run: dotnet restore
+      - run: dotnet build --configuration Release --no-restore
+
+  build-destination-recommendation:
+    name: Build Java Destination Recommendation API
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./src/tools/destination-recommendation
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 24
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '24'
+      - run: ./mvnw clean install -DskipTests
+
+  build-echo-ping:
+    name: Build Node.js Echo Ping API
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./src/tools/echo-ping
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci
+      - run: npm run build
+
+  build-itinerary-planning:
+    name: Build Python Itinerary Planning API
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./src/tools/itinerary-planning
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install --upgrade pip
+      - run: pip install .
+      - run: pip install .
