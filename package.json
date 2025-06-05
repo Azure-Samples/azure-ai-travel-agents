@@ -1,0 +1,29 @@
+{
+  "name": "azure-ai-travel-agents",
+  "version": "1.0.0",
+  "description": "<div align=\"center\">",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs",
+    "docs:serve": "vuepress serve docs",
+    "docs:deploy": "./scripts/deploy-docs.sh",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "azure",
+    "ai",
+    "travel",
+    "agents",
+    "documentation"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.8.3",
+    "vuepress": "^1.9.10"
+  }
+}

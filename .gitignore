@@ -413,3 +413,8 @@ dist
 !.env.sample
 .azure
 .DS_Store
+
+# VuePress
+docs/.vuepress/dist/
+docs/.vuepress/.cache/
+docs/.vuepress/.temp/
