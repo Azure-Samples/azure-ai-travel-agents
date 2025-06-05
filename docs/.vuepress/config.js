@@ -11,9 +11,6 @@ module.exports = {
 
   // Base URL for GitHub Pages
   base: '/azure-ai-travel-agents/',
-  
-  // Build configuration
-  dest: 'docs/.vuepress/dist',
 
   themeConfig: {
     logo: '/ai-travel-agents-logo.png',

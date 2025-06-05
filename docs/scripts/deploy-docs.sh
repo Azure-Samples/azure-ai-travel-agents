@@ -8,7 +8,7 @@ echo "Building VuePress documentation..."
 npm run docs:build
 
 echo "Preparing docs branch..."
-cd docs/.vuepress/dist
+cd .vuepress/dist
 
 # Initialize git if not already done
 if [ ! -d .git ]; then

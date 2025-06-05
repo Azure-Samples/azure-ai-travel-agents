@@ -12,6 +12,9 @@ This directory contains the VuePress-based documentation website for Azure AI Tr
 ### Setup
 
 ```bash
+# Navigate to docs directory
+cd docs
+
 # Install dependencies
 npm install
 
@@ -24,11 +27,14 @@ The development server will be available at `http://localhost:8080`.
 ### Building for Production
 
 ```bash
+# Navigate to docs directory
+cd docs
+
 # Build static files
 npm run docs:build
 ```
 
-The built files will be generated in `docs/.vuepress/dist/`.
+The built files will be generated in `.vuepress/dist/`.
 
 ### Deployment
 
@@ -39,12 +45,15 @@ The documentation is automatically deployed to GitHub Pages using GitHub Actions
 To manually deploy to the `docs` branch:
 
 ```bash
+# Navigate to docs directory
+cd docs
+
 npm run docs:deploy
 ```
 
 ## Configuration
 
-The VuePress configuration is located at `docs/.vuepress/config.js`.
+The VuePress configuration is located at `.vuepress/config.js`.
 
 ### Key Features
 
@@ -62,7 +71,11 @@ docs/
 │   ├── config.js           # VuePress configuration
 │   ├── public/            # Static assets (images, icons)
 │   └── dist/              # Built documentation (generated)
-├── README.md              # Homepage
+├── package.json           # Dependencies and scripts
+├── scripts/
+│   └── deploy-docs.sh     # Manual deployment script
+├── VUEPRESS.md           # This documentation
+├── README.md             # Homepage
 ├── technical-architecture.md
 ├── flow-diagrams.md
 ├── mcp-servers.md
@@ -74,8 +87,8 @@ docs/
 ## Adding Content
 
 1. Create or edit Markdown files in the `docs/` directory
-2. Update the sidebar configuration in `docs/.vuepress/config.js` if adding new pages
-3. Place any images in `docs/.vuepress/public/` 
+2. Update the sidebar configuration in `.vuepress/config.js` if adding new pages
+3. Place any images in `.vuepress/public/` 
 4. Reference images in Markdown using `/image-name.png` (relative to public folder)
 
 ## Theme Customization
@@ -94,7 +107,7 @@ The site uses the default VuePress theme with custom configuration:
 If you encounter build issues:
 
 1. Clear the cache: `rm -rf node_modules && npm install`
-2. Clear VuePress cache: `rm -rf docs/.vuepress/.cache`
+2. Clear VuePress cache: `rm -rf .vuepress/.cache`
 3. Rebuild: `npm run docs:build`
 
 ### Development Server Issues
@@ -102,7 +115,7 @@ If you encounter build issues:
 If the development server doesn't start:
 
 1. Check that port 8080 is available
-2. Try using a different port: `vuepress dev docs --port 3000`
+2. Try using a different port: `vuepress dev . --port 3000`
 
 ## Contributing
 
