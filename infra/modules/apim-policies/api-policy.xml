@@ -1,0 +1,260 @@
+<!--
+    API-level policy for backend services
+    Includes GenAI-specific routing, monitoring, and safety features
+-->
+<policies>
+    <inbound>
+        <!-- GenAI-specific authentication and authorization -->
+        <choose>
+            <when condition="@(context.Request.Url.Path.StartsWith("/mcp/"))">
+                <!-- MCP service authentication -->
+                <validate-jwt header-name="Authorization" failed-validation-httpcode="401" failed-validation-error-message="Unauthorized" require-expiration-time="false" require-scheme="Bearer" require-signed-tokens="false">
+                    <issuer-signing-keys>
+                        <key>{{mcp-access-token-key}}</key>
+                    </issuer-signing-keys>
+                    <audiences>
+                        <audience>azure-ai-travel-agents-mcp</audience>
+                    </audiences>
+                </validate-jwt>
+                
+                <!-- GenAI rate limiting for different service types -->
+                <choose>
+                    <when condition="@(context.Request.Url.Path.Contains("/model-inference"))">
+                        <!-- Stricter limits for model inference -->
+                        <rate-limit calls="50" renewal-period="60" />
+                        <quota calls="500" renewal-period="3600" />
+                    </when>
+                    <when condition="@(context.Request.Url.Path.Contains("/code-evaluation"))">
+                        <!-- Moderate limits for code evaluation -->
+                        <rate-limit calls="30" renewal-period="60" />
+                        <quota calls="300" renewal-period="3600" />
+                    </when>
+                    <otherwise>
+                        <!-- Standard limits for other MCP services -->
+                        <rate-limit calls="100" renewal-period="60" />
+                        <quota calls="1000" renewal-period="3600" />
+                    </otherwise>
+                </choose>
+                
+                <!-- GenAI content safety and filtering -->
+                <choose>
+                    <when condition="@(context.Request.Body != null)">
+                        <set-variable name="requestBody" value="@(context.Request.Body.As<string>(preserveContent: true))" />
+                        <choose>
+                            <when condition="@(((string)context.Variables["requestBody"]).ToLower().Contains("malicious") || ((string)context.Variables["requestBody"]).ToLower().Contains("harmful"))">
+                                <return-response>
+                                    <set-status code="400" reason="Content Filtered" />
+                                    <set-header name="Content-Type" value="application/json" />
+                                    <set-body>{"error": "Content filtered for safety violations", "correlationId": "@(context.RequestId)"}</set-body>
+                                </return-response>
+                            </when>
+                        </choose>
+                    </when>
+                </choose>
+                
+                <!-- Add MCP protocol headers -->
+                <set-header name="Content-Type" exists-action="override">
+                    <value>application/json</value>
+                </set-header>
+                <set-header name="MCP-Version" exists-action="override">
+                    <value>1.0</value>
+                </set-header>
+                <set-header name="X-GenAI-Service" exists-action="override">
+                    <value>Azure AI Travel Agents</value>
+                </set-header>
+                
+                <!-- Circuit breaker for backend resilience -->
+                <retry condition="@(context.Response.StatusCode >= 500)" count="3" interval="2" max-interval="10" delta="1" />
+                
+                <!-- Request transformation for GenAI services -->
+                <set-header name="X-Request-ID" exists-action="override">
+                    <value>@(context.RequestId)</value>
+                </set-header>
+                <set-header name="X-Service-Type" exists-action="override">
+                    <value>GenAI-MCP</value>
+                </set-header>
+            </when>
+            <when condition="@(context.Request.Url.Path.StartsWith("/api/"))">
+                <!-- API-specific rate limiting -->
+                <rate-limit calls="500" renewal-period="60" />
+                <quota calls="5000" renewal-period="3600" />
+            </when>
+            <when condition="@(context.Request.Url.Path.StartsWith("/ui/"))">
+                <!-- UI-specific handling -->
+                <rate-limit calls="200" renewal-period="60" />
+                <quota calls="2000" renewal-period="3600" />
+            </when>
+        </choose>
+        
+        <!-- GenAI monitoring and metrics -->
+        <set-variable name="serviceType" value="@{
+            if (context.Request.Url.Path.StartsWith("/mcp/")) return "GenAI-MCP";
+            if (context.Request.Url.Path.StartsWith("/api/")) return "API";
+            if (context.Request.Url.Path.StartsWith("/ui/")) return "UI";
+            return "Unknown";
+        }" />
+        
+        <!-- Request size monitoring for GenAI -->
+        <set-variable name="requestSize" value="@(context.Request.Body?.Length ?? 0)" />
+        <choose>
+            <when condition="@((int)context.Variables["requestSize"] > 1048576)">
+                <!-- Request too large (>1MB) -->
+                <return-response>
+                    <set-status code="413" reason="Request Entity Too Large" />
+                    <set-header name="Content-Type" value="application/json" />
+                    <set-body>{"error": "Request size exceeds maximum limit for GenAI services", "maxSize": "1MB", "correlationId": "@(context.RequestId)"}</set-body>
+                </return-response>
+            </when>
+        </choose>
+    </inbound>
+    <backend>
+        <!-- Backend request modifications -->
+        <choose>
+            <when condition="@(context.Request.Url.Path.StartsWith("/mcp/"))">
+                <!-- Dynamic backend routing for MCP services -->
+                <set-backend-service base-url="@{
+                    var path = context.Request.Url.Path;
+                    var domain = context.Variables.GetValueOrDefault("containerAppsDefaultDomain", "internal.domain");
+                    
+                    if (path.StartsWith("/mcp/customer-query")) return "https://customer-query.internal." + domain;
+                    if (path.StartsWith("/mcp/destination-recommendation")) return "https://destination-recommendation.internal." + domain;
+                    if (path.StartsWith("/mcp/itinerary-planning")) return "https://itinerary-planning.internal." + domain;
+                    if (path.StartsWith("/mcp/echo-ping")) return "https://echo-ping.internal." + domain;
+                    if (path.StartsWith("/mcp/web-search")) return "https://web-search.internal." + domain;
+                    if (path.StartsWith("/mcp/model-inference")) return "https://model-inference.internal." + domain;
+                    if (path.StartsWith("/mcp/code-evaluation")) return "https://code-evaluation.internal." + domain;
+                    
+                    return "https://api.internal." + domain;
+                }" />
+                
+                <!-- Remove /mcp/{service} prefix for backend routing -->
+                <rewrite-uri template="@{
+                    var path = context.Request.Url.Path;
+                    if (path.StartsWith("/mcp/")) {
+                        var segments = path.Split('/');
+                        if (segments.Length > 3) {
+                            return "/" + string.Join("/", segments.Skip(3));
+                        }
+                        return "/";
+                    }
+                    return path;
+                }" />
+                
+                <!-- Add GenAI tracking headers to backend -->
+                <set-header name="X-GenAI-Source" exists-action="override">
+                    <value>APIM-Gateway</value>
+                </set-header>
+                <set-header name="X-GenAI-Session" exists-action="override">
+                    <value>@(context.RequestId)</value>
+                </set-header>
+            </when>
+            <when condition="@(context.Request.Url.Path.StartsWith("/api/"))">
+                <!-- API service routing -->
+                <set-backend-service base-url="@("https://api." + context.Variables.GetValueOrDefault("containerAppsDefaultDomain", "internal.domain"))" />
+                <rewrite-uri template="@(context.Request.Url.Path.Substring(4))" />
+            </when>
+            <when condition="@(context.Request.Url.Path.StartsWith("/ui/"))">
+                <!-- UI service routing -->
+                <set-backend-service base-url="@("https://ui." + context.Variables.GetValueOrDefault("containerAppsDefaultDomain", "internal.domain"))" />
+                <rewrite-uri template="@(context.Request.Url.Path.Substring(3))" />
+            </when>
+        </choose>
+        
+        <!-- Forward request with timeout appropriate for GenAI services -->
+        <forward-request timeout="60" />
+    </backend>
+    <outbound>
+        <!-- Response transformations -->
+        <choose>
+            <when condition="@(context.Request.Url.Path.StartsWith("/mcp/"))">
+                <!-- Add GenAI response headers -->
+                <set-header name="X-GenAI-Server" exists-action="override">
+                    <value>Azure AI Travel Agents MCP</value>
+                </set-header>
+                <set-header name="X-GenAI-Service-Type" exists-action="override">
+                    <value>@((string)context.Variables["serviceType"])</value>
+                </set-header>
+                
+                <!-- Response size monitoring -->
+                <set-variable name="responseSize" value="@(context.Response.Body?.Length ?? 0)" />
+                <set-header name="X-Response-Size" exists-action="override">
+                    <value>@((string)context.Variables["responseSize"])</value>
+                </set-header>
+                
+                <!-- GenAI usage tracking -->
+                <set-header name="X-GenAI-Tokens-Used" exists-action="override">
+                    <value>@{
+                        // Estimate token usage based on response size (rough approximation)
+                        int responseSize = (int)context.Variables["responseSize"];
+                        return (responseSize / 4).ToString(); // Rough token estimation
+                    }</value>
+                </set-header>
+            </when>
+        </choose>
+        
+        <!-- Performance monitoring -->
+        <set-header name="X-Response-Time" exists-action="override">
+            <value>@(DateTime.UtcNow.Subtract(context.Timestamp).TotalMilliseconds.ToString())</value>
+        </set-header>
+        
+        <!-- Cache control for GenAI responses -->
+        <choose>
+            <when condition="@(context.Request.Url.Path.StartsWith("/mcp/") && context.Response.StatusCode == 200)">
+                <set-header name="Cache-Control" exists-action="override">
+                    <value>no-cache, no-store, must-revalidate</value>
+                </set-header>
+                <set-header name="Pragma" exists-action="override">
+                    <value>no-cache</value>
+                </set-header>
+                <set-header name="Expires" exists-action="override">
+                    <value>0</value>
+                </set-header>
+            </when>
+        </choose>
+    </outbound>
+    <on-error>
+        <!-- Enhanced error handling for GenAI services -->
+        <choose>
+            <when condition="@(context.Request.Url.Path.StartsWith("/mcp/"))">
+                <set-status code="@{
+                    int statusCode = context.Response.StatusCode;
+                    if (statusCode >= 500) return 502; // Bad Gateway for backend errors
+                    if (statusCode == 429) return 429; // Rate limit exceeded
+                    if (statusCode == 401 || statusCode == 403) return statusCode; // Auth errors
+                    return 500; // Generic server error
+                }" reason="@{
+                    int statusCode = context.Response.StatusCode;
+                    if (statusCode >= 500) return "GenAI Service Unavailable";
+                    if (statusCode == 429) return "Rate Limit Exceeded";
+                    if (statusCode == 401) return "Unauthorized";
+                    if (statusCode == 403) return "Forbidden";
+                    return "GenAI Service Error";
+                }" />
+                
+                <set-body>@{
+                    return new JObject(
+                        new JProperty("error", "GenAI service error"),
+                        new JProperty("service", context.Variables.GetValueOrDefault("serviceType", "Unknown")),
+                        new JProperty("correlationId", context.RequestId),
+                        new JProperty("timestamp", DateTime.UtcNow.ToString("O")),
+                        new JProperty("path", context.Request.Url.Path)
+                    ).ToString();
+                }</set-body>
+            </when>
+            <otherwise>
+                <set-status code="500" reason="Internal Server Error" />
+                <set-body>@{
+                    return new JObject(
+                        new JProperty("error", "Internal server error"),
+                        new JProperty("correlationId", context.RequestId),
+                        new JProperty("timestamp", DateTime.UtcNow.ToString("O"))
+                    ).ToString();
+                }</set-body>
+            </otherwise>
+        </choose>
+        
+        <set-header name="Content-Type" exists-action="override">
+            <value>application/json</value>
+        </set-header>
+    </on-error>
+</policies>
