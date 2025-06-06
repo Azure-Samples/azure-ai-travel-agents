@@ -1,18 +1,24 @@
 # Build stage
-FROM node:23-slim AS builder
+FROM node:20-slim AS builder
 WORKDIR /app
-COPY package*.json ./
-RUN npm i
+
+# Install dependencies
+COPY package.json ./
+RUN npm install
 COPY . .
 RUN npm run build
 
 # Production stage
-FROM node:23-slim AS production
+FROM node:20-slim AS production
 WORKDIR /app
-COPY --from=builder /app/package*.json ./
+
+# Copy package.json and install production dependencies only
+COPY package.json ./
+RUN npm install --omit=dev && npm cache clean --force
+
+# Copy built application
 COPY --from=builder /app/dist ./dist
-# Remove dev dependencies and cache
-RUN npm ci --omit=dev && npm cache clean --force
+
 # Use a non-root user for security
 RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
 USER appuser
