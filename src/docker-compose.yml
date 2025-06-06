@@ -38,6 +38,11 @@ services:
     build: ./tools/web-search
     ports:
       - "5006:5000"
+    depends_on:
+      - aspire-dashboard
+    env_file:
+      - "./tools/web-search/.env"
+      - "./tools/web-search/.env.docker" # override .env with .env.docker
       
   tool-echo-ping:
     container_name: tool-echo-ping

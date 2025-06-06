@@ -1,0 +1,53 @@
+{
+  "name": "tool-web-search",
+  "type": "module",
+  "license": "MIT",
+  "author": "Microsoft Corporation",
+  "version": "1.0.0",
+  "description": "Real-time web search for travel information using Bing Search API and Azure AI Grounding",
+  "keywords": [
+    "model",
+    "context",
+    "protocol",
+    "mcp",
+    "agent",
+    "web-search",
+    "bing",
+    "travel",
+    "grounding"
+  ],
+  "main": "dist/index.js",
+  "bin": {
+    "tool-web-search": "dist/index.js"
+  },
+  "scripts": {
+    "start": "tsx --watch src/index.ts",
+    "build": "tsc"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@azure/identity": "^4.6.1",
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "@opentelemetry/api": "^1.9.0",
+    "@opentelemetry/auto-instrumentations-node": "^0.57.0",
+    "@opentelemetry/exporter-metrics-otlp-grpc": "^0.200.0",
+    "@opentelemetry/exporter-trace-otlp-grpc": "^0.200.0",
+    "@opentelemetry/instrumentation-express": "^0.48.0",
+    "@opentelemetry/instrumentation-http": "^0.200.0",
+    "@opentelemetry/sdk-metrics": "^2.0.0",
+    "@opentelemetry/sdk-node": "^0.200.0",
+    "@opentelemetry/sdk-trace-node": "^2.0.0",
+    "dotenv": "^16.5.0",
+    "express": "^5.0.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^20.11.24",
+    "shx": "^0.3.4",
+    "tsx": "^4.19.4",
+    "typescript": "^5.3.3"
+  }
+}
