@@ -31,7 +31,7 @@
 
 ## Overview
 
-The AI Travel Agents is a robust **enterprise application** that leverages multiple **AI agents** to enhance travel agency operations. The application demonstrates how LlamaIndex.TS orchestrates **multiple AI agents** to assist employees in handling customer queries, providing destination recommendations, and planning itineraries. Multiple **MCP** (Model Context Protocol) servers, built with **Python, Node.js, Java and .NET**, are used to provide various tools and services to the agents, enabling them to work together seamlessly.
+The AI Travel Agents is a robust **enterprise application** that leverages multiple **AI agents** to enhance travel agency operations. The application demonstrates how LlamaIndex.TS orchestrates **multiple AI agents** to assist employees in handling customer queries, providing destination recommendations, and planning itineraries. The system uses both **MCP** (Model Context Protocol) for agent-to-tool communication and **A2A** (Agent2Agent) protocol for direct agent-to-agent communication, with servers built in **Python, Node.js, Java and .NET**.
 
 | Agent Name                       | Purpose                                                                                                                       |
 | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
@@ -48,9 +48,10 @@ The AI Travel Agents is a robust **enterprise application** that leverages multi
 The architecture of the AI Travel Agents application is designed to be modular and scalable:
 
 - All components are containerized using **Docker** so that they can be easily deployed and managed by **[Azure Container Apps](https://learn.microsoft.com/azure/container-apps/)**.
-- All agents tools are available as MCP ([Model Context Protocol](https://github.com/modelcontextprotocol)) servers and are called by the MCP clients.
+- Agent tools are available as MCP ([Model Context Protocol](https://github.com/modelcontextprotocol)) servers for tool integration.
+- Agent communication uses the A2A ([Agent2Agent](https://github.com/google-a2a/A2A)) protocol for direct agent collaboration.
 - MCP servers are implemented independently using variant technologies, such as **Python**, **Node.js**, **Java**, and **.NET**.
-- The Agent Workflow Service orchestrates the interaction between the agents and MCP clients, allowing them to work together seamlessly.
+- The Agent Workflow Service orchestrates the interaction between agents using both MCP and A2A protocols.
 - The Aspire Dashboard is used to monitor the application, providing insights into the performance and behavior of the agents (through the [OpenTelemetry integration](https://opentelemetry.io/ecosystem/integrations/)).
 
 <div align="center">
@@ -63,7 +64,8 @@ The architecture of the AI Travel Agents application is designed to be modular a
 ## Features
 - Multiple AI agents (each with its own specialty)
 - Orchestrated by [LlamaIndex.TS](https://ts.llamaindex.ai/)
-- Supercharged by [MCP](https://modelcontextprotocol.io/introduction)
+- Supercharged by [MCP](https://modelcontextprotocol.io/introduction) for tool integration
+- Enhanced with [A2A](https://github.com/google-a2a/A2A) for agent-to-agent communication
 - Deployed serverlessly via [Azure Container Apps](https://learn.microsoft.com/azure/container-apps/)
 - Includes an [llms.txt](./llms.txt) file to provide information to help LLMs use this project at inference time ([learn more](https://llmstxt.org/))
 

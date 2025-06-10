@@ -15,6 +15,7 @@ This directory contains comprehensive technical documentation for architects, de
 
 ### Implementation Guides
 - **[MCP Server Implementation](./mcp-servers.md)** - Detailed guide for Model Context Protocol servers across multiple languages
+- **[A2A Protocol Implementation](./a2a-protocol.md)** - Agent2Agent protocol for direct agent communication and collaboration
 - **[API Documentation](./api-documentation.md)** - Complete REST API reference with examples and integration patterns
 - **[Development Guide](./development-guide.md)** - Comprehensive developer onboarding and contribution guide
 
@@ -71,6 +72,7 @@ The Azure AI Travel Agents system is built on a microservices architecture using
 | **Frontend** | Angular 19, TypeScript, Tailwind CSS | User interface and real-time chat |
 | **API Server** | Node.js, Express.js, LlamaIndex.TS | Agent orchestration and API gateway |
 | **MCP Servers** | Multi-language (TS, C#, Java, Python) | Specialized AI tool implementations |
+| **A2A Protocol** | JSON-RPC 2.0 over HTTP(S) | Agent-to-agent communication |
 | **AI Services** | Azure OpenAI, ONNX, vLLM | Language models and inference |
 | **Monitoring** | OpenTelemetry, Aspire Dashboard | Observability and tracing |
 | **Deployment** | Docker, Azure Container Apps | Containerization and hosting |
@@ -78,6 +80,7 @@ The Azure AI Travel Agents system is built on a microservices architecture using
 ## 📊 System Capabilities
 
 - **Multi-Agent Orchestration**: Coordinated AI agents for complex travel planning
+- **Agent-to-Agent Communication**: A2A protocol enables direct agent collaboration
 - **Real-time Streaming**: Server-Sent Events for live response updates
 - **Polyglot Architecture**: MCP servers in multiple programming languages
 - **Scalable Deployment**: Azure Container Apps with auto-scaling
@@ -114,6 +117,12 @@ Each documentation file includes:
 - Server-specific guides for each language
 - Tool development and integration patterns
 - Performance and scaling considerations
+
+### A2A Protocol
+- Agent-to-agent communication specification
+- Server and client implementation guides
+- Agent discovery and capability negotiation
+- Security and authentication patterns
 
 ### API Documentation
 - Complete endpoint reference
