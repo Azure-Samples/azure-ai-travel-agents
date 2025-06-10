@@ -68,6 +68,19 @@ var llamaIndexConfig = {
   llm_temperature: '0.7'
   llm_max_tokens: '100'
   top_k: '3'
+  // A2A Protocol Configuration
+  a2a: {
+    server: {
+      enabled: true
+      port: 3001
+      host: 'localhost'
+    }
+    client: {
+      enabled: false
+      registries: []
+    }
+    agentToAgent: false
+  }
 }
 
 
@@ -113,3 +126,10 @@ output EMBEDDING_DIM string = llamaIndexConfig.embedding.dim
 output AZURE_CLIENT_ID string = resources.outputs.AZURE_CLIENT_ID
 output AZURE_TENANT_ID string = tenant().tenantId
 output MCP_ECHO_PING_ACCESS_TOKEN string = llamaIndexConfig.sampleAccessTokens.echo
+
+// A2A Protocol configuration
+output A2A_SERVER_ENABLED string = string(llamaIndexConfig.a2a.server.enabled)
+output A2A_SERVER_PORT string = string(llamaIndexConfig.a2a.server.port)
+output A2A_SERVER_HOST string = llamaIndexConfig.a2a.server.host
+output A2A_CLIENT_ENABLED string = string(llamaIndexConfig.a2a.client.enabled)
+output A2A_AGENT_TO_AGENT string = string(llamaIndexConfig.a2a.agentToAgent)

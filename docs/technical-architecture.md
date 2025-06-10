@@ -12,22 +12,25 @@ permalink: /article/x6imesvj/
 3. [Data Flow and Request Processing](#data-flow-and-request-processing)
 4. [API Documentation](#api-documentation)
 5. [MCP Server Architecture](#mcp-server-architecture)
-6. [Agent Orchestration](#agent-orchestration)
-7. [Sequence Diagrams](#sequence-diagrams)
-8. [Deployment Architecture](#deployment-architecture)
-9. [Development Guide](#development-guide)
-10. [Extension and Customization](#extension-and-customization)
+6. [A2A Protocol Integration](#a2a-protocol-integration)
+7. [Agent Orchestration](#agent-orchestration)
+8. [Sequence Diagrams](#sequence-diagrams)
+9. [Deployment Architecture](#deployment-architecture)
+10. [Development Guide](#development-guide)
+11. [Extension and Customization](#extension-and-customization)
 
 ## System Overview
 
-The Azure AI Travel Agents is a sophisticated microservices-based AI application that demonstrates how multiple AI agents can collaborate to handle complex travel-related queries. The system employs the Model Context Protocol (MCP) to enable seamless communication between different AI agents implemented in various programming languages.
+The Azure AI Travel Agents is a sophisticated microservices-based AI application that demonstrates how multiple AI agents can collaborate to handle complex travel-related queries. The system employs both the Model Context Protocol (MCP) for agent-to-tool communication and the Agent2Agent (A2A) protocol for direct agent-to-agent communication.
 
 ### Key Design Principles
 
 - **Microservices Architecture**: Each component is independently deployable and scalable
 - **Multi-Agent Orchestration**: Specialized agents work together under a triage agent's coordination
+- **Dual Protocol Support**: MCP for agent-to-tool communication, A2A for agent-to-agent communication
 - **Technology Diversity**: MCP servers implemented in TypeScript, C#, Java, and Python
 - **Real-time Communication**: Server-Sent Events (SSE) for streaming responses
+- **Agent Interoperability**: A2A protocol enables agents to discover and collaborate with each other
 - **Observability**: Comprehensive monitoring through OpenTelemetry
 - **Cloud-Native**: Designed for Azure Container Apps with Docker containerization
 
@@ -390,6 +393,239 @@ MCP servers implement consistent error handling:
   }
 }
 ```
+
+## A2A Protocol Integration
+
+### Overview
+
+The Azure AI Travel Agents system integrates the Agent2Agent (A2A) protocol to enable direct agent-to-agent communication and collaboration. A2A complements the existing MCP architecture by providing a standardized way for agents to discover, negotiate, and collaborate with each other.
+
+### A2A vs MCP
+
+| Aspect | MCP (Model Context Protocol) | A2A (Agent2Agent Protocol) |
+|--------|------------------------------|----------------------------|
+| **Purpose** | Agent-to-tool communication | Agent-to-agent communication |
+| **Protocol** | JSON-RPC over HTTP/SSE | JSON-RPC 2.0 over HTTP(S) |
+| **Discovery** | Static tool configuration | Dynamic agent discovery |
+| **State** | Stateless tool execution | Stateful agent collaboration |
+| **Use Cases** | External API integration | Multi-agent workflows |
+
+### A2A Architecture Components
+
+#### A2A Server
+- **Role**: Exposes local agents via JSON-RPC 2.0
+- **Features**: Agent discovery, capability execution, status monitoring
+- **Endpoints**: `/a2a` (JSON-RPC), `/agents` (REST), `/health` (health check)
+
+```typescript
+const a2aServer = new A2AServer({
+  port: 3001,
+  host: "localhost",
+  agents: [triageAgent, customerQueryAgent, destinationAgent],
+  cors: { enabled: true, origins: ["*"] },
+  logging: { enabled: true, level: "info" }
+});
+```
+
+#### A2A Client
+- **Role**: Connects to remote A2A servers
+- **Features**: Agent discovery, remote execution, error handling
+- **Capabilities**: Retry logic, authentication, timeout management
+
+```typescript
+const a2aClient = new A2AClient({
+  baseUrl: "http://remote-server:3001",
+  authentication: { type: "bearer", details: { token: "secret" } },
+  timeout: 30000,
+  retries: 3
+});
+```
+
+#### A2A Agent Registry
+- **Role**: Manages multiple A2A servers
+- **Features**: Unified agent access, automatic discovery, failover
+- **Benefits**: Single interface for local and remote agents
+
+```typescript
+const registry = new A2AAgentRegistry();
+await registry.registerServer("remote1", { baseUrl: "http://server1:3001" });
+await registry.registerServer("remote2", { baseUrl: "http://server2:3001" });
+```
+
+### Agent Capabilities
+
+Each agent exposes structured capabilities through Agent Cards:
+
+#### Triage Agent
+```json
+{
+  "id": "triage-agent",
+  "name": "Triage Agent",
+  "capabilities": [{
+    "type": "text",
+    "name": "triage",
+    "description": "Analyze user queries and determine routing",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "query": { "type": "string" },
+        "context": { "type": "object" }
+      }
+    }
+  }]
+}
+```
+
+#### Customer Query Agent
+```json
+{
+  "id": "customer-query-agent",
+  "name": "Customer Query Agent",
+  "capabilities": [{
+    "type": "text",
+    "name": "extract_preferences",
+    "description": "Extract travel preferences from natural language",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "query": { "type": "string" }
+      }
+    }
+  }]
+}
+```
+
+### A2A Communication Patterns
+
+#### Discovery Pattern
+```typescript
+// Discover all available agents
+const agents = await client.discover();
+
+// Filter by specific capabilities
+const travelAgents = await client.discover(["triage", "itinerary"]);
+```
+
+#### Execution Pattern
+```typescript
+// Execute agent capability
+const result = await client.execute(
+  "triage-agent",
+  "triage",
+  { query: "Plan a trip to Tokyo" },
+  { user_id: "user123" }
+);
+```
+
+#### Registry Pattern
+```typescript
+// Execute across multiple servers
+const result = await registry.execute(
+  "specialized-agent",
+  "analyze",
+  { data: "input" }
+);
+```
+
+### Integration with LlamaIndex
+
+The A2A integration seamlessly works with the existing LlamaIndex orchestrator:
+
+```typescript
+// Register agents with A2A during setup
+export async function setupAgents(filteredTools: McpServerDefinition[] = []) {
+  // ... existing MCP setup ...
+  
+  // Initialize A2A orchestrator
+  const a2aOrchestrator = new A2AOrchestrator(a2aConfig);
+  await a2aOrchestrator.initialize();
+  
+  // Register each agent with A2A
+  if (tools["customer-query"]) {
+    const customerQueryAgent = agent({ /* ... */ });
+    a2aOrchestrator.registerAgent("customer-query", customerQueryAgent);
+  }
+  
+  // Enable agent-to-agent communication
+  await a2aOrchestrator.enableAgentToAgentCommunication();
+  
+  return multiAgentWorkflow;
+}
+```
+
+### Configuration
+
+A2A is configured through environment variables:
+
+```bash
+# Server Configuration
+A2A_SERVER_ENABLED=true
+A2A_SERVER_PORT=3001
+A2A_SERVER_HOST=localhost
+
+# Client Configuration  
+A2A_CLIENT_ENABLED=true
+A2A_REGISTRIES='[{"name":"remote","baseUrl":"http://remote:3001"}]'
+
+# Agent Communication
+A2A_AGENT_TO_AGENT=true
+```
+
+### Security and Authentication
+
+#### Authentication Methods
+- **None**: For development and internal networks
+- **Bearer Token**: For API-based authentication
+- **Basic Auth**: For simple username/password authentication
+- **Custom**: For proprietary authentication schemes
+
+#### Security Best Practices
+- Use HTTPS in production
+- Implement proper CORS policies
+- Validate all inputs and outputs
+- Monitor and log all agent interactions
+- Implement rate limiting and quotas
+
+### Error Handling
+
+A2A uses JSON-RPC 2.0 error codes with A2A-specific extensions:
+
+```typescript
+enum A2AErrorCode {
+  // Standard JSON-RPC errors
+  PARSE_ERROR = -32700,
+  INVALID_REQUEST = -32600,
+  METHOD_NOT_FOUND = -32601,
+  
+  // A2A-specific errors
+  AGENT_NOT_FOUND = -32001,
+  CAPABILITY_NOT_SUPPORTED = -32002,
+  AGENT_BUSY = -32003,
+  EXECUTION_TIMEOUT = -32007
+}
+```
+
+### Monitoring and Observability
+
+#### Metrics
+- Agent discovery frequency
+- Execution success/failure rates
+- Response times and latencies
+- Agent load and availability
+
+#### Logging
+- All A2A requests and responses
+- Agent registration and deregistration
+- Error conditions and recovery actions
+- Performance metrics and bottlenecks
+
+### Future Enhancements
+
+- **Streaming Support**: Real-time agent communication via SSE
+- **WebSocket Support**: Persistent connections for long-running tasks
+- **Federated Discovery**: Multi-network agent discovery
+- **Advanced Security**: Encryption and digital signatures
+- **Workflow Composition**: Dynamic multi-agent workflow creation
 
 ## Agent Orchestration
 

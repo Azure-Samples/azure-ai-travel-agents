@@ -6,6 +6,7 @@ import { agent, multiAgent, ToolCallLLM } from "llamaindex";
 import { McpServerDefinition } from "../../mcp/mcp-tools.js";
 import { llm as llmProvider } from "./providers/index.js";
 import { McpToolsConfig } from "./tools/index.js";
+import { A2AOrchestrator, A2AIntegrationConfig } from "./a2a-integration.js";
 
 // Function to set up agents and return the multiAgent instance
 export async function setupAgents(filteredTools: McpServerDefinition[] = []) {
@@ -19,6 +20,23 @@ export async function setupAgents(filteredTools: McpServerDefinition[] = []) {
   let toolsList = [];
   const verbose = false;
   const mcpToolsConfig = McpToolsConfig();
+
+  // Setup A2A integration
+  const a2aConfig: A2AIntegrationConfig = {
+    server: {
+      enabled: process.env.A2A_SERVER_ENABLED === "true" || false,
+      port: parseInt(process.env.A2A_SERVER_PORT || "3001"),
+      host: process.env.A2A_SERVER_HOST || "localhost"
+    },
+    client: {
+      enabled: process.env.A2A_CLIENT_ENABLED === "true" || false,
+      registries: process.env.A2A_REGISTRIES ? JSON.parse(process.env.A2A_REGISTRIES) : []
+    },
+    enableAgentToAgentCommunication: process.env.A2A_AGENT_TO_AGENT === "true" || false
+  };
+
+  const a2aOrchestrator = new A2AOrchestrator(a2aConfig);
+  await a2aOrchestrator.initialize();
 
   let llm: ToolCallLLM = {} as ToolCallLLM;
   try {
@@ -41,6 +59,9 @@ export async function setupAgents(filteredTools: McpServerDefinition[] = []) {
     agentsList.push(echoAgent);
     handoffTargets.push(echoAgent);
     toolsList.push(...tools);
+    
+    // Register with A2A
+    a2aOrchestrator.registerAgent("echo-ping", echoAgent);
   }
 
   if (tools["customer-query"]) {
@@ -57,6 +78,9 @@ export async function setupAgents(filteredTools: McpServerDefinition[] = []) {
     agentsList.push(customerQuery);
     handoffTargets.push(customerQuery);
     toolsList.push(...tools);
+    
+    // Register with A2A
+    a2aOrchestrator.registerAgent("customer-query", customerQuery);
   }
 
   if (tools["web-search"]) {
@@ -74,6 +98,9 @@ export async function setupAgents(filteredTools: McpServerDefinition[] = []) {
     agentsList.push(webSearchAgent);
     handoffTargets.push(webSearchAgent);
     toolsList.push(...tools);
+    
+    // Register with A2A
+    a2aOrchestrator.registerAgent("web-search", webSearchAgent);
   }
 
   if (tools["itinerary-planning"]) {
@@ -90,6 +117,9 @@ export async function setupAgents(filteredTools: McpServerDefinition[] = []) {
     agentsList.push(itineraryPlanningAgent);
     handoffTargets.push(itineraryPlanningAgent);
     toolsList.push(...tools);
+    
+    // Register with A2A
+    a2aOrchestrator.registerAgent("itinerary-planning", itineraryPlanningAgent);
   }
 
   if (tools["model-inference"]) {
@@ -106,6 +136,9 @@ export async function setupAgents(filteredTools: McpServerDefinition[] = []) {
     agentsList.push(modelInferenceAgent);
     handoffTargets.push(modelInferenceAgent);
     toolsList.push(...tools);
+    
+    // Register with A2A
+    a2aOrchestrator.registerAgent("model-inference", modelInferenceAgent);
   }
 
   if (tools["code-evaluation"]) {
@@ -122,9 +155,31 @@ export async function setupAgents(filteredTools: McpServerDefinition[] = []) {
     agentsList.push(codeEvaluationAgent);
     handoffTargets.push(codeEvaluationAgent);
     toolsList.push(...tools);
+    
+    // Register with A2A
+    a2aOrchestrator.registerAgent("code-evaluation", codeEvaluationAgent);
   }
 
-  // Define the triage agent taht will determine the best course of action
+  if (tools["destination-recommendation"]) {
+    const mcpServerConfig = mcpToolsConfig["destination-recommendation"];
+    const tools = await mcp(mcpServerConfig.config).tools();
+    const destinationAgent = agent({
+      name: "DestinationRecommendationAgent",
+      systemPrompt:
+        "Provides personalized destination recommendations based on customer preferences, budget, and travel requirements.",
+      tools,
+      llm,
+      verbose,
+    });
+    agentsList.push(destinationAgent);
+    handoffTargets.push(destinationAgent);
+    toolsList.push(...tools);
+    
+    // Register with A2A
+    a2aOrchestrator.registerAgent("destination-recommendation", destinationAgent);
+  }
+
+  // Define the triage agent that will determine the best course of action
 
   const travelAgent = agent({
     name: "TriageAgent",
@@ -138,15 +193,33 @@ export async function setupAgents(filteredTools: McpServerDefinition[] = []) {
     verbose,
   });
   agentsList.push(travelAgent);
+  
+  // Register triage agent with A2A
+  a2aOrchestrator.registerAgent("triage", travelAgent);
+
+  // Enable agent-to-agent communication if configured
+  await a2aOrchestrator.enableAgentToAgentCommunication();
 
   console.log("Agents list:", agentsList);
   console.log("Handoff targets:", handoffTargets);
   console.log("Tools list:", JSON.stringify(toolsList, null, 2));
+  
+  // Log A2A status
+  if (a2aConfig.server?.enabled) {
+    console.log("A2A Server enabled and running");
+    const a2aAgents = await a2aOrchestrator.discoverAgents();
+    console.log("A2A Agents:", a2aAgents);
+  }
 
   // Create the multi-agent workflow
-  return multiAgent({
+  const multiAgentWorkflow = multiAgent({
     agents: agentsList,
     rootAgent: travelAgent,
     verbose,
   });
+
+  // Attach A2A orchestrator to the workflow for external access
+  (multiAgentWorkflow as any).a2aOrchestrator = a2aOrchestrator;
+
+  return multiAgentWorkflow;
 }
