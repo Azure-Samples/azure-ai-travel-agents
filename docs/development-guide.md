@@ -1459,7 +1459,7 @@ Processes the input data and returns the result.
 - `input` (InputData): The data to process
 
 **Returns:**
-- Promise<OutputData>: The processed result
+- `Promise<OutputData>`: The processed result
 
 **Throws:**
 - `ValidationError`: When input is invalid

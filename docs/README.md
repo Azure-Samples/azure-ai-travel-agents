@@ -160,10 +160,10 @@ To run the application in a more advanced local setup or deploy to Azure, please
 
 Looking to learn more about building multi-agent AI systems with Azure? We provide comprehensive workshop materials:
 
-- **[Workshop Guide](workshop-guide.md)** - Complete 4-6 hour workshop curriculum covering AI agents, MCP, and Azure deployment
-- **[Workshop Exercises](workshop-exercises.md)** - Detailed hands-on exercises with step-by-step instructions
-- **[Presenter Guide](workshop-presenter-guide.md)** - Instructions for trainers conducting the workshop
-- **[Quick Reference](workshop-quick-reference.md)** - Essential commands and patterns for participants
+- **[Workshop Guide](workshop/guide.md)** - Complete 4-6 hour workshop curriculum covering AI agents, MCP, and Azure deployment
+- **[Workshop Exercises](workshop/exercises.md)** - Detailed hands-on exercises with step-by-step instructions
+- **[Presenter Guide](workshop/presenter-guide.md)** - Instructions for trainers conducting the workshop
+- **[Quick Reference](workshop/quick-reference.md)** - Essential commands and patterns for participants
 
 The workshop covers:
 - Multi-agent system architecture and design
@@ -175,7 +175,7 @@ The workshop covers:
 
 ## Contributing
 
-We welcome contributions to the AI Travel Agents project! If you have suggestions, bug fixes, or new features, please feel free to submit a pull request. For more information on contributing, please refer to the [CONTRIBUTING.md](CONTRIBUTING.md) file.
+We welcome contributions to the AI Travel Agents project! If you have suggestions, bug fixes, or new features, please feel free to submit a pull request.
 
 ## Join the Community
 

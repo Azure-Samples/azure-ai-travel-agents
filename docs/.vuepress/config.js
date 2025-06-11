@@ -52,6 +52,16 @@ export default defineUserConfig({
         ],
       },
       {
+        text: "Workshop",
+        children: [
+          { text: "Workshop Overview", link: "/workshop/" },
+          { text: "Workshop Guide", link: "/workshop/guide.md" },
+          { text: "Exercises", link: "/workshop/exercises.md" },
+          { text: "Presenter Guide", link: "/workshop/presenter-guide.md" },
+          { text: "Quick Reference", link: "/workshop/quick-reference.md" },
+        ],
+      },
+      {
         text: "Star Us",
         link: "https://github.com/Azure-Samples/azure-ai-travel-agents/stargazers",
       },
@@ -86,6 +96,17 @@ export default defineUserConfig({
         title: "Operations & Deployment",
         collapsable: false,
         children: ["/deployment-architecture.md"],
+      },
+      {
+        title: "Workshop",
+        collapsable: false,
+        children: [
+          "/workshop/",
+          "/workshop/guide.md",
+          "/workshop/exercises.md",
+          "/workshop/presenter-guide.md",
+          "/workshop/quick-reference.md",
+        ],
       },
     ],
 
