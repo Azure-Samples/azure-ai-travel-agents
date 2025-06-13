@@ -23,6 +23,8 @@ if [ ! -f "$(basename "$0")" ] && [ ! -d .git ]; then
   git clone "$REPO_URL"
   cd "$REPO_DIR"
   exec bash preview.sh "$@"
+else 
+  echo -e "${CYAN}Running setup in existing repository. Skipping clone.${NC}"
 fi
 
 # Step 0: Prerequisite checks
@@ -73,7 +75,7 @@ else
 fi
 
 # Step 1.5: Create .env file for the user
-cat > .env <<EOM
+cat > ./src/api/.env <<EOM
 LLM_PROVIDER=docker-models
 DOCKER_MODEL_ENDPOINT=http://localhost:12434/engines/llama.cpp/v1
 DOCKER_MODEL=ai/phi4:14B-Q4_0
