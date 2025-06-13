@@ -38,25 +38,25 @@ CROSS='\xE2\x9D\x8C' # ❌
 
 if command -v node >/dev/null 2>&1; then
   NODE_VERSION=$(node --version)
-  echo -e "${GREEN}$(echo -e $CHECK) Node.js version: ${NODE_VERSION}${NC}"
+  echo -e "${GREEN}${CHECK} Node.js version: ${NODE_VERSION}${NC}"
 else
-  echo -e "${RED}$(echo -e $CROSS) Node.js is not installed. Please install Node.js (https://nodejs.org/)${NC}"
+  echo -e "${RED}${CROSS} Node.js is not installed. Please install Node.js (https://nodejs.org/)${NC}"
   MISSING=1
 fi
 
 if command -v npm >/dev/null 2>&1; then
   NPM_VERSION=$(npm --version)
-  echo -e "${GREEN}$(echo -e $CHECK) npm version: ${NPM_VERSION}${NC}"
+  echo -e "${GREEN}${CHECK} npm version: ${NPM_VERSION}${NC}"
 else
-  echo -e "${RED}$(echo -e $CROSS) npm is not installed. Please install npm (https://www.npmjs.com/)${NC}"
+  echo -e "${RED}${CROSS} npm is not installed. Please install npm (https://www.npmjs.com/)${NC}"
   MISSING=1
 fi
 
 if command -v docker >/dev/null 2>&1; then
   DOCKER_VERSION=$(docker --version)
-  echo -e "${GREEN}$(echo -e $CHECK) Docker version: ${DOCKER_VERSION}${NC}"
+  echo -e "${GREEN}${CHECK} Docker version: ${DOCKER_VERSION}${NC}"
 else
-  echo -e "${RED}$(echo -e $CROSS) Docker is not installed. Please install Docker Desktop (https://www.docker.com/products/docker-desktop/)${NC}"
+  echo -e "${RED}${CROSS} Docker is not installed. Please install Docker Desktop (https://www.docker.com/products/docker-desktop/)${NC}"
   MISSING=1
 fi
 
