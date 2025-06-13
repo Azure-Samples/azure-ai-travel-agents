@@ -29,6 +29,11 @@ for tool in $tools; do
         echo ">> Installing dependencies for $tool service..."
         if [ ! -d ./src/tools/$tool/node_modules ]; then
             npm ci --prefix=./src/tools/$tool
+            status=$?
+            if [ $status -ne 0 ]; then
+                echo "$tool dependencies installation failed with exit code $status. Exiting."
+                exit $status
+            fi
         else
             echo "Dependencies for $tool service already installed."
         fi

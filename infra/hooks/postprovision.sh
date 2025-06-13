@@ -73,12 +73,22 @@ echo ">> Setting up API and UI services..."
 if [ -f ./infra/hooks/api/setup.sh ]; then
     echo "Executing API setup script..."
     ./infra/hooks/api/setup.sh
+    api_status=$?
+    if [ $api_status -ne 0 ]; then
+        echo "API setup failed with exit code $api_status. Exiting."
+        exit $api_status
+    fi
 else
     echo "API setup script not found. Skipping API setup."
 fi
 if [ -f ./infra/hooks/ui/setup.sh ]; then
     echo "Executing UI setup script..."
     ./infra/hooks/ui/setup.sh
+    ui_status=$?
+    if [ $ui_status -ne 0 ]; then
+        echo "UI setup failed with exit code $ui_status. Exiting."
+        exit $ui_status
+    fi
 else
     echo "UI setup script not found. Skipping UI setup."
 fi
@@ -88,6 +98,11 @@ echo ">> Setting up MCP tools..."
 if [ -f ./infra/hooks/mcp/setup.sh ]; then
     echo "Executing MCP tools setup script..."
     ./infra/hooks/mcp/setup.sh
+    mcp_status=$?
+    if [ $mcp_status -ne 0 ]; then
+        echo "MCP tools setup failed with exit code $mcp_status. Exiting."
+        exit $mcp_status
+    fi
 else
     echo "MCP tools setup script not found. Skipping MCP tools setup."
 fi

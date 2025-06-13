@@ -2,7 +2,7 @@
 #!/bin/bash
 # This script builds, configures, and prepares the environment for running the AI Travel Agents applications.
 # This script can be run directly via:
-#   bash <(curl -fsSL https://raw.githubusercontent.com/Azure-Samples/azure-ai-travel-agents/main/preview.sh)
+#   /bin/bash <(curl -fsSL https://raw.githubusercontent.com/Azure-Samples/azure-ai-travel-agents/main/preview.sh)
 
 set -e
 
@@ -70,6 +70,11 @@ fi
 if [ -f ./infra/hooks/api/setup.sh ]; then
   echo -e "${CYAN}>> Running API setup...${NC}"
   bash ./infra/hooks/api/setup.sh
+  api_status=$?
+  if [ $api_status -ne 0 ]; then
+    echo -e "${RED}${BOLD}API setup failed with exit code $api_status. Exiting.${NC}"
+    exit $api_status
+  fi
 else
   echo -e "${YELLOW}API setup script not found, skipping.${NC}"
 fi
@@ -95,6 +100,11 @@ echo -e "${GREEN}${BOLD}.env file created in project root.${NC}"
 if [ -f ./infra/hooks/ui/setup.sh ]; then
   echo -e "${CYAN}>> Running UI setup...${NC}"
   bash ./infra/hooks/ui/setup.sh
+  ui_status=$?
+  if [ $ui_status -ne 0 ]; then
+    echo -e "${RED}${BOLD}UI setup failed with exit code $ui_status. Exiting.${NC}"
+    exit $ui_status
+  fi
 else
   echo -e "${YELLOW}UI setup script not found, skipping.${NC}"
 fi
@@ -109,6 +119,11 @@ echo -e "${GREEN}${BOLD}.env file created in src/ui/.env.${NC}"
 if [ -f ./infra/hooks/mcp/setup.sh ]; then
   echo -e "${CYAN}>> Running MCP tools setup...${NC}"
   bash ./infra/hooks/mcp/setup.sh
+  mcp_status=$?
+  if [ $mcp_status -ne 0 ]; then
+    echo -e "${RED}${BOLD}MCP tools setup failed with exit code $mcp_status. Exiting.${NC}"
+    exit $mcp_status
+  fi
 else
   echo -e "${YELLOW}MCP tools setup script not found, skipping.${NC}"
 fi

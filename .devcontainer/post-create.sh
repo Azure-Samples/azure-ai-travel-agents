@@ -10,7 +10,7 @@ dotnet linux-dev-certs install
 sudo dotnet workload update
 
 # TODO: Uncomment the following when Foundy Local is available for Linux
-# See https://github.com/microsoft/Foundry-Local/issues/80
+# See https://github.com/microsoft/Foundry-Local/discussions/82
 # echo Preparing Foundry Local environment...
 # /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 # echo >> /home/vscode/.bashrc
