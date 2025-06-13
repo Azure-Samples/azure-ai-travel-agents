@@ -18,12 +18,13 @@ NC='\033[0m' # No Color
 # If not running inside the repo, clone it and re-run the script from there
 REPO_URL="https://github.com/Azure-Samples/azure-ai-travel-agents.git"
 REPO_DIR="azure-ai-travel-agents"
-if [ ! -f "$(basename "$0")" ] && [ ! -d .git ]; then
-  echo "${CYAN}Cloning AI Travel Agents repository...${NC}"
+# Check for .git directory and preview.sh in the current directory
+if [ ! -d .git ] || [ ! -f preview.sh ]; then
+  echo -e "${CYAN}Cloning AI Travel Agents repository...${NC}"
   git clone "$REPO_URL"
   cd "$REPO_DIR"
   exec bash preview.sh "$@"
-else 
+else
   echo -e "${CYAN}Running setup in existing repository. Skipping clone.${NC}"
 fi
 
