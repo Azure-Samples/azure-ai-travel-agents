@@ -16,7 +16,7 @@ $NC     = "`e[0m" # No Color
 # If not running inside the repo, clone it and re-run the script from there
 $REPO_URL = "https://github.com/Azure-Samples/azure-ai-travel-agents.git"
 $REPO_DIR = "azure-ai-travel-agents"
-if (!(Test-Path .git) -and !(Test-Path (Split-Path -Leaf $MyInvocation.MyCommand.Path))) {
+if (!(Test-Path .git) -or !(Test-Path (Split-Path -Leaf $MyInvocation.MyCommand.Path))) {
     Write-Host ("{0}Cloning AI Travel Agents repository...{1}" -f $CYAN, $NC)
     git clone $REPO_URL
     Set-Location $REPO_DIR
