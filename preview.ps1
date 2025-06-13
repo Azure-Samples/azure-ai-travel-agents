@@ -88,8 +88,11 @@ MCP_WEB_SEARCH_URL=http://localhost:5006
 MCP_ECHO_PING_URL=http://localhost:5007
 MCP_ECHO_PING_ACCESS_TOKEN=123-this-is-a-fake-token-please-use-a-token-provider
 "@
-Set-Content -Path .env -Value $envContent -Encoding UTF8
-Write-Host ("{0}{1}.env file created in project root.{2}" -f $GREEN, $BOLD, $NC)
+if (!(Test-Path -Path ./src/api)) {
+    New-Item -ItemType Directory -Path ./src/api | Out-Null
+}
+Set-Content -Path ./src/api/.env -Value $envContent -Encoding UTF8
+Write-Host ("{0}{1}.env file created in ./src/api/.env.{2}" -f $GREEN, $BOLD, $NC)
 
 # Step 2: Setup UI dependencies
 if (Test-Path ./infra/hooks/ui/setup.ps1) {
