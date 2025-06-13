@@ -52,15 +52,6 @@ if [ ! -f ./src/api/.env.docker ]; then
     echo "MCP_ECHO_PING_URL=http://tool-echo-ping:5007" >> ./src/api/.env.docker
 fi
 
-# Install dependencies for the API service
-echo ">> Installing dependencies for the API service..."
-if [ ! -d ./src/api/node_modules ]; then
-    echo "Installing dependencies for the API service..."
-    npm ci --prefix=src/api --legacy-peer-deps 
-else
-    echo "Dependencies for the API service already installed."
-fi
-
 ##########################################################################
 # UI
 ##########################################################################
@@ -77,53 +68,26 @@ if [ ! -f ./src/ui/.env ]; then
     echo "# NG_API_URL=\"$NG_API_URL\"" >> ./src/ui/.env
 fi
 
-# Install dependencies for the UI service
-echo ">> Installing dependencies for the UI service..."
-if [ ! -d ./src/ui/node_modules ]; then
-    echo "Installing dependencies for the UI service..."
-    npm ci --prefix=src/ui
+# Execute the API and UI setup scripts
+echo ">> Setting up API and UI services..."
+if [ -f ./infra/hooks/api/setup.sh ]; then
+    echo "Executing API setup script..."
+    ./infra/hooks/api/setup.sh
 else
-    echo "Dependencies for the UI service already installed."
+    echo "API setup script not found. Skipping API setup."
+fi
+if [ -f ./infra/hooks/ui/setup.sh ]; then
+    echo "Executing UI setup script..."
+    ./infra/hooks/ui/setup.sh
+else
+    echo "UI setup script not found. Skipping UI setup."
 fi
 
-##########################################################################
-# MCP Tools
-##########################################################################
-tools="echo-ping customer-query destination-recommendation itinerary-planning code-evaluation model-inference web-search"
-echo ">> Creating .env file for the MCP servers..."
-
-#  for each tool copy the .env.sample (if it exists) to .env and .env.docker (dont overwrite existing .env files)
-for tool in $tools; do
-    if [ -f ./src/tools/$tool/.env.sample ]; then
-        echo "Creating .env file for $tool..."
-        if [ ! -f ./src/tools/$tool/.env ]; then
-            cp ./src/tools/$tool/.env.sample ./src/tools/$tool/.env
-            echo "# File automatically generated on $(date)" >> ./src/tools/$tool/.env
-            echo "# See .env.sample for more information" >> ./src/tools/$tool/.env
-        fi
-
-        # Create .env.docker file if it doesn't exist
-        if [ ! -f ./src/tools/$tool/.env.docker ]; then
-            cp ./src/tools/$tool/.env.sample ./src/tools/$tool/.env.docker
-            echo "# File automatically generated on $(date)" >> ./src/tools/$tool/.env.docker
-            echo "# See .env.sample for more information" >> ./src/tools/$tool/.env.docker
-        fi
-
-        # Install dependencies for the tool service
-        echo ">> Installing dependencies for $tool service..."
-        if [ ! -d ./src/tools/$tool/node_modules ]; then
-            npm ci --prefix=./src/tools/$tool
-        else
-            echo "Dependencies for $tool service already installed."
-        fi
-    else
-        echo "No .env.sample found for $tool, skipping..."
-    fi
-done
-
-# Enable Docker Desktop Model Runner
-docker desktop enable model-runner --tcp 12434
-
-#  only build docker compose, do not start the containers yet
-echo ">> Building MCP servers with Docker Compose..."
-docker compose -f src/docker-compose.yml up --build -d $(echo $tools | sed 's/\([^ ]*\)/tool-\1/g')
+# Execute the MCP tools setup script
+echo ">> Setting up MCP tools..."
+if [ -f ./infra/hooks/mcp/setup.sh ]; then
+    echo "Executing MCP tools setup script..."
+    ./infra/hooks/mcp/setup.sh
+else
+    echo "MCP tools setup script not found. Skipping MCP tools setup."
+fi

@@ -67,28 +67,30 @@ The architecture of the AI Travel Agents application is designed to be modular a
 - Deployed serverlessly via [Azure Container Apps](https://learn.microsoft.com/azure/container-apps/)
 - Includes an [llms.txt](./llms.txt) file to provide information to help LLMs use this project at inference time ([learn more](https://llmstxt.org/))
 
-## Prerequisites
 
-Ensure you have the following installed before running the application:
+## Preview the application locally for FREE
 
-- **[Azure Developer CLI](https://aka.ms/azure-dev/install)**
-- **[Docker](https://www.docker.com/)** (v4.41.2 or later)
-- **[Git](https://git-scm.com/downloads)**
+To run and preview the application locally, we will use [Docker Model Runner](https://docs.docker.com/ai/model-runner/).
+
+> [!NOTE]
+> If your machine does not have enough resources to run the Docker Model Runner, you can still run the application using Azure OpenAI. Please refer to the [Preview the application using Azure AI Foundry](#preview-the-application-using-azure-ai-foundry) section below.
+
+### Prerequisites
+- **[Git](https://git-scm.com/downloads)** (for cloning the repository)
 - **[Node.js](https://nodejs.org/en/download)** (for the UI and API services)
-- **[Powershell 7+ (pwsh)](https://github.com/powershell/powershell)** - For Windows users only.
-  - **Important**: Ensure you can run `pwsh.exe` from a PowerShell terminal. If this fails, you likely need to upgrade PowerShell.
+- **[Docker v4.42.0 or later](https://www.docker.com/)** (for the MCP servers)
+- **[ai/phi4:14B-Q4_0 model](https://hub.docker.com/r/ai/phi4)** (7.80 GB)
+  - This is the model variant from the Phi-4 family that supports **Function Calling** which is required for the application to work.
 
-## Preview the application locally
+In order to run the application locally, you need to clone the repository and run the preview script. This will set up the necessary environment and start the application. 
 
-To run and preview the application locally, follow these steps:
-
-1. Clone the repository:
+We also recommend you [fork the repository](https://github.com/Azure-Samples/azure-ai-travel-agents/fork) to your own GitHub account so you can make changes and experiment with the code.
 
 <details open>
   <summary>Using HTTPS</summary>
 
 ```bash
-git clone https://github.com/Azure-Samples/azure-ai-travel-agents.git
+git clone https://github.com/YOUR-USERNAME/azure-ai-travel-agents.git
 ```
 
 </details>
@@ -97,7 +99,7 @@ git clone https://github.com/Azure-Samples/azure-ai-travel-agents.git
   <summary>Using SSH</summary>
 
 ```bash
-git clone git@github.com:Azure-Samples/azure-ai-travel-agents.git
+git clone git@github.com:YOUR-USERNAME/azure-ai-travel-agents.git
 ```
 </details>
 
@@ -106,62 +108,51 @@ git clone git@github.com:Azure-Samples/azure-ai-travel-agents.git
   <summary>Using GitHub CLI</summary>
 
 ```bash
-gh repo clone Azure-Samples/azure-ai-travel-agents
+gh repo clone YOUR-USERNAME/azure-ai-travel-agents
 ```
 </details>
 <br>
 
-2. Navigate to the cloned repository:
+### Start the application
+
+1. Run the preview script from the root of the project:
+<details open>
+  <summary>For Linux and macOS users</summary>
 
 ```bash
-cd azure-ai-travel-agents
+./preview.sh
 ```
 
-3. Login to your Azure account:
-
-```shell
-azd auth login
-```
+</details>
+<br>
 <details>
-  <summary>For GitHub Codespaces users</summary>
+  <summary>For Windows users</summary>
 
-If the previous command fails, try:
-
-```shell
-azd auth login --use-device-code
+```powershell
+.\preview.ps1
 ```
 </details>
 <br>
 
-4. Provision the Azure resources:
-
-```bash
-azd provision
-```
-
-When asked, enter a name that will be used for the resource group. **Depending on the region you choose and the available resources and quotas, you may encouter provisioning errors. If this happens, please read our troubleshooting guide in the [Advanced Setup](docs/advanced-setup.md) documentation.**
-
-1. Open a new terminal and run the following command to start the API:
+Start the API service by running the following command in a terminal:
 
 ```bash
 npm start --prefix=src/api
 ```
 
-6. Open a new terminal and run the following command to start the UI:
+Open a new terminal and start the UI service by running the following command:
 
 ```bash
 npm start --prefix=src/ui
 ```
 
-7. Once all services are up and running, you can:
-- Access the **UI** at http://localhost:4200.
-- View the traces via the [Aspire Dashboard](https://aspiredashboard.com/) at http://localhost:18888. 
+Once all services are up and running, you can access the **UI** at http://localhost:4200.
+
+![UI Screenshot](docs/azure-ai-travel-agent-demo-1.gif)
+
+You can also view the traces via the [Aspire Dashboard](https://aspiredashboard.com/) at http://localhost:18888.
   - On `Structured` tab you'll see the logging messages from the **tool-echo-ping** and **api** services. The `Traces` tab will show the traces across the services, such as the call from **api** to **echo-agent**.
 
-![UI Screenshot](docs/azure-ai-travel-agent-demo-1.png)
-
-> [!IMPORTANT]
-> In case you encounter issues when starting either the API or UI, try running `azd hooks run postprovision` to force run the post-provisioning hooks. This is due to an issue with the `azd provision` command not executing the post-provisioning hooks automatically, in some cases, the first time you run it.
 
 ### Use GitHub Codespaces
 

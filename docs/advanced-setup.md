@@ -17,7 +17,7 @@ The application supports the following local LLM providers:
 - **Azure Foundry Local**: This provider allows you to run models locally using Azure's AI Foundry Local service.
 - **Ollama Models**: This provider allows you to run models locally using Ollama service.
 - **Docker Models**: This provider allows you to run models locally using Docker's Model Runner service.
-  - Make sure to install Docker Desktop v4.41.2 or later to use this feature (docker engine 4.41.2 or later).
+  - Make sure to install Docker Desktop v4.42.0 (195023) or later to use this feature (docker engine 28.2.2 or later).
 
 To use a local LLM provider, you need to set the `LLM_PROVIDER` environment variable in the `./src/api/.env` file, and provde the necessary configuration for the provider you want to use.
 
