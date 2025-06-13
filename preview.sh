@@ -95,7 +95,7 @@ MCP_WEB_SEARCH_URL=http://localhost:5006
 MCP_ECHO_PING_URL=http://localhost:5007
 MCP_ECHO_PING_ACCESS_TOKEN=123-this-is-a-fake-token-please-use-a-token-provider
 EOM
-echo -e "${GREEN}${BOLD}.env file created in project root.${NC}"
+echo -e "${GREEN}${BOLD}.env file created in src/api/.env.${NC}"
 
 # Step 2: Setup UI dependencies
 if [ -f ./infra/hooks/ui/setup.sh ]; then
