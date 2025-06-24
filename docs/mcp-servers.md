@@ -7,6 +7,19 @@ permalink: /article/6rbv3t1r/
 
 This document provides detailed technical documentation for each Model Context Protocol (MCP) server in the Azure AI Travel Agents system, including their architecture, APIs, and integration patterns.
 
+> **⚠️ Implementation Status Notice**
+> 
+> Currently, 4 out of 7 MCP servers are fully implemented:
+> - ✅ **echo-ping** (TypeScript/Node.js) - Fully implemented
+> - ✅ **customer-query** (C#/.NET) - Fully implemented  
+> - ✅ **destination-recommendation** (Java/Spring Boot) - Fully implemented
+> - ✅ **itinerary-planning** (Python) - Fully implemented
+> - 🚧 **code-evaluation** (Python) - Placeholder (returns "Hello from code-evaluation!")
+> - 🚧 **model-inference** (Python) - Placeholder (returns "Hello from model-inference!")  
+> - 🚧 **web-search** (Python) - Placeholder (returns "Hello from web-search!")
+> 
+> The detailed implementations shown for placeholder servers below represent planned functionality that will be implemented in future releases.
+
 ## Table of Contents
 
 1. [MCP Overview](#mcp-overview)

@@ -275,10 +275,23 @@ src/tools/
 │   └── Dockerfile
 ├── destination-recommendation/ # Java/Spring Boot
 ├── itinerary-planning/         # Python/FastAPI
-├── code-evaluation/            # Python
-├── model-inference/            # Python with ONNX/vLLM
-└── web-search/                 # TypeScript/Node.js
+├── code-evaluation/            # Python (Placeholder)
+├── model-inference/            # Python with ONNX/vLLM (Placeholder)
+└── web-search/                 # Python (Placeholder)
 ```
+
+> **⚠️ MCP Server Implementation Status**
+> 
+> Currently implemented servers:
+> - ✅ `echo-ping` - TypeScript/Node.js (fully functional)
+> - ✅ `customer-query` - C#/.NET (fully functional)
+> - ✅ `destination-recommendation` - Java/Spring Boot (fully functional)
+> - ✅ `itinerary-planning` - Python/FastAPI (fully functional)
+> 
+> Placeholder servers (return "Hello from [service]!" messages):
+> - 🚧 `code-evaluation` - Python (planned implementation)
+> - 🚧 `model-inference` - Python with ONNX/vLLM (planned implementation)
+> - 🚧 `web-search` - Python (planned implementation)
 
 ## Development Workflow
 

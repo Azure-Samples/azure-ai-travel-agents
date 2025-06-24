@@ -41,6 +41,12 @@ Currently, the API does not implement versioning. Future versions will use URL p
 - `/api/v1/...` (current)
 - `/api/v2/...` (future)
 
+### MCP Server Availability
+
+The API orchestrates multiple MCP servers. Current implementation status:
+- ✅ **Active Servers**: `echo-ping`, `customer-query`, `destination-recommendation`, `itinerary-planning`
+- 🚧 **Placeholder Servers**: `code-evaluation`, `model-inference`, `web-search` (return basic responses)
+
 ## Authentication & Security
 
 ### Current Implementation
