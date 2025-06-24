@@ -210,16 +210,18 @@ Docker Compose provides a complete multi-container environment that closely mirr
 # src/docker-compose.yml structure
 services:
   aspire-dashboard:    # Monitoring
-  tool-echo-ping:      # MCP servers (7 total)
-  tool-customer-query:
-  tool-destination-recommendation:
-  tool-itinerary-planning:
-  tool-code-evaluation:
-  tool-model-inference:
-  tool-web-search:
+  tool-echo-ping:      # ✅ Implemented - TypeScript
+  tool-customer-query: # ✅ Implemented - C#/.NET
+  tool-destination-recommendation: # ✅ Implemented - Java
+  tool-itinerary-planning: # ✅ Implemented - Python
+  tool-code-evaluation: # 🚧 Placeholder - Python
+  tool-model-inference: # 🚧 Placeholder - Python
+  tool-web-search:     # 🚧 Placeholder - Python
   web-api:            # Express API server
   web-ui:             # Angular UI
 ```
+
+> **📝 Deployment Note**: Placeholder MCP servers (code-evaluation, model-inference, web-search) are included in Docker Compose for development purposes but only return basic "Hello from [service]!" responses. The system functions fully with the 4 implemented servers.
 
 ### Deployment Process
 
