@@ -124,6 +124,22 @@ export async function setupAgents(filteredTools: McpServerDefinition[] = []) {
     toolsList.push(...tools);
   }
 
+  if (tools["destination-recommendation"]) {
+    const mcpServerConfig = mcpToolsConfig["destination-recommendation"];
+    const tools = await mcp(mcpServerConfig.config).tools();
+    const destinationRecommendationAgent = agent({
+      name: "DestinationRecommendationAgent",
+      systemPrompt:
+        "Suggests destinations based on customer preferences and requirements.",
+      tools,
+      llm,
+      verbose,
+    });
+    agentsList.push(destinationRecommendationAgent);
+    handoffTargets.push(destinationRecommendationAgent);
+    toolsList.push(...tools);
+  }
+
   // Define the triage agent taht will determine the best course of action
 
   const travelAgent = agent({

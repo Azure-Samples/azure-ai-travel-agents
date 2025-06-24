@@ -27,7 +27,7 @@ The Azure AI Travel Agents system is built on a microservices architecture using
 
 - **Frontend**: Angular UI with real-time streaming
 - **API Server**: Express.js with LlamaIndex.TS orchestration
-- **MCP Servers**: 7 specialized services in TypeScript, C#, Java, and Python
+- **MCP Servers**: 4 fully implemented + 3 planned services in TypeScript, C#, Java, and Python
 - **AI Services**: Azure OpenAI and custom model inference
 - **Monitoring**: OpenTelemetry with Aspire Dashboard
 - **Deployment**: Docker containers on Azure Container Apps
@@ -45,7 +45,29 @@ The Azure AI Travel Agents system is built on a microservices architecture using
                     │ Query       │    │ Recommendation   │    │ Planning        │
                     │ (C#/.NET)   │    │ (Java)           │    │ (Python)        │
                     └─────────────┘    └──────────────────┘    └─────────────────┘
+                    
+                    ┌─────────────┐    ┌─────────────────┐    ┌─────────────────┐
+                    │ Echo Ping   │    │ Code Evaluation │    │ Model Inference │
+                    │ (TypeScript)│    │ (Placeholder)   │    │ (Placeholder)   │
+                    └─────────────┘    └─────────────────┘    └─────────────────┘
+                    
+                                       ┌─────────────────┐
+                                       │ Web Search      │
+                                       │ (Placeholder)   │
+                                       └─────────────────┘
 ```
+
+### MCP Server Implementation Status
+
+| Server | Technology | Status | Purpose |
+|--------|------------|---------|---------|  
+| **echo-ping** | TypeScript/Node.js | ✅ Implemented | Testing and MCP validation |
+| **customer-query** | C#/.NET | ✅ Implemented | Natural language processing |
+| **destination-recommendation** | Java/Spring Boot | ✅ Implemented | Destination suggestions |
+| **itinerary-planning** | Python | ✅ Implemented | Travel itinerary creation |
+| **code-evaluation** | Python | 🚧 Planned | Custom logic execution |
+| **model-inference** | Python | 🚧 Planned | ONNX/vLLM inference on GPU |
+| **web-search** | Python | 🚧 Planned | Bing Search integration |
 
 ## Quick Start for Different Roles
 

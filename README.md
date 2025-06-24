@@ -33,17 +33,17 @@
 
 ## Overview
 
-The AI Travel Agents is a robust **enterprise application** that leverages multiple **AI agents** to enhance travel agency operations. The application demonstrates how LlamaIndex.TS orchestrates **multiple AI agents** to assist employees in handling customer queries, providing destination recommendations, and planning itineraries. Multiple **MCP** (Model Context Protocol) servers, built with **Python, Node.js, Java and .NET**, are used to provide various tools and services to the agents, enabling them to work together seamlessly.
+The AI Travel Agents is a robust **enterprise application** that leverages multiple **AI agents** to enhance travel agency operations. The application demonstrates how LlamaIndex.TS orchestrates **multiple AI agents** to assist employees in handling customer queries, providing destination recommendations, and planning itineraries. Multiple **MCP** (Model Context Protocol) servers, built with **TypeScript/Node.js, C#/.NET, Java/Spring Boot, and Python**, are used to provide various tools and services to the agents, enabling them to work together seamlessly.
 
-| Agent Name                       | Purpose                                                                                                                       |
-| -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| **Customer Query Understanding** | Extracts key **preferences** from customer inquiries.                                                                         |
-| **Destination Recommendation**   | Suggests **destinations** based on customer preferences.                                                                          |
-| **Itinerary Planning**           | Creates a detailed **itinerary** and travel plan.                                                                                 |
-| **Code Evaluation**              | Executes custom logic and scripts when needed.                                                                                  |
-| **Model Inference**              | Runs a custom **LLM** using **ONNX** and **vLLM** on **Azure Container Apps' serverless GPU** for high-performance inference. |
-| **Web Search**                   | Uses Grounding with Bing Search to fetch live travel data.                                                                    |
-| **Echo Ping**                    | Echoes back any received input (used as an MCP server example).                                                               |
+| Agent Name                       | Purpose                                                                                                                       | Status |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ------ |
+| **Customer Query Understanding** | Extracts key **preferences** from customer inquiries.                                                                         | ✅ Implemented |
+| **Destination Recommendation**   | Suggests **destinations** based on customer preferences.                                                                          | ✅ Implemented |
+| **Itinerary Planning**           | Creates a detailed **itinerary** and travel plan.                                                                                 | ✅ Implemented |
+| **Echo Ping**                    | Echoes back any received input (used as an MCP server example).                                                               | ✅ Implemented |
+| **Code Evaluation**              | Executes custom logic and scripts when needed.                                                                                  | 🚧 Planned |
+| **Model Inference**              | Runs a custom **LLM** using **ONNX** and **vLLM** on **Azure Container Apps' serverless GPU** for high-performance inference. | 🚧 Planned |
+| **Web Search**                   | Uses Grounding with Bing Search to fetch live travel data.                                                                    | 🚧 Planned |
 
 ## High-Level Architecture
 
