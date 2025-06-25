@@ -5,17 +5,19 @@ permalink: /article/6rbv3t1r/
 ---
 # MCP Server Implementation Guide
 
-This document provides detailed technical documentation for each Model Context Protocol (MCP) server in the Azure AI Travel Agents system, including their architecture, APIs, and integration patterns.
+This document provides comprehensive technical documentation for each Model Context Protocol (MCP) server in the Azure AI Travel Agents system, organized by programming language and including detailed implementation examples.
 
 ## Table of Contents
 
 1. [MCP Overview](#mcp-overview)
-2. [Server Implementations](#server-implementations)
-3. [Communication Protocols](#communication-protocols)
-4. [Tool Specifications](#tool-specifications)
-5. [Error Handling](#error-handling)
-6. [Performance Considerations](#performance-considerations)
-7. [Development Guidelines](#development-guidelines)
+2. [Multi-Language Server Implementations](#multi-language-server-implementations)
+3. [TypeScript/Node.js Servers](#typescriptnodejs-servers)
+4. [C#/.NET Servers](#cnet-servers)
+5. [Java/Spring Boot Servers](#javaspring-boot-servers)
+6. [Python Servers](#python-servers)
+7. [Communication Protocols](#communication-protocols)
+8. [Development Patterns](#development-patterns)
+9. [Testing and Deployment](#testing-and-deployment)
 
 ## MCP Overview
 
@@ -26,7 +28,7 @@ Model Context Protocol is a standardized communication protocol that enables AI 
 ### Key MCP Concepts
 
 - **Server**: Provides tools and resources to AI models
-- **Client**: Consumes tools and resources from servers
+- **Client**: Consumes tools and resources from servers  
 - **Tool**: A function that can be called by AI models
 - **Resource**: Data or content that can be accessed by AI models
 - **Protocol**: HTTP/SSE-based communication standard
@@ -45,59 +47,1279 @@ Model Context Protocol is a standardized communication protocol that enables AI 
 └─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
-## Server Implementations
+## Multi-Language Server Implementations
 
-### 1. Echo Ping Server (TypeScript/Node.js)
+The Azure AI Travel Agents system demonstrates MCP server implementations across four different programming languages, each showcasing different aspects of the protocol and various technology stacks.
+
+### Implementation Overview
+
+| Server | Language | Framework | Purpose | Port |
+|--------|----------|-----------|---------|------|
+| Echo Ping | TypeScript | Node.js/Express | Testing & Validation | 5007 |
+| Web Search | TypeScript | Node.js/Express | Real-time Search | 5006 |
+| Customer Query | C#/.NET | ASP.NET Core | NLP Processing | 5001 |
+| Destination Recommendation | Java | Spring Boot | ML Recommendations | 5002 |
+| Itinerary Planning | Python | FastAPI | Trip Planning | 5003 |
+| Code Evaluation | Python | FastAPI | Code Execution | 5004 |
+| Model Inference | Python | FastAPI/vLLM | AI Model Inference | 5005 |
+
+### Language-Specific Advantages
+
+- **TypeScript/Node.js**: Rapid prototyping, JavaScript ecosystem, real-time features
+- **C#/.NET**: Strong typing, enterprise integration, Azure services
+- **Java/Spring Boot**: Enterprise reliability, mature ecosystem, scalability
+- **Python**: ML/AI libraries, data science tools, scientific computing
+
+## TypeScript/Node.js Servers
+
+### 1. Echo Ping Server
 
 **Purpose**: Testing and validation of MCP communication patterns
-**Port**: 5007 (3000 internal)
-**Technology**: TypeScript, Express.js, MCP SDK
+**Technology Stack**: TypeScript, Express.js, MCP SDK, OpenTelemetry
 
-#### Architecture
+#### Project Structure
+```
+src/tools/echo-ping/
+├── src/
+│   ├── index.ts           # Main server entry point
+│   ├── tools/
+│   │   ├── echo.ts        # Echo tool implementation
+│   │   └── ping.ts        # Ping tool implementation
+│   └── server.ts          # MCP server setup
+├── package.json
+├── tsconfig.json
+└── Dockerfile
+```
+
+#### Implementation Details
 
 ```typescript
-// Server setup
+// src/index.ts - Server Setup
 import { McpServer } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { CallToolRequestSchema } from '@modelcontextprotocol/sdk/types.js';
 
 const server = new McpServer({
   name: "echo-ping-server",
   version: "1.0.0"
 });
-```
 
-#### Available Tools
+// Tool definitions
+const TOOLS = [
+  {
+    name: "echo",
+    description: "Echoes back the input string",
+    inputSchema: {
+      type: "object",
+      properties: {
+        input: { type: "string", description: "Text to echo back" }
+      },
+      required: ["input"]
+    }
+  },
+  {
+    name: "ping",
+    description: "Simple connectivity test",
+    inputSchema: {
+      type: "object",
+      properties: {},
+      additionalProperties: false
+    }
+  }
+];
 
-| Tool Name | Description | Input Schema | Output |
-|-----------|-------------|--------------|---------|
-| `echo` | Echoes back the input string | `{input: string}` | `{result: string}` |
-| `ping` | Simple connectivity test | `{}` | `{status: "pong", timestamp: number}` |
+// List tools handler
+server.setRequestHandler(ListToolsRequestSchema, async () => ({
+  tools: TOOLS
+}));
 
-#### Tool Implementation Example
-
-```typescript
+// Tool execution handler
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const { name, arguments: args } = request.params;
   
   switch (name) {
     case "echo":
       return {
-        content: [
-          {
-            type: "text",
-            text: `Echo: ${args.input}`
-          }
-        ]
+        content: [{
+          type: "text",
+          text: args.input || "No input provided"
+        }]
       };
     
     case "ping":
       return {
-        content: [
-          {
-            type: "text", 
-            text: JSON.stringify({
-              status: "pong",
-              timestamp: Date.now(),
+        content: [{
+          type: "text",
+          text: JSON.stringify({
+            status: "pong",
+            timestamp: Date.now(),
+            server: "echo-ping-server"
+          })
+        }]
+      };
+    
+    default:
+      throw new Error(`Unknown tool: ${name}`);
+  }
+});
+```
+
+#### HTTP Server Implementation
+
+```typescript
+// src/server.ts - HTTP/SSE Server
+import express from 'express';
+import cors from 'cors';
+import { trace, SpanStatusCode } from '@opentelemetry/api';
+
+const app = express();
+const tracer = trace.getTracer('echo-ping-server');
+
+app.use(cors());
+app.use(express.json());
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.json({ status: 'healthy', timestamp: Date.now() });
+});
+
+// MCP tool execution endpoint
+app.post('/mcp', async (req, res) => {
+  const span = tracer.startSpan('mcp_tool_call');
+  
+  try {
+    const { method, params } = req.body;
+    
+    span.setAttributes({
+      'mcp.method': method,
+      'mcp.tool': params?.name || 'unknown'
+    });
+    
+    // Process MCP request
+    const result = await processMcpRequest(method, params);
+    
+    span.setStatus({ code: SpanStatusCode.OK });
+    res.json(result);
+    
+  } catch (error) {
+    span.recordException(error);
+    span.setStatus({ code: SpanStatusCode.ERROR });
+    res.status(500).json({ error: error.message });
+  } finally {
+    span.end();
+  }
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Echo-Ping MCP Server running on port ${PORT}`);
+});
+```
+
+#### Monitoring and Observability
+
+```typescript
+// OpenTelemetry configuration
+import { NodeSDK } from '@opentelemetry/auto-instrumentations-node';
+import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
+import { Resource } from '@opentelemetry/resources';
+import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
+
+const sdk = new NodeSDK({
+  resource: new Resource({
+    [SemanticResourceAttributes.SERVICE_NAME]: 'echo-ping-server',
+    [SemanticResourceAttributes.SERVICE_VERSION]: '1.0.0',
+  }),
+  instrumentations: [getNodeAutoInstrumentations()]
+});
+
+sdk.start();
+```
+
+### 2. Web Search Server
+
+**Purpose**: Real-time web search integration using Bing Search API
+**Technology Stack**: TypeScript, Express.js, Bing Search API, Axios
+
+#### Implementation Highlights
+
+```typescript
+// Web search tool implementation
+import axios from 'axios';
+
+interface SearchResult {
+  title: string;
+  url: string;
+  snippet: string;
+  datePublished?: string;
+}
+
+export async function performWebSearch(query: string): Promise<SearchResult[]> {
+  const endpoint = 'https://api.bing.microsoft.com/v7.0/search';
+  
+  const response = await axios.get(endpoint, {
+    headers: {
+      'Ocp-Apim-Subscription-Key': process.env.BING_SEARCH_API_KEY
+    },
+    params: {
+      q: query,
+      count: 10,
+      offset: 0,
+      mkt: 'en-US',
+      responseFilter: 'Webpages'
+    }
+  });
+  
+  return response.data.webPages?.value?.map(item => ({
+    title: item.name,
+    url: item.url,
+    snippet: item.snippet,
+    datePublished: item.datePublished
+  })) || [];
+}
+```
+
+## C#/.NET Servers
+
+### Customer Query Server
+
+**Purpose**: Natural language processing and query understanding
+**Technology Stack**: .NET 8, ASP.NET Core, Azure AI Services, Entity Framework
+
+#### Project Structure
+```
+src/tools/customer-query/
+├── Controllers/
+│   └── McpController.cs      # MCP API endpoints
+├── Services/
+│   ├── NlpService.cs         # Natural language processing
+│   ├── QueryAnalyzer.cs      # Query analysis logic
+│   └── McpService.cs         # MCP protocol handling
+├── Models/
+│   ├── McpModels.cs          # MCP data models
+│   └── QueryModels.cs        # Domain models
+├── Program.cs                # Application entry point
+├── Dockerfile
+└── customer-query.csproj
+```
+
+#### MCP Controller Implementation
+
+```csharp
+// Controllers/McpController.cs
+using Microsoft.AspNetCore.Mvc;
+using CustomerQuery.Services;
+using CustomerQuery.Models;
+
+[ApiController]
+[Route("mcp")]
+public class McpController : ControllerBase
+{
+    private readonly IMcpService _mcpService;
+    private readonly ILogger<McpController> _logger;
+
+    public McpController(IMcpService mcpService, ILogger<McpController> logger)
+    {
+        _mcpService = mcpService;
+        _logger = logger;
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> ProcessMcpRequest([FromBody] McpRequest request)
+    {
+        using var activity = McpTelemetry.StartActivity("ProcessMcpRequest");
+        activity?.SetTag("mcp.method", request.Method);
+        activity?.SetTag("mcp.tool", request.Params?.Name);
+
+        try
+        {
+            var result = request.Method switch
+            {
+                "tools/list" => await _mcpService.ListToolsAsync(),
+                "tools/call" => await _mcpService.CallToolAsync(request.Params),
+                _ => throw new NotSupportedException($"Method {request.Method} not supported")
+            };
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error processing MCP request");
+            activity?.SetStatus(ActivityStatusCode.Error, ex.Message);
+            return StatusCode(500, new { error = ex.Message });
+        }
+    }
+
+    [HttpGet("health")]
+    public IActionResult Health()
+    {
+        return Ok(new { status = "healthy", timestamp = DateTimeOffset.UtcNow });
+    }
+}
+```
+
+#### Natural Language Processing Service
+
+```csharp
+// Services/NlpService.cs
+using Azure.AI.TextAnalytics;
+using CustomerQuery.Models;
+
+public class NlpService : INlpService
+{
+    private readonly TextAnalyticsClient _textAnalyticsClient;
+    private readonly ILogger<NlpService> _logger;
+
+    public NlpService(TextAnalyticsClient textAnalyticsClient, ILogger<NlpService> logger)
+    {
+        _textAnalyticsClient = textAnalyticsClient;
+        _logger = logger;
+    }
+
+    public async Task<QueryAnalysis> AnalyzeQueryAsync(string query)
+    {
+        using var activity = McpTelemetry.StartActivity("AnalyzeQuery");
+        activity?.SetTag("query.length", query.Length);
+
+        // Extract key phrases
+        var keyPhrasesResponse = await _textAnalyticsClient.ExtractKeyPhrasesAsync(query);
+        var keyPhrases = keyPhrasesResponse.Value.ToList();
+
+        // Analyze sentiment
+        var sentimentResponse = await _textAnalyticsClient.AnalyzeSentimentAsync(query);
+        var sentiment = sentimentResponse.Value;
+
+        // Extract entities
+        var entitiesResponse = await _textAnalyticsClient.RecognizeEntitiesAsync(query);
+        var entities = entitiesResponse.Value.Select(entity => new EntityInfo
+        {
+            Text = entity.Text,
+            Category = entity.Category.ToString(),
+            ConfidenceScore = entity.ConfidenceScore
+        }).ToList();
+
+        return new QueryAnalysis
+        {
+            OriginalQuery = query,
+            KeyPhrases = keyPhrases,
+            Sentiment = sentiment.Sentiment.ToString(),
+            SentimentScore = sentiment.ConfidenceScores.Positive,
+            Entities = entities,
+            Intent = DetermineIntent(keyPhrases, entities)
+        };
+    }
+
+    private string DetermineIntent(List<string> keyPhrases, List<EntityInfo> entities)
+    {
+        // Simple intent classification based on keywords
+        var travelKeywords = new[] { "travel", "trip", "vacation", "hotel", "flight", "destination" };
+        var planningKeywords = new[] { "plan", "itinerary", "schedule", "book", "reserve" };
+        var searchKeywords = new[] { "find", "search", "look", "recommend", "suggest" };
+
+        if (keyPhrases.Any(phrase => travelKeywords.Any(keyword => 
+            phrase.Contains(keyword, StringComparison.OrdinalIgnoreCase))))
+        {
+            if (keyPhrases.Any(phrase => planningKeywords.Any(keyword => 
+                phrase.Contains(keyword, StringComparison.OrdinalIgnoreCase))))
+                return "trip_planning";
+            
+            if (keyPhrases.Any(phrase => searchKeywords.Any(keyword => 
+                phrase.Contains(keyword, StringComparison.OrdinalIgnoreCase))))
+                return "destination_search";
+                
+            return "travel_inquiry";
+        }
+
+        return "general_query";
+    }
+}
+```
+
+#### Configuration and Dependency Injection
+
+```csharp
+// Program.cs
+using Azure.AI.TextAnalytics;
+using CustomerQuery.Services;
+using Microsoft.Extensions.Azure;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services
+builder.Services.AddControllers();
+builder.Services.AddLogging();
+
+// Azure AI Services
+builder.Services.AddAzureClients(clientBuilder =>
+{
+    clientBuilder.AddTextAnalyticsClient(
+        new Uri(builder.Configuration["AzureAI:Endpoint"]),
+        new AzureKeyCredential(builder.Configuration["AzureAI:ApiKey"]));
+});
+
+// MCP Services
+builder.Services.AddScoped<IMcpService, McpService>();
+builder.Services.AddScoped<INlpService, NlpService>();
+builder.Services.AddScoped<IQueryAnalyzer, QueryAnalyzer>();
+
+// OpenTelemetry
+builder.Services.AddOpenTelemetry()
+    .WithTracing(builder => builder
+        .AddAspNetCoreInstrumentation()
+        .AddHttpClientInstrumentation()
+        .AddOtlpExporter());
+
+var app = builder.Build();
+
+// Configure middleware
+app.UseRouting();
+app.MapControllers();
+
+app.Run();
+```
+
+## Java/Spring Boot Servers
+
+### Destination Recommendation Server
+
+**Purpose**: AI-powered destination recommendations based on user preferences
+**Technology Stack**: Java 21, Spring Boot 3, Spring WebFlux, Jackson, OpenAPI
+
+#### Project Structure
+```
+src/tools/destination-recommendation/
+├── src/main/java/com/azure/ai/travel/destination/
+│   ├── DestinationRecommendationApplication.java
+│   ├── controller/
+│   │   └── McpController.java
+│   ├── service/
+│   │   ├── McpService.java
+│   │   ├── RecommendationService.java
+│   │   └── PreferenceAnalysisService.java
+│   ├── model/
+│   │   ├── McpRequest.java
+│   │   ├── Destination.java
+│   │   └── UserPreferences.java
+│   └── config/
+│       └── WebConfig.java
+├── pom.xml
+└── Dockerfile
+```
+
+#### Spring Boot MCP Controller
+
+```java
+// controller/McpController.java
+package com.azure.ai.travel.destination.controller;
+
+import com.azure.ai.travel.destination.model.*;
+import com.azure.ai.travel.destination.service.McpService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
+import io.micrometer.tracing.annotation.NewSpan;
+
+@RestController
+@RequestMapping("/mcp")
+@CrossOrigin(origins = "*")
+public class McpController {
+
+    @Autowired
+    private McpService mcpService;
+
+    @PostMapping
+    @NewSpan("mcp-request")
+    public Mono<ResponseEntity<?>> processMcpRequest(@RequestBody McpRequest request) {
+        return switch (request.getMethod()) {
+            case "tools/list" -> mcpService.listTools()
+                    .map(ResponseEntity::ok);
+            case "tools/call" -> mcpService.callTool(request.getParams())
+                    .map(ResponseEntity::ok)
+                    .onErrorReturn(ResponseEntity.internalServerError().build());
+            default -> Mono.just(ResponseEntity.badRequest()
+                    .body(Map.of("error", "Unsupported method: " + request.getMethod())));
+        };
+    }
+
+    @GetMapping("/health")
+    public Mono<ResponseEntity<Map<String, Object>>> health() {
+        return Mono.just(ResponseEntity.ok(Map.of(
+                "status", "healthy",
+                "timestamp", System.currentTimeMillis(),
+                "service", "destination-recommendation"
+        )));
+    }
+}
+```
+
+#### Recommendation Service Implementation
+
+```java
+// service/RecommendationService.java
+package com.azure.ai.travel.destination.service;
+
+import com.azure.ai.travel.destination.model.*;
+import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
+import java.util.List;
+import java.util.Map;
+
+@Service
+public class RecommendationService {
+
+    private final PreferenceAnalysisService preferenceAnalysisService;
+    private final DestinationDatabase destinationDatabase;
+
+    public RecommendationService(PreferenceAnalysisService preferenceAnalysisService,
+                                DestinationDatabase destinationDatabase) {
+        this.preferenceAnalysisService = preferenceAnalysisService;
+        this.destinationDatabase = destinationDatabase;
+    }
+
+    public Mono<List<DestinationRecommendation>> recommendDestinations(
+            String userPreferencesText, int maxRecommendations) {
+        
+        return preferenceAnalysisService.analyzePreferences(userPreferencesText)
+                .flatMap(preferences -> generateRecommendations(preferences, maxRecommendations))
+                .collectList();
+    }
+
+    private Flux<DestinationRecommendation> generateRecommendations(
+            UserPreferences preferences, int maxRecommendations) {
+        
+        return destinationDatabase.findDestinations()
+                .map(destination -> calculateCompatibilityScore(destination, preferences))
+                .filter(scored -> scored.getScore() > 0.6) // Minimum compatibility threshold
+                .sort((a, b) -> Double.compare(b.getScore(), a.getScore()))
+                .take(maxRecommendations)
+                .map(this::createRecommendation);
+    }
+
+    private ScoredDestination calculateCompatibilityScore(Destination destination, 
+                                                         UserPreferences preferences) {
+        double score = 0.0;
+        
+        // Climate preference matching
+        if (preferences.getClimatePreferences().contains(destination.getClimate())) {
+            score += 0.3;
+        }
+        
+        // Activity preference matching
+        double activityMatch = destination.getAvailableActivities().stream()
+                .mapToDouble(activity -> preferences.getActivityPreferences().contains(activity) ? 1.0 : 0.0)
+                .average().orElse(0.0);
+        score += activityMatch * 0.4;
+        
+        // Budget compatibility
+        if (destination.getAverageCost() <= preferences.getBudgetRange().getMax() &&
+            destination.getAverageCost() >= preferences.getBudgetRange().getMin()) {
+            score += 0.2;
+        }
+        
+        // Cultural interest alignment
+        if (preferences.getCulturalInterests().stream()
+                .anyMatch(interest -> destination.getCulturalHighlights().contains(interest))) {
+            score += 0.1;
+        }
+        
+        return new ScoredDestination(destination, score);
+    }
+
+    private DestinationRecommendation createRecommendation(ScoredDestination scored) {
+        return DestinationRecommendation.builder()
+                .destination(scored.getDestination())
+                .compatibilityScore(scored.getScore())
+                .reasonForRecommendation(generateReasonForRecommendation(scored))
+                .estimatedBudget(scored.getDestination().getAverageCost())
+                .bestTimeToVisit(scored.getDestination().getBestSeasons())
+                .build();
+    }
+
+    private String generateReasonForRecommendation(ScoredDestination scored) {
+        StringBuilder reason = new StringBuilder();
+        Destination dest = scored.getDestination();
+        
+        reason.append("Recommended because: ");
+        reason.append(dest.getName()).append(" offers ");
+        reason.append(String.join(", ", dest.getAvailableActivities().subList(0, 
+                Math.min(3, dest.getAvailableActivities().size()))));
+        reason.append(" and has ").append(dest.getClimate()).append(" climate.");
+        
+        return reason.toString();
+    }
+}
+```
+
+#### Configuration and Monitoring
+
+```java
+// config/WebConfig.java
+package com.azure.ai.travel.destination.config;
+
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.reactive.config.WebFluxConfigurer;
+
+@Configuration
+public class WebConfig implements WebFluxConfigurer {
+
+    @Bean
+    public Timer mcpRequestTimer(MeterRegistry meterRegistry) {
+        return Timer.builder("mcp.request.duration")
+                .description("Duration of MCP requests")
+                .register(meterRegistry);
+    }
+}
+```
+
+## Python Servers
+
+Python servers in the system demonstrate three different aspects: trip planning, code execution, and AI model inference.
+
+### 1. Itinerary Planning Server
+
+**Purpose**: Comprehensive trip planning and scheduling
+**Technology Stack**: Python 3.11, FastAPI, Pydantic, AsyncIO, SQLAlchemy
+
+#### Project Structure
+```
+src/tools/itinerary-planning/
+├── app/
+│   ├── main.py               # FastAPI application
+│   ├── models/
+│   │   ├── mcp_models.py     # MCP protocol models
+│   │   └── domain_models.py  # Business domain models
+│   ├── services/
+│   │   ├── mcp_service.py    # MCP protocol handling
+│   │   ├── planning_service.py # Trip planning logic
+│   │   └── optimization_service.py # Route optimization
+│   └── utils/
+│       ├── date_utils.py     # Date/time utilities
+│       └── geo_utils.py      # Geographic calculations
+├── requirements.txt
+├── Dockerfile
+└── tests/
+```
+
+#### FastAPI MCP Implementation
+
+```python
+# app/main.py
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from typing import Dict, Any, List
+import logging
+from opentelemetry import trace
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+
+from .services.mcp_service import McpService
+from .services.planning_service import PlanningService
+from .models.mcp_models import McpRequest, McpResponse
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Initialize tracer
+tracer = trace.get_tracer(__name__)
+
+app = FastAPI(title="Itinerary Planning MCP Server", version="1.0.0")
+
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Initialize services
+mcp_service = McpService()
+planning_service = PlanningService()
+
+@app.post("/mcp")
+async def process_mcp_request(request: McpRequest) -> McpResponse:
+    """Process MCP protocol requests"""
+    with tracer.start_as_current_span("process_mcp_request") as span:
+        span.set_attribute("mcp.method", request.method)
+        
+        try:
+            if request.method == "tools/list":
+                return await mcp_service.list_tools()
+            elif request.method == "tools/call":
+                span.set_attribute("mcp.tool", request.params.name)
+                return await mcp_service.call_tool(request.params)
+            else:
+                raise HTTPException(
+                    status_code=400, 
+                    detail=f"Unsupported method: {request.method}"
+                )
+        except Exception as e:
+            logger.error(f"Error processing MCP request: {e}")
+            span.record_exception(e)
+            raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/health")
+async def health_check():
+    """Health check endpoint"""
+    return {
+        "status": "healthy",
+        "timestamp": time.time(),
+        "service": "itinerary-planning"
+    }
+
+# Initialize OpenTelemetry instrumentation
+FastAPIInstrumentor.instrument_app(app)
+```
+
+#### Planning Service Implementation
+
+```python
+# app/services/planning_service.py
+from typing import List, Dict, Any, Optional
+from datetime import datetime, timedelta
+import asyncio
+from geopy.distance import geodesic
+from ..models.domain_models import Itinerary, Activity, Location, TimeSlot
+from ..utils.optimization_service import RouteOptimizer
+from ..utils.date_utils import DateTimeUtils
+
+class PlanningService:
+    """Comprehensive trip planning service"""
+    
+    def __init__(self):
+        self.route_optimizer = RouteOptimizer()
+        self.date_utils = DateTimeUtils()
+    
+    async def create_itinerary(
+        self,
+        destination: str,
+        start_date: str,
+        end_date: str,
+        preferences: Dict[str, Any],
+        budget: Optional[float] = None
+    ) -> Itinerary:
+        """Create a comprehensive travel itinerary"""
+        
+        # Parse dates
+        start_dt = datetime.fromisoformat(start_date)
+        end_dt = datetime.fromisoformat(end_date)
+        
+        # Get destination information
+        location_info = await self._get_destination_info(destination)
+        
+        # Find activities based on preferences
+        activities = await self._find_activities(
+            location_info, preferences, budget
+        )
+        
+        # Optimize route and schedule
+        optimized_schedule = await self._optimize_schedule(
+            activities, start_dt, end_dt, preferences
+        )
+        
+        # Generate day-by-day itinerary
+        daily_plans = await self._generate_daily_plans(
+            optimized_schedule, start_dt, end_dt
+        )
+        
+        return Itinerary(
+            destination=destination,
+            start_date=start_dt,
+            end_date=end_dt,
+            daily_plans=daily_plans,
+            total_estimated_cost=sum(plan.estimated_cost for plan in daily_plans),
+            preferences_matched=preferences
+        )
+    
+    async def _find_activities(
+        self,
+        location: Location,
+        preferences: Dict[str, Any],
+        budget: Optional[float]
+    ) -> List[Activity]:
+        """Find activities based on user preferences"""
+        
+        activities = []
+        
+        # Categories based on preferences
+        categories = preferences.get('interests', ['sightseeing', 'culture', 'food'])
+        
+        for category in categories:
+            category_activities = await self._get_activities_by_category(
+                location, category, budget
+            )
+            activities.extend(category_activities)
+        
+        # Filter by budget if specified
+        if budget:
+            activities = [a for a in activities if a.cost <= budget * 0.1]  # 10% of budget per activity
+        
+        # Sort by rating and relevance
+        activities.sort(key=lambda a: (a.rating, a.relevance_score), reverse=True)
+        
+        return activities[:20]  # Limit to top 20 activities
+    
+    async def _optimize_schedule(
+        self,
+        activities: List[Activity],
+        start_date: datetime,
+        end_date: datetime,
+        preferences: Dict[str, Any]
+    ) -> List[TimeSlot]:
+        """Optimize activity scheduling considering time, location, and preferences"""
+        
+        trip_duration = (end_date - start_date).days
+        
+        # Create time slots for each day
+        time_slots = []
+        current_date = start_date
+        
+        while current_date < end_date:
+            # Morning slot (9 AM - 12 PM)
+            time_slots.append(TimeSlot(
+                start_time=current_date.replace(hour=9, minute=0),
+                end_time=current_date.replace(hour=12, minute=0),
+                slot_type="morning"
+            ))
+            
+            # Afternoon slot (2 PM - 5 PM)
+            time_slots.append(TimeSlot(
+                start_time=current_date.replace(hour=14, minute=0),
+                end_time=current_date.replace(hour=17, minute=0),
+                slot_type="afternoon"
+            ))
+            
+            # Evening slot (7 PM - 10 PM)
+            time_slots.append(TimeSlot(
+                start_time=current_date.replace(hour=19, minute=0),
+                end_time=current_date.replace(hour=22, minute=0),
+                slot_type="evening"
+            ))
+            
+            current_date += timedelta(days=1)
+        
+        # Use optimization algorithm to assign activities to time slots
+        optimized_slots = await self.route_optimizer.optimize_schedule(
+            activities, time_slots, preferences
+        )
+        
+        return optimized_slots
+    
+    async def _generate_daily_plans(
+        self,
+        time_slots: List[TimeSlot],
+        start_date: datetime,
+        end_date: datetime
+    ) -> List[Dict[str, Any]]:
+        """Generate detailed daily plans"""
+        
+        daily_plans = []
+        current_date = start_date
+        
+        while current_date < end_date:
+            # Get slots for current day
+            day_slots = [
+                slot for slot in time_slots 
+                if slot.start_time.date() == current_date.date()
+            ]
+            
+            # Calculate daily cost
+            daily_cost = sum(
+                slot.activity.cost for slot in day_slots 
+                if slot.activity
+            )
+            
+            # Generate transportation recommendations
+            transport_info = await self._generate_transport_info(day_slots)
+            
+            daily_plan = {
+                "date": current_date.isoformat(),
+                "activities": [
+                    {
+                        "time": f"{slot.start_time.strftime('%H:%M')} - {slot.end_time.strftime('%H:%M')}",
+                        "activity": slot.activity.name if slot.activity else "Free time",
+                        "location": slot.activity.location.name if slot.activity else None,
+                        "description": slot.activity.description if slot.activity else None,
+                        "cost": slot.activity.cost if slot.activity else 0,
+                        "duration_hours": (slot.end_time - slot.start_time).seconds / 3600
+                    }
+                    for slot in day_slots
+                ],
+                "estimated_cost": daily_cost,
+                "transportation": transport_info,
+                "notes": await self._generate_daily_notes(day_slots)
+            }
+            
+            daily_plans.append(daily_plan)
+            current_date += timedelta(days=1)
+        
+        return daily_plans
+    
+    async def _generate_transport_info(self, day_slots: List[TimeSlot]) -> Dict[str, Any]:
+        """Generate transportation recommendations for the day"""
+        
+        locations = [
+            slot.activity.location for slot in day_slots 
+            if slot.activity and slot.activity.location
+        ]
+        
+        if len(locations) < 2:
+            return {"method": "walking", "estimated_cost": 0}
+        
+        # Calculate total distance
+        total_distance = 0
+        for i in range(len(locations) - 1):
+            distance = geodesic(
+                (locations[i].latitude, locations[i].longitude),
+                (locations[i+1].latitude, locations[i+1].longitude)
+            ).kilometers
+            total_distance += distance
+        
+        # Recommend transportation method
+        if total_distance < 3:
+            return {
+                "method": "walking",
+                "estimated_cost": 0,
+                "total_distance_km": round(total_distance, 2)
+            }
+        elif total_distance < 10:
+            return {
+                "method": "public_transport",
+                "estimated_cost": 15,
+                "total_distance_km": round(total_distance, 2)
+            }
+        else:
+            return {
+                "method": "taxi_uber",
+                "estimated_cost": round(total_distance * 2.5),
+                "total_distance_km": round(total_distance, 2)
+            }
+```
+
+### 2. Code Evaluation Server
+
+**Purpose**: Safe execution of Python code for complex calculations and data processing
+**Technology Stack**: Python 3.11, FastAPI, RestrictedPython, Docker Sandboxing
+
+#### Secure Code Execution
+
+```python
+# app/services/code_execution_service.py
+import ast
+import sys
+import io
+import contextlib
+import traceback
+from typing import Dict, Any, Optional
+from RestrictedPython import compile_restricted, safe_globals
+from RestrictedPython.Guards import safe_builtins
+
+class CodeExecutionService:
+    """Secure Python code execution service"""
+    
+    def __init__(self):
+        self.safe_globals = {
+            '__builtins__': safe_builtins,
+            '_getattr_': getattr,
+            '_getitem_': lambda obj, key: obj[key],
+            '_getiter_': iter,
+            '_iter_unpack_sequence_': iter,
+            # Math operations
+            'abs': abs, 'round': round, 'min': min, 'max': max,
+            'sum': sum, 'len': len, 'range': range,
+            # Safe imports
+            'math': __import__('math'),
+            'datetime': __import__('datetime'),
+            'json': __import__('json'),
+        }
+    
+    async def execute_code(
+        self,
+        code: str,
+        inputs: Optional[Dict[str, Any]] = None,
+        timeout: int = 30
+    ) -> Dict[str, Any]:
+        """Execute Python code safely with restrictions"""
+        
+        try:
+            # Compile with restrictions
+            compiled_code = compile_restricted(code, '<string>', 'exec')
+            
+            if compiled_code is None:
+                return {
+                    "success": False,
+                    "error": "Code compilation failed - potentially unsafe code detected"
+                }
+            
+            # Setup execution namespace
+            exec_namespace = self.safe_globals.copy()
+            if inputs:
+                exec_namespace.update(inputs)
+            
+            # Capture output
+            output_buffer = io.StringIO()
+            result = None
+            
+            with contextlib.redirect_stdout(output_buffer):
+                # Execute with timeout protection
+                exec(compiled_code, exec_namespace)
+                
+                # Extract result if available
+                if 'result' in exec_namespace:
+                    result = exec_namespace['result']
+            
+            return {
+                "success": True,
+                "result": result,
+                "output": output_buffer.getvalue(),
+                "namespace_vars": {
+                    k: v for k, v in exec_namespace.items() 
+                    if not k.startswith('_') and k not in self.safe_globals
+                }
+            }
+            
+        except Exception as e:
+            return {
+                "success": False,
+                "error": str(e),
+                "error_type": type(e).__name__,
+                "traceback": traceback.format_exc()
+            }
+```
+
+### 3. Model Inference Server
+
+**Purpose**: Local AI model inference using vLLM and ONNX Runtime
+**Technology Stack**: Python 3.11, FastAPI, vLLM, ONNX Runtime, Transformers
+
+#### vLLM Integration
+
+```python
+# app/services/model_inference_service.py
+from vllm import LLM, SamplingParams
+from transformers import AutoTokenizer
+from typing import List, Dict, Any, Optional
+import torch
+
+class ModelInferenceService:
+    """Local model inference using vLLM"""
+    
+    def __init__(self, model_name: str = "microsoft/DialoGPT-small"):
+        self.model_name = model_name
+        self.llm = None
+        self.tokenizer = None
+        self._initialize_model()
+    
+    def _initialize_model(self):
+        """Initialize the vLLM model and tokenizer"""
+        try:
+            # Initialize vLLM engine
+            self.llm = LLM(
+                model=self.model_name,
+                tensor_parallel_size=1,
+                max_model_len=2048,
+                gpu_memory_utilization=0.8
+            )
+            
+            # Initialize tokenizer
+            self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
+            
+            print(f"Model {self.model_name} initialized successfully")
+            
+        except Exception as e:
+            print(f"Error initializing model: {e}")
+            # Fallback to CPU-only inference
+            self._initialize_cpu_fallback()
+    
+    async def generate_response(
+        self,
+        prompt: str,
+        max_tokens: int = 150,
+        temperature: float = 0.7,
+        top_p: float = 0.9
+    ) -> Dict[str, Any]:
+        """Generate response using the local model"""
+        
+        try:
+            # Configure sampling parameters
+            sampling_params = SamplingParams(
+                temperature=temperature,
+                top_p=top_p,
+                max_tokens=max_tokens,
+                stop=["</s>", "<|endoftext|>"]
+            )
+            
+            # Generate response
+            outputs = self.llm.generate([prompt], sampling_params)
+            
+            generated_text = outputs[0].outputs[0].text.strip()
+            
+            return {
+                "success": True,
+                "generated_text": generated_text,
+                "prompt": prompt,
+                "model": self.model_name,
+                "parameters": {
+                    "max_tokens": max_tokens,
+                    "temperature": temperature,
+                    "top_p": top_p
+                }
+            }
+            
+        except Exception as e:
+            return {
+                "success": False,
+                "error": str(e),
+                "model": self.model_name
+            }
+```
+
+## Communication Protocols
+
+### HTTP-based MCP vs SSE-based MCP
+
+The system uses two different communication patterns:
+
+#### HTTP-based MCP (Echo-Ping Server)
+- **Use Case**: Simple request-response operations
+- **Protocol**: Standard HTTP POST requests
+- **Response**: Synchronous JSON responses
+- **Best For**: Testing, validation, simple operations
+
+```typescript
+// Client configuration for HTTP MCP
+const client = new MCPHTTPClient(
+    "client-id",
+    "http://server:port/mcp",
+    "access-token"
+);
+
+// Tool execution
+const result = await client.callTool("tool_name", parameters);
+```
+
+#### SSE-based MCP (All Other Servers)
+- **Use Case**: Streaming responses, real-time updates
+- **Protocol**: Server-Sent Events over HTTP
+- **Response**: Asynchronous streaming data
+- **Best For**: Long-running operations, real-time data
+
+```typescript
+// Client configuration for SSE MCP
+const client = new MCPSSEClient(
+    "client-id", 
+    "http://server:port/sse",
+    "access-token"
+);
+
+// Streaming tool execution
+const stream = client.callToolStream("tool_name", parameters);
+for await (const chunk of stream) {
+    console.log(chunk);
+}
+```
+
+## Development Patterns 
+
+### Common MCP Implementation Pattern
+
+All servers follow a consistent pattern regardless of programming language:
+
+1. **Tool Registration**: Define available tools with schemas
+2. **Request Handling**: Process MCP protocol requests
+3. **Tool Execution**: Implement business logic for each tool
+4. **Response Formatting**: Return properly formatted MCP responses
+5. **Error Handling**: Consistent error reporting across languages
+6. **Monitoring**: OpenTelemetry integration for observability
+
+### Cross-Language Consistency
+
+Despite different programming languages, all servers maintain:
+- **Same MCP Protocol**: Consistent request/response format
+- **Similar Tool Structure**: Predictable tool definitions
+- **Unified Monitoring**: OpenTelemetry tracing across all services
+- **Common Configuration**: Environment-based configuration
+- **Consistent Error Handling**: Standardized error response format
+
+## Testing and Deployment
+
+### Testing Strategies by Language
+
+#### TypeScript/Node.js
+```bash
+# Unit tests with Jest
+npm test
+
+# Integration tests
+npm run test:integration
+
+# MCP protocol tests
+npm run test:mcp
+```
+
+#### C#/.NET
+```bash
+# Unit tests with xUnit
+dotnet test
+
+# Integration tests
+dotnet test --filter Category=Integration
+
+# MCP protocol tests
+dotnet test --filter Category=MCP
+```
+
+#### Java/Spring Boot
+```bash
+# Unit tests with JUnit
+mvn test
+
+# Integration tests
+mvn verify -P integration-tests
+
+# MCP protocol tests
+mvn test -Dtest=McpProtocolTest
+```
+
+#### Python
+```bash
+# Unit tests with pytest
+pytest tests/unit/
+
+# Integration tests
+pytest tests/integration/
+
+# MCP protocol tests
+pytest tests/mcp/
+```
+
+### Docker Deployment
+
+All servers are containerized with multi-stage builds:
+
+```dockerfile
+# Example multi-stage Dockerfile pattern
+FROM node:18-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+
+FROM node:18-alpine AS runtime
+WORKDIR /app
+COPY --from=builder /app/node_modules ./node_modules
+COPY . .
+EXPOSE 3000
+CMD ["npm", "start"]
+```
+
+This comprehensive guide demonstrates how MCP servers can be implemented across multiple programming languages while maintaining protocol consistency and following established patterns for enterprise-grade applications.
               server: "echo-ping"
             })
           }
