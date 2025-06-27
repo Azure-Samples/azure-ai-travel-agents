@@ -1,10 +1,10 @@
 package com.microsoft.mcp.sample.server.service;
 
-import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.stereotype.Service;
 
 /**
  * Service for providing travel destination recommendations.
+ * Updated to support MCP StreamableHTTP transport via direct HTTP endpoints.
  */
 @Service
 public class DestinationService {
@@ -35,7 +35,6 @@ public class DestinationService {
      * @param message The message to echo
      * @return The original message
      */
-    @Tool(description = "Echo back the input message exactly as received")
     public String echoMessage(String message) {
         return message;
     }
@@ -45,7 +44,6 @@ public class DestinationService {
      * @param activityType The preferred activity type (BEACH, ADVENTURE, CULTURAL, RELAXATION, URBAN_EXPLORATION, NATURE, WINTER_SPORTS)
      * @return A list of recommended destinations
      */
-    @Tool(description = "Get travel destination recommendations based on preferred activity type")
     public String getDestinationsByActivity(String activityType) {
         try {
             String activity = activityType.toUpperCase();
@@ -76,7 +74,6 @@ public class DestinationService {
      * @param budget The budget category (BUDGET, MODERATE, LUXURY)
      * @return A list of recommended destinations
      */
-    @Tool(description = "Get travel destination recommendations based on budget category")
     public String getDestinationsByBudget(String budget) {
         try {
             String budgetCategory = budget.toUpperCase();
@@ -103,7 +100,6 @@ public class DestinationService {
      * @param season The preferred season (SPRING, SUMMER, AUTUMN, WINTER, ALL_YEAR)
      * @return A list of recommended destinations
      */
-    @Tool(description = "Get travel destination recommendations based on preferred season")
     public String getDestinationsBySeason(String season) {
         try {
             String preferredSeason = season.toUpperCase();
@@ -135,7 +131,6 @@ public class DestinationService {
      * @param familyFriendly Whether the destination needs to be family-friendly
      * @return A list of recommended destinations
      */
-    @Tool(description = "Get travel destination recommendations based on multiple criteria")
     public String getDestinationsByPreferences(String activity, String budget, String season, Boolean familyFriendly) {
         try {
             // Set preferences if provided
@@ -173,7 +168,6 @@ public class DestinationService {
      * Get all available destinations
      * @return A list of all destinations
      */
-    @Tool(description = "Get a list of all available travel destinations")
     public String getAllDestinations() {
         return "Here are some popular travel destinations:\n\n" +
                "📍 Bali, Indonesia\n" +
