@@ -1,36 +1,26 @@
 package com.microsoft.mcp.sample.client;
 
-import java.util.Map;
-
-import io.modelcontextprotocol.client.McpClient;
-import io.modelcontextprotocol.spec.McpClientTransport;
-import io.modelcontextprotocol.spec.McpSchema.CallToolRequest;
-import io.modelcontextprotocol.spec.McpSchema.CallToolResult;
-import io.modelcontextprotocol.spec.McpSchema.ListToolsResult;
-
+/**
+ * Legacy MCP client using Java SDK (DEPRECATED).
+ * 
+ * This client is no longer functional as the server has been migrated
+ * to use StreamableHTTP transport and the Java MCP SDK dependencies
+ * have been removed.
+ * 
+ * Use ClientStreamableHttp instead for testing the new HTTP-based implementation.
+ * 
+ * @deprecated Use {@link ClientStreamableHttp} for MCP StreamableHTTP transport
+ */
+@Deprecated
 public class SampleClient {
 
-	private final McpClientTransport transport;
-
-	public SampleClient(McpClientTransport transport) {
-		this.transport = transport;
-	}
-
-	public void run() {
-
-		var client = McpClient.sync(this.transport).build();
-		client.initialize();
-
-		client.ping();
-
-		// List and demonstrate tools
-		ListToolsResult toolsList = client.listTools();
-		System.out.println("Available Tools = " + toolsList);
-		// Call the getDestinationsByBudget tool
-		CallToolResult destinationsResult = client.callTool(new CallToolRequest("getDestinationsByBudget", 
-				Map.of("budget", "MODERATE")));
-		System.out.println("Get Destinations By Budget Result: " + destinationsResult);
-
-		client.closeGracefully();
-	}
+    public static void main(String[] args) {
+        System.err.println("DEPRECATED: Java SDK-based MCP client is no longer supported.");
+        System.err.println("The destination-recommendation server now uses StreamableHTTP transport.");
+        System.err.println("Please use ClientStreamableHttp instead.");
+        System.err.println();
+        System.err.println("Example usage:");
+        System.err.println("  java com.microsoft.mcp.sample.client.ClientStreamableHttp");
+        System.exit(1);
+    }
 }

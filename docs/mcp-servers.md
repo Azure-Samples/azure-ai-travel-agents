@@ -257,16 +257,15 @@ public class ConstraintObject
 
 **Purpose**: Travel destination suggestions based on user preferences
 **Port**: 5002 (8080 internal)
-**Technology**: Java 21, Spring Boot, Azure AI Services
+**Technology**: Java 17, Spring Boot, StreamableHTTP MCP Protocol
 
 #### Architecture
 
 ```java
 @SpringBootApplication
-@EnableWebMvc
-public class DestinationRecommendationApplication {
+public class McpServerApplication {
     public static void main(String[] args) {
-        SpringApplication.run(DestinationRecommendationApplication.class, args);
+        SpringApplication.run(McpServerApplication.class, args);
     }
 }
 
@@ -275,37 +274,42 @@ public class DestinationRecommendationApplication {
 public class McpController {
     
     private final DestinationService destinationService;
-    private final Tracer tracer;
     
-    @PostMapping("/call")
-    public ResponseEntity<ToolCallResponse> callTool(
-            @RequestBody ToolCallRequest request) {
+    /**
+     * GET /mcp - Returns method not allowed as per MCP StreamableHTTP specification
+     */
+    @GetMapping
+    public ResponseEntity<Map<String, Object>> getMcp() {
+        Map<String, Object> error = new HashMap<>();
+        error.put("jsonrpc", "2.0");
+        error.put("error", Map.of(
+            "code", -32601,
+            "message", "Method not allowed. Use POST for MCP requests."
+        ));
+        return ResponseEntity.status(405).body(error);
+    }
+    
+    /**
+     * POST /mcp - Handles MCP protocol requests using JSON-RPC 2.0
+     */
+    @PostMapping
+    public ResponseEntity<Object> postMcp(@RequestBody Map<String, Object> request) {
+        String method = (String) request.get("method");
+        String id = (String) request.get("id");
         
-        Span span = tracer.nextSpan()
-            .name("tool_call_" + request.getName())
-            .start();
-            
-        try (Tracer.SpanInScope ws = tracer.withSpanInScope(span)) {
-            Object result = switch (request.getName()) {
-                case "recommend_destinations" -> 
-                    destinationService.recommend(request.getArguments());
-                case "filter_destinations" -> 
-                    destinationService.filter(request.getArguments());
-                case "rank_destinations" -> 
-                    destinationService.rank(request.getArguments());
-                default -> 
-                    throw new IllegalArgumentException("Unknown tool: " + request.getName());
-            };
-            
-            span.tag("tool.success", "true");
-            return ResponseEntity.ok(new ToolCallResponse(result));
-            
-        } catch (Exception ex) {
-            span.tag("tool.error", ex.getMessage());
-            return ResponseEntity.badRequest()
-                .body(new ToolCallResponse(Map.of("error", ex.getMessage())));
-        } finally {
-            span.end();
+        switch (method) {
+            case "tools/list":
+                return ResponseEntity.ok(handleListTools(id));
+            case "tools/call":
+                Map<String, Object> params = (Map<String, Object>) request.get("params");
+                return ResponseEntity.ok(handleCallTool(params, id));
+            case "initialize":
+                return ResponseEntity.ok(handleInitialize(id));
+            case "ping":
+                return ResponseEntity.ok(handlePing(id));
+            default:
+                return ResponseEntity.badRequest().body(createErrorResponse(
+                    -32601, "Method not found", "Unknown method: " + method, id));
         }
     }
 }
@@ -315,9 +319,18 @@ public class McpController {
 
 | Tool Name | Description | Input Schema | Output |
 |-----------|-------------|--------------|---------|
-| `recommend_destinations` | Get destination recommendations | `{preferences: object, limit?: number}` | `{destinations: Destination[], metadata: object}` |
-| `filter_destinations` | Filter destinations by criteria | `{destinations: Destination[], filters: object}` | `{filtered: Destination[]}` |
-| `rank_destinations` | Rank destinations by preference match | `{destinations: Destination[], preferences: object}` | `{ranked: RankedDestination[]}` |
+| `echoMessage` | Echo back input message | `{message: string}` | `{content: [{type: "text", text: string}]}` |
+| `getDestinationsByActivity` | Get destinations by activity type | `{activityType: string}` | `{content: [{type: "text", text: string}]}` |
+| `getDestinationsByBudget` | Get destinations by budget category | `{budget: string}` | `{content: [{type: "text", text: string}]}` |
+| `getDestinationsBySeason` | Get destinations by season | `{season: string}` | `{content: [{type: "text", text: string}]}` |
+| `getDestinationsByPreferences` | Get destinations by multiple criteria | `{activity?: string, budget?: string, season?: string, familyFriendly?: boolean}` | `{content: [{type: "text", text: string}]}` |
+| `getAllDestinations` | Get all available destinations | `{}` | `{content: [{type: "text", text: string}]}` |
+
+**Parameter Values:**
+- `activityType`: BEACH, ADVENTURE, CULTURAL, RELAXATION, URBAN_EXPLORATION, NATURE, WINTER_SPORTS
+- `budget`: BUDGET, MODERATE, LUXURY  
+- `season`: SPRING, SUMMER, AUTUMN, WINTER, ALL_YEAR
+- `familyFriendly`: true/false
 
 #### Service Implementation
 
@@ -1124,7 +1137,9 @@ class WebSearchService {
 
 ## Communication Protocols
 
-### HTTP-based MCP (echo-ping server)
+### StreamableHTTP MCP (destination-recommendation, echo-ping servers)
+
+**Recommended approach** - Uses standard HTTP POST requests with JSON-RPC 2.0 protocol.
 
 ```typescript
 // Client configuration
@@ -1143,7 +1158,22 @@ const result = await client.callTool("tool_name", {
 });
 ```
 
-### SSE-based MCP (all other servers)
+**Java HTTP Client Example:**
+```java
+// POST /mcp endpoint
+HttpRequest request = HttpRequest.newBuilder()
+    .uri(URI.create("http://localhost:8080/mcp"))
+    .header("Content-Type", "application/json")
+    .POST(HttpRequest.BodyPublishers.ofString(jsonRpcRequest))
+    .build();
+
+HttpResponse<String> response = client.send(request, 
+    HttpResponse.BodyHandlers.ofString());
+```
+
+### SSE-based MCP (legacy - deprecated)
+
+**Note: SSE approach is deprecated in favor of StreamableHTTP**
 
 ```typescript
 // Client configuration
