@@ -1,103 +1,168 @@
 # Travel Destination Recommendation Service
 
-This service provides travel destination recommendations based on user preferences using the Spring AI MCP Server Boot Starter with WebFlux transport. It helps users discover travel destinations based on activity preferences, budget constraints, seasonal preferences, and family-friendliness.
+This service provides travel destination recommendations based on user preferences using **MCP (Model Context Protocol) StreamableHTTP transport**. It helps users discover travel destinations based on activity preferences, budget constraints, seasonal preferences, and family-friendliness.
 
-For more information, see the [MCP Server Boot Starter](https://docs.spring.io/spring-ai/reference/api/mcp/mcp-server-boot-starter-docs.html) reference documentation.
+## 🚀 Migration to StreamableHTTP
+
+**This server has been updated to use MCP StreamableHTTP transport**, replacing the previous SSE-based implementation. The new implementation:
+
+- ✅ Uses standard HTTP POST requests with JSON-RPC 2.0 protocol
+- ✅ Follows the [MCP StreamableHTTP specification](https://modelcontextprotocol.io/specification/2025-03-26/basic/transports#streamable-http)
+- ✅ Provides a stateless, more reliable communication protocol
+- ✅ Deprecates SSE (Server-Sent Events) approach
 
 ## Overview
 
 The service showcases:
-- Support for SSE (Server-Sent Events)
-- Automatic tool registration using Spring AI's `@Tool` annotation
-- Destination recommendation tools:
+- **StreamableHTTP MCP Protocol**: Uses `/mcp` endpoint with JSON-RPC 2.0
+- **Tool Registration**: Direct mapping of Java methods to MCP tools
+- **Destination Recommendation Tools**:
   - Get destinations by activity type (beach, adventure, cultural, etc.)
   - Get destinations by budget category (budget, moderate, luxury)
   - Get destinations by season (spring, summer, autumn, winter)
   - Get destinations by multiple preference criteria
-  - Simple message repeating functionality (retained for compatibility)
+  - Echo functionality for testing
 
 ## Features
 
 This service offers the following capabilities:
 
 1. **Activity-Based Recommendations**: Find destinations based on preferred activities such as:
-   - Beach vacations
-   - Adventure trips
-   - Cultural experiences
-   - Relaxation getaways
-   - Urban exploration
-   - Nature escapes
-   - Winter sports
+   - Beach vacations (BEACH)
+   - Adventure trips (ADVENTURE)
+   - Cultural experiences (CULTURAL)
+   - Relaxation getaways (RELAXATION)
+   - Urban exploration (URBAN_EXPLORATION)
+   - Nature escapes (NATURE)
+   - Winter sports (WINTER_SPORTS)
 
 2. **Budget-Conscious Planning**: Filter destinations by budget category:
-   - Budget-friendly options
-   - Moderate-priced destinations
-   - Luxury experiences
+   - Budget-friendly options (BUDGET)
+   - Moderate-priced destinations (MODERATE)
+   - Luxury experiences (LUXURY)
 
 3. **Seasonal Recommendations**: Get destinations best suited for your preferred travel season:
-   - Spring
-   - Summer
-   - Autumn
-   - Winter
-   - Year-round destinations
+   - Spring (SPRING)
+   - Summer (SUMMER)
+   - Autumn (AUTUMN)
+   - Winter (WINTER)
+   - Year-round destinations (ALL_YEAR)
 
 4. **Family-Friendly Options**: Identify destinations suitable for family travel
 
 5. **Multi-Criteria Search**: Combine multiple preferences to find your perfect destination match
 
-## Using the Service
+## MCP StreamableHTTP API
 
-The service exposes the following API endpoints through the MCP protocol:
+The service exposes an `/mcp` endpoint that implements the MCP protocol:
 
-- `getDestinationsByActivity`: Get destinations matching a specific activity type
-- `getDestinationsByBudget`: Get destinations matching a budget category
-- `getDestinationsBySeason`: Get destinations ideal for a specific season
-- `getDestinationsByPreferences`: Get destinations matching multiple criteria
-- `getAllDestinations`: Get a list of all available destinations
+### Endpoint
+- **URL**: `http://localhost:8080/mcp`
+- **Method**: POST (GET returns 405 Method Not Allowed)
+- **Content-Type**: `application/json`
+- **Protocol**: JSON-RPC 2.0
 
-## Test Client
+### Available Tools
 
-A test client is included in the `com.microsoft.mcp.sample.server.client` package. The `DestinationRecommendationClient` class demonstrates how to interact with the service programmatically.
+| Tool Name | Description | Parameters |
+|-----------|-------------|------------|
+| `echoMessage` | Echo back input message | `message: string` |
+| `getDestinationsByActivity` | Get destinations by activity type | `activityType: string` |
+| `getDestinationsByBudget` | Get destinations by budget category | `budget: string` |
+| `getDestinationsBySeason` | Get destinations by season | `season: string` |
+| `getDestinationsByPreferences` | Get destinations by multiple criteria | `activity?, budget?, season?, familyFriendly?` |
+| `getAllDestinations` | Get all available destinations | (no parameters) |
 
-## Dependencies
+### Usage Examples
 
-The project requires the Spring AI MCP Server WebFlux Boot Starter:
-
-```xml
-<dependency>
-    <groupId>org.springframework.ai</groupId>
-    <artifactId>spring-ai-mcp-server-webflux-spring-boot-starter</artifactId>
-</dependency>
+#### List Tools
+```bash
+curl -X POST http://localhost:8080/mcp \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": "1",
+    "method": "tools/list"
+  }'
 ```
 
-This starter provides:
-- Reactive transport using Spring WebFlux (`WebFluxSseServerTransport`)
-- Auto-configured reactive SSE endpoints
-- Included `spring-boot-starter-webflux` and `mcp-spring-webflux` dependencies
+#### Call Tool
+```bash
+curl -X POST http://localhost:8080/mcp \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": "2",
+    "method": "tools/call",
+    "params": {
+      "name": "getDestinationsByBudget",
+      "arguments": {
+        "budget": "MODERATE"
+      }
+    }
+  }'
+```
+
+## Test Clients
+
+### StreamableHTTP Client (Recommended)
+Use the new `ClientStreamableHttp` class to test the MCP endpoint:
+
+```bash
+# Compile and run the test client
+javac -cp "$(./mvnw dependency:build-classpath -Dmdep.outputFile=/dev/stdout -q):target/classes" \
+  src/test/java/com/microsoft/mcp/sample/client/ClientStreamableHttp.java -d target/test-classes
+
+java -cp "$(./mvnw dependency:build-classpath -Dmdep.outputFile=/dev/stdout -q):target/classes:target/test-classes" \
+  com.microsoft.mcp.sample.client.ClientStreamableHttp
+```
+
+### Legacy Clients (Deprecated)
+- `ClientSse` - SSE-based client (no longer functional)
+- `SampleClient` - Java SDK client (no longer functional)
 
 ## Building the Project
 
 Build the project using Maven:
 ```bash
-./mvnw clean install -DskipTests
+./mvnw clean compile
 ```
 
 ## Running the Server
 
 ```bash
-java -jar target/destination-server-0.0.1-SNAPSHOT.jar
+./mvnw spring-boot:run
 ```
 
-## Development with DevContainer
+The server will start on port 8080 and display:
+```
+ _____            _   _             _   _                 
+|  __ \          | | (_)           | | (_)                
+| |  | | ___  ___| |_ _ _ __   __ _| |_ _  ___  _ __  ___ 
+| |  | |/ _ \/ __| __| | '_ \ / _` | __| |/ _ \| '_ \/ __|
+| |__| |  __/\__ \ |_| | | | | (_| | |_| | (_) | | | \__ \
+|_____/ \___||___/\__|_|_| |_|\__,_|\__|_|\___/|_| |_|___/
+                                                           
+Recommendation Service v1.0
+Spring AI MCP-enabled Travel Assistant
+```
 
-This project includes a DevContainer configuration for Visual Studio Code, providing a consistent development environment:
+## Dependencies
 
-1. Install [VS Code](https://code.visualstudio.com/) and the [Remote - Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension
-2. Open the project folder in VS Code
-3. Click "Reopen in Container" when prompted or run the "Dev Containers: Reopen in Container" command
-4. The container will build and start
+The project uses standard Spring Boot dependencies:
 
-See the `.devcontainer` folder for more details.
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+```
+
+**Note**: The previous Spring AI MCP WebFlux dependency has been replaced with a direct StreamableHTTP implementation.
 
 ## Running with Docker
 
@@ -108,54 +173,20 @@ docker build --pull --rm -f 'Dockerfile' -t 'destination-recommendation:latest' 
 docker run -d -p 8080:8080 destination-recommendation:latest
 ```
 
-## Testing the Server
+## Development
 
-### Using the ClientSse Test Client
+### Requirements
+- Java 17
+- Maven 3.6+
 
-The project includes a `ClientSse` class that provides a simple client for testing the server. This utility helps you send requests and receive streaming responses from the MCP server endpoints.
+### Development with DevContainer
+This project includes a DevContainer configuration for Visual Studio Code, providing a consistent development environment.
 
-step 1 - Build and run the docker server (on port 8080)
-step 2 - Run the ClientSse test
+## Migration Notes
 
-## Security and Code Quality
-
-### GitHub CodeQL Integration
-
-This project integrates with GitHub CodeQL for automated code scanning and security analysis. CodeQL is GitHub's semantic code analysis engine that helps identify vulnerabilities and coding errors by analyzing your code as if it were data.
-
-Benefits of CodeQL integration:
-- Automatically detects common vulnerabilities and coding errors
-- Runs on each push and pull request to maintain code quality
-- Performs language-specific security analysis for Java code
-- Generates detailed security reports with actionable insights
-- Helps identify security issues early in the development lifecycle
-
-The CodeQL analysis is configured via GitHub Actions workflow and analyzes the codebase for:
-- Security vulnerabilities
-- Logic errors
-- Coding standard violations
-- Potential bugs and anti-patterns
-
-The workflow scans the following Java files:
-- All `.java` files in the `src/main/java` directory
-- All Java classes including controllers, services, and tools
-- Model and data transfer objects
-- Configuration classes and utility helpers
-- Test files in `src/test/java` are also included in the analysis
-
-The CodeQL integration uses the following configuration files:
-- `.github/workflows/codeql-java.yml` - Defines the GitHub Actions workflow for Java code scanning
-- `.github/codeql/java-config.yml` - Configures paths to include/exclude and specific queries:
-  - Includes: `src/tools/destination-recommendation/**`
-  - Excludes: `**/target/**`, `**/build/**`, `**/test/**`, `**/tests/**`, `**/*Test.java`, `**/generated/**`
-  - Runs both "security-and-quality" and "security-extended" query suites
-
-The workflow triggers on:
-- Pushes and PRs to the main branch that modify Java files or configuration files
-- Weekly scheduled scans (Sundays at midnight UTC)
-- Manual workflow dispatch
-
-For more information on CodeQL, visit [GitHub's CodeQL documentation](https://codeql.github.com/docs/).
+For detailed information about the migration from SSE to StreamableHTTP, see:
+- [STREAMABLE-HTTP-MIGRATION.md](STREAMABLE-HTTP-MIGRATION.md) - Detailed migration documentation
+- [MCP Specification](https://modelcontextprotocol.io/specification/2025-03-26/basic/transports#streamable-http) - Official StreamableHTTP specification
 
 ## License
 
