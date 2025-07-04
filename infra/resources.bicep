@@ -23,6 +23,15 @@ param destinationRecommendationDefinition object
 param echoPingExists bool
 @secure()
 param echoPingDefinition object
+param webSearchExists bool
+@secure()
+param webSearchDefinition object
+param modelInferenceExists bool
+@secure()
+param modelInferenceDefinition object
+param codeEvaluationExists bool
+@secure()
+param codeEvaluationDefinition object
 
 @description('Id of the user or app to assign application roles')
 param principalId string
@@ -87,6 +96,21 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.1.1' =
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')
       }
+      {
+        principalId: webSearchIdentity.outputs.principalId
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')
+      }
+      {
+        principalId: modelInferenceIdentity.outputs.principalId
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')
+      }
+      {
+        principalId: codeEvaluationIdentity.outputs.principalId
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')
+      }
     ]
   }
 }
@@ -100,6 +124,21 @@ module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.4.5
     location: location
     zoneRedundant: false
   }
+}
+
+// API Management for securing all endpoints
+module apim './modules/apim.bicep' = {
+  name: 'apim'
+  params: {
+    location: location
+    tags: tags
+    apimName: '${abbrs.apiManagementService}${resourceToken}'
+    publisherEmail: 'admin@${resourceToken}.com'
+    containerAppsDefaultDomain: containerAppsEnvironment.outputs.defaultDomain
+  }
+  dependsOn: [
+    containerAppsEnvironment
+  ]
 }
 
 module apiIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.1' = {
@@ -137,6 +176,7 @@ module api 'br/public:avm/res/app/container-app:0.8.0' = {
     corsPolicy: {
       allowedOrigins: [
         'https://ui.${containerAppsEnvironment.outputs.defaultDomain}'
+        '${apim.outputs.apimGatewayUrl}'
       ]
       allowedMethods: [
         'GET', 'POST'
@@ -187,31 +227,31 @@ module api 'br/public:avm/res/app/container-app:0.8.0' = {
           }
           {
             name: 'MCP_ITINERARY_PLANNING_URL'
-            value: 'https://itinerary-planning.internal.${containerAppsEnvironment.outputs.defaultDomain}'
+            value: '${apim.outputs.apimGatewayUrl}/mcp/itinerary-planning'
           }
           {
             name: 'MCP_CUSTOMER_QUERY_URL'
-            value: 'https://customer-query.internal.${containerAppsEnvironment.outputs.defaultDomain}'
+            value: '${apim.outputs.apimGatewayUrl}/mcp/customer-query'
           }
           {
             name: 'MCP_DESTINATION_RECOMMENDATION_URL'
-            value: 'https://destination-recommendation.internal.${containerAppsEnvironment.outputs.defaultDomain}'
+            value: '${apim.outputs.apimGatewayUrl}/mcp/destination-recommendation'
           }
           {
             name: 'MCP_ECHO_PING_URL'
-            value: 'https://echo-ping.internal.${containerAppsEnvironment.outputs.defaultDomain}'
+            value: '${apim.outputs.apimGatewayUrl}/mcp/echo-ping'
           }
           {
             name: 'MCP_WEB_SEARCH_URL'
-            value: 'https://web-search.internal.${containerAppsEnvironment.outputs.defaultDomain}'
+            value: '${apim.outputs.apimGatewayUrl}/mcp/web-search'
           }
           {
             name: 'MCP_MODEL_INFERENCE_URL'
-            value: 'https://model-inference.internal.${containerAppsEnvironment.outputs.defaultDomain}'
+            value: '${apim.outputs.apimGatewayUrl}/mcp/model-inference'
           }
           {
             name: 'MCP_CODE_EVALUATION_URL'
-            value: 'https://code-evaluation.internal.${containerAppsEnvironment.outputs.defaultDomain}'
+            value: '${apim.outputs.apimGatewayUrl}/mcp/code-evaluation'
           }
           {
             name: 'MCP_ECHO_PING_ACCESS_TOKEN'
@@ -696,6 +736,279 @@ module echoPing 'br/public:avm/res/app/container-app:0.8.0' = {
   }
 }
 
+// Web Search MCP Server
+module webSearchIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.1' = {
+  name: 'webSearchidentity'
+  params: {
+    name: '${abbrs.managedIdentityUserAssignedIdentities}webSearch-${resourceToken}'
+    location: location
+  }
+}
+
+module webSearchFetchLatestImage './modules/fetch-container-image.bicep' = {
+  name: 'webSearch-fetch-image'
+  params: {
+    exists: webSearchExists
+    name: 'web-search'
+  }
+}
+
+var webSearchAppSettingsArray = filter(array(webSearchDefinition.settings), i => i.name != '')
+var webSearchSecrets = map(filter(webSearchAppSettingsArray, i => i.?secret != null), i => {
+  name: i.name
+  value: i.value
+  secretRef: i.?secretRef ?? take(replace(replace(toLower(i.name), '_', '-'), '.', '-'), 32)
+})
+var webSearchEnv = map(filter(webSearchAppSettingsArray, i => i.?secret == null), i => {
+  name: i.name
+  value: i.value
+})
+
+module webSearch 'br/public:avm/res/app/container-app:0.8.0' = {
+  name: 'webSearch'
+  params: {
+    name: 'web-search'
+    ingressTargetPort: 5000
+    ingressExternal: false
+    stickySessionsAffinity: 'none'
+    ingressTransport: 'http'
+    scaleMinReplicas: 1
+    scaleMaxReplicas: 1
+    secrets: {
+      secureList:  union([
+      ],
+      map(webSearchSecrets, secret => {
+        name: secret.secretRef
+        value: secret.value
+      }))
+    }
+    containers: [
+      {
+        image: webSearchFetchLatestImage.outputs.?containers[?0].?image ?? 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+        name: 'main'
+        resources: {
+          cpu: json('0.5')
+          memory: '1.0Gi'
+        }
+        env: union([
+          {
+            name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
+            value: monitoring.outputs.applicationInsightsConnectionString
+          }
+          {
+            name: 'AZURE_CLIENT_ID'
+            value: webSearchIdentity.outputs.clientId
+          }
+          {
+            name: 'PORT'
+            value: '5000'
+          }
+        ],
+        webSearchEnv,
+        map(webSearchSecrets, secret => {
+            name: secret.name
+            secretRef: secret.secretRef
+        }))
+      }
+    ]
+    managedIdentities:{
+      systemAssigned: false
+      userAssignedResourceIds: [webSearchIdentity.outputs.resourceId]
+    }
+    registries:[
+      {
+        server: containerRegistry.outputs.loginServer
+        identity: webSearchIdentity.outputs.resourceId
+      }
+    ]
+    environmentResourceId: containerAppsEnvironment.outputs.resourceId
+    location: location
+    tags: union(tags, { 'azd-service-name': 'web-search' })
+  }
+}
+
+// Model Inference MCP Server
+module modelInferenceIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.1' = {
+  name: 'modelInferenceidentity'
+  params: {
+    name: '${abbrs.managedIdentityUserAssignedIdentities}modelInference-${resourceToken}'
+    location: location
+  }
+}
+
+module modelInferenceFetchLatestImage './modules/fetch-container-image.bicep' = {
+  name: 'modelInference-fetch-image'
+  params: {
+    exists: modelInferenceExists
+    name: 'model-inference'
+  }
+}
+
+var modelInferenceAppSettingsArray = filter(array(modelInferenceDefinition.settings), i => i.name != '')
+var modelInferenceSecrets = map(filter(modelInferenceAppSettingsArray, i => i.?secret != null), i => {
+  name: i.name
+  value: i.value
+  secretRef: i.?secretRef ?? take(replace(replace(toLower(i.name), '_', '-'), '.', '-'), 32)
+})
+var modelInferenceEnv = map(filter(modelInferenceAppSettingsArray, i => i.?secret == null), i => {
+  name: i.name
+  value: i.value
+})
+
+module modelInference 'br/public:avm/res/app/container-app:0.8.0' = {
+  name: 'modelInference'
+  params: {
+    name: 'model-inference'
+    ingressTargetPort: 5000
+    ingressExternal: false
+    stickySessionsAffinity: 'none'
+    ingressTransport: 'http'
+    scaleMinReplicas: 1
+    scaleMaxReplicas: 1
+    secrets: {
+      secureList:  union([
+      ],
+      map(modelInferenceSecrets, secret => {
+        name: secret.secretRef
+        value: secret.value
+      }))
+    }
+    containers: [
+      {
+        image: modelInferenceFetchLatestImage.outputs.?containers[?0].?image ?? 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+        name: 'main'
+        resources: {
+          cpu: json('0.5')
+          memory: '1.0Gi'
+        }
+        env: union([
+          {
+            name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
+            value: monitoring.outputs.applicationInsightsConnectionString
+          }
+          {
+            name: 'AZURE_CLIENT_ID'
+            value: modelInferenceIdentity.outputs.clientId
+          }
+          {
+            name: 'PORT'
+            value: '5000'
+          }
+        ],
+        modelInferenceEnv,
+        map(modelInferenceSecrets, secret => {
+            name: secret.name
+            secretRef: secret.secretRef
+        }))
+      }
+    ]
+    managedIdentities:{
+      systemAssigned: false
+      userAssignedResourceIds: [modelInferenceIdentity.outputs.resourceId]
+    }
+    registries:[
+      {
+        server: containerRegistry.outputs.loginServer
+        identity: modelInferenceIdentity.outputs.resourceId
+      }
+    ]
+    environmentResourceId: containerAppsEnvironment.outputs.resourceId
+    location: location
+    tags: union(tags, { 'azd-service-name': 'model-inference' })
+  }
+}
+
+// Code Evaluation MCP Server
+module codeEvaluationIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.1' = {
+  name: 'codeEvaluationidentity'
+  params: {
+    name: '${abbrs.managedIdentityUserAssignedIdentities}codeEvaluation-${resourceToken}'
+    location: location
+  }
+}
+
+module codeEvaluationFetchLatestImage './modules/fetch-container-image.bicep' = {
+  name: 'codeEvaluation-fetch-image'
+  params: {
+    exists: codeEvaluationExists
+    name: 'code-evaluation'
+  }
+}
+
+var codeEvaluationAppSettingsArray = filter(array(codeEvaluationDefinition.settings), i => i.name != '')
+var codeEvaluationSecrets = map(filter(codeEvaluationAppSettingsArray, i => i.?secret != null), i => {
+  name: i.name
+  value: i.value
+  secretRef: i.?secretRef ?? take(replace(replace(toLower(i.name), '_', '-'), '.', '-'), 32)
+})
+var codeEvaluationEnv = map(filter(codeEvaluationAppSettingsArray, i => i.?secret == null), i => {
+  name: i.name
+  value: i.value
+})
+
+module codeEvaluation 'br/public:avm/res/app/container-app:0.8.0' = {
+  name: 'codeEvaluation'
+  params: {
+    name: 'code-evaluation'
+    ingressTargetPort: 5000
+    ingressExternal: false
+    stickySessionsAffinity: 'none'
+    ingressTransport: 'http'
+    scaleMinReplicas: 1
+    scaleMaxReplicas: 1
+    secrets: {
+      secureList:  union([
+      ],
+      map(codeEvaluationSecrets, secret => {
+        name: secret.secretRef
+        value: secret.value
+      }))
+    }
+    containers: [
+      {
+        image: codeEvaluationFetchLatestImage.outputs.?containers[?0].?image ?? 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+        name: 'main'
+        resources: {
+          cpu: json('0.5')
+          memory: '1.0Gi'
+        }
+        env: union([
+          {
+            name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
+            value: monitoring.outputs.applicationInsightsConnectionString
+          }
+          {
+            name: 'AZURE_CLIENT_ID'
+            value: codeEvaluationIdentity.outputs.clientId
+          }
+          {
+            name: 'PORT'
+            value: '5000'
+          }
+        ],
+        codeEvaluationEnv,
+        map(codeEvaluationSecrets, secret => {
+            name: secret.name
+            secretRef: secret.secretRef
+        }))
+      }
+    ]
+    managedIdentities:{
+      systemAssigned: false
+      userAssignedResourceIds: [codeEvaluationIdentity.outputs.resourceId]
+    }
+    registries:[
+      {
+        server: containerRegistry.outputs.loginServer
+        identity: codeEvaluationIdentity.outputs.resourceId
+      }
+    ]
+    environmentResourceId: containerAppsEnvironment.outputs.resourceId
+    location: location
+    tags: union(tags, { 'azd-service-name': 'code-evaluation' })
+  }
+}
+
 module openAi 'br/public:avm/res/cognitive-services/account:0.10.2' =  {
   name: 'openai'
   params: {
@@ -744,6 +1057,10 @@ output AZURE_RESOURCE_ITINERARY_PLANNING_ID string = itineraryPlanning.outputs.r
 output AZURE_RESOURCE_CUSTOMER_QUERY_ID string = customerQuery.outputs.resourceId
 output AZURE_RESOURCE_DESTINATION_RECOMMENDATION_ID string = destinationRecommendation.outputs.resourceId
 output AZURE_RESOURCE_ECHO_PING_ID string = echoPing.outputs.resourceId
+output AZURE_RESOURCE_WEB_SEARCH_ID string = webSearch.outputs.resourceId
+output AZURE_RESOURCE_MODEL_INFERENCE_ID string = modelInference.outputs.resourceId
+output AZURE_RESOURCE_CODE_EVALUATION_ID string = codeEvaluation.outputs.resourceId
 output AZURE_OPENAI_ENDPOINT string = openAi.outputs.endpoint
 output NG_API_URL string = 'https://api.${containerAppsEnvironment.outputs.defaultDomain}'
+output APIM_GATEWAY_URL string = apim.outputs.apimGatewayUrl
 output AZURE_CLIENT_ID string = apiIdentity.outputs.clientId
