@@ -10,17 +10,17 @@ import java.util.Map;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * StreamableHTTP client for testing the MCP endpoint.
+ * HTTP client for testing the MCP endpoint.
  * This replaces the SSE-based client with a direct HTTP implementation
  * following the MCP StreamableHTTP specification.
  */
-public class ClientStreamableHttp {
+public class ClientHttp {
 
     private static final String SERVER_URL = "http://localhost:8080/mcp";
     private static final ObjectMapper mapper = new ObjectMapper();
     
     public static void main(String[] args) {
-        new ClientStreamableHttp().run();
+        new ClientHttp().run();
     }
     
     public void run() {
