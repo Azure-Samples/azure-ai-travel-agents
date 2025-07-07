@@ -216,8 +216,8 @@ Accept: application/json
     {
       "id": "customer-query",
       "name": "Customer Query Processing",
-      "url": "http://tool-customer-query:8080/sse",
-      "type": "sse",
+      "url": "http://tool-customer-query:8080/mcp",
+      "type": "http",
       "reachable": true,
       "selected": true,
       "tools": [

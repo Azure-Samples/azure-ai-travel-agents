@@ -32,6 +32,10 @@
     "tool-destination-recommendation": {
       "type": "sse",
       "url": "http://localhost:5002/sse"
+    },
+    "tool-customer-query": {
+      "type": "http",
+      "url": "http://localhost:5001/mcp"
     }
   }
 }

@@ -3,7 +3,7 @@
 builder.AddServiceDefaults();
 
 builder.Services.AddMcpServer()
-                .WithHttpTransport()
+                .WithHttpTransport(o => o.Stateless = true)
                 .WithToolsFromAssembly();
 
 builder.Services.AddProblemDetails();
@@ -11,6 +11,6 @@ builder.Services.AddProblemDetails();
 var app = builder.Build();
 
 app.MapDefaultEndpoints();
-app.MapMcp();
+app.MapMcp("/mcp");
 
 await app.RunAsync();

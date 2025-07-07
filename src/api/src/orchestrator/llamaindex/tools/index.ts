@@ -32,7 +32,7 @@ export const McpToolsConfig = (): {
   },
   "customer-query": {
     config: {
-      url: process.env["MCP_CUSTOMER_QUERY_URL"] + MCP_API_SSE_PATH,
+      url: process.env["MCP_CUSTOMER_QUERY_URL"] + MCP_API_HTTP_PATH,
       type: "sse",
       verbose: true,
       useSSETransport: true
