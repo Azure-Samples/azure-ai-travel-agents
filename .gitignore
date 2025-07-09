@@ -379,6 +379,10 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
+# VuePress build output
+docs/.vuepress/dist/
+docs/.vuepress/.cache/
+
 # VS Code files for those working on multiple tools
 .vscode/*
 !.vscode/settings.json
@@ -406,9 +410,15 @@ node_modules/
 npm-debug.log
 yarn-error.log
 lerna-debug.log
-package-lock.json
-yarn.lock
 build
 dist
 .env
 .env.*
+!.env.sample
+.azure
+.DS_Store
+
+# VuePress
+docs/.vuepress/dist/
+docs/.vuepress/.cache/
+docs/.vuepress/.temp/

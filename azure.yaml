@@ -1,0 +1,84 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+
+name: ai-travel-agents
+metadata:
+  template: ai-travel-agents@1.13.1
+services:
+  api:
+    project: src/api
+    host: containerapp
+    language: ts
+    docker:
+      context: .
+      path: Dockerfile
+  
+  ui:
+    project: src/ui
+    host: containerapp
+    language: ts
+    docker:
+      context: .
+      path: Dockerfile.production
+    hooks:
+      prebuild:
+        windows:
+          shell: pwsh
+          run: 'echo "NG_API_URL=""$env:NG_API_URL""" > .env.production'
+        posix:
+          shell: sh
+          run: 'echo NG_API_URL=\"$NG_API_URL\" > .env.production'
+
+  customer-query:
+    project: src/tools/customer-query/AITravelAgent.CustomerQueryServer/
+    host: containerapp
+    language: dotnet
+    docker:
+      context: ..
+      path: ../Dockerfile
+      remoteBuild: true
+
+  destination-recommendation:
+    project: src/tools/destination-recommendation
+    host: containerapp
+    language: java
+    docker:
+      path: ./Dockerfile
+      context: .
+      remoteBuild: true
+
+  itinerary-planning:
+    project: src/tools/itinerary-planning
+    host: containerapp
+    language: python
+    docker:
+      path: ./Dockerfile
+      context: .
+      remoteBuild: true
+
+  echo-ping:
+    project: src/tools/echo-ping
+    language: ts
+    host: containerapp
+    docker:
+      path: ./Dockerfile
+      context: .
+
+hooks:
+  postprovision:
+    windows:
+      shell: pwsh
+      run: ./infra/hooks/postprovision.ps1
+    posix:
+      shell: sh
+      run: ./infra/hooks/postprovision.sh
+
+workflows:
+  up:
+    steps:
+      - azd: provision
+      - azd: deploy api
+      - azd: deploy ui
+      - azd: deploy customer-query
+      - azd: deploy destination-recommendation
+      - azd: deploy itinerary-planning
+      - azd: deploy echo-ping

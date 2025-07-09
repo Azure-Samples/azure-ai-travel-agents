@@ -1,0 +1,66 @@
+name: Template Validation Sample Workflow
+
+# Run when commits are pushed to main
+on:
+  workflow_dispatch:
+  push:
+    # Run when commits are pushed to mainline branch (main or master)
+    # Set this to the mainline branch you are using
+    branches:
+      - main
+
+# Set up permissions for deploying with secretless Azure federated credentials
+# https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Clinux#set-up-azure-login-with-openid-connect-authentication
+permissions:
+  contents: read
+  id-token: write
+  pull-requests: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      SERVICE_API_RESOURCE_EXISTS: ${{ vars.SERVICE_API_RESOURCE_EXISTS }}
+      SERVICE_ITINERARY_PLANNING_RESOURCE_EXISTS: ${{ vars.SERVICE_ITINERARY_PLANNING_RESOURCE_EXISTS }}
+      SERVICE_ECHO_PING_RESOURCE_EXISTS: ${{ vars.SERVICE_ECHO_PING_RESOURCE_EXISTS }}
+      SERVICE_DESTINATION_RECOMMENDATION_RESOURCE_EXISTS: ${{ vars.SERVICE_DESTINATION_RECOMMENDATION_RESOURCE_EXISTS }}
+      AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
+      SERVICE_UI_RESOURCE_EXISTS: ${{ vars.SERVICE_UI_RESOURCE_EXISTS }}
+      AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
+      SERVICE_CUSTOMER_QUERY_RESOURCE_EXISTS: ${{ vars.SERVICE_CUSTOMER_QUERY_RESOURCE_EXISTS }}
+      GITHUB_ACTIONS: ${{ vars.GITHUB_ACTIONS }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install azd
+        uses: Azure/setup-azd@v2
+      - name: Log in with Azure (Federated Credentials)
+        run: |
+          azd auth login `
+            --client-id "$Env:AZURE_CLIENT_ID" `
+            --federated-credential-provider "github" `
+            --tenant-id "$Env:AZURE_TENANT_ID"
+        shell: pwsh
+
+      - uses: microsoft/template-validation-action@Latest
+        id: validation
+        env:
+          AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
+          AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+          AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+          AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
+          AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: print result
+        run: cat ${{ steps.validation.outputs.resultFile }}
+
+      - name: Provision Infrastructure
+        run: azd provision --no-prompt
+
+      - name: Deploy Application
+        run: azd deploy --no-prompt
+        

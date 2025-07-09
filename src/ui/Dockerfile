@@ -1,5 +1,11 @@
-# Use an ultra-lightweight base image
-FROM alpine:latest
+FROM node:22-alpine
 
-# Default command to print "Hello World"
-CMD ["echo", "Hello from customer-query-agent!"]
+WORKDIR /usr/src/app
+
+COPY . /usr/src/app
+
+RUN npm install -g @angular/cli
+
+RUN npm install
+
+CMD ["ng", "serve", "--host", "0.0.0.0"]

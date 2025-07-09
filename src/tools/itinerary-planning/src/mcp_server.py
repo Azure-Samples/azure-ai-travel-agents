@@ -12,9 +12,6 @@ from pydantic import Field
 mcp = FastMCP("Itinerary planning")
 fake = Faker()
 
-
-
-
 @dataclass
 class Hotel:
     name: str

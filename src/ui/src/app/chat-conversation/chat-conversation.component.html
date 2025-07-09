@@ -1,0 +1,245 @@
+<hlm-toaster />
+<div hlmCard class="w-[1200px] h-full max-h-[1000px] flex flex-col">
+  <div hlmCardHeader class="sticky top-0 z-10 bg-background">
+    <h3
+      hlmCardTitle
+      class="text-center flex justify-between items-center mb-10"
+    >
+      <span>AI Travel Agent Chat</span>
+      <hlm-alert-dialog>
+        <button
+          hlmBtn
+          variant="ghost"
+          size="icon"
+          class="ml-2"
+          title="New Chat"
+          brnAlertDialogTrigger
+        >
+          <ng-icon hlm name="lucideRefreshCw" class="h-4 w-4" />
+        </button>
+        <hlm-alert-dialog-content
+          *brnAlertDialogContent="let ctx"
+          class="w-[400px]"
+        >
+          <hlm-alert-dialog-header>
+            <h3 hlmAlertDialogTitle>Clear chat session?</h3>
+            <p hlmAlertDialogDescription>
+              This will clear all messages from the current chat session and
+              start a new one. This action cannot be undone.
+            </p>
+          </hlm-alert-dialog-header>
+
+          <hlm-alert-dialog-footer>
+            <button hlmAlertDialogCancel (click)="cancelReset(ctx)">
+              Cancel
+            </button>
+            <button hlmAlertDialogAction (click)="confirmReset(ctx)">
+              Continue
+            </button>
+          </hlm-alert-dialog-footer>
+        </hlm-alert-dialog-content>
+      </hlm-alert-dialog>
+    </h3>
+  </div>
+
+  <ng-scrollbar
+    hlmCardContent
+    hlm
+    class="flex-1 h-[800px] p-10 overflow-y-auto mb-10"
+  >
+    <div class="flex flex-col gap-4">
+      @if ((chatService.messagesStream | async)?.length === 0) {
+      <div class="flex flex-row gap-4">
+        @for(prompt of samplePrompts; track prompt) {
+        <div
+          class="p-10 bg-muted rounded-md flex items-center justify-center cursor-pointer border hover:border-red"
+          (click)="chatService.userMessage.set(prompt)"
+        >
+          <p
+            class="display-box max-w-200 line-clamp-4 box-orient-vertical overflow-hidden text-ellipsis"
+          >
+            {{ prompt }}
+          </p>
+        </div>
+
+        }
+      </div>
+      }
+      <!-- loop over all messages -->
+      @for (message of (chatService.messagesStream | async); track message) {
+
+      <ng-container>
+        <div
+          class="flex gap-3"
+          [ngClass]="message.role === 'user' ? 'flex-row-reverse' : 'flex-col'"
+        >
+          @if (message.role === 'user') {
+          <div
+            class="items-end rounded-md px-4 py-2 bg-primary text-primary-foreground"
+          >
+            <p style="white-space: pre-wrap">{{ message.content }}</p>
+          </div>
+          } @else if (message.role === 'assistant') {
+
+          <section class="flex flex-col gap-2 w-full">
+            <accordion-preview
+              [isOpened]="false"
+              class="flex flex-row rounded-3xl px-4 py-2 w-full"
+            >
+              @for (evt of message.metadata?.events; track $index) {
+              @if(evt.event !== 'AgentStream') {
+              <div
+                hlmBadge
+                brnHoverCardTrigger
+                variant="outline"
+                class="agent-event-{{ evt.event }}"
+              >
+                @if(evt.data.agentName) {
+                {{ evt.data.agentName + ":" + evt.event }}
+                } @else {
+                {{ evt.event }}
+                }
+              </div>
+              <pre><code>{{evt.data | json}}</code></pre>
+              <brn-separator hlmSeparator />
+              } }
+            </accordion-preview>
+          </section>
+
+          @if ($last && chatService.isLoading()) {
+          <skeleton-preview></skeleton-preview>
+          } @else { @for(reason of message.reasoning; track reason) {
+          <div hlmAlert class="gap-10">
+            <p hlmAlertDesc>
+              <markdown class="italic">{{ reason.content }}</markdown>
+            </p>
+          </div>
+          }
+          <div hlmAlert class="bg-muted gap-10">
+            <p hlmAlertDesc>
+              <markdown>{{ message.content }}</markdown>
+            </p>
+          </div>
+          } }
+        </div>
+        <div
+          class="text-[10px] opacity-60"
+          [ngClass]="message.role === 'user' ? 'text-right' : 'text-left'"
+        >
+          {{ message.timestamp | date : "short" }}
+        </div>
+      </ng-container>
+      }
+    </div>
+    <span #eot class="font-mono text-xs"></span>
+  </ng-scrollbar>
+
+  <div hlmCardFooter class="flex-col items-start gap-2">
+    <div class="flex gap-2"></div>
+    <div class="flex gap-2 w-full mt-10">
+      <section class="relative flex-1 max-h-[200px]">
+        <hlm-form-field class="flex-col flex w-full h-[200px] border rounded-2xl p-4 ">
+          <textarea
+            hlmInput
+            type="text"
+            class="flex-1 border-0 pt-2 mb-2 w-[95%] overflow-y-auto rounded-xl resize-none "
+            placeholder="Type your message here (Shift + Enter for new line)..."
+            [(ngModel)]="chatService.userMessage"
+            (keyup.enter)="chatService.sendMessage($event)"
+          ></textarea>
+          <hlm-hint class="mr-1 mt-10">AI-generated content may be incorrect</hlm-hint>
+        </hlm-form-field>
+        <button
+          hlmBtn
+          variant="ghost"
+          class="rounded-full absolute right-2 top-20"
+          [disabled]="
+            chatService.isLoading() || !chatService.userMessage().trim()
+          "
+          (click)="chatService.sendMessage($event)"
+        >
+          <ng-icon hlm size="lg" name="lucideSendHorizontal" />
+        </button>
+        <brn-popover sideOffset="5" class="right-2 top-[-50px] absolute">
+          <button id="edit-profile" variant="ghost" brnPopoverTrigger hlmBtn>
+            <ng-icon hlm size="lg" name="lucideBot" />
+          </button>
+          <div
+            hlmPopoverContent
+            class="w-80 grid gap-4"
+            *brnPopoverContent="let ctx"
+          >
+            <div class="space-y-2">
+              <h4 class="font-medium leading-none">Available Agents</h4>
+              <p class="text-sm text-muted-foreground">
+                Choose which agents to use
+              </p>
+            </div>
+            <div class="grid gap-2">
+              @for(tool of chatService.tools(); track tool) {
+              <div class="items-center">
+                <label hlmLabel for="agent-event-{{ tool.id }}">
+                  <hlm-switch
+                    id="agent-event-{{ tool.id }}"
+                    class="mr-2"
+                    [disabled]="!tool.reachable"
+                    [(ngModel)]="tool.selected"
+                  />
+                </label>
+                {{ tool.name }}
+              </div>
+              }
+            </div>
+          </div>
+        </brn-popover>
+      </section>
+    </div>
+  </div>
+</div>
+
+<style>
+  .agent-event-StartEvent {
+    background-color: #ffff00; /* Bright Yellow */
+    color: #000000; /* Black */
+  }
+  .agent-event-StopEvent {
+    background-color: #ff0000; /* Bright Red */
+    color: #ffffff; /* White */
+  }
+  .agent-event-AgentInput {
+    background-color: #0000ff; /* Bright Blue */
+    color: #ffffff; /* White */
+  }
+  .agent-event-AgentOutput {
+    background-color: #00ff00; /* Bright Green */
+    color: #000000; /* Black */
+  }
+  .agent-event-AgentSetup {
+    background-color: #ff4500; /* Bright Orange-Red */
+    color: #ffffff; /* White */
+  }
+  .agent-event-AgentStepEvent {
+    background-color: #ffd700; /* Bright Gold */
+    color: #000000; /* Black */
+  }
+  .agent-event-AgentToolCallResult {
+    background-color: #20b2aa; /* Bright Light Sea Green */
+    color: #000000; /* Black */
+  }
+  .agent-event-AgentToolCall {
+    background-color: #ffa07a; /* Bright Light Salmon */
+    color: #000000; /* Black */
+  }
+  .agent-event-ToolResultsEvent {
+    background-color: #4682b4; /* Bright Steel Blue */
+    color: #ffffff; /* White */
+  }
+  .agent-event-ToolCallsEvent {
+    background-color: #ff69b4; /* Bright Hot Pink */
+    color: #000000; /* Black */
+  }
+  .agent-event-AgentStream {
+    background-color: #8a2be2; /* Bright Blue Violet */
+    color: #ffffff; /* White */
+  }
+</style>

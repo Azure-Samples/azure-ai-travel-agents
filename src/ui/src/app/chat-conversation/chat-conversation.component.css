@@ -1,0 +1,25 @@
+:host {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+  min-height: 100%;
+  box-sizing: border-box;
+}
+.message-bubble {
+  transition: opacity 0.3s ease;
+}
+.user-message {
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+:host-context(.dark) .timestamp {
+  color: hsl(210 40% 90%); /* Brighter timestamp in dark mode */
+  opacity: 0.85; /* Slightly higher opacity for better readability */
+}
+:host-context(.dark) *[hlmInput] {
+  border-color: white !important; /* Override the border color in dark mode */
+}
+.timestamp {
+  opacity: 0.7;
+  font-size: 0.75rem;
+}

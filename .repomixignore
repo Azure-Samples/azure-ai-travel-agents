@@ -1,0 +1,9 @@
+**/*.{mvn,cache,angular,svg,gitignore,dockerignore,spec.json,config.js,editorconfig,css,sln,xml,lock,spec.ts,sln}
+**/*tsconfig.json
+**/*angular.json
+**/CODE_OF_CONDUCT.md
+**/README.md
+**/LICENSE
+**/.env*
+**/mvnw
+**/mvnw.cmd

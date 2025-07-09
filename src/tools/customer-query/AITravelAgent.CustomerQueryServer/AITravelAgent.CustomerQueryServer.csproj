@@ -4,11 +4,12 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>d59d0f8e-1e4f-41dd-8e1e-e21b537771ff</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.3" />
-    <PackageReference Include="ModelContextProtocol" Version="0.1.0-preview.1.25171.12" />
+    <PackageReference Include="ModelContextProtocol" Version="0.*-*" />
+    <PackageReference Include="ModelContextProtocol.AspNetCore" Version="0.*-*" />
   </ItemGroup>
 
   <ItemGroup>
