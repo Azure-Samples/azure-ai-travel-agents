@@ -1,6 +1,7 @@
 import random
 import re
 import uuid
+from dataclasses import dataclass
 from datetime import datetime, timedelta
 from typing import Annotated
 
@@ -8,9 +9,70 @@ from faker import Faker
 from mcp.server.fastmcp import FastMCP
 from pydantic import Field
 
-mcp = FastMCP("weather")
+mcp = FastMCP("Itinerary planning")
 fake = Faker()
 
+
+
+
+@dataclass
+class Hotel:
+    name: str
+    address: str
+    location: str
+    rating: float
+    price_per_night: float
+    hotel_type: str
+    amenities: list[str]
+    available_rooms: int
+
+@dataclass
+class HotelSuggestions:
+    hotels: list[Hotel]
+
+@dataclass
+class Airport:
+    code: str
+    name: str
+    city: str
+
+@dataclass
+class FlightSegment:
+    flight_number: str
+    from_airport: Airport
+    to_airport: Airport
+    departure: str
+    arrival: str
+    duration_minutes: int
+
+@dataclass
+class FlightConnection:
+    airport_code: str
+    duration_minutes: int
+
+@dataclass
+class Flight:
+    flight_id: str
+    airline: str
+    flight_number: str
+    aircraft: str
+    from_airport: Airport
+    to_airport: Airport
+    departure: str
+    arrival: str
+    duration_minutes: int
+    is_direct: bool
+    price: float
+    currency: str
+    available_seats: int
+    cabin_class: str
+    segments: list[FlightSegment]
+    connection: FlightConnection | None
+
+@dataclass
+class FlightSuggestions:
+    departure_flights: list[Flight]
+    return_flights: list[Flight]
 
 def validate_iso_date(date_str: str, param_name: str) -> datetime.date:
     """
@@ -35,13 +97,12 @@ def validate_iso_date(date_str: str, param_name: str) -> datetime.date:
     except ValueError as e:
         raise ValueError(f"Invalid {param_name}: {e}")
 
-
 @mcp.tool()
 async def suggest_hotels(
     location: Annotated[str, Field(description="Location (city or area) to search for hotels")],
     check_in: Annotated[str, Field(description="Check-in date in ISO format (YYYY-MM-DD)")],
     check_out: Annotated[str, Field(description="Check-out date in ISO format (YYYY-MM-DD)")],
-) -> str:
+) -> HotelSuggestions:
     """
     Suggest hotels based on location and dates.
     """
@@ -91,41 +152,38 @@ async def suggest_hotels(
         hotel_amenities = random.sample(amenities, random.randint(3, 6))
         neighborhood = random.choice(neighborhoods)
 
-        hotel = {
-            "name": f"{hotel_type} {['Hotel', 'Inn', 'Suites', 'Resort', 'Plaza'][random.randint(0, 4)]}",
-            "address": fake.street_address(),
-            "location": f"{neighborhood}, {location}",
-            "rating": generate_rating(),
-            "price_per_night": generate_price(hotel_type),
-            "hotel_type": hotel_type,
-            "amenities": hotel_amenities,
-            "available_rooms": random.randint(1, 15),
-        }
+        hotel = Hotel(
+            name=f"{hotel_type} {['Hotel', 'Inn', 'Suites', 'Resort', 'Plaza'][random.randint(0, 4)]}",
+            address=fake.street_address(),
+            location=f"{neighborhood}, {location}",
+            rating=generate_rating(),
+            price_per_night=generate_price(hotel_type),
+            hotel_type=hotel_type,
+            amenities=hotel_amenities,
+            available_rooms=random.randint(1, 15),
+        )
         hotels.append(hotel)
 
     # Sort by rating to show best hotels first
-    hotels.sort(key=lambda x: x["rating"], reverse=True)
-    return hotels
-
+    hotels.sort(key=lambda x: x.rating, reverse=True)
+    return HotelSuggestions(hotels=hotels)
 
 @mcp.tool()
 async def suggest_flights(
     from_location: Annotated[str, Field(description="Departure location (city or airport)")],
     to_location: Annotated[str, Field(description="Destination location (city or airport)")],
     departure_date: Annotated[str, Field(description="Departure date in ISO format (YYYY-MM-DD)")],
-    return_date: Annotated[str | None, Field(description="Return date in ISO format (YYYY-MM-DD)")] = None,
-) -> str:
+    return_date: Annotated[str, Field(description="Return date in ISO format (YYYY-MM-DD)")],
+) -> FlightSuggestions:
     """
     Suggest flights based on locations and dates.
     """
     # Validate dates
     dep_date = validate_iso_date(departure_date, "departure_date")
-    ret_date = None
-    if return_date:
-        ret_date = validate_iso_date(return_date, "return_date")
-        # Ensure return date is after departure date
-        if ret_date <= dep_date:
-            raise ValueError("return_date must be after departure_date")
+    ret_date = validate_iso_date(return_date, "return_date")
+    # Ensure return date is after departure date
+    if ret_date <= dep_date:
+        return "Error: return_date must be after departure_date"
 
     # Create realistic mock data for flights
     airlines = [
@@ -185,28 +243,21 @@ async def suggest_flights(
         # Determine if this is a direct or connecting flight
         is_direct = random.random() < 0.6  # 60% chance of direct flight
 
-        flight = {
-            "flight_id": str(uuid.uuid4())[:8].upper(),
-            "airline": random.choice(airlines),
-            "flight_number": f"{random.choice('ABCDEFG')}{random.randint(100, 9999)}",
-            "aircraft": random.choice(aircraft_types),
-            "from_airport": {
-                "code": from_code,
-                "name": f"{from_location} International Airport",
-                "city": from_location,
-            },
-            "to_airport": {"code": to_code, "name": f"{to_location} International Airport", "city": to_location},
-            "departure": dep_time.isoformat(),
-            "arrival": arr_time.isoformat(),
-            "duration_minutes": flight_minutes,
-            "is_direct": is_direct,
-            "price": round(random.uniform(99, 999), 2),
-            "currency": "USD",
-            "available_seats": random.randint(1, 30),
-            "cabin_class": random.choice(["Economy", "Premium Economy", "Business", "First"]),
-        }
+        from_airport = Airport(
+            code=from_code,
+            name=f"{from_location} International Airport",
+            city=from_location,
+        )
+        to_airport = Airport(
+            code=to_code,
+            name=f"{to_location} International Airport",
+            city=to_location,
+        )
 
         # Add connection info for non-direct flights
+        flight_segments = []
+        connection_airport = None
+        connection_duration_minutes = 0
         if not is_direct:
             # Create a connection point
             connection_codes = ["ATL", "ORD", "DFW", "LHR", "CDG", "DXB", "AMS", "FRA"]
@@ -221,35 +272,56 @@ async def suggest_flights(
             segment1_arrival = dep_time + timedelta(minutes=segment1_duration)
             segment2_departure = segment1_arrival + timedelta(minutes=connection_time)
 
-            flight["segments"] = [
-                {
-                    "flight_number": f"{random.choice('ABCDEFG')}{random.randint(100, 9999)}",
-                    "from_airport": flight["from_airport"],
-                    "to_airport": {
-                        "code": connection_code,
-                        "name": f"{connection_code} International Airport",
-                        "city": connection_code,
-                    },
-                    "departure": dep_time.isoformat(),
-                    "arrival": segment1_arrival.isoformat(),
-                    "duration_minutes": segment1_duration,
-                },
-                {
-                    "flight_number": f"{random.choice('ABCDEFG')}{random.randint(100, 9999)}",
-                    "from_airport": {
-                        "code": connection_code,
-                        "name": f"{connection_code} International Airport",
-                        "city": connection_code,
-                    },
-                    "to_airport": flight["to_airport"],
-                    "departure": segment2_departure.isoformat(),
-                    "arrival": arr_time.isoformat(),
-                    "duration_minutes": segment2_duration,
-                },
+            flight_segments = [
+                FlightSegment(
+                    flight_number=f"{random.choice('ABCDEFG')}{random.randint(100, 9999)}",
+                    from_airport=from_airport,
+                    to_airport=Airport(
+                        code=connection_code,
+                        name=f"{connection_code} International Airport",
+                        city=connection_code,
+                    ),
+                    departure=dep_time.isoformat(),
+                    arrival=segment1_arrival.isoformat(),
+                    duration_minutes=segment1_duration,
+                ),
+                FlightSegment(
+                    flight_number=f"{random.choice('ABCDEFG')}{random.randint(100, 9999)}",
+                    from_airport=Airport(
+                        code=connection_code,
+                        name=f"{connection_code} International Airport",
+                        city=connection_code,
+                    ),
+                    to_airport=to_airport,
+                    departure=segment2_departure.isoformat(),
+                    arrival=arr_time.isoformat(),
+                    duration_minutes=segment2_duration,
+                ),
             ]
-            flight["connection_airport"] = connection_code
-            flight["connection_duration_minutes"] = connection_time
-
+            connection_airport = connection_code
+            connection_duration_minutes = connection_time
+        
+        flight = Flight(
+            flight_id=str(uuid.uuid4())[:8].upper(),
+            airline=random.choice(airlines),
+            flight_number=f"{random.choice('ABCDEFG')}{random.randint(100, 9999)}",
+            aircraft=random.choice(aircraft_types),
+            from_airport=from_airport,
+            to_airport=to_airport,
+            departure=dep_time.isoformat(),
+            arrival=arr_time.isoformat(),
+            duration_minutes=flight_minutes,
+            is_direct=is_direct,
+            price=round(random.uniform(99, 999), 2),
+            currency="USD",
+            available_seats=random.randint(1, 30),
+            cabin_class=random.choice(["Economy", "Premium Economy", "Business", "First"]),
+            segments=flight_segments,
+            connection=FlightConnection(
+                airport_code=connection_airport,
+                duration_minutes=connection_duration_minutes,
+            ) if not is_direct else None,
+        )
         departure_flights.append(flight)
 
     # Generate return flights if return_date is provided
@@ -269,28 +341,21 @@ async def suggest_flights(
 
             is_direct = random.random() < 0.6
 
-            flight = {
-                "flight_id": str(uuid.uuid4())[:8].upper(),
-                "airline": random.choice(airlines),
-                "flight_number": f"{random.choice('ABCDEFG')}{random.randint(100, 9999)}",
-                "aircraft": random.choice(aircraft_types),
-                "from_airport": {"code": to_code, "name": f"{to_location} International Airport", "city": to_location},
-                "to_airport": {
-                    "code": from_code,
-                    "name": f"{from_location} International Airport",
-                    "city": from_location,
-                },
-                "departure": dep_time.isoformat(),
-                "arrival": arr_time.isoformat(),
-                "duration_minutes": flight_minutes,
-                "is_direct": is_direct,
-                "price": round(random.uniform(99, 999), 2),
-                "currency": "USD",
-                "available_seats": random.randint(1, 30),
-                "cabin_class": random.choice(["Economy", "Premium Economy", "Business", "First"]),
-            }
+            from_airport=Airport(
+                code=to_code,
+                name=f"{to_location} International Airport",
+                city=to_location
+            )
+            to_airport=Airport(
+                code=from_code,
+                name=f"{from_location} International Airport",
+                city=from_location
+            )
 
             # Add connection info for non-direct flights
+            flight_segments = []
+            connection_airport = None
+            connection_duration_minutes = None
             if not is_direct:
                 connection_codes = ["ATL", "ORD", "DFW", "LHR", "CDG", "DXB", "AMS", "FRA"]
                 connection_code = random.choice(connection_codes)
@@ -303,39 +368,64 @@ async def suggest_flights(
                 segment1_arrival = dep_time + timedelta(minutes=segment1_duration)
                 segment2_departure = segment1_arrival + timedelta(minutes=connection_time)
 
-                flight["segments"] = [
-                    {
-                        "flight_number": f"{random.choice('ABCDEFG')}{random.randint(100, 9999)}",
-                        "from_airport": flight["from_airport"],
-                        "to_airport": {
-                            "code": connection_code,
-                            "name": f"{connection_code} International Airport",
-                            "city": connection_code,
-                        },
-                        "departure": dep_time.isoformat(),
-                        "arrival": segment1_arrival.isoformat(),
-                        "duration_minutes": segment1_duration,
-                    },
-                    {
-                        "flight_number": f"{random.choice('ABCDEFG')}{random.randint(100, 9999)}",
-                        "from_airport": {
-                            "code": connection_code,
-                            "name": f"{connection_code} International Airport",
-                            "city": connection_code,
-                        },
-                        "to_airport": flight["to_airport"],
-                        "departure": segment2_departure.isoformat(),
-                        "arrival": arr_time.isoformat(),
-                        "duration_minutes": segment2_duration,
-                    },
+                flight_segments = [
+                    FlightSegment(
+                        flight_number=f"{random.choice('ABCDEFG')}{random.randint(100, 9999)}",
+                        from_airport=from_airport,
+                        to_airport=Airport(
+                            code=connection_code,
+                            name=f"{connection_code} International Airport",
+                            city=connection_code,
+                        ),
+                        departure=dep_time.isoformat(),
+                        arrival=segment1_arrival.isoformat(),
+                        duration_minutes=segment1_duration,
+                    ),
+                    FlightSegment(
+                        flight_number=f"{random.choice('ABCDEFG')}{random.randint(100, 9999)}",
+                        from_airport=Airport(
+                            code=connection_code,
+                            name=f"{connection_code} International Airport",
+                            city=connection_code,
+                        ),
+                        to_airport=to_airport,
+                        departure=segment2_departure.isoformat(),
+                        arrival=arr_time.isoformat(),
+                        duration_minutes=segment2_duration,
+                    ),
                 ]
-                flight["connection_airport"] = connection_code
-                flight["connection_duration_minutes"] = connection_time
+                connection_airport = connection_code
+                connection_duration_minutes = connection_time
+
+            flight = Flight(
+                flight_id=str(uuid.uuid4())[:8].upper(),
+                airline=random.choice(airlines),
+                flight_number=f"{random.choice('ABCDEFG')}{random.randint(100, 9999)}",
+                aircraft=random.choice(aircraft_types),
+                from_airport=from_airport,
+                to_airport=to_airport,
+                departure=dep_time.isoformat(),
+                arrival=arr_time.isoformat(),
+                duration_minutes=flight_minutes,
+                is_direct=is_direct,
+                price=round(random.uniform(99, 999), 2),
+                currency="USD",
+                available_seats=random.randint(1, 30),
+                cabin_class=random.choice(["Economy", "Premium Economy", "Business", "First"]),
+                segments=flight_segments,
+                connection=FlightConnection(
+                    airport_code=connection_airport,
+                    duration_minutes=connection_duration_minutes,
+                ) if not is_direct else None,
+            )
 
             return_flights.append(flight)
 
     # Combine into a single response
-    response = {"departure_flights": departure_flights, "return_flights": return_flights if ret_date else []}
+    response = FlightSuggestions(
+        departure_flights=departure_flights,
+        return_flights=return_flights if ret_date else []
+    )
 
     # Return the flights
     return response
