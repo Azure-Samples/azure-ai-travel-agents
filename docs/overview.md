@@ -10,11 +10,16 @@ This directory contains comprehensive technical documentation for architects, de
 ## Documentation Overview
 
 ### Architecture & Design
+- **[Architecture Overview](./architecture-overview.md)** - System components breakdown, local vs Azure deployment comparison
 - **[Technical Architecture](./technical-architecture.md)** - Complete system architecture, components, and design patterns
 - **[Data Flow & Sequence Diagrams](./flow-diagrams.md)** - Visual representations of request flows and component interactions
 
+### Getting Started & Tutorials
+- **[Getting Started Tutorial](./getting-started-tutorial.md)** - Simple agent workflow with echo-ping + MCP server example
+
 ### Implementation Guides
-- **[MCP Server Implementation](./mcp-servers.md)** - Detailed guide for Model Context Protocol servers across multiple languages
+- **[MCP Server Implementation](./mcp-servers.md)** - Comprehensive multi-language MCP server implementation guide
+- **[Orchestration Guide](./orchestration-guide.md)** - Detailed LlamaIndex.TS orchestration and multi-agent coordination
 - **[API Documentation](./api-documentation.md)** - Complete REST API reference with examples and integration patterns
 - **[Development Guide](./development-guide.md)** - Comprehensive developer onboarding and contribution guide
 
@@ -50,14 +55,18 @@ The Azure AI Travel Agents system is built on a microservices architecture using
 ## Quick Start for Different Roles
 
 ### For Architects
-1. Start with [Technical Architecture](./technical-architecture.md) for system overview
-2. Review [Deployment Architecture](./deployment-architecture.md) for infrastructure planning
-3. Examine [Flow Diagrams](./flow-diagrams.md) for interaction patterns
+1. Start with [Architecture Overview](./architecture-overview.md) for system components and deployment options
+2. Review [Technical Architecture](./technical-architecture.md) for detailed system design
+3. Study [Orchestration Guide](./orchestration-guide.md) for multi-agent coordination patterns
+4. Examine [Flow Diagrams](./flow-diagrams.md) for interaction patterns
+5. Review [Deployment Architecture](./deployment-architecture.md) for infrastructure planning
 
 ### For Developers
-1. Follow [Development Guide](./development-guide.md) for environment setup
-2. Study [MCP Server Implementation](./mcp-servers.md) for service development
-3. Reference [API Documentation](./api-documentation.md) for integration
+1. Follow [Getting Started Tutorial](./getting-started-tutorial.md) for a simple echo-ping workflow example
+2. Study [Development Guide](./development-guide.md) for environment setup
+3. Review [MCP Server Implementation](./mcp-servers.md) for multi-language service development
+4. Learn [Orchestration Guide](./orchestration-guide.md) for LlamaIndex.TS coordination patterns
+5. Reference [API Documentation](./api-documentation.md) for integration
 
 ### For DevOps/Operations
 1. Review [Deployment Architecture](./deployment-architecture.md) for deployment strategies
@@ -146,11 +155,13 @@ This documentation supports:
 
 ## Getting Help
 
-- **For Architecture Questions**: Review [Technical Architecture](./technical-architecture.md)
+- **For Architecture Questions**: Review [Architecture Overview](./architecture-overview.md) and [Technical Architecture](./technical-architecture.md)
+- **For Getting Started**: Follow [Getting Started Tutorial](./getting-started-tutorial.md) for a simple workflow example
 - **For Development Issues**: Check [Development Guide](./development-guide.md)
 - **For Deployment Problems**: See [Deployment Architecture](./deployment-architecture.md)
 - **For API Integration**: Reference [API Documentation](./api-documentation.md)
 - **For MCP Development**: Study [MCP Server Implementation](./mcp-servers.md)
+- **For Orchestration**: Learn [Orchestration Guide](./orchestration-guide.md) for LlamaIndex.TS patterns
 
 ## Documentation Updates
 
