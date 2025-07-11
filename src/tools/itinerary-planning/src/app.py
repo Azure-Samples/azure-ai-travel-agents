@@ -1,13 +1,19 @@
+import logging
+
 import uvicorn
-from starlette.applications import Starlette
+from starlette.responses import HTMLResponse
+from starlette.routing import Route
 
-from app_routes import routes
+from mcp_server import mcp
 
-app = Starlette(
-    debug=True,
-    routes=routes,
-)
+logger = logging.getLogger(__name__)
 
+# Not necessary for MCP, but demonstrates the inclusion of non-MCP routes
+async def homepage(request):
+    return HTMLResponse("Itinerary planning MCP server")
+
+app = mcp.streamable_http_app()
+app.router.routes.append(Route("/", endpoint=homepage))
 
 def run():
     """Start the Starlette server"""
