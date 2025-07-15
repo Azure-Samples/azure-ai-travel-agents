@@ -52,10 +52,10 @@ export const McpToolsConfig = (): {
   },
   "itinerary-planning": {
     config: {
-      url: process.env["MCP_ITINERARY_PLANNING_URL"] + MCP_API_SSE_PATH,
-      type: "sse",
+      url: process.env["MCP_ITINERARY_PLANNING_URL"] + MCP_API_HTTP_PATH,
+      type: "http",
       verbose: true,
-      useSSETransport: true
+      useSSETransport: false
     },
     id: "itinerary-planning",
     name: "Itinerary Planning",
