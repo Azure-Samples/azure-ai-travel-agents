@@ -84,7 +84,6 @@ docs/
 ├── technical-architecture.md
 ├── flow-diagrams.md
 ├── mcp-servers.md
-├── api-documentation.md
 ├── development-guide.md
 └── deployment-architecture.md
 ```

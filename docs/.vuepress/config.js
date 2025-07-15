@@ -52,7 +52,6 @@ export default defineUserConfig({
         text: "Implementation",
         children: [
           { text: "MCP Servers", link: "/mcp-servers.md" },
-          { text: "API Documentation", link: "/api-documentation.md" },
           { text: "Development Guide", link: "/development-guide.md" },
         ],
       },
@@ -83,7 +82,6 @@ export default defineUserConfig({
         collapsable: false,
         children: [
           "/mcp-servers.md",
-          "/api-documentation.md",
           "/development-guide.md",
         ],
       },

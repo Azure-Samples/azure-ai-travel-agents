@@ -15,7 +15,6 @@ This directory contains comprehensive technical documentation for architects, de
 
 ### Implementation Guides
 - **[MCP Server Implementation](./mcp-servers.md)** - Detailed guide for Model Context Protocol servers across multiple languages
-- **[API Documentation](./api-documentation.md)** - Complete REST API reference with examples and integration patterns
 - **[Development Guide](./development-guide.md)** - Comprehensive developer onboarding and contribution guide
 
 ### Operations & Deployment
@@ -57,7 +56,7 @@ The Azure AI Travel Agents system is built on a microservices architecture using
 ### For Developers
 1. Follow [Development Guide](./development-guide.md) for environment setup
 2. Study [MCP Server Implementation](./mcp-servers.md) for service development
-3. Reference [API Documentation](./api-documentation.md) for integration
+3. Reference [Technical Architecture](./technical-architecture.md) for system integration
 
 ### For DevOps/Operations
 1. Review [Deployment Architecture](./deployment-architecture.md) for deployment strategies
@@ -149,7 +148,7 @@ This documentation supports:
 - **For Architecture Questions**: Review [Technical Architecture](./technical-architecture.md)
 - **For Development Issues**: Check [Development Guide](./development-guide.md)
 - **For Deployment Problems**: See [Deployment Architecture](./deployment-architecture.md)
-- **For API Integration**: Reference [API Documentation](./api-documentation.md)
+- **For API Integration**: Reference [Technical Architecture](./technical-architecture.md)
 - **For MCP Development**: Study [MCP Server Implementation](./mcp-servers.md)
 
 ## Documentation Updates

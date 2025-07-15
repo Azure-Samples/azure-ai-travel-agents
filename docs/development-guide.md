@@ -196,7 +196,6 @@ azure-ai-travel-agents/
 │   ├── technical-architecture.md
 │   ├── flow-diagrams.md
 │   ├── mcp-servers.md
-│   ├── api-documentation.md
 │   ├── deployment-architecture.md
 │   └── development-guide.md
 ├── infra/                      # Infrastructure as Code (Bicep)

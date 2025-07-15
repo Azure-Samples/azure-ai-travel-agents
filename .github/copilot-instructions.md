@@ -36,8 +36,6 @@
   Provisioned via Bicep templates; see `infra/main.bicep`.
 - **LLMs:**  
   Model integration details are in `llms.txt` and `src/api/src/orchestrator/llamaindex/`.
-- **API Contracts:**  
-  Refer to `docs/api-documentation.md` for endpoint specifications.
 
 ## Patterns & Examples
 
