@@ -27,6 +27,15 @@ param destinationRecommendationDefinition object
 param echoPingExists bool
 @secure()
 param echoPingDefinition object
+param webSearchExists bool
+@secure()
+param webSearchDefinition object
+param modelInferenceExists bool
+@secure()
+param modelInferenceDefinition object
+param codeEvaluationExists bool
+@secure()
+param codeEvaluationDefinition object
 
 @description('Id of the user or app to assign application roles')
 param principalId string
@@ -92,6 +101,12 @@ module resources 'resources.bicep' = {
     destinationRecommendationDefinition: destinationRecommendationDefinition
     echoPingExists: echoPingExists
     echoPingDefinition: echoPingDefinition
+    webSearchExists: webSearchExists
+    webSearchDefinition: webSearchDefinition
+    modelInferenceExists: modelInferenceExists
+    modelInferenceDefinition: modelInferenceDefinition
+    codeEvaluationExists: codeEvaluationExists
+    codeEvaluationDefinition: codeEvaluationDefinition
   }
 }
 
@@ -102,6 +117,9 @@ output AZURE_RESOURCE_ITINERARY_PLANNING_ID string = resources.outputs.AZURE_RES
 output AZURE_RESOURCE_CUSTOMER_QUERY_ID string = resources.outputs.AZURE_RESOURCE_CUSTOMER_QUERY_ID
 output AZURE_RESOURCE_DESTINATION_RECOMMENDATION_ID string = resources.outputs.AZURE_RESOURCE_DESTINATION_RECOMMENDATION_ID
 output AZURE_RESOURCE_ECHO_PING_ID string = resources.outputs.AZURE_RESOURCE_ECHO_PING_ID
+output AZURE_RESOURCE_WEB_SEARCH_ID string = resources.outputs.AZURE_RESOURCE_WEB_SEARCH_ID
+output AZURE_RESOURCE_MODEL_INFERENCE_ID string = resources.outputs.AZURE_RESOURCE_MODEL_INFERENCE_ID
+output AZURE_RESOURCE_CODE_EVALUATION_ID string = resources.outputs.AZURE_RESOURCE_CODE_EVALUATION_ID
 output NG_API_URL string = resources.outputs.NG_API_URL
 output AZURE_OPENAI_ENDPOINT string = resources.outputs.AZURE_OPENAI_ENDPOINT
 output AZURE_OPENAI_DEPLOYMENT string = llamaIndexConfig.chat.model
@@ -113,3 +131,4 @@ output EMBEDDING_DIM string = llamaIndexConfig.embedding.dim
 output AZURE_CLIENT_ID string = resources.outputs.AZURE_CLIENT_ID
 output AZURE_TENANT_ID string = tenant().tenantId
 output MCP_ECHO_PING_ACCESS_TOKEN string = llamaIndexConfig.sampleAccessTokens.echo
+output APIM_GATEWAY_URL string = resources.outputs.APIM_GATEWAY_URL

@@ -63,6 +63,27 @@ services:
       path: ./Dockerfile
       context: .
 
+  web-search:
+    project: src/tools/web-search
+    host: containerapp
+    docker:
+      path: ./Dockerfile
+      context: .
+
+  model-inference:
+    project: src/tools/model-inference
+    host: containerapp
+    docker:
+      path: ./Dockerfile
+      context: .
+
+  code-evaluation:
+    project: src/tools/code-evaluation
+    host: containerapp
+    docker:
+      path: ./Dockerfile
+      context: .
+
 hooks:
   postprovision:
     windows:
@@ -82,3 +103,6 @@ workflows:
       - azd: deploy destination-recommendation
       - azd: deploy itinerary-planning
       - azd: deploy echo-ping
+      - azd: deploy web-search
+      - azd: deploy model-inference
+      - azd: deploy code-evaluation
