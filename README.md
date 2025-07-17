@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/azure-samples-azure-ai-travel-agents-badge.png)](https://mseep.ai/app/azure-samples-azure-ai-travel-agents)
+
 <div align="center">
 
 <img src="./docs/ai-travel-agents-logo.png" alt="" align="center" height="128" />
