@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import { mcp, MCPClientOptions} from "@llamaindex/tools";
+import { mcp } from "@llamaindex/tools";
 import { agent, multiAgent, ToolCallLLM } from "llamaindex";
 import { McpServerDefinition } from "../../mcp/mcp-tools.js";
 import { llm as llmProvider } from "./providers/index.js";
