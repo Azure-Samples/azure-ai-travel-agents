@@ -1,55 +1,15 @@
-{
-  "name": "Azure AI Travel Agents",
-  "build": {
-    "dockerfile": "./Dockerfile",
-    "context": "."
-  },
-  "runArgs": ["--init", "--privileged"],
-  "mounts": [
+
+    "context
+
+nArgsnit"--privileged],
+unts": [
         // Keep command history 
-        "source=ostf-bashhistory,target=/commandhistory,type=volume",
+        "source=ostf-bashhistory,target=/commandhistory,type=volum,
         // Use docker-in-docker socket
-        "source=dind-var-lib-docker,target=/var/lib/docker,type=volume"
-    ],
-    "overrideCommand": false,
-  "features": {
-    "ghcr.io/devcontainers/features/common-utils:2": {
-      "installZsh": "true",
-      "username": "vscode",
-      "userUid": "1000",
-      "userGid": "1000",
-      "upgradePackages": "true"
-    },
-    "ghcr.io/devcontainers/features/azure-cli:1": {},
-    "ghcr.io/azure/azure-dev/azd:0": {},
-    "ghcr.io/devcontainers/features/docker-in-docker:2.12.2": {},
-    "ghcr.io/devcontainers/features/github-cli:1": {},
-    "ghcr.io/devcontainers/features/node:1": {
-      "version": "lts"
-    }
-  },
-  "customizations": {
-    "vscode": {
-      "extensions": [
-        "esbenp.prettier-vscode",
-        "ms-azuretools.vscode-docker",
-        "GitHub.copilot"
-      ]
-    }
-  },
-  "portsAttributes": {
-    "4000": {
-      "label": "API",
-      "onAutoForward": "notify"
-    },
-    "4200": {
-      "label": "UI",
-      "onAutoForward": "notify"
-    }
-  },
-  "postCreateCommand": "",
-  "hostRequirements": {
-    "memory": "8gb"
-  },
-  "remoteUser": "vscode"
-}
+        "source=dind-var-lib-docker,target=/var/lib/docker,type=volume
+    "overrideComman false,
+tures": {
+    cr.io/devcontainer/features/common-utils:2": {
+    nstallZsh": "true",
+    name": "vscode",
+    serUi"100
