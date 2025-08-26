@@ -117,36 +117,6 @@ The service exposes the following API endpoints through the MCP protocol:
    - Execute tool calls and see responses
    - Monitor server notifications
 
-### Using the Streaming Client Test
-
-The project includes comprehensive streaming tests in `StreamingClientTest.java` that validate:
-
-- Health endpoint accessibility
-- Service information retrieval
-- Multiple sequential requests (core streamable-http pattern)
-- Concurrent request handling
-- Backpressure management
-- Error recovery
-- Keep-alive simulation
-- Large response handling
-- Connection reuse
-
-Run the tests:
-```bash
-./mvnw test -Dtest=StreamingClientTest
-```
-
-### Using the ClientSse Test Client
-
-The project includes a `ClientSse` class that provides a simple client for testing the server. This utility helps you send requests and receive responses from the MCP server endpoints.
-
-Step 1 - Build and run the server (on port 8080)
-Step 2 - Run the ClientSse test
-
-## Test Client
-
-A test client is included in the `com.microsoft.mcp.sample.server.client` package. The `DestinationRecommendationClient` class demonstrates how to interact with the service programmatically.
-
 ## Dependencies
 
 The project requires the Spring AI MCP Server Streamable Boot Starter:
@@ -155,7 +125,7 @@ The project requires the Spring AI MCP Server Streamable Boot Starter:
 <dependency>
     <groupId>org.springframework.ai</groupId>
     <artifactId>spring-ai-starter-mcp-server-streamable-webmvc</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -202,55 +172,6 @@ The project includes a Dockerfile for containerization:
 docker build --pull --rm -f 'Dockerfile' -t 'destination-recommendation:latest' '.'  
 docker run -d -p 8080:8080 destination-recommendation:latest
 ```
-
-## Testing the Server
-
-### Using the ClientSse Test Client
-
-The project includes a `ClientSse` class that provides a simple client for testing the server. This utility helps you send requests and receive streaming responses from the MCP server endpoints.
-
-step 1 - Build and run the docker server (on port 8080)
-step 2 - Run the ClientSse test
-
-## Security and Code Quality
-
-### GitHub CodeQL Integration
-
-This project integrates with GitHub CodeQL for automated code scanning and security analysis. CodeQL is GitHub's semantic code analysis engine that helps identify vulnerabilities and coding errors by analyzing your code as if it were data.
-
-Benefits of CodeQL integration:
-- Automatically detects common vulnerabilities and coding errors
-- Runs on each push and pull request to maintain code quality
-- Performs language-specific security analysis for Java code
-- Generates detailed security reports with actionable insights
-- Helps identify security issues early in the development lifecycle
-
-The CodeQL analysis is configured via GitHub Actions workflow and analyzes the codebase for:
-- Security vulnerabilities
-- Logic errors
-- Coding standard violations
-- Potential bugs and anti-patterns
-
-The workflow scans the following Java files:
-- All `.java` files in the `src/main/java` directory
-- All Java classes including controllers, services, and tools
-- Model and data transfer objects
-- Configuration classes and utility helpers
-- Test files in `src/test/java` are also included in the analysis
-
-The CodeQL integration uses the following configuration files:
-- `.github/workflows/codeql-java.yml` - Defines the GitHub Actions workflow for Java code scanning
-- `.github/codeql/java-config.yml` - Configures paths to include/exclude and specific queries:
-  - Includes: `src/tools/destination-recommendation/**`
-  - Excludes: `**/target/**`, `**/build/**`, `**/test/**`, `**/tests/**`, `**/*Test.java`, `**/generated/**`
-  - Runs both "security-and-quality" and "security-extended" query suites
-
-The workflow triggers on:
-- Pushes and PRs to the main branch that modify Java files or configuration files
-- Weekly scheduled scans (Sundays at midnight UTC)
-- Manual workflow dispatch
-
-For more information on CodeQL, visit [GitHub's CodeQL documentation](https://codeql.github.com/docs/).
 
 ## License
 
