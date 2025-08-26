@@ -119,12 +119,12 @@ The service exposes the following API endpoints through the MCP protocol:
 
 ## Dependencies
 
-The project requires the Spring AI MCP Server Streamable Boot Starter:
+The project requires the Spring AI MCP Server Web MVC Boot Starter:
 
 ```xml
 <dependency>
     <groupId>org.springframework.ai</groupId>
-    <artifactId>spring-ai-starter-mcp-server-streamable-webmvc</artifactId>
+    <artifactId>spring-ai-starter-mcp-server-webmvc</artifactId>
     <version>1.1.0-SNAPSHOT</version>
 </dependency>
 ```
