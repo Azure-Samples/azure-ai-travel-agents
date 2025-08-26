@@ -82,10 +82,10 @@ export const McpToolsConfig = (): {
   },
   "destination-recommendation": {
     config: {
-      url: process.env["MCP_DESTINATION_RECOMMENDATION_URL"] + MCP_API_SSE_PATH,
-      type: "sse",
+      url: process.env["MCP_DESTINATION_RECOMMENDATION_URL"] + MCP_API_HTTP_PATH,
+      type: "http",
       verbose: true,
-      useSSETransport: true
+      useSSETransport: false
     },
     id: "destination-recommendation",
     name: "Destination Recommendation",
