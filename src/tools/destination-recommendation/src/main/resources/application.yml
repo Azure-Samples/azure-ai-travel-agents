@@ -1,0 +1,28 @@
+spring:
+  ai:
+    mcp:
+      server:
+        protocol: STREAMABLE
+        name: destination-recommendation-server
+        version: 1.0.0
+        type: SYNC
+        instructions: "This streamable server provides real-time destination recommendations"
+        resource-change-notification: true
+        tool-change-notification: true
+        prompt-change-notification: true
+        streamable-http:
+          mcp-endpoint: /mcp
+          keep-alive-interval: 30s
+        capabilities:
+          tool: true
+          resource: true
+          prompt: true
+          completion: true
+
+logging:
+  level:
+    org.springframework.ai.mcp: DEBUG
+    com.microsoft.mcp.sample: DEBUG
+
+server:
+  port: 8080

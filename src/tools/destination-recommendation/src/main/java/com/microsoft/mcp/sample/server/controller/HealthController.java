@@ -1,11 +1,8 @@
 package com.microsoft.mcp.sample.server.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.microsoft.mcp.sample.server.service.DestinationService;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -16,13 +13,8 @@ import java.util.Map;
  */
 @RestController
 public class HealthController {
-    
-    private final DestinationService destinationService;
-    
-    @Autowired
-    public HealthController(DestinationService destinationService) {
-        this.destinationService = destinationService;
-    }    /**
+
+    /**
      * Simple health check endpoint.
      * 
      * @return Health status information
@@ -32,7 +24,7 @@ public class HealthController {
         Map<String, Object> response = new HashMap<>();
         response.put("status", "UP");
         response.put("timestamp", LocalDateTime.now().toString());
-        response.put("service", "Destination Recommendation Service");
+        response.put("service", "Destination Recommendation Streaming Service");
         
         return ResponseEntity.ok(response);
     }
@@ -45,17 +37,32 @@ public class HealthController {
     @GetMapping("/info")
     public ResponseEntity<Map<String, Object>> serviceInfo() {
         Map<String, Object> response = new HashMap<>();
-        response.put("service", "Destination Recommendation Service");
-        response.put("version", "1.0.0");
-        response.put("endpoint", "/v1/tools");
+        response.put("service", "Destination Recommendation Streaming Service");
+        response.put("version", "2.0.0-STREAMING");
+        response.put("endpoint", "/mcp");
+        response.put("protocol", "STREAMABLE");
         
         Map<String, String> tools = new HashMap<>();
-        tools.put("getDestinationsByActivity", "Get destinations by activity type (BEACH, ADVENTURE, etc.)");
-        tools.put("getDestinationsByBudget", "Get destinations by budget (BUDGET, MODERATE, LUXURY)");
-        tools.put("getDestinationsBySeason", "Get destinations by season (SPRING, SUMMER, etc.)");
-        tools.put("getDestinationsByPreferences", "Get destinations matching multiple criteria");
-        tools.put("getAllDestinations", "Get all available destinations");
-        response.put("availableTools", tools);
+        tools.put("streamAllDestinations", "Stream all destinations in real-time");
+        tools.put("streamDestinationsByActivity", "Stream destinations by activity type (BEACH, ADVENTURE, etc.)");
+        tools.put("streamDestinationsByBudget", "Stream destinations by budget (BUDGET, MODERATE, LUXURY)");
+        tools.put("streamDestinationsBySeason", "Stream destinations by season (SPRING, SUMMER, etc.)");
+        tools.put("streamDestinationsByPreferences", "Stream destinations matching multiple criteria");
+        tools.put("streamFamilyFriendlyDestinations", "Stream family-friendly destinations");
+        tools.put("streamTopRatedDestinations", "Stream top-rated destinations");
+        tools.put("getDestinationCountByActivity", "Get count of destinations by activity");
+        tools.put("echoMessage", "Echo back input message");
+        response.put("availableStreamingTools", tools);
+        
+        Map<String, String> endpoints = new HashMap<>();
+        endpoints.put("/api/destinations/stream/all", "SSE stream of all destinations");
+        endpoints.put("/api/destinations/stream/activity/{type}", "SSE stream by activity");
+        endpoints.put("/api/destinations/stream/budget/{budget}", "SSE stream by budget");
+        endpoints.put("/api/destinations/stream/season/{season}", "SSE stream by season");
+        endpoints.put("/api/destinations/stream/family-friendly", "SSE stream family-friendly");
+        endpoints.put("/api/destinations/stream/top-rated", "SSE stream top-rated");
+        endpoints.put("/index.html", "Interactive streaming demo");
+        response.put("streamingEndpoints", endpoints);
         
         return ResponseEntity.ok(response);
     }

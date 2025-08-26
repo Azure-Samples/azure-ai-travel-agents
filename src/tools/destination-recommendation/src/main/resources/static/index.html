@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Streaming Destination Recommendations</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .controls {
+            margin: 20px 0;
+            padding: 15px;
+            background: #e9ecef;
+            border-radius: 5px;
+        }
+        button {
+            margin: 5px;
+            padding: 10px 15px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        .status {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .status.connected {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.disconnected {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status.connecting {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+        .results {
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background: #f9f9f9;
+        }
+        .destination {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-left: 4px solid #007bff;
+            border-radius: 4px;
+            white-space: pre-wrap;
+        }
+        .clear-btn {
+            background: #dc3545;
+        }
+        .clear-btn:hover {
+            background: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌍 Streaming Destination Recommendations</h1>
+        
+        <div class="controls">
+            <h3>Test Streaming Endpoints:</h3>
+            <button onclick="streamAllDestinations()">Stream All Destinations</button>
+            <button onclick="streamByActivity('BEACH')">Beach Destinations</button>
+            <button onclick="streamByActivity('CULTURAL')">Cultural Destinations</button>
+            <button onclick="streamByBudget('LUXURY')">Luxury Destinations</button>
+            <button onclick="streamBySeason('WINTER')">Winter Destinations</button>
+            <button onclick="streamFamilyFriendly()">Family Friendly</button>
+            <button onclick="streamTopRated()">Top Rated</button>
+            <button onclick="clearResults()" class="clear-btn">Clear Results</button>
+        </div>
+
+        <div id="status" class="status disconnected">Disconnected</div>
+        
+        <div class="results" id="results">
+            <p>Click a button above to start streaming destination recommendations...</p>
+        </div>
+    </div>
+
+    <script>
+        let currentEventSource = null;
+
+        function setStatus(status, message) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.className = `status ${status}`;
+            statusDiv.textContent = message;
+        }
+
+        function addDestination(destination) {
+            const resultsDiv = document.getElementById('results');
+            const destinationDiv = document.createElement('div');
+            destinationDiv.className = 'destination';
+            destinationDiv.textContent = destination;
+            resultsDiv.appendChild(destinationDiv);
+            resultsDiv.scrollTop = resultsDiv.scrollHeight;
+        }
+
+        function clearResults() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<p>Results cleared. Click a button above to start streaming...</p>';
+            closeConnection();
+        }
+
+        function closeConnection() {
+            if (currentEventSource) {
+                currentEventSource.close();
+                currentEventSource = null;
+                setStatus('disconnected', 'Disconnected');
+            }
+        }
+
+        function startStream(url, description) {
+            closeConnection();
+            clearResults();
+            
+            setStatus('connecting', `Connecting to ${description}...`);
+            
+            currentEventSource = new EventSource(url);
+            
+            currentEventSource.onopen = function() {
+                setStatus('connected', `Connected - Streaming ${description}`);
+            };
+            
+            currentEventSource.onmessage = function(event) {
+                addDestination(event.data);
+            };
+            
+            currentEventSource.onerror = function(event) {
+                setStatus('disconnected', `Error streaming ${description}`);
+                closeConnection();
+            };
+            
+            // Auto-close after 30 seconds to prevent infinite streaming
+            setTimeout(() => {
+                if (currentEventSource) {
+                    closeConnection();
+                    setStatus('disconnected', 'Stream completed');
+                }
+            }, 30000);
+        }
+
+        function streamAllDestinations() {
+            startStream('/api/destinations/stream/all', 'all destinations');
+        }
+
+        function streamByActivity(activity) {
+            startStream(`/api/destinations/stream/activity/${activity}`, `${activity.toLowerCase()} destinations`);
+        }
+
+        function streamByBudget(budget) {
+            startStream(`/api/destinations/stream/budget/${budget}`, `${budget.toLowerCase()} destinations`);
+        }
+
+        function streamBySeason(season) {
+            startStream(`/api/destinations/stream/season/${season}`, `${season.toLowerCase()} destinations`);
+        }
+
+        function streamFamilyFriendly() {
+            startStream('/api/destinations/stream/family-friendly', 'family-friendly destinations');
+        }
+
+        function streamTopRated() {
+            startStream('/api/destinations/stream/top-rated', 'top-rated destinations');
+        }
+
+        // Clean up on page unload
+        window.addEventListener('beforeunload', closeConnection);
+    </script>
+</body>
+</html>
