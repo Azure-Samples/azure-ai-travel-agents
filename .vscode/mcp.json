@@ -30,8 +30,8 @@
       "url": "http://localhost:5003/mcp"
     },
     "tool-destination-recommendation": {
-      "type": "sse",
-      "url": "http://localhost:5002/sse"
+      "type": "http",
+      "url": "http://localhost:5002/mcp"
     },
     "tool-customer-query": {
       "type": "http",
