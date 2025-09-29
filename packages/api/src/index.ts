@@ -6,8 +6,8 @@ import express from "express";
 import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import { mcpToolsList } from "./mcp/mcp-tools.js";
-import { setupAgents } from "./orchestrator/llamaindex/index.js";
-import { McpToolsConfig } from "./orchestrator/llamaindex/tools/index.js";
+import { setupAgents } from "./orchestrator/langchain/index.js";
+import { McpToolsConfig } from "./orchestrator/langchain/tools/index.js";
 
 const app = express();
 const PORT = process.env.PORT || 4000;
