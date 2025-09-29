@@ -4,6 +4,7 @@ import { BaseChatModel } from "@langchain/core/language_models/chat_models";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { McpServerDefinition } from "../../../mcp/mcp-tools.js";
 import { McpToolsConfig, McpServerName } from "../tools/index.js";
+import { createMcpToolsFromDefinition } from "../tools/mcp-bridge.js";
 
 // Define the state for our graph
 export interface AgentState {
@@ -20,12 +21,8 @@ export interface AgentConfig {
 }
 
 // Helper function to create MCP tools based on server configuration  
-// For now, we'll use a placeholder that returns empty tools
-// This can be enhanced later once we properly integrate the MCP adapters
 export const createMcpTools = async (mcpServerConfig: McpServerDefinition): Promise<DynamicStructuredTool[]> => {
-  console.log(`Placeholder: Would create MCP tools for ${mcpServerConfig.id} at ${mcpServerConfig.config.url}`);
-  // For now, return empty array to get the basic structure working
-  return [];
+  return createMcpToolsFromDefinition(mcpServerConfig);
 };
 
 // Function to setup agents with filtered tools
