@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quest 5: The Oracle’s Interface - Repo Adventure</title>
+    <title>Quest 5: The Chamber of Echoes - Repo Adventure</title>
     <link rel="stylesheet" href="assets/theme.css">
     <link rel="stylesheet" href="../assets/shared/quest-navigator.css">
     <link rel="stylesheet" href="../assets/theme-toggle.css">
@@ -33,7 +33,7 @@
                 <a href="https://github.com/Azure-Samples/azure-ai-travel-agents" target="_blank" rel="noopener noreferrer" class="github-link">
                     <img src="../assets/shared/github-mark-white.svg" alt="GitHub" width="24" height="24">
                 </a>
-                <a href="index.html">The Pyramid of Infinite Journeys</a>
+                <a href="index.html">The Pyramid of the Llama Oracle</a>
             </div>
             <div class="nav-middle">
             </div>
@@ -57,240 +57,240 @@
     
     <div class="container">
         <div class="quest-content">
-    <h1>Quest 5: The Oracle’s Interface</h1>
+    <h1>Quest 5: The Chamber of Echoes</h1>
 <hr>
-<p>The Pyramid of Infinite Journeys holds its most enigmatic chamber, the Oracle’s Interface, a space where sacred glyphs pulse with energy. This chamber was once the nerve center of the Codexian civilization, where seekers of wisdom communed with the Oracle—a system that harmonized the voices of countless agents into one cohesive stream of guidance. As you activate the glyphs, you uncover a complex mechanism: a multi-agent orchestration system that seamlessly integrates specialized tools. Your challenge is to decode the Oracle’s rituals, from its dynamic tool discovery to the flow of its streaming wisdom.</p>
+<p>In the sacred depths of the Pyramid of the Llama Oracle lies the Chamber of Echoes, a place where the ancient Codexians orchestrated conversations between their mystical artifacts and the Oracle itself. This chamber, a marvel of ancient engineering, was designed to harmonize the voices of countless tools, each with its own unique purpose, into a singular, resonant dialogue. Your task is to uncover the mysteries of this ancient symphony, exploring how the Codexians connected their tools, processed their messages, and orchestrated their wisdom.</p>
 <h2>Quest Objectives</h2>
 <p>As you explore the code below, investigate these key questions:</p>
 <ul>
-<li>🔍 <strong>Glyph Activation</strong>: How does the <code class="inline-code">ChatService</code> coordinate with the <code class="inline-code">ApiService</code> to manage streaming communication and tool usage in the Oracle&#39;s Interface?</li>
-<li>⚡ <strong>Flow of Prophecy</strong>: What patterns are used in <code class="inline-code">processAgentEvents</code> to handle the Oracle’s dynamic responses and ensure seamless integration of its tools?</li>
-<li>🛡️ <strong>Error Deflection</strong>: How does the system handle errors during streaming, and what safeguards are in place to maintain the integrity of the Oracle&#39;s communications?</li>
+<li>🔍 <strong>Tool Invocation Rituals</strong>: How does the <code class="inline-code">ChatService</code> manage the invocation of tools and the flow of user messages into the system?</li>
+<li>⚡ <strong>Message Harmonization</strong>: How are agent messages and events processed and synchronized to create a seamless user experience?</li>
+<li>🛡️ <strong>Error Safeguards</strong>: What mechanisms are in place to handle errors during tool invocation or message streaming?</li>
 </ul>
 <h2>File Exploration</h2>
-<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.service.ts" target="_blank" rel="noopener noreferrer">src/ui/src/app/chat-conversation/chat-conversation.service.ts</a>:</span> The Conductor of Messages</h3>
-<p>The <code class="inline-code">ChatService</code> acts as the intermediary between the user and the Oracle, orchestrating user input, tool selection, and the real-time streaming of responses. It processes agent events, updates message states, and manages tool discovery to ensure a harmonious interaction.</p>
+<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.service.ts" target="_blank" rel="noopener noreferrer">src/ui/src/app/chat-conversation/chat-conversation.service.ts</a>:</span> The Messenger of the Oracle</h3>
+<p>This file contains the <code class="inline-code">ChatService</code>, which acts as the bridge between the user and the tools of the Llama Oracle. It handles user input, invokes tools, and processes the responses from the Oracle. The service is responsible for maintaining the state of the conversation and ensuring a smooth flow of messages.</p>
 <h4>Highlights</h4>
 <ul>
-<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.service.ts#L68" target="_blank" rel="noopener noreferrer"><code class="inline-code">fetchAvailableTools</code></a>: Retrieves the list of tools available for the Oracle’s use, filtering for those that are selected.</li>
-<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.component.ts#L170" target="_blank" rel="noopener noreferrer"><code class="inline-code">sendMessage</code></a>: Dispatches user queries to the Oracle, initiating the streaming process and managing the state of the conversation.</li>
-<li><code class="inline-code">processAgentEvents</code>: Handles the Oracle’s dynamic responses, interpreting events and updating the user interface accordingly.</li>
-<li><code class="inline-code">updateAndNotifyAgentChatMessageState</code>: Updates the state of messages based on the Oracle’s responses, ensuring consistency in the communication flow.</li>
-<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.service.ts#L211" target="_blank" rel="noopener noreferrer"><code class="inline-code">resetChat</code></a>: Resets the conversation, clearing buffers and restoring the system to its initial state.</li>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.component.ts#L170" target="_blank" rel="noopener noreferrer"><code class="inline-code">sendMessage</code></a>: Sends user input to the Oracle, manages message buffers, and invokes tools.</li>
+<li><code class="inline-code">processAgentEvents</code>: Processes events from the Oracle, updating the conversation state based on the type of event received.</li>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.service.ts#L68" target="_blank" rel="noopener noreferrer"><code class="inline-code">fetchAvailableTools</code></a>: Retrieves the list of available tools and their statuses, ensuring the right tools are used in the conversation.</li>
 </ul>
-<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/services/api.service.ts" target="_blank" rel="noopener noreferrer">src/ui/src/app/services/api.service.ts</a>:</span> The Oracle’s Voice</h3>
-<p>The <code class="inline-code">ApiService</code> serves as the voice of the Oracle, managing communication with the backend and streaming responses to the <code class="inline-code">ChatService</code>. It handles tool discovery, message streaming, and error reporting.</p>
+<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/services/api.service.ts" target="_blank" rel="noopener noreferrer">src/ui/src/app/services/api.service.ts</a>:</span> The Voice of the Oracle</h3>
+<p>This file provides the <code class="inline-code">ApiService</code>, which communicates directly with the Oracle&#39;s external interfaces. It handles API calls, manages the streaming of chat messages, and processes server-sent events (SSE) to deliver real-time updates.</p>
 <h4>Highlights</h4>
 <ul>
-<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.service.ts#L68" target="_blank" rel="noopener noreferrer"><code class="inline-code">fetchAvailableTools</code></a>: Makes an HTTP request to retrieve the list of tools, ensuring the Oracle has the resources it needs.</li>
-<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/services/api.service.ts#L85" target="_blank" rel="noopener noreferrer"><code class="inline-code">streamChatMessage</code></a>: Streams user messages to the backend and parses the Oracle’s responses in real-time, using Server-Sent Events (SSE).</li>
-<li><code class="inline-code">handleApiError</code>: Manages errors during communication, ensuring the Oracle’s voice remains clear and reliable.</li>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/services/api.service.ts#L85" target="_blank" rel="noopener noreferrer"><code class="inline-code">streamChatMessage</code></a>: Streams user messages to the Oracle and processes the streamed responses.</li>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.service.ts#L68" target="_blank" rel="noopener noreferrer"><code class="inline-code">fetchAvailableTools</code></a>: Fetches the list of tools available from the Oracle&#39;s repository.</li>
+<li><code class="inline-code">handleApiError</code>: Handles errors during communication with the Oracle, ensuring the system remains stable.</li>
 </ul>
 <h2>Code</h2>
 <h3><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.service.ts" target="_blank" rel="noopener noreferrer">src/ui/src/app/chat-conversation/chat-conversation.service.ts</a></h3>
-<pre><code class="language-typescript">async fetchAvailableTools() {
-  const toolsResult = await this.apiService.fetchAvailableTools();
-  if (toolsResult) {
-    this.tools.set(toolsResult.tools.filter((tool) =&gt; tool.selected));
-  }
-}
-</code></pre>
-<ul>
-<li>Retrieves the list of tools available for use in the Oracle’s Interface.</li>
-<li>Filters tools to include only those that are selected, ensuring relevance.</li>
-<li>Updates the <code class="inline-code">tools</code> signal, making the tools accessible to other methods.</li>
-</ul>
 <pre><code class="language-typescript">async sendMessage(event: Event) {
-  if ((event as KeyboardEvent).shiftKey) {
-    return;
-  }
-
-  const messageText = this.userMessage();
-  if (!messageText.trim()) return;
-
-  this.messagesBuffer.push({
-    role: &#39;user&#39;,
-    content: messageText,
-    reasoning: [],
-    timestamp: new Date(),
-  });
-
-  this.userMessage.set(&#39;&#39;);
-  this.isLoading.set(true);
-  this.assistantMessageInProgress.set(false);
-
-  await this.apiService.streamChatMessage(
-    messageText,
-    this.tools().filter((tool) =&gt; tool.selected)
-  );
-}
-</code></pre>
-<ul>
-<li>Dispatches user input to the Oracle, initiating the streaming process.</li>
-<li>Updates the message buffer to include the user’s query.</li>
-<li>Calls <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/services/api.service.ts#L85" target="_blank" rel="noopener noreferrer"><code class="inline-code">streamChatMessage</code></a> to send the message and the selected tools to the backend.</li>
-</ul>
-<pre><code class="language-typescript">private processAgentEvents(event?: ChatEvent) {
-  if (event &amp;&amp; event.type === &#39;metadata&#39;) {
-    this.currentAgentName.set(event.data?.agentName || null);
-    this.agentEventsBuffer.push(event);
-
-    const delta: string = event.data?.delta || &#39;&#39;;
-
-    switch (event.event) {
-      case &#39;StartEvent&#39;:
-        this.updateAndNotifyAgentChatMessageState(delta, {
-          metadata: {
-            events: this.agentEventsBuffer,
-          },
-        });
-
-        this.assistantMessageInProgress.set(false);
-        break;
-      case &#39;StopEvent&#39;:
-        this.updateAndNotifyAgentChatMessageState(delta, {
-          metadata: {
-            events: this.agentEventsBuffer,
-          },
-        });
-
-        this.assistantMessageInProgress.set(false);
-        this.isLoading.set(false);
-        break;
-      case &#39;AgentToolCallResult&#39;:
-        let state = {};
-        if (typeof event.data.raw === &#39;string&#39;) {
-          state = {
-            reasoning: [
-              {
-                content: event.data.raw,
-              },
-            ],
-          };
-        }
-        this.updateAndNotifyAgentChatMessageState(delta, state);
-        break;
+    if ((event as KeyboardEvent).shiftKey) {
+        return;
     }
-  }
+
+    const messageText = this.userMessage();
+    if (!messageText.trim()) return;
+
+    this.messagesBuffer.push({
+        role: &#39;user&#39;,
+        content: messageText,
+        reasoning: [],
+        timestamp: new Date(),
+    });
+
+    this.userMessage.set(&#39;&#39;);
+    this.isLoading.set(true);
+    this.assistantMessageInProgress.set(false);
+
+    await this.apiService.streamChatMessage(
+        messageText,
+        this.tools().filter((tool) =&gt; tool.selected)
+    );
 }
 </code></pre>
 <ul>
-<li>Interprets agent events and updates the current agent name and message state.</li>
-<li>Uses a switch statement to handle different event types, ensuring appropriate processing.</li>
-<li>Adds reasoning content to the state when <code class="inline-code">AgentToolCallResult</code> events occur.</li>
+<li>Sends user messages to the Oracle, ensuring the message is valid and well-structured.</li>
+<li>Updates the state to reflect that a new message has been sent and the system is processing it.</li>
+<li>Invokes the <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/services/api.service.ts#L85" target="_blank" rel="noopener noreferrer"><code class="inline-code">streamChatMessage</code></a> method to begin streaming the Oracle&#39;s response.</li>
+</ul>
+<hr>
+<pre><code class="language-typescript">private processAgentEvents(event?: ChatEvent) {
+    if (event &amp;&amp; event.type === &#39;metadata&#39;) {
+        this.currentAgentName.set(event.data?.agentName || null);
+        this.agentEventsBuffer.push(event);
+
+        const delta: string = event.data?.delta || &#39;&#39;;
+
+        switch (event.event) {
+            case &#39;StartEvent&#39;:
+                this.updateAndNotifyAgentChatMessageState(delta, {
+                    metadata: {
+                        events: this.agentEventsBuffer,
+                    },
+                });
+                this.assistantMessageInProgress.set(false);
+                break;
+            case &#39;StopEvent&#39;:
+                this.updateAndNotifyAgentChatMessageState(delta, {
+                    metadata: {
+                        events: this.agentEventsBuffer,
+                    },
+                });
+                this.assistantMessageInProgress.set(false);
+                this.isLoading.set(false);
+                break;
+            case &#39;AgentToolCallResult&#39;:
+                let state = {};
+                if (typeof event.data.raw === &#39;string&#39;) {
+                    state = {
+                        reasoning: [
+                            {
+                                content: event.data.raw,
+                            },
+                        ],
+                    };
+                }
+                this.updateAndNotifyAgentChatMessageState(delta, state);
+                break;
+        }
+    }
+}
+</code></pre>
+<ul>
+<li>Processes different types of events received from the Oracle, such as <code class="inline-code">StartEvent</code> and <code class="inline-code">StopEvent</code>.</li>
+<li>Updates the conversation state based on the event type and ensures the user interface reflects the latest state.</li>
+<li>Handles tool call results and integrates their reasoning into the conversation.</li>
+</ul>
+<hr>
+<pre><code class="language-typescript">async fetchAvailableTools() {
+    const toolsResult = await this.apiService.fetchAvailableTools();
+    if (toolsResult) {
+        this.tools.set(toolsResult.tools.filter((tool) =&gt; tool.selected));
+    }
+}
+</code></pre>
+<ul>
+<li>Retrieves the list of tools available for use in the Oracle&#39;s repository.</li>
+<li>Filters and sets the tools that are currently selected for the conversation.</li>
+<li>Ensures the system uses only the most relevant tools for the task at hand.</li>
 </ul>
 <hr>
 <h3><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/services/api.service.ts" target="_blank" rel="noopener noreferrer">src/ui/src/app/services/api.service.ts</a></h3>
-<pre><code class="language-typescript">async fetchAvailableTools(): Promise&lt;{tools: Tools[]} | void&gt; {
-  try {
-    const response = await fetch(`${this.apiUrl}/api/tools`, {
-      method: &#39;GET&#39;,
-      headers: {
-        &#39;Content-Type&#39;: &#39;application/json&#39;,
-      },
-    });
-    if (!response.ok) {
-      const { error } = await response.json();
-      return this.handleApiError(
-        new Error(error || &#39;An error occurred while fetching tools&#39;),
-        response.status
-      );
-    }
-    return (await response.json());
-  } catch (error) {
-    return this.handleApiError(error, 0);
-  }
-}
-</code></pre>
-<ul>
-<li>Makes an HTTP GET request to retrieve the list of tools.</li>
-<li>Handles errors gracefully, ensuring the system remains robust.</li>
-<li>Returns the tools in a structured format for use by the <code class="inline-code">ChatService</code>.</li>
-</ul>
 <pre><code class="language-typescript">async streamChatMessage(message: string, tools: Tools[]) {
-  try {
-    const response = await fetch(`${this.apiUrl}/api/chat`, {
-      method: &#39;POST&#39;,
-      headers: {
-        &#39;Content-Type&#39;: &#39;application/json&#39;,
-      },
-      body: JSON.stringify({ message, tools }),
-    });
+    try {
+        const response = await fetch(`${this.apiUrl}/api/chat`, {
+            method: &#39;POST&#39;,
+            headers: {
+                &#39;Content-Type&#39;: &#39;application/json&#39;,
+            },
+            body: JSON.stringify({ message, tools }),
+        });
 
-    if (!response.ok) {
-      const { error } = await response.json();
-      return this.handleApiError(
-        new Error(error || &#39;An error occurred&#39;),
-        response.status
-      );
-    }
-
-    const decoder = new TextDecoder(&#39;utf-8&#39;);
-
-    if (!response.body) {
-      throw new Error(&#39;Readable stream not supported&#39;);
-    }
-
-    this.chatStreamState.next({ type: &#39;START&#39; });
-
-    for await (const chunk of response.body) {
-      const value = decoder.decode(chunk, { stream: true });
-
-      const jsonValues = value.trim().split(/\n\n+/);
-
-      for (const jsonValue of jsonValues) {
-        try {
-          const parsedData = JSON.parse(jsonValue);
-          this.chatStreamState.next({
-            type: &#39;MESSAGE&#39;,
-            event: parsedData,
-          });
-        } catch (error) {
-          console.error(&#39;Error parsing JSON chunk:&#39;, error);
+        if (!response.ok) {
+            const { error } = await response.json();
+            return this.handleApiError(
+                new Error(error || &#39;An error occurred&#39;),
+                response.status
+            );
         }
-      }
+
+        const decoder = new TextDecoder(&#39;utf-8&#39;);
+
+        if (!response.body) {
+            throw new Error(&#39;Readable stream not supported&#39;);
+        }
+
+        this.chatStreamState.next({ type: &#39;START&#39; });
+
+        for await (const chunk of response.body) {
+            const value = decoder.decode(chunk, { stream: true });
+
+            const jsonValues = value.trim().split(/\n\n+/);
+
+            for (const jsonValue of jsonValues) {
+                try {
+                    const parsedData = JSON.parse(jsonValue);
+                    this.chatStreamState.next({
+                        type: &#39;MESSAGE&#39;,
+                        event: parsedData,
+                    });
+                } catch (error) {
+                    console.error(&#39;Error parsing JSON chunk:&#39;, error);
+                }
+            }
+        }
+
+        this.chatStreamState.next({ type: &#39;END&#39; });
+    } catch (error) {
+        this.handleApiError(error, 0);
     }
-
-    this.chatStreamState.next({ type: &#39;END&#39; });
-  } catch (error) {
-    this.handleApiError(error, 0);
-  }
 }
 </code></pre>
 <ul>
-<li>Streams user messages to the backend and processes responses in real-time.</li>
-<li>Uses a <code class="inline-code">TextDecoder</code> to parse SSE chunks and updates the <code class="inline-code">chatStreamState</code>.</li>
-<li>Handles errors during streaming, ensuring the Oracle’s voice remains clear.</li>
+<li>Streams user messages to the Oracle and processes the streamed responses in real-time.</li>
+<li>Decodes the incoming data and parses it as JSON to extract meaningful events.</li>
+<li>Sends updates to the <code class="inline-code">chatStreamState</code> observable to notify other parts of the system.</li>
 </ul>
-<pre><code class="language-typescript">private handleApiError(error: unknown, statusCode: number) {
-  console.error(&#39;Fetch error:&#39;, error);
-  let errorType: ChatEventErrorType = &#39;general&#39;;
-
-  this.chatStreamState.next({
-    type: &#39;ERROR&#39;,
-    error: {
-      type: errorType,
-      message: (error as Error).toString(),
-      statusCode,
-    },
-  });
+<hr>
+<pre><code class="language-typescript">async fetchAvailableTools(): Promise&lt;{tools: Tools[]} | void&gt; {
+    try {
+        const response = await fetch(`${this.apiUrl}/api/tools`, {
+            method: &#39;GET&#39;,
+            headers: {
+                &#39;Content-Type&#39;: &#39;application/json&#39;,
+            },
+        });
+        if (!response.ok) {
+            const { error } = await response.json();
+            return this.handleApiError(
+                new Error(error || &#39;An error occurred while fetching tools&#39;),
+                response.status
+            );
+        }
+        return (await response.json());
+    } catch (error) {
+        return this.handleApiError(error, 0);
+    }
 }
 </code></pre>
 <ul>
-<li>Logs errors and updates the <code class="inline-code">chatStreamState</code> with error details.</li>
-<li>Differentiates between error types, providing clarity for debugging.</li>
-<li>Ensures the system remains operational even in the face of errors.</li>
+<li>Fetches the list of tools from the Oracle&#39;s repository.</li>
+<li>Handles errors gracefully, ensuring the system remains stable even if the request fails.</li>
+<li>Returns the list of tools for further processing by the <code class="inline-code">ChatService</code>.</li>
+</ul>
+<hr>
+<pre><code class="language-typescript">private handleApiError(error: unknown, statusCode: number) {
+    console.error(&#39;Fetch error:&#39;, error);
+    let errorType: ChatEventErrorType = &#39;general&#39;;
+
+    this.chatStreamState.next({
+        type: &#39;ERROR&#39;,
+        error: {
+            type: errorType,
+            message: (error as Error).toString(),
+            statusCode,
+        },
+    });
+}
+</code></pre>
+<ul>
+<li>Handles errors during API calls, categorizing them by type and notifying the system of the error.</li>
+<li>Ensures that the <code class="inline-code">chatStreamState</code> observable reflects the error state, allowing the user interface to display appropriate feedback.</li>
+<li>Logs the error for debugging purposes.</li>
 </ul>
 <hr>
 <h2>Helpful Hints</h2>
 <ul>
-<li><strong>Tool Filtering</strong>: Use <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.service.ts#L68" target="_blank" rel="noopener noreferrer"><code class="inline-code">fetchAvailableTools</code></a> to understand how tools are dynamically selected for each query.</li>
-<li><strong>Event Flow</strong>: Study <code class="inline-code">processAgentEvents</code> to see how the system handles dynamic responses and integrates tool outputs.</li>
-<li><strong>Error Handling</strong>: Examine <code class="inline-code">handleApiError</code> for strategies to maintain system robustness during communication failures.</li>
+<li>🛠️ <strong>Tool Selection</strong>: Ensure you understand how tools are filtered and selected for each conversation. This knowledge is crucial for optimizing the Oracle&#39;s responses.</li>
+<li>🧩 <strong>Event Processing</strong>: Pay close attention to how <code class="inline-code">processAgentEvents</code> handles different event types. This is key to understanding the Oracle&#39;s internal logic.</li>
+<li>🔄 <strong>Error Handling</strong>: Study the <code class="inline-code">handleApiError</code> method to see how the system gracefully recovers from errors.</li>
 </ul>
 <hr>
-<p>You have mastered all the secrets of the Pyramid of Infinite Journeys! Your adventure is complete.</p>
-<p>Hail, seeker of wisdom, for thou hast unlocked the sacred truths of the Oracle’s Interface, ascending yet closer to the zenith of thy quest with the brilliance of a guiding ⭐ and the resolve of ancient stone!</p>
+<p>You have mastered all the secrets of the Pyramid of the Llama Oracle! Your adventure is complete.</p>
+<p>Hark, valiant seeker, thou hast traversed the hallowed Chamber of Echoes and unveiled its sacred truths—thy wisdom now glimmers like a celestial jewel, guiding thee ever closer to the zenith of thy noble odyssey! ⭐⚡💎</p>
 
 </div>
 

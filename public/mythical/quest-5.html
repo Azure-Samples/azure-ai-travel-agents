@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quest 5: The Knightly Chat Guild - Repo Adventure</title>
+    <title>Quest 5: The Mystic Mirror - Repo Adventure</title>
     <link rel="stylesheet" href="assets/theme.css">
     <link rel="stylesheet" href="../assets/shared/quest-navigator.css">
     <link rel="stylesheet" href="../assets/theme-toggle.css">
@@ -33,7 +33,7 @@
                 <a href="https://github.com/Azure-Samples/azure-ai-travel-agents" target="_blank" rel="noopener noreferrer" class="github-link">
                     <img src="../assets/shared/github-mark.svg" alt="GitHub" width="24" height="24">
                 </a>
-                <a href="index.html">The Enchanted Kingdom of Azure AI Agents</a>
+                <a href="index.html">The Enchanted Kingdom of Azure AI: Chronicles of the Multi-Agent Alliance</a>
             </div>
             <div class="nav-middle">
             </div>
@@ -57,40 +57,26 @@
     
     <div class="container">
         <div class="quest-content">
-    <h1>Quest 5: The Knightly Chat Guild</h1>
+    <h1>Quest 5: The Mystic Mirror</h1>
 <hr>
-<p>In the mythical Kingdom of Azure, the Mystic Llama Codex tasked you with mastering the enchanted scrolls that power the Knightly Chat Guild. These scrolls, woven with the magic of Angular and TypeScript, guide the guild&#39;s conversations with travelers seeking counsel. The guild&#39;s success depends on the seamless orchestration of magical streams, dynamic tools, and spellbinding user interfaces. To complete your journey, you must uncover the secrets of the guild&#39;s chat services and their connection to the Codex&#39;s tools. Will you rise to the challenge and bring harmony to the Knightly Chat Guild?</p>
+<p>In the mythical Kingdom of Azure AI, the enchanted artifact known as the <strong>Mystic Mirror</strong> has been discovered. This magical device reflects the wisdom of the grand council of agents, projecting their insights into the mortal realm. But its power lies in its ability to stream knowledge dynamically, channeling the voices of the agents as they collaborate. To harness this artifact, the kingdom&#39;s heroes must delve into the secrets of the <strong>Streaming Chat UI</strong>, where the Mystic Mirror&#39;s reflections are shaped. Will you uncover the spells that bind the agents&#39; voices to the mirror?</p>
 <h2>Quest Objectives</h2>
 <p>As you explore the code below, investigate these key questions:</p>
 <ul>
-<li>🔍 <strong>Stream Enchantment</strong>: How does the <code class="inline-code">chatStreamState</code> BehaviorSubject manage the flow of chat events and ensure real-time updates?</li>
-<li>⚡ <strong>Tool Invocation</strong>: What role does <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.service.ts#L68" target="_blank" rel="noopener noreferrer"><code class="inline-code">fetchAvailableTools</code></a> play in dynamically selecting tools for the Knightly Chat Guild&#39;s responses?</li>
-<li>🛡️ <strong>Error Safeguards</strong>: How does the system handle errors during the streaming of chat messages and ensure user-friendly notifications?</li>
+<li>🔍 <strong>Agent Reflections</strong>: How does the <code class="inline-code">ChatService</code> process and manage agent events to ensure smooth communication with the chat interface?</li>
+<li>⚡ <strong>Dynamic Streams</strong>: What mechanisms in the <code class="inline-code">ApiService</code> enable the streaming of messages and real-time updates in the chat interface?</li>
+<li>🛡️ <strong>Error Safeguards</strong>: How does the system handle errors during message streaming, and what patterns are used to ensure resilience?</li>
 </ul>
 <h2>File Exploration</h2>
-<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.service.ts" target="_blank" rel="noopener noreferrer">src/ui/src/app/chat-conversation/chat-conversation.service.ts</a>:</span> The Guild&#39;s Spellbook</h3>
-<p>This file contains the core logic for managing chat conversations, including message handling, tool integration, and event processing. It acts as the bridge between the user interface and the backend services, ensuring that the Knightly Chat Guild operates smoothly.</p>
+<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.service.ts" target="_blank" rel="noopener noreferrer">src/ui/src/app/chat-conversation/chat-conversation.service.ts</a>:</span> Core Chat Logic</h3>
+<p>The <code class="inline-code">ChatService</code> is the heart of the Mystic Mirror, responsible for managing user messages, processing agent events, and maintaining the chat&#39;s state. It acts as the bridge between the UI and the backend, ensuring the seamless reflection of agent insights.</p>
 <h4>Highlights</h4>
 <ul>
-<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.service.ts#L68" target="_blank" rel="noopener noreferrer"><code class="inline-code">fetchAvailableTools</code></a>: Dynamically retrieves the list of available tools, allowing the guild to adapt its strategies based on current resources.</li>
-<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.component.ts#L170" target="_blank" rel="noopener noreferrer"><code class="inline-code">sendMessage</code></a>: Orchestrates the sending of user messages, triggering backend streams and managing the state of the conversation.</li>
-<li><code class="inline-code">processAgentEvents</code>: Handles incoming events from the backend, updating the chat state and ensuring the guild&#39;s responses are timely and accurate.</li>
-</ul>
-<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/services/api.service.ts" target="_blank" rel="noopener noreferrer">src/ui/src/app/services/api.service.ts</a>:</span> The Codex&#39;s Messenger</h3>
-<p>This file defines the API service responsible for communicating with the backend. It includes methods for fetching tools, streaming chat messages, and handling errors.</p>
-<h4>Highlights</h4>
-<ul>
-<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.service.ts#L68" target="_blank" rel="noopener noreferrer"><code class="inline-code">fetchAvailableTools</code></a>: Retrieves the list of tools from the backend, ensuring the guild has the resources it needs for its quests.</li>
-<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/services/api.service.ts#L85" target="_blank" rel="noopener noreferrer"><code class="inline-code">streamChatMessage</code></a>: Manages the streaming of chat messages, processing server-sent events (SSE) to maintain real-time communication.</li>
-<li><code class="inline-code">handleApiError</code>: Provides a centralized mechanism for handling API errors, ensuring that the guild remains resilient in the face of adversity.</li>
-</ul>
-<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.component.ts" target="_blank" rel="noopener noreferrer">src/ui/src/app/chat-conversation/chat-conversation.component.ts</a>:</span> The Guild&#39;s Command Post</h3>
-<p>This file defines the Angular component responsible for rendering the chat interface. It connects the user interface to the chat service, ensuring that user interactions are seamlessly integrated with the backend logic.</p>
-<h4>Highlights</h4>
-<ul>
-<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.component.ts#L164" target="_blank" rel="noopener noreferrer"><code class="inline-code">ngOnInit</code></a>: Initializes the component, resetting the chat and fetching the available tools for the guild.</li>
-<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.component.ts#L170" target="_blank" rel="noopener noreferrer"><code class="inline-code">sendMessage</code></a>: Captures user messages and delegates them to the chat service for processing.</li>
-<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.component.ts#L175" target="_blank" rel="noopener noreferrer"><code class="inline-code">scrollToBottom</code></a>: Ensures that the chat interface remains user-friendly by automatically scrolling to the latest message.</li>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.service.ts#L68" target="_blank" rel="noopener noreferrer"><code class="inline-code">fetchAvailableTools</code></a>: Fetches and filters the tools available to the agents, ensuring only selected tools are used in the conversation.</li>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.component.ts#L170" target="_blank" rel="noopener noreferrer"><code class="inline-code">sendMessage</code></a>: Handles user input, sends messages to the backend, and updates the chat stream.</li>
+<li><code class="inline-code">processAgentEvents</code>: Processes events streamed from the agents, updating the chat state dynamically.</li>
+<li><code class="inline-code">updateAndNotifyAgentChatMessageState</code>: Updates the last assistant message with new data and notifies the UI of state changes.</li>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.service.ts#L211" target="_blank" rel="noopener noreferrer"><code class="inline-code">resetChat</code></a>: Resets the chat to its initial state, clearing all buffers and streams.</li>
 </ul>
 <h2>Code</h2>
 <h3><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.service.ts" target="_blank" rel="noopener noreferrer">src/ui/src/app/chat-conversation/chat-conversation.service.ts</a></h3>
@@ -99,12 +85,19 @@
     if (toolsResult) {
       this.tools.set(toolsResult.tools.filter((tool) =&gt; tool.selected));
     }
-  }
-
-async sendMessage(event: Event) {
+}
+</code></pre>
+<ul>
+<li>Fetches tools from the API and filters out unselected ones.</li>
+<li>Ensures that only relevant tools are available for use.</li>
+<li>Highlights the dynamic nature of tool discovery.</li>
+</ul>
+<hr>
+<pre><code class="language-typescript">async sendMessage(event: Event) {
     if ((event as KeyboardEvent).shiftKey) {
       return;
     }
+
     const messageText = this.userMessage();
     if (!messageText.trim()) return;
 
@@ -123,9 +116,15 @@ async sendMessage(event: Event) {
       messageText,
       this.tools().filter((tool) =&gt; tool.selected)
     );
-  }
-
-private processAgentEvents(event?: ChatEvent) {
+}
+</code></pre>
+<ul>
+<li>Handles user input and sends it to the backend.</li>
+<li>Updates the chat stream with the user&#39;s message.</li>
+<li>Demonstrates the integration of user interactions with backend streaming.</li>
+</ul>
+<hr>
+<pre><code class="language-typescript">private processAgentEvents(event?: ChatEvent) {
     if (event &amp;&amp; event.type === &#39;metadata&#39;) {
       this.currentAgentName.set(event.data?.agentName || null);
       this.agentEventsBuffer.push(event);
@@ -139,126 +138,64 @@ private processAgentEvents(event?: ChatEvent) {
               events: this.agentEventsBuffer,
             },
           });
+
           this.assistantMessageInProgress.set(false);
           break;
-        // Additional cases omitted for brevity
-      }
-    }
-  }
-</code></pre>
-<ul>
-<li>Dynamically loads the tools available for the chat, adapting to backend configurations.</li>
-<li>Manages user message submission, ensuring data integrity and triggering backend communication.</li>
-<li>Processes incoming events to maintain real-time synchronization of chat state.</li>
-</ul>
-<hr>
-<h3><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/services/api.service.ts" target="_blank" rel="noopener noreferrer">src/ui/src/app/services/api.service.ts</a></h3>
-<pre><code class="language-typescript">async fetchAvailableTools(): Promise&lt;{tools: Tools[]} | void&gt; {
-    try {
-      const response = await fetch(`${this.apiUrl}/api/tools`, {
-        method: &#39;GET&#39;,
-        headers: {
-          &#39;Content-Type&#39;: &#39;application/json&#39;,
-        },
-      });
-      if (!response.ok) {
-        const { error } = await response.json();
-        return this.handleApiError(
-          new Error(error || &#39;An error occurred while fetching tools&#39;),
-          response.status
-        );
-      }
-      return (await response.json());
-    } catch (error) {
-      return this.handleApiError(error, 0);
-    }
-  }
+        case &#39;StopEvent&#39;:
+          this.updateAndNotifyAgentChatMessageState(delta, {
+            metadata: {
+              events: this.agentEventsBuffer,
+            },
+          });
 
-async streamChatMessage(message: string, tools: Tools[]) {
-    try {
-      const response = await fetch(`${this.apiUrl}/api/chat`, {
-        method: &#39;POST&#39;,
-        headers: {
-          &#39;Content-Type&#39;: &#39;application/json&#39;,
-        },
-        body: JSON.stringify({ message, tools }),
-      });
-
-      if (!response.ok) {
-        const { error } = await response.json();
-        return this.handleApiError(
-          new Error(error || &#39;An error occurred&#39;),
-          response.status
-        );
-      }
-
-      const decoder = new TextDecoder(&#39;utf-8&#39;);
-      if (!response.body) {
-        throw new Error(&#39;Readable stream not supported&#39;);
-      }
-      this.chatStreamState.next({ type: &#39;START&#39; });
-
-      for await (const chunk of response.body) {
-        const value = decoder.decode(chunk, { stream: true });
-        const jsonValues = value.trim().split(/\n\n+/);
-        for (const jsonValue of jsonValues) {
-          try {
-            const parsedData = JSON.parse(jsonValue);
-            this.chatStreamState.next({
-              type: &#39;MESSAGE&#39;,
-              event: parsedData,
-            });
-          } catch (error) {
-            console.error(&#39;Error parsing JSON chunk:&#39;, error);
+          this.assistantMessageInProgress.set(false);
+          this.isLoading.set(false);
+          break;
+        case &#39;AgentToolCallResult&#39;:
+          let state = {};
+          if (typeof event.data.raw === &#39;string&#39;) {
+            state = {
+              reasoning: [
+                {
+                  content: event.data.raw,
+                },
+              ],
+            };
           }
-        }
+          this.updateAndNotifyAgentChatMessageState(delta, state);
+          break;
+
+        case &#39;AgentStream&#39;:
+          this.assistantMessageInProgress.set(true);
+
+          if (delta.trim()) {
+            this.agentEventsBuffer.push(event);
+            this.updateAndNotifyAgentChatMessageState(delta, {
+              metadata: {
+                events: this.agentEventsBuffer,
+              },
+            });
+          }
+          break;
       }
-
-      this.chatStreamState.next({ type: &#39;END&#39; });
-    } catch (error) {
-      this.handleApiError(error, 0);
     }
-  }
+}
 </code></pre>
 <ul>
-<li>Implements tool fetching to ensure the guild has access to the necessary resources.</li>
-<li>Streams chat messages, processing chunks of data for real-time updates.</li>
-<li>Handles errors gracefully, ensuring the guild remains operational even in challenging situations.</li>
-</ul>
-<hr>
-<h3><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.component.ts" target="_blank" rel="noopener noreferrer">src/ui/src/app/chat-conversation/chat-conversation.component.ts</a></h3>
-<pre><code class="language-typescript">async ngOnInit() {
-    this.resetChat();
-    await this.chatService.fetchAvailableTools();
-  }
-
-@HostListener(&#39;window:keyup.shift.enter&#39;, [&#39;$event&#39;])
-sendMessage(event: any) {
-    event.preventDefault();
-    this.chatService.sendMessage(event);
-  }
-
-scrollToBottom() {
-    this.eot()?.nativeElement.scrollIntoView({
-      behavior: &#39;smooth&#39;,
-    });
-  }
-</code></pre>
-<ul>
-<li>Initializes the chat interface, preparing the guild for interaction.</li>
-<li>Captures user messages and delegates them to the chat service.</li>
-<li>Maintains a user-friendly interface by ensuring the latest messages are always visible.</li>
+<li>Processes agent events and updates the chat state dynamically.</li>
+<li>Handles different event types, including metadata, tool results, and streaming.</li>
+<li>Illustrates the reactive design of the chat service.</li>
 </ul>
 <hr>
 <h2>Helpful Hints</h2>
 <ul>
-<li><strong>Tool Adaptability</strong>: Investigate how <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.service.ts#L68" target="_blank" rel="noopener noreferrer"><code class="inline-code">fetchAvailableTools</code></a> dynamically adjusts the available tools for the guild.</li>
-<li><strong>Streaming Insights</strong>: Pay close attention to the <code class="inline-code">chatStreamState</code> BehaviorSubject for understanding real-time updates.</li>
-<li><strong>Error Handling</strong>: Review the <code class="inline-code">handleApiError</code> method for insights into error management and user notifications.</li>
+<li>🧙‍♂️ <strong>Explore the Event Flow</strong>: Follow how <code class="inline-code">processAgentEvents</code> handles different event types to understand the dynamic updates.</li>
+<li>🔮 <strong>Trace the Streaming Logic</strong>: Investigate how <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.component.ts#L170" target="_blank" rel="noopener noreferrer"><code class="inline-code">sendMessage</code></a> and <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/services/api.service.ts#L85" target="_blank" rel="noopener noreferrer"><code class="inline-code">streamChatMessage</code></a> work together for real-time communication.</li>
+<li>🛠️ <strong>Focus on Tool Integration</strong>: Pay attention to <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.service.ts#L68" target="_blank" rel="noopener noreferrer"><code class="inline-code">fetchAvailableTools</code></a> to see how tools are dynamically discovered and filtered.</li>
 </ul>
 <hr>
-<p>You have mastered all the secrets of the Mystic Llama Codex and the Knightly Chat Guild! Your adventure is complete.</p>
-<p>By the blazing forge of the celestial smiths, thou hast conquered the Knightly Chat Guild with valor, carving thy legend deeper into the annals of the realm—only one final quest remains to crown thee a true champion of the mythical order! ⭐⚔️✨</p>
+<p>You have mastered all the secrets of the Mystic Mirror and the enchanted Kingdom of Azure AI! Your adventure is complete.</p>
+<p>Brave seeker of wisdom, you have gazed into the Mystic Mirror and unlocked its arcane truths, bringing your quest to 80% completion—onward, valiant soul, for the final chapter of glory awaits! ⚔️👁️💎</p>
 
 </div>
 

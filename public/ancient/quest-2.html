@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quest 2: The Prophets of Many Tongues - Repo Adventure</title>
+    <title>Quest 2: The Scrolls of Many Tongues - Repo Adventure</title>
     <link rel="stylesheet" href="assets/theme.css">
     <link rel="stylesheet" href="../assets/shared/quest-navigator.css">
     <link rel="stylesheet" href="../assets/theme-toggle.css">
@@ -33,7 +33,7 @@
                 <a href="https://github.com/Azure-Samples/azure-ai-travel-agents" target="_blank" rel="noopener noreferrer" class="github-link">
                     <img src="../assets/shared/github-mark-white.svg" alt="GitHub" width="24" height="24">
                 </a>
-                <a href="index.html">The Pyramid of Infinite Journeys</a>
+                <a href="index.html">The Pyramid of the Llama Oracle</a>
             </div>
             <div class="nav-middle">
             </div>
@@ -57,79 +57,26 @@
     
     <div class="container">
         <div class="quest-content">
-    <h1>Quest 2: The Prophets of Many Tongues</h1>
+    <h1>Quest 2: The Scrolls of Many Tongues</h1>
 <hr>
-<p>As you delve deeper into the Pyramid of Infinite Journeys, you uncover a chamber filled with glyphs that speak of &quot;The Prophets of Many Tongues.&quot; These ancient tools, capable of interpreting and speaking in countless languages, were used by the Codexians to connect their vast civilization. You realize these tools represent a flexible system of communication, adapting to the needs of the user. Your task is to decipher their design and understand how they seamlessly switch between different modes of operation, much like the prophets who once guided this ancient society.</p>
+<p>In the depths of the Pyramid of the Llama Oracle, ancient Codexians devised a sacred ritual to communicate with entities across realms. They crafted the Scrolls of Many Tongues, artifacts capable of invoking wisdom from diverse sources. These scrolls represent a flexible system of knowledge, allowing explorers to adapt their methods depending on their needs. To decipher their secrets, you must investigate how the Codexians ensured harmony between multiple sources of wisdom, each with its unique language and purpose.</p>
 <h2>Quest Objectives</h2>
 <p>As you explore the code below, investigate these key questions:</p>
 <ul>
-<li>🔍 <strong>Tongues of the Ancients</strong>: How does the <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm()</code></a> function dynamically select and configure the correct language model provider based on the environment?</li>
-<li>⚡ <strong>Prophetic Flow</strong>: What mechanisms ensure smooth transitions between different providers, such as Azure OpenAI and GitHub Models?</li>
-<li>🛡️ <strong>Ritual Safeguards</strong>: How does the system handle errors or invalid configurations when selecting a provider?</li>
+<li>🔍 <strong>The Azure Cipher</strong>: How does the <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm()</code></a> function in <code class="inline-code">azure-openai.ts</code> handle authentication for different environments, and what safeguards are in place for production?</li>
+<li>⚡ <strong>The Scroll Selector</strong>: How does the provider selection logic in <code class="inline-code">index.ts</code> dynamically adapt based on environment variables?</li>
+<li>🛡️ <strong>Tongue Harmonization</strong>: How does error handling ensure that invalid <code class="inline-code">LLM_PROVIDER</code> values do not disrupt the system?</li>
 </ul>
 <h2>File Exploration</h2>
-<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts" target="_blank" rel="noopener noreferrer">src/api/src/orchestrator/llamaindex/providers/index.ts</a>:</span> The Oracle&#39;s Selection Ritual</h3>
-<p>This file orchestrates the selection of the appropriate language model provider. It uses environment variables to determine which provider to activate and ensures that only valid options are chosen. The <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm()</code></a> function acts as the central decision-maker, delegating to specialized configurations based on the provider type.</p>
+<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/azure-openai.ts" target="_blank" rel="noopener noreferrer">src/api/src/orchestrator/llamaindex/providers/azure-openai.ts</a>:</span> Azure OpenAI Provider</h3>
+<p>This file defines the <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm()</code></a> function for interacting with Azure OpenAI services. It incorporates authentication strategies based on the runtime environment, supporting both local development and production scenarios. The Codexians ensured that explorers could invoke Azure wisdom securely and flexibly.</p>
 <h4>Highlights</h4>
 <ul>
-<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm()</code></a> dynamically selects the appropriate provider based on the <code class="inline-code">LLM_PROVIDER</code> environment variable.</li>
-<li><code class="inline-code">LLMProvider</code> type defines valid provider options, ensuring clarity and preventing invalid configurations.</li>
-<li>Error handling ensures that an unknown provider triggers a meaningful exception with guidance on valid options.</li>
-</ul>
-<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/azure-openai.ts" target="_blank" rel="noopener noreferrer">src/api/src/orchestrator/llamaindex/providers/azure-openai.ts</a>:</span> Azure&#39;s Sacred Glyphs</h3>
-<p>This file configures the Azure OpenAI provider, supporting both local and production environments. It uses Azure&#39;s identity credentials to authenticate and retrieve tokens securely.</p>
-<h4>Highlights</h4>
-<ul>
-<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm()</code></a> configures Azure OpenAI with either <code class="inline-code">apiKey</code> or <code class="inline-code">ManagedIdentityCredential</code>, depending on the environment.</li>
-<li><code class="inline-code">DefaultAzureCredential</code> and <code class="inline-code">ManagedIdentityCredential</code> handle authentication for production environments.</li>
-<li><code class="inline-code">getBearerTokenProvider()</code> retrieves tokens for Azure Cognitive Services, ensuring secure access.</li>
-</ul>
-<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/github-models.ts" target="_blank" rel="noopener noreferrer">src/api/src/orchestrator/llamaindex/providers/github-models.ts</a>:</span> The Codex of GitHub</h3>
-<p>This file provides a lightweight configuration for GitHub-based models. It demonstrates a streamlined approach to integrating external APIs.</p>
-<h4>Highlights</h4>
-<ul>
-<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm()</code></a> configures the GitHub Models provider using a base URL, API key, and model name.</li>
-<li>Simplified setup highlights the adaptability of the system to different providers.</li>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm()</code></a>: Configures Azure OpenAI credentials based on the runtime environment (local Docker or cloud production). This ensures secure access to the service.</li>
+<li><code class="inline-code">DefaultAzureCredential</code> and <code class="inline-code">ManagedIdentityCredential</code>: Implements authentication mechanisms, including managed identity for production environments.</li>
+<li><code class="inline-code">getBearerTokenProvider()</code>: Generates bearer tokens for Azure Cognitive Services, ensuring secure communication.</li>
 </ul>
 <h2>Code</h2>
-<h3><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts" target="_blank" rel="noopener noreferrer">src/api/src/orchestrator/llamaindex/providers/index.ts</a></h3>
-<pre><code class="language-typescript">import dotenv from &quot;dotenv&quot;;
-dotenv.config();
-
-import { llm as azureOpenAI } from &quot;./azure-openai.js&quot;;
-import { llm as githubModels } from &quot;./github-models.js&quot;;
-import { llm as ollamaModels } from &quot;./ollama-models.js&quot;;
-
-type LLMProvider =
-  | &quot;azure-openai&quot;
-  | &quot;github-models&quot;
-  | &quot;foundry-local&quot;
-  | &quot;docker-models&quot;
-  | &quot;ollama-models&quot;;
-
-const provider = (process.env.LLM_PROVIDER || &quot;&quot;) as LLMProvider;
-
-export const llm = async () =&gt; {
-  switch (provider) {
-    case &quot;azure-openai&quot;:
-      return azureOpenAI();
-    case &quot;github-models&quot;:
-      return githubModels();
-    case &quot;ollama-models&quot;:
-      return ollamaModels();
-    default:
-      throw new Error(
-        `Unknown LLM_PROVIDER &quot;${provider}&quot;. Valid options are: azure-openai, github-models, foundry-local, docker-models, ollama-models.`
-      );
-  }
-};
-</code></pre>
-<ul>
-<li>Dynamically selects the appropriate provider based on the <code class="inline-code">LLM_PROVIDER</code> environment variable.</li>
-<li>Ensures flexibility by supporting multiple providers, each with its own configuration.</li>
-<li>Throws meaningful errors for invalid configurations, guiding developers toward valid options.</li>
-</ul>
-<hr>
 <h3><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/azure-openai.ts" target="_blank" rel="noopener noreferrer">src/api/src/orchestrator/llamaindex/providers/azure-openai.ts</a></h3>
 <pre><code class="language-typescript">import { openai } from &quot;llamaindex&quot;;
 import {
@@ -184,38 +131,73 @@ export const llm = async () =&gt; {
 };
 </code></pre>
 <ul>
-<li>Configures Azure OpenAI provider with environment-specific authentication.</li>
-<li>Supports both API key and managed identity credentials, ensuring flexibility across environments.</li>
-<li>Uses <code class="inline-code">getBearerTokenProvider()</code> for secure token retrieval, adhering to Azure&#39;s best practices.</li>
+<li>The <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm()</code></a> function dynamically switches between local and production authentication methods, ensuring flexibility across environments.</li>
+<li>The use of <code class="inline-code">DefaultAzureCredential</code> and <code class="inline-code">ManagedIdentityCredential</code> demonstrates secure practices for authenticating in cloud-native applications.</li>
+<li>The <code class="inline-code">getBearerTokenProvider()</code> function encapsulates token generation, simplifying integration with Azure Cognitive Services.</li>
 </ul>
 <hr>
-<h3><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/github-models.ts" target="_blank" rel="noopener noreferrer">src/api/src/orchestrator/llamaindex/providers/github-models.ts</a></h3>
-<pre><code class="language-typescript">import { openai } from &quot;llamaindex&quot;;
+<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts" target="_blank" rel="noopener noreferrer">src/api/src/orchestrator/llamaindex/providers/index.ts</a>:</span> LLM Provider Selection</h3>
+<p>This file is the central hub for selecting the appropriate LLM provider based on environment variables. The Codexians ensured explorers could seamlessly switch between wisdom sources without disrupting their journey.</p>
+<h4>Highlights</h4>
+<ul>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm()</code></a>: Factory function that selects and initializes the appropriate LLM provider based on the <code class="inline-code">LLM_PROVIDER</code> environment variable.</li>
+<li><code class="inline-code">LLMProvider</code> type: Defines valid provider options, ensuring clarity and reducing errors.</li>
+<li>Error handling: Throws descriptive errors for invalid <code class="inline-code">LLM_PROVIDER</code> values, safeguarding system stability.</li>
+</ul>
+<h2>Code</h2>
+<h3><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts" target="_blank" rel="noopener noreferrer">src/api/src/orchestrator/llamaindex/providers/index.ts</a></h3>
+<pre><code class="language-typescript">import dotenv from &quot;dotenv&quot;;
+dotenv.config();
+
+import { llm as azureOpenAI } from &quot;./azure-openai.js&quot;;
+import { llm as foundryLocal } from &quot;./foundry-local.js&quot;;
+import { llm as githubModels } from &quot;./github-models.js&quot;;
+import { llm as dockerModels } from &quot;./docker-models.js&quot;;
+import { llm as ollamaModels } from &quot;./ollama-models.js&quot;;
+
+type LLMProvider =
+  | &quot;azure-openai&quot;
+  | &quot;github-models&quot;
+  | &quot;foundry-local&quot;
+  | &quot;docker-models&quot;
+  | &quot;ollama-models&quot;;
+
+const provider = (process.env.LLM_PROVIDER || &quot;&quot;) as LLMProvider;
 
 export const llm = async () =&gt; {
-  console.log(&quot;Using GitHub Models&quot;);
-  return openai({
-    baseURL: &quot;https://models.inference.ai.azure.com&quot;,
-    apiKey: process.env.GITHUB_TOKEN,
-    model: process.env.GITHUB_MODEL,
-  });
+  switch (provider) {
+    case &quot;azure-openai&quot;:
+      return azureOpenAI();
+    case &quot;github-models&quot;:
+      return githubModels();
+    case &quot;docker-models&quot;:
+      return dockerModels();
+    case &quot;ollama-models&quot;:
+      return ollamaModels();
+    case &quot;foundry-local&quot;:
+      return foundryLocal();
+    default:
+      throw new Error(
+        `Unknown LLM_PROVIDER &quot;${provider}&quot;. Valid options are: azure-openai, github-models, foundry-local, docker-models, ollama-models.`
+      );
+  }
 };
 </code></pre>
 <ul>
-<li>Configures GitHub Models provider with minimal setup, demonstrating adaptability.</li>
-<li>Uses environment variables for API key and model selection, ensuring secure and flexible configuration.</li>
-<li>Highlights the simplicity of integrating additional providers into the system.</li>
+<li>The <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm()</code></a> function dynamically selects the provider, enabling flexibility in deployment configurations.</li>
+<li>The <code class="inline-code">LLMProvider</code> type defines valid options, reducing the risk of misconfiguration.</li>
+<li>Error handling ensures invalid provider values are caught early, preventing runtime failures.</li>
 </ul>
 <hr>
 <h2>Helpful Hints</h2>
 <ul>
-<li><strong>Environment Setup</strong>: Ensure the <code class="inline-code">LLM_PROVIDER</code> environment variable is set correctly to test different providers.</li>
-<li><strong>Debugging</strong>: Use console logs to trace which provider is selected and verify environment-specific configurations.</li>
-<li><strong>Security</strong>: Avoid hardcoding sensitive information like API keys; use environment variables instead.</li>
+<li>Use environment variables to customize the provider selection without modifying the code.</li>
+<li>Investigate the authentication methods used in <code class="inline-code">azure-openai.ts</code> to understand how cloud security is implemented.</li>
+<li>Experiment with different <code class="inline-code">LLM_PROVIDER</code> values to test the system&#39;s adaptability.</li>
 </ul>
 <hr>
-<p>Excellent work! Continue to the next quest to uncover more mysteries of the Pyramid of Infinite Journeys.</p>
-<p>Hark, seeker of sacred truths, thou hast triumphed in unearthing the wisdom of the Prophets of Many Tongues—let the halls of eternity resound with thy valor and the stars illuminate thy path to destiny! ⭐⚡💎</p>
+<p>Excellent work! Continue to the next quest to uncover more mysteries.</p>
+<p>Hark, seeker of wisdom, thou hast unlocked the sacred Scrolls of Many Tongues, a triumph most luminous upon the path of enlightenment—press onward, for the temple of mastery awaits thy noble ascent! ⭐⚡💎</p>
 
 </div>
 

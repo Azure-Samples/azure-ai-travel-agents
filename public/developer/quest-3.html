@@ -33,7 +33,7 @@
                 <a href="https://github.com/Azure-Samples/azure-ai-travel-agents" target="_blank" rel="noopener noreferrer" class="github-link">
                     <img src="../assets/shared/github-mark.svg" alt="GitHub" width="24" height="24">
                 </a>
-                <a href="index.html">AI Travel Agents: Multi-Agent Orchestration with MCP and LlamaIndex</a>
+                <a href="index.html">Multi-Agent Orchestration with Azure AI Travel Agents</a>
             </div>
             <div class="nav-middle">
             </div>
@@ -59,199 +59,61 @@
         <div class="quest-content">
     <h1>Quest 3: MCP Protocol Integration &amp; Tool Discovery</h1>
 <hr>
-<p>In this quest, you will delve into the implementation of the MCP (Model Context Protocol) integration within the AI Travel Agents application. MCP enables seamless communication between diverse tools and services implemented across multiple programming languages. By exploring the provided files, you will uncover how the system dynamically discovers tools, connects to MCP servers, and executes tool-specific functions. This integration is critical to the application&#39;s polyglot architecture, ensuring scalability and adaptability.</p>
+<p>The Azure AI Travel Agents application relies on the Model Context Protocol (MCP) to enable seamless collaboration between AI agents and tools. This quest dives into the MCP client implementations, exploring how tools are dynamically discovered, connected, and invoked. By understanding these integrations, developers can extend and enhance the system&#39;s capabilities across diverse programming environments.</p>
 <h2>Quest Objectives</h2>
 <p>As you explore the code below, investigate these key questions:</p>
 <ul>
-<li>🔍 <strong>Dynamic Client Initialization</strong>: How does the <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-tools.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">client</code></a> function dynamically configure MCP clients and select between legacy SSE and HTTP transports?</li>
-<li>⚡ <strong>Tool Discovery Workflow</strong>: What is the process for discovering and listing available tools from MCP servers, and how are unreachable servers handled?</li>
-<li>🛡️ <strong>Error Handling in Tool Calls</strong>: What mechanisms are implemented to handle errors during tool execution or server communication?</li>
+<li>🔍 <strong>Tool Discovery Mechanism</strong>: How does the <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-tools.ts#L31" target="_blank" rel="noopener noreferrer"><code class="inline-code">mcpToolsList</code></a> function dynamically connect to MCP servers and retrieve available tools?</li>
+<li>⚡ <strong>Client Transport Selection</strong>: What determines whether the system uses HTTP or SSE for MCP client communication?</li>
+<li>🛡️ <strong>Error Handling in Connectivity</strong>: How does the system handle errors when connecting to MCP servers or invoking tools?</li>
 </ul>
 <h2>File Exploration</h2>
-<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-tools.ts" target="_blank" rel="noopener noreferrer">src/api/src/mcp/mcp-tools.ts</a>:</span> Client Initialization and Tool Discovery</h3>
-<p>This file defines the <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-tools.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">client</code></a> function, which dynamically initializes MCP clients based on configuration, and the <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-tools.ts#L31" target="_blank" rel="noopener noreferrer"><code class="inline-code">mcpToolsList</code></a> function, which connects to MCP servers to discover tools. These functions are critical for orchestrating tool interactions and ensuring the availability of services.</p>
+<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-http-client.ts" target="_blank" rel="noopener noreferrer">src/api/src/mcp/mcp-http-client.ts</a>:</span> HTTP-based MCP client implementation</h3>
+<p>This file defines the <code class="inline-code">MCPClient</code> class, which establishes communication with MCP servers using HTTP. It supports tool discovery, invocation, and notification handling via the Streamable HTTP transport.</p>
 <h4>Highlights</h4>
 <ul>
-<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-tools.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">client</code></a>: Dynamically initializes MCP clients, selecting between SSE and HTTP transports based on configuration.</li>
-<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-tools.ts#L31" target="_blank" rel="noopener noreferrer"><code class="inline-code">mcpToolsList</code></a>: Connects to MCP servers, discovers tools, and handles errors for unreachable servers.</li>
-<li><code class="inline-code">McpServerDefinition</code>: Defines the structure for MCP server configurations, enabling flexible integration of new servers.</li>
-</ul>
-<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-http-client.ts" target="_blank" rel="noopener noreferrer">src/api/src/mcp/mcp-http-client.ts</a>:</span> HTTP Transport Client</h3>
-<p>This file implements the <code class="inline-code">MCPClient</code> class for connecting to MCP servers using HTTP transport. It includes methods for connecting to servers, listing tools, and executing tool calls.</p>
-<h4>Highlights</h4>
-<ul>
-<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-http-client.ts#L42" target="_blank" rel="noopener noreferrer"><code class="inline-code">MCPClient.connect</code></a>: Establishes a connection to the MCP server using HTTP.</li>
-<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-http-client.ts#L47" target="_blank" rel="noopener noreferrer"><code class="inline-code">MCPClient.listTools</code></a>: Retrieves the list of tools available on the server.</li>
-<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-http-client.ts#L52" target="_blank" rel="noopener noreferrer"><code class="inline-code">MCPClient.callTool</code></a>: Executes a specific tool on the server with provided arguments.</li>
-</ul>
-<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-sse-client.ts" target="_blank" rel="noopener noreferrer">src/api/src/mcp/mcp-sse-client.ts</a>:</span> SSE Transport Client</h3>
-<p>This file provides a legacy implementation of the <code class="inline-code">MCPClient</code> class using Server-Sent Events (SSE) for transport. It includes methods for connecting to servers, listing tools, and executing tool calls.</p>
-<h4>Highlights</h4>
-<ul>
-<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-http-client.ts#L42" target="_blank" rel="noopener noreferrer"><code class="inline-code">MCPClient.connect</code></a>: Establishes a connection to the MCP server using SSE.</li>
-<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-http-client.ts#L47" target="_blank" rel="noopener noreferrer"><code class="inline-code">MCPClient.listTools</code></a>: Retrieves the list of tools available on the server.</li>
-<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-http-client.ts#L52" target="_blank" rel="noopener noreferrer"><code class="inline-code">MCPClient.callTool</code></a>: Executes a specific tool on the server with provided arguments.</li>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-sse-client.ts#L39" target="_blank" rel="noopener noreferrer"><code class="inline-code">connect</code></a>: Establishes a connection to the MCP server using HTTP transport and logs the status.</li>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-sse-client.ts#L57" target="_blank" rel="noopener noreferrer"><code class="inline-code">listTools</code></a>: Retrieves the list of available tools from the MCP server.</li>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-sse-client.ts#L68" target="_blank" rel="noopener noreferrer"><code class="inline-code">callTool</code></a>: Invokes a specific tool on the server with provided arguments.</li>
 </ul>
 <h2>Code</h2>
-<h3><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-tools.ts" target="_blank" rel="noopener noreferrer">src/api/src/mcp/mcp-tools.ts</a></h3>
-<pre><code class="language-typescript">function client(config: LlamaIndexMCPClientOptions): MCPSSEClient | MCPHTTPClient {
-  console.log(`Initializing MCP client`);
-  console.log(`Using configuration:`, {config});
-
-  if (config.type === &quot;sse&quot;) {
-    // legacy implementation using SSE
-    return new MCPSSEClient(&quot;llamaindex-sse-client&quot;, config.url, config.accessToken);
-  } else {
-    return new MCPHTTPClient(&quot;llamaindex-http-client&quot;, config.url, config.accessToken);
-  }
-}
-
-export async function mcpToolsList(config: McpServerDefinition[]) {
-  return await Promise.all(
-    config.map(async ({ id, name, config }) =&gt; {
-      const { url, type } = config;
-      const mcpClient = client(config);
-      
-      try {
-        console.log(`Connecting to MCP server ${name} at ${url}`);
-        await mcpClient.connect();
-        console.log(`MCP server ${name} is reachable`);
-        const tools = await mcpClient.listTools();
-
-        console.log(`MCP server ${name} has ${tools.length} tools`);
-        return {
-          id,
-          name,
-          url,
-          type,
-          reachable: true,
-          selected: id !== &quot;echo-ping&quot;,
-          tools,
-        };
-      } catch (error: unknown) {
-        console.error(
-          `MCP server ${name} is not reachable`,
-          (error as Error).message
-        );
-        return {
-          id,
-          name,
-          url,
-          type,
-          reachable: false,
-          selected: false,
-          tools: [],
-          error: (error as Error).message,
-        };
-      }
-    })
-  );
-}
-</code></pre>
-<ul>
-<li>Dynamically initializes MCP clients using the <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-tools.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">client</code></a> function, supporting both SSE and HTTP transports.</li>
-<li>The <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-tools.ts#L31" target="_blank" rel="noopener noreferrer"><code class="inline-code">mcpToolsList</code></a> function connects to MCP servers and retrieves available tools, handling errors gracefully when servers are unreachable.</li>
-<li>Provides a flexible architecture for integrating new MCP servers through the <code class="inline-code">McpServerDefinition</code> type.</li>
-</ul>
-<hr>
 <h3><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-http-client.ts" target="_blank" rel="noopener noreferrer">src/api/src/mcp/mcp-http-client.ts</a></h3>
-<pre><code class="language-typescript">export class MCPClient extends EventEmitter {
-  private client: Client;
-  private transport: StreamableHTTPClientTransport;
-
-  constructor(serverName: string, serverUrl: string, accessToken?: string) {
-    super();
-    this.client = new Client({
-      name: &#39;mcp-http-client-&#39; + serverName,
-      version: &#39;1.0.0&#39;,
-    });
-
-    let headers = {};
-
-    if (accessToken) {
-      headers = {
-        Authorization: &#39;Bearer &#39; + accessToken,
-      };
-    }
-
-    this.transport = new StreamableHTTPClientTransport(new URL(serverUrl), {
-      requestInit: {
-        headers: {
-          ...headers,
-        },
-      },
-    });
-
-    this.client.setNotificationHandler(
-      ToolListChangedNotificationSchema,
-      () =&gt; {
-        console.log(&#39;Emitting toolListChanged event&#39;);
-        this.emit(&#39;toolListChanged&#39;);
-      }
-    );
-  }
-
-  async connect() {
+<pre><code class="language-typescript">async connect() {
     await this.client.connect(this.transport);
     console.log(&#39;Connected to server&#39;);
-  }
+}
 
-  async listTools() {
+async listTools() {
     const result = await this.client.listTools();
     return result.tools;
-  }
+}
 
-  async callTool(name: string, toolArgs: string) {
+async callTool(name: string, toolArgs: string) {
     console.log(`Calling tool ${name} with arguments:`, toolArgs);
 
     return await this.client.callTool({
       name,
       arguments: JSON.parse(toolArgs),
     });
-  }
-
-  async close() {
-    console.log(&#39;Closing transport...&#39;);
-    await this.transport.close();
-  }
 }
 </code></pre>
 <ul>
-<li>The <code class="inline-code">MCPClient</code> class uses HTTP transport to connect to MCP servers and manage tool interactions.</li>
-<li>Includes a notification handler for tool list updates, enhancing dynamic tool discovery.</li>
-<li>Implements robust methods for connecting, listing tools, and executing tool calls.</li>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-sse-client.ts#L39" target="_blank" rel="noopener noreferrer"><code class="inline-code">connect</code></a>: Initializes the connection using the HTTP transport and ensures the client is ready for communication.</li>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-sse-client.ts#L57" target="_blank" rel="noopener noreferrer"><code class="inline-code">listTools</code></a>: Queries the MCP server for available tools, demonstrating dynamic discovery capabilities.</li>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-sse-client.ts#L68" target="_blank" rel="noopener noreferrer"><code class="inline-code">callTool</code></a>: Sends requests to invoke specific tools, showcasing how arguments are parsed and passed.</li>
 </ul>
 <hr>
+<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-sse-client.ts" target="_blank" rel="noopener noreferrer">src/api/src/mcp/mcp-sse-client.ts</a>:</span> SSE-based MCP client implementation</h3>
+<p>This file provides an alternative MCP client implementation using Server-Sent Events (SSE). It includes legacy support for tool discovery and invocation.</p>
+<h4>Highlights</h4>
+<ul>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-sse-client.ts#L39" target="_blank" rel="noopener noreferrer"><code class="inline-code">connect</code></a>: Establishes a connection to the MCP server using SSE transport and logs errors if connectivity fails.</li>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-sse-client.ts#L57" target="_blank" rel="noopener noreferrer"><code class="inline-code">listTools</code></a>: Fetches the list of tools from the server and updates the local tools cache.</li>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-sse-client.ts#L68" target="_blank" rel="noopener noreferrer"><code class="inline-code">callTool</code></a>: Invokes server tools with structured arguments, leveraging the SSE transport.</li>
+</ul>
+<h2>Code</h2>
 <h3><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-sse-client.ts" target="_blank" rel="noopener noreferrer">src/api/src/mcp/mcp-sse-client.ts</a></h3>
-<pre><code class="language-typescript">export class MCPClient {
-  private client: Client;
-  private tools: Array&lt;any&gt; = [];
-  private transport: Transport;
-
-  constructor(serverName: string, serverUrl: string, accessToken?: string) {
-    this.client = new Client({
-      name: &quot;mcp-client-&quot; + serverName,
-      version: &quot;1.0.0&quot;,
-    });
-
-    let headers = {};
-
-    if (accessToken) {
-      headers = {
-        Authorization: &quot;Bearer &quot; + accessToken,
-      };
-    }
-
-    this.transport = new SSEClientTransport(new URL(serverUrl), {
-      requestInit: {
-        headers: {
-          ...headers,
-        },
-      },
-    });
-  }
-
-  connect() {
+<pre><code class="language-typescript">connect() {
     return tracer.startActiveSpan(&quot;connect&quot;, async (span) =&gt; {
       log(&quot;Connecting to MCP SSE server&quot;);
       try {
@@ -268,9 +130,9 @@ export async function mcpToolsList(config: McpServerDefinition[]) {
         );
       }
     });
-  }
+}
 
-  async listTools() {
+async listTools() {
     return tracer.startActiveSpan(&quot;listTools&quot;, async (span) =&gt; {
       log(&quot;Tools&quot;, this.tools);
       const toolsResult = await this.client.listTools();
@@ -279,9 +141,9 @@ export async function mcpToolsList(config: McpServerDefinition[]) {
       span.end();
       return toolsResult;
     });
-  }
+}
 
-  async callTool(toolName: string, args: Record&lt;string, any&gt;) {
+async callTool(toolName: string, args: Record&lt;string, any&gt;) {
     console.log(`Called ${toolName} with params:`, args);
     return tracer.startActiveSpan(&quot;processQuery&quot;, async (span) =&gt; {
       log(&quot;Tools&quot;, this.tools);
@@ -295,28 +157,93 @@ export async function mcpToolsList(config: McpServerDefinition[]) {
       span.end();
       return toolResult;
     });
-  }
-
-  async cleanup() {
-    await this.transport.close();
-  }
 }
 </code></pre>
 <ul>
-<li>Implements an SSE-based transport for MCP client communication, providing a legacy alternative to HTTP.</li>
-<li>Includes methods for connecting to servers, listing tools, and executing tool calls, similar to the HTTP client.</li>
-<li>Uses tracing and logging for better observability and debugging.</li>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-sse-client.ts#L39" target="_blank" rel="noopener noreferrer"><code class="inline-code">connect</code></a>: Uses OpenTelemetry tracing to monitor connectivity and logs errors for debugging.</li>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-sse-client.ts#L57" target="_blank" rel="noopener noreferrer"><code class="inline-code">listTools</code></a>: Demonstrates tool discovery with real-time updates to the local cache.</li>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-sse-client.ts#L68" target="_blank" rel="noopener noreferrer"><code class="inline-code">callTool</code></a>: Handles tool invocation, showcasing structured arguments and tracing integration.</li>
+</ul>
+<hr>
+<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-tools.ts" target="_blank" rel="noopener noreferrer">src/api/src/mcp/mcp-tools.ts</a>:</span> MCP tool discovery and client initialization</h3>
+<p>This file orchestrates the MCP client setup and tool discovery process, dynamically selecting the appropriate transport (HTTP or SSE) based on configuration.</p>
+<h4>Highlights</h4>
+<ul>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-tools.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">client</code></a>: Initializes the MCP client based on the specified transport type (HTTP or SSE).</li>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-tools.ts#L31" target="_blank" rel="noopener noreferrer"><code class="inline-code">mcpToolsList</code></a>: Connects to multiple MCP servers, retrieves tools, and handles errors gracefully.</li>
+<li><code class="inline-code">McpServerDefinition</code>: Defines the structure for MCP server configurations.</li>
+</ul>
+<h2>Code</h2>
+<h3><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-tools.ts" target="_blank" rel="noopener noreferrer">src/api/src/mcp/mcp-tools.ts</a></h3>
+<pre><code class="language-typescript">function client(config: LlamaIndexMCPClientOptions): MCPSSEClient | MCPHTTPClient {
+    console.log(`Initializing MCP client`);
+    console.log(`Using configuration:`, {config});
+
+    if (config.type === &quot;sse&quot;) {
+        // legacy implementation using SSE
+        return new MCPSSEClient(&quot;llamaindex-sse-client&quot;, config.url, config.accessToken);
+    } else {
+        return new MCPHTTPClient(&quot;llamaindex-http-client&quot;, config.url, config.accessToken);
+    }
+}
+
+export async function mcpToolsList(config: McpServerDefinition[]) {
+    return await Promise.all(
+        config.map(async ({ id, name, config }) =&gt; {
+            const { url, type } = config;
+            const mcpClient = client(config);
+
+            try {
+                console.log(`Connecting to MCP server ${name} at ${url}`);
+                await mcpClient.connect();
+                console.log(`MCP server ${name} is reachable`);
+                const tools = await mcpClient.listTools();
+
+                console.log(`MCP server ${name} has ${tools.length} tools`);
+                return {
+                    id,
+                    name,
+                    url,
+                    type,
+                    reachable: true,
+                    selected: id !== &quot;echo-ping&quot;,
+                    tools,
+                };
+            } catch (error: unknown) {
+                console.error(
+                    `MCP server ${name} is not reachable`,
+                    (error as Error).message
+                );
+                return {
+                    id,
+                    name,
+                    url,
+                    type,
+                    reachable: false,
+                    selected: false,
+                    tools: [],
+                    error: (error as Error).message,
+                };
+            }
+        })
+    );
+}
+</code></pre>
+<ul>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-tools.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">client</code></a>: Dynamically selects the MCP client type based on the configuration, enabling flexible transport options.</li>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-tools.ts#L31" target="_blank" rel="noopener noreferrer"><code class="inline-code">mcpToolsList</code></a>: Iterates through MCP server definitions, connects to each server, and retrieves tools while handling errors gracefully.</li>
+<li><code class="inline-code">McpServerDefinition</code>: Provides a structured approach to defining MCP server configurations, ensuring consistency.</li>
 </ul>
 <hr>
 <h2>Helpful Hints</h2>
 <ul>
-<li>Compare the HTTP and SSE transport implementations to understand their differences and use cases.</li>
-<li>Investigate the <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-tools.ts#L31" target="_blank" rel="noopener noreferrer"><code class="inline-code">mcpToolsList</code></a> function to see how the system dynamically discovers tools and handles unreachable servers.</li>
-<li>Explore the notification handler in the HTTP client to learn about the dynamic updating of tool lists.</li>
+<li>Use the <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-sse-client.ts#L39" target="_blank" rel="noopener noreferrer"><code class="inline-code">connect</code></a> method to establish communication with MCP servers before invoking tools.</li>
+<li>Compare the HTTP and SSE transports to understand their differences and use cases.</li>
+<li>Study the error handling in <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-tools.ts#L31" target="_blank" rel="noopener noreferrer"><code class="inline-code">mcpToolsList</code></a> to implement robust connectivity checks for MCP servers.</li>
 </ul>
 <hr>
 <p>Excellent work! Continue to the next quest to uncover more mysteries.</p>
-<p>Quest 3 successfully deployed: MCP Protocol integrated and tools discovered—you&#39;re coding at ⚡runtime efficiency⚡; keep refactoring your journey toward the ⭐endgame⭐!</p>
+<p>Congratulations on successfully deploying Quest 3: MCP Protocol Integration &amp; Tool Discovery—your codebase just leveled up with precision-engineered interoperability and groundbreaking toolchain insights; onward to 100% completion! 🚀⚡💎</p>
 
 </div>
 
