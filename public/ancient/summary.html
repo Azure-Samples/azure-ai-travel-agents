@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ancient Adventure - Complete!</title>
+    <link rel="stylesheet" href="assets/theme.css">
+    <link rel="stylesheet" href="../assets/shared/quest-navigator.css">
+    <link rel="stylesheet" href="../assets/theme-toggle.css">
+</head>
+<body class="theme-ancient">
+
+    <nav class="navbar">
+        <div class="nav-content">
+            <div class="nav-left">
+                <a href="https://github.com/Azure-Samples/azure-ai-travel-agents" target="_blank" rel="noopener noreferrer" class="github-link">
+                    <img src="../assets/shared/github-mark-white.svg" alt="GitHub" width="24" height="24">
+                </a>
+                <a href="index.html">The Pyramid of Infinite Journeys</a>
+            </div>
+            <div class="nav-middle">
+            </div>
+            <div class="nav-right">
+                <a href="../index.html" class="nav-link">Change Theme</a>
+                <a href="#" class="nav-link quest-map-trigger">Quests</a>
+                <button class="theme-toggle-btn" aria-label="Switch to light mode" type="button">
+                    <div class="theme-toggle-slider">
+                        <svg class="toggle-icon sun-icon" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="4" fill="currentColor"/>
+                            <path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        <svg class="toggle-icon moon-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+                        </svg>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="quest-content">
+            <h1>Adventure Complete!</h1>
+            <hr>
+            
+            <h2>Adventure Recap</h2>
+            <p>You've journeyed through archaeological discoveries and ancient coding wisdom to uncover the secrets of the MCP architecture. Your archaeological expedition revealed the intricate systems that power AI-driven code exploration and transform repositories into interactive adventures.</p>
+            
+            <h2>Key Concepts Learned</h2>
+            <ul>
+<li><strong>Multi-Agent Orchestration with LlamaIndex</strong>: Learn how to design and implement a multi-agent system using LlamaIndex, including dynamic agent creation, shared LLM configuration, and intelligent workflow triage. Understand how to coordinate specialized agents into a cohesive workflow and expose this functionality through an Express API gateway with streaming support.</li>
+<li><strong>Flexible LLM Provider Abstraction</strong>: Explore the implementation of a pluggable LLM provider strategy that supports multiple providers such as Azure OpenAI, GitHub Models, and Ollama. Learn how to use environment variables to dynamically select providers and implement dual authentication modes (e.g., Managed Identity for production and API keys for local development).</li>
+<li><strong>MCP Protocol Integration and Tool Discovery</strong>: Understand how the Model Context Protocol (MCP) enables dynamic service discovery and tool catalog harvesting across different transport mechanisms like SSE and HTTP. Learn how to design and implement an MCP client factory to facilitate seamless communication with MCP servers.</li>
+<li><strong>Polyglot Microservices with MCP</strong>: Discover how to architect a polyglot microservices system where MCP agents are implemented in multiple languages (e.g., Python, Java, and TypeScript). Learn how to design and integrate specialized services, such as itinerary planning in Python and destination recommendations in Java, into a cohesive travel planning system.</li>
+<li><strong>Streaming Chat UI with Angular</strong>: Learn how to build an interactive, real-time chat interface using Angular that consumes Server-Sent Events (SSE) to render live responses from AI agents. Understand how to manage tool selection state, handle streaming data, and coordinate user interactions with backend services for an engaging user experience.</li>
+</ul>
+            
+            <hr>
+            <p><strong>Congratulations!</strong> You've successfully explored the codebase and learned key architectural patterns. The adventure may be complete, but your understanding of this system will serve you well in future explorations.</p>
+        </div>
+
+        <div class="quest-navigation quest-navigation-bottom">
+            <a href="quest-5.html" class="prev-quest-btn">← Back to Quest 5</a>
+            <a href="index.html" class="next-quest-btn">Return to Adventure →</a>
+        </div>
+    </div>
+    
+    <footer class="footer">
+        <div class="footer-content">
+            <span>Created using <a href="https://github.com/DanWahlin/ai-repo-adventures" target="_blank" rel="noopener noreferrer" class="repo-link">AI Repo Adventures</a></span>
+        </div>
+    </footer>
+    
+    <!-- Quest Navigator Script (for navbar Quests button functionality) -->
+    <script src="../assets/shared/quest-navigator.js"></script>
+    
+    <!-- Theme Toggle Script -->
+    <script src="../assets/theme-toggle.js"></script>
+</body>
+</html>

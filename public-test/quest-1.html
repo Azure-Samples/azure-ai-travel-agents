@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quest 1: Commanding the Starship Core - Repo Adventure</title>
+    <link rel="stylesheet" href="assets/theme.css">
+    <link rel="stylesheet" href="assets/quest-navigator.css">
+    <link rel="stylesheet" href="assets/theme-toggle.css">
+    <!-- Prism.js for syntax highlighting -->
+    <!-- Using minimal theme since we override all styles with our custom theme -->
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script>
+        // Configure Prism autoloader for syntax highlighting
+        if (window.Prism && window.Prism.plugins && window.Prism.plugins.autoloader) {
+            window.Prism.plugins.autoloader.languages_path = 'https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/';
+        }
+        
+        // Trigger Prism highlighting after page load
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.Prism) {
+                window.Prism.highlightAll();
+            }
+        });
+    </script>
+</head>
+<body class="theme-space">
+
+    <nav class="navbar">
+        <div class="nav-content">
+            <div class="nav-left">
+                <a href="https://github.com/Azure-Samples/azure-ai-travel-agents" target="_blank" rel="noopener noreferrer" class="github-link">
+                    <img src="assets/shared/github-mark-white.svg" alt="GitHub" width="24" height="24">
+                </a>
+                <a href="index.html">Cosmic Alliance: The Stellar Missions of AI Travel Agents</a>
+            </div>
+            <div class="nav-middle">
+            </div>
+            <div class="nav-right">
+                
+                <a href="#" class="nav-link quest-map-trigger">Quests</a>
+                <button class="theme-toggle-btn" aria-label="Switch to light mode" type="button">
+                    <div class="theme-toggle-slider">
+                        <svg class="toggle-icon sun-icon" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="4" fill="currentColor"/>
+                            <path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        <svg class="toggle-icon moon-icon" viewBox="0 0 24 24">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                        </svg>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="quest-content">
+    <h1>Quest 1: Commanding the Starship Core</h1>
+<hr>
+<p>Through the vast expanse of the galaxy, the Cosmic Alliance has deployed a fleet of AI starships to assist interstellar travelers. These ships, powered by the LlamaIndex Stellar Core, coordinate specialized agents across diverse planetary systems to understand traveler needs, recommend celestial destinations, and plan seamless voyages. Your mission is to investigate the orchestration of these agents and uncover how the MCP Protocol enables dynamic tool discovery and seamless inter-agent communication. Prepare to command the starship core and unlock its inner workings!</p>
+<h2>Quest Objectives</h2>
+<p>As you explore the code below, investigate these key questions:</p>
+<ul>
+<li>🔍 <strong>Scanner Calibration</strong>: How does the <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/index.ts#L11" target="_blank" rel="noopener noreferrer"><code class="inline-code">setupAgents</code></a> function configure specialized agents and establish multi-agent workflows?</li>
+<li>⚡ <strong>Mission Flow Analysis</strong>: How does the <code class="inline-code">multiAgent</code> system ensure smooth agent coordination and triage decision-making?</li>
+<li>🛡️ <strong>Protocol Safeguards</strong>: What mechanisms are implemented for error handling and client disconnection during the <code class="inline-code">apiRouter.post(&quot;/chat&quot;)</code> streaming process?</li>
+</ul>
+<h2>File Exploration</h2>
+<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/index.ts" target="_blank" rel="noopener noreferrer">src/api/src/index.ts</a>:</span> Starship Command Interface</h3>
+<p>This file serves as the entry point for the API server, providing endpoints for health checks, tool discovery, and chat functionality. It establishes the server configuration, middleware, and request handling logic. The <code class="inline-code">apiRouter.post(&quot;/chat&quot;)</code> endpoint is particularly significant, as it facilitates real-time communication between travelers and agents using Server-Sent Events (SSE).</p>
+<h4>Highlights</h4>
+<ul>
+<li><code class="inline-code">apiRouter.post(&quot;/chat&quot;)</code> streams agent responses to travelers using SSE.</li>
+<li><code class="inline-code">pipeline(readableStream, res)</code> ensures efficient data flow between the agents and the client.</li>
+<li><code class="inline-code">apiRouter.get(&quot;/tools&quot;)</code> dynamically lists available MCP tools for interstellar navigation.</li>
+</ul>
+<h2>Code</h2>
+<h3><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/index.ts" target="_blank" rel="noopener noreferrer">src/api/src/index.ts</a></h3>
+<pre><code class="language-typescript">apiRouter.post(&quot;/chat&quot;, async (req, res) =&gt; {
+  req.on(&quot;close&quot;, () =&gt; {
+    console.log(&quot;Client disconnected, aborting...&quot;);
+  });
+
+  if (!req.body) {
+    console.error(
+      &quot;Request body is undefined. Check Content-Type header in the request.&quot;
+    );
+    return res.status(400).json({
+      error:
+        &quot;Request body is undefined. Make sure to set Content-Type to application/json.&quot;,
+    });
+  }
+
+  const message = req.body.message;
+  const tools = req.body.tools;
+  console.log(&quot;Tools to use:&quot;, JSON.stringify(tools, null, 2));
+
+  if (!message) {
+    return res.status(400).json({ error: &quot;Message is required&quot; });
+  }
+
+  res.setHeader(&quot;Content-Type&quot;, &quot;text/event-stream&quot;);
+  res.setHeader(&quot;Cache-Control&quot;, &quot;no-cache&quot;);
+  res.setHeader(&quot;Connection&quot;, &quot;keep-alive&quot;);
+
+  try {
+    const agents = await setupAgents(tools);
+    const context = agents.run(message);
+
+    const readableStream = new Readable({
+      async read() {
+        try {
+          for await (const event of context) {
+            const { displayName, data } = event;
+            const serializedData = JSON.stringify({
+              type: &quot;metadata&quot;,
+              agent: (data as any)?.currentAgentName || null,
+              event: displayName,
+              data: data ? JSON.parse(JSON.stringify(data)) : null,
+            });
+            this.push(serializedData + CHUNK_END);
+            console.log(&quot;Pushed event:&quot;, serializedData);
+          }
+          this.push(null); // Close the stream
+        } catch (error: any) {
+          console.error(&quot;Error during streaming:&quot;, error?.message);
+        }
+      },
+    });
+
+    await pipeline(readableStream, res);
+  } catch (error) {
+    console.error(&quot;Error occurred:&quot;, error);
+    if (!res.headersSent) {
+      res.status(500).json({ error: (error as any).message });
+    } else {
+      res.write(
+        `${JSON.stringify({
+          type: &quot;error&quot;,
+          message: (error as any).message,
+        })}` + CHUNK_END
+      );
+      res.end();
+    }
+  }
+});
+</code></pre>
+<ul>
+<li>This code establishes the <code class="inline-code">apiRouter.post(&quot;/chat&quot;)</code> endpoint, enabling real-time communication with agents using SSE.</li>
+<li>The <code class="inline-code">Readable</code> stream processes agent events and sends serialized data to the client.</li>
+<li>Error handling ensures that client disconnections or streaming issues are logged and managed gracefully.</li>
+<li>The <code class="inline-code">pipeline</code> function connects the readable stream to the response object, optimizing data flow.</li>
+</ul>
+<hr>
+<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/index.ts" target="_blank" rel="noopener noreferrer">src/api/src/orchestrator/llamaindex/index.ts</a>:</span> Multi-Agent Workflow Engine</h3>
+<p>This file is the core of the starship&#39;s command system, orchestrating specialized agents using LlamaIndex. The <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/index.ts#L11" target="_blank" rel="noopener noreferrer"><code class="inline-code">setupAgents</code></a> function dynamically configures agents based on the tools provided, ensuring efficient triage and coordination.</p>
+<h4>Highlights</h4>
+<ul>
+<li><code class="inline-code">setupAgents(filteredTools)</code> dynamically configures agents based on available tools.</li>
+<li><code class="inline-code">multiAgent({ agents: agentsList, rootAgent: travelAgent })</code> creates a coordinated multi-agent workflow.</li>
+<li><code class="inline-code">agent()</code> configuration blocks define specialized agents, such as <code class="inline-code">WebSearchAgent</code> and <code class="inline-code">ItineraryPlanningAgent</code>.</li>
+</ul>
+<h2>Code</h2>
+<h3><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/index.ts" target="_blank" rel="noopener noreferrer">src/api/src/orchestrator/llamaindex/index.ts</a></h3>
+<pre><code class="language-typescript">export async function setupAgents(filteredTools: McpServerDefinition[] = []) {
+  const tools = Object.fromEntries(
+    filteredTools.map((tool) =&gt; [tool.id, true])
+  );
+  console.log(&quot;Filtered tools:&quot;, tools);
+
+  let agentsList = [];
+  let handoffTargets = [];
+  let toolsList = [];
+  const verbose = false;
+  const mcpToolsConfig = McpToolsConfig();
+
+  let llm: ToolCallLLM = {} as ToolCallLLM;
+  try {
+    llm = await llmProvider();
+  } catch (error) {
+    throw new Error(error instanceof Error ? error.message : String(error));
+  }
+
+  if (tools[&quot;web-search&quot;]) {
+    const mcpServerConfig = mcpToolsConfig[&quot;web-search&quot;];
+    const tools = await mcp(mcpServerConfig.config).tools();
+    console.log(&quot;Including Web Search Agent in the workflow&quot;);
+    const webSearchAgent = agent({
+      name: &quot;WebSearchAgent&quot;,
+      systemPrompt:
+        &quot;Searches the web for up-to-date travel information using Bing Search.&quot;,
+      tools,
+      llm,
+      verbose,
+    });
+    agentsList.push(webSearchAgent);
+    handoffTargets.push(webSearchAgent);
+    toolsList.push(...tools);
+  }
+
+  const travelAgent = agent({
+    name: &quot;TravelAgent&quot;,
+    systemPrompt:
+      &quot;Acts as a triage agent to determine the best course of action for the user&#39;s query.&quot;,
+    tools: [...toolsList],
+    canHandoffTo: handoffTargets
+      .map((target) =&gt; target.getAgents().map((agent) =&gt; agent.name))
+      .flat(),
+    llm,
+    verbose,
+  });
+  agentsList.push(travelAgent);
+
+  return multiAgent({
+    agents: agentsList,
+    rootAgent: travelAgent,
+    verbose,
+  });
+}
+</code></pre>
+<ul>
+<li>The <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/index.ts#L11" target="_blank" rel="noopener noreferrer"><code class="inline-code">setupAgents</code></a> function dynamically filters tools and configures agents based on user requirements.</li>
+<li>Specialized agents, such as <code class="inline-code">WebSearchAgent</code>, are defined with unique system prompts and tool configurations.</li>
+<li>The <code class="inline-code">multiAgent</code> workflow ensures seamless coordination between agents, with the <code class="inline-code">TravelAgent</code> acting as the root triage agent.</li>
+</ul>
+<hr>
+<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/tools/index.ts" target="_blank" rel="noopener noreferrer">src/api/src/orchestrator/llamaindex/tools/index.ts</a>:</span> MCP Tool Configuration</h3>
+<p>This file defines the MCP tool configurations, specifying endpoints, transport types, and authentication details. It enables the dynamic discovery of tools used by agents.</p>
+<h4>Highlights</h4>
+<ul>
+<li><code class="inline-code">McpToolsConfig()</code> provides tool configurations for specialized agents.</li>
+<li><code class="inline-code">MCP_API_HTTP_PATH</code> defines the endpoint for HTTP-based MCP tools.</li>
+<li>Tool configuration objects specify authentication headers and transport protocols.</li>
+</ul>
+<h2>Code</h2>
+<h3><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/tools/index.ts" target="_blank" rel="noopener noreferrer">src/api/src/orchestrator/llamaindex/tools/index.ts</a></h3>
+<pre><code class="language-typescript">export const McpToolsConfig = (): {
+  [k in McpServerName]: McpServerDefinition;
+} =&gt; ({
+  &quot;web-search&quot;: {
+    config: {
+      url: process.env[&quot;MCP_WEB_SEARCH_URL&quot;] + MCP_API_SSE_PATH,
+      type: &quot;sse&quot;,
+      verbose: true,
+      useSSETransport: true
+    },
+    id: &quot;web-search&quot;,
+    name: &quot;Web Search&quot;,
+  },
+  &quot;itinerary-planning&quot;: {
+    config: {
+      url: process.env[&quot;MCP_ITINERARY_PLANNING_URL&quot;] + MCP_API_HTTP_PATH,
+      type: &quot;http&quot;,
+      verbose: true,
+      useSSETransport: false
+    },
+    id: &quot;itinerary-planning&quot;,
+    name: &quot;Itinerary Planning&quot;,
+  },
+});
+</code></pre>
+<ul>
+<li>The <code class="inline-code">McpToolsConfig</code> function defines tool configurations for agents, enabling dynamic discovery and integration.</li>
+<li>Each tool configuration specifies the endpoint, transport type, and authentication details.</li>
+<li>The <code class="inline-code">MCP_API_HTTP_PATH</code> and <code class="inline-code">MCP_API_SSE_PATH</code> constants ensure consistent endpoint formatting across tools.</li>
+</ul>
+<hr>
+<h2>Helpful Hints</h2>
+<ul>
+<li>Use the <code class="inline-code">apiRouter.post(&quot;/chat&quot;)</code> endpoint to test real-time interactions with agents.</li>
+<li>Investigate the <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/index.ts#L11" target="_blank" rel="noopener noreferrer"><code class="inline-code">setupAgents</code></a> function to understand how agents are dynamically configured and coordinated.</li>
+<li>Explore the <code class="inline-code">McpToolsConfig</code> function to see how tools are integrated into the multi-agent workflow.</li>
+</ul>
+<hr>
+<p>Excellent work! Continue to the next quest to uncover more mysteries of the AI Travel Agents system and master the orchestration of cosmic journeys.</p>
+<p>Mission accomplished, Captain—Quest 1 complete! You&#39;ve ignited the engines of mastery and charted a brilliant course through the cosmos of knowledge; onward to the stars! ⭐🚀⚡</p>
+
+</div>
+
+
+      <div class="quest-navigation quest-navigation-bottom nav-next-only">
+        <a href="summary.html" class="next-quest-btn complete-btn">Complete Adventure →</a>
+      </div>
+    
+    </div>
+    
+    <footer class="footer">
+        <div class="footer-content">
+            <span>Created using <a href="https://github.com/DanWahlin/ai-repo-adventures" target="_blank" rel="noopener noreferrer" class="repo-link">AI Repo Adventures</a></span>
+        </div>
+    </footer>
+    
+    <!-- Quest Navigator Script (for navbar Quests button functionality) -->
+    <script src="assets/quest-navigator.js"></script>
+    <!-- Theme Toggle Script (for light/dark mode toggle) -->
+    <script src="assets/theme-toggle.js"></script>
+</body>
+</html>

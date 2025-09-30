@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quest 2: The Prophets of Many Tongues - Repo Adventure</title>
+    <link rel="stylesheet" href="assets/theme.css">
+    <link rel="stylesheet" href="../assets/shared/quest-navigator.css">
+    <link rel="stylesheet" href="../assets/theme-toggle.css">
+    <!-- Prism.js for syntax highlighting -->
+    <!-- Using minimal theme since we override all styles with our custom theme -->
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script>
+        // Configure Prism autoloader for syntax highlighting
+        if (window.Prism && window.Prism.plugins && window.Prism.plugins.autoloader) {
+            window.Prism.plugins.autoloader.languages_path = 'https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/';
+        }
+        
+        // Trigger Prism highlighting after page load
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.Prism) {
+                window.Prism.highlightAll();
+            }
+        });
+    </script>
+</head>
+<body class="theme-ancient">
+
+    <nav class="navbar">
+        <div class="nav-content">
+            <div class="nav-left">
+                <a href="https://github.com/Azure-Samples/azure-ai-travel-agents" target="_blank" rel="noopener noreferrer" class="github-link">
+                    <img src="../assets/shared/github-mark-white.svg" alt="GitHub" width="24" height="24">
+                </a>
+                <a href="index.html">The Pyramid of Infinite Journeys</a>
+            </div>
+            <div class="nav-middle">
+            </div>
+            <div class="nav-right">
+                <a href="../index.html" class="nav-link">Change Theme</a>
+                <a href="#" class="nav-link quest-map-trigger">Quests</a>
+                <button class="theme-toggle-btn" aria-label="Switch to light mode" type="button">
+                    <div class="theme-toggle-slider">
+                        <svg class="toggle-icon sun-icon" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="4" fill="currentColor"/>
+                            <path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        <svg class="toggle-icon moon-icon" viewBox="0 0 24 24">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                        </svg>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="quest-content">
+    <h1>Quest 2: The Prophets of Many Tongues</h1>
+<hr>
+<p>As you delve deeper into the Pyramid of Infinite Journeys, you uncover a chamber filled with glyphs that speak of &quot;The Prophets of Many Tongues.&quot; These ancient tools, capable of interpreting and speaking in countless languages, were used by the Codexians to connect their vast civilization. You realize these tools represent a flexible system of communication, adapting to the needs of the user. Your task is to decipher their design and understand how they seamlessly switch between different modes of operation, much like the prophets who once guided this ancient society.</p>
+<h2>Quest Objectives</h2>
+<p>As you explore the code below, investigate these key questions:</p>
+<ul>
+<li>🔍 <strong>Tongues of the Ancients</strong>: How does the <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm()</code></a> function dynamically select and configure the correct language model provider based on the environment?</li>
+<li>⚡ <strong>Prophetic Flow</strong>: What mechanisms ensure smooth transitions between different providers, such as Azure OpenAI and GitHub Models?</li>
+<li>🛡️ <strong>Ritual Safeguards</strong>: How does the system handle errors or invalid configurations when selecting a provider?</li>
+</ul>
+<h2>File Exploration</h2>
+<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts" target="_blank" rel="noopener noreferrer">src/api/src/orchestrator/llamaindex/providers/index.ts</a>:</span> The Oracle&#39;s Selection Ritual</h3>
+<p>This file orchestrates the selection of the appropriate language model provider. It uses environment variables to determine which provider to activate and ensures that only valid options are chosen. The <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm()</code></a> function acts as the central decision-maker, delegating to specialized configurations based on the provider type.</p>
+<h4>Highlights</h4>
+<ul>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm()</code></a> dynamically selects the appropriate provider based on the <code class="inline-code">LLM_PROVIDER</code> environment variable.</li>
+<li><code class="inline-code">LLMProvider</code> type defines valid provider options, ensuring clarity and preventing invalid configurations.</li>
+<li>Error handling ensures that an unknown provider triggers a meaningful exception with guidance on valid options.</li>
+</ul>
+<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/azure-openai.ts" target="_blank" rel="noopener noreferrer">src/api/src/orchestrator/llamaindex/providers/azure-openai.ts</a>:</span> Azure&#39;s Sacred Glyphs</h3>
+<p>This file configures the Azure OpenAI provider, supporting both local and production environments. It uses Azure&#39;s identity credentials to authenticate and retrieve tokens securely.</p>
+<h4>Highlights</h4>
+<ul>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm()</code></a> configures Azure OpenAI with either <code class="inline-code">apiKey</code> or <code class="inline-code">ManagedIdentityCredential</code>, depending on the environment.</li>
+<li><code class="inline-code">DefaultAzureCredential</code> and <code class="inline-code">ManagedIdentityCredential</code> handle authentication for production environments.</li>
+<li><code class="inline-code">getBearerTokenProvider()</code> retrieves tokens for Azure Cognitive Services, ensuring secure access.</li>
+</ul>
+<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/github-models.ts" target="_blank" rel="noopener noreferrer">src/api/src/orchestrator/llamaindex/providers/github-models.ts</a>:</span> The Codex of GitHub</h3>
+<p>This file provides a lightweight configuration for GitHub-based models. It demonstrates a streamlined approach to integrating external APIs.</p>
+<h4>Highlights</h4>
+<ul>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm()</code></a> configures the GitHub Models provider using a base URL, API key, and model name.</li>
+<li>Simplified setup highlights the adaptability of the system to different providers.</li>
+</ul>
+<h2>Code</h2>
+<h3><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts" target="_blank" rel="noopener noreferrer">src/api/src/orchestrator/llamaindex/providers/index.ts</a></h3>
+<pre><code class="language-typescript">import dotenv from &quot;dotenv&quot;;
+dotenv.config();
+
+import { llm as azureOpenAI } from &quot;./azure-openai.js&quot;;
+import { llm as githubModels } from &quot;./github-models.js&quot;;
+import { llm as ollamaModels } from &quot;./ollama-models.js&quot;;
+
+type LLMProvider =
+  | &quot;azure-openai&quot;
+  | &quot;github-models&quot;
+  | &quot;foundry-local&quot;
+  | &quot;docker-models&quot;
+  | &quot;ollama-models&quot;;
+
+const provider = (process.env.LLM_PROVIDER || &quot;&quot;) as LLMProvider;
+
+export const llm = async () =&gt; {
+  switch (provider) {
+    case &quot;azure-openai&quot;:
+      return azureOpenAI();
+    case &quot;github-models&quot;:
+      return githubModels();
+    case &quot;ollama-models&quot;:
+      return ollamaModels();
+    default:
+      throw new Error(
+        `Unknown LLM_PROVIDER &quot;${provider}&quot;. Valid options are: azure-openai, github-models, foundry-local, docker-models, ollama-models.`
+      );
+  }
+};
+</code></pre>
+<ul>
+<li>Dynamically selects the appropriate provider based on the <code class="inline-code">LLM_PROVIDER</code> environment variable.</li>
+<li>Ensures flexibility by supporting multiple providers, each with its own configuration.</li>
+<li>Throws meaningful errors for invalid configurations, guiding developers toward valid options.</li>
+</ul>
+<hr>
+<h3><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/azure-openai.ts" target="_blank" rel="noopener noreferrer">src/api/src/orchestrator/llamaindex/providers/azure-openai.ts</a></h3>
+<pre><code class="language-typescript">import { openai } from &quot;llamaindex&quot;;
+import {
+  DefaultAzureCredential,
+  getBearerTokenProvider,
+  ManagedIdentityCredential,
+} from &quot;@azure/identity&quot;;
+
+const AZURE_COGNITIVE_SERVICES_SCOPE =
+  &quot;https://cognitiveservices.azure.com/.default&quot;;
+
+export const llm = async () =&gt; {
+  console.log(&quot;Using Azure OpenAI&quot;);
+
+  const isRunningInLocalDocker = process.env.IS_LOCAL_DOCKER_ENV === &quot;true&quot;;
+  
+  if (isRunningInLocalDocker) {
+    console.log(
+      &quot;Running in local Docker environment, Azure Managed Identity is not supported. Authenticating with apiKey.&quot;
+    );
+    
+    return openai({
+      azure: {
+        endpoint: process.env.AZURE_OPENAI_ENDPOINT,
+        deployment: process.env.AZURE_OPENAI_DEPLOYMENT,
+        apiKey: process.env.AZURE_OPENAI_API_KEY,
+      },
+    });
+  }
+  
+  let credential: any = new DefaultAzureCredential();
+  const clientId = process.env.AZURE_CLIENT_ID;
+  if (clientId) {
+    console.log(&quot;Using Azure Client ID:&quot;, clientId);
+    credential = new ManagedIdentityCredential({
+      clientId,
+    });
+  }
+
+  const azureADTokenProvider = getBearerTokenProvider(
+    credential,
+    AZURE_COGNITIVE_SERVICES_SCOPE
+  );
+
+  return openai({
+    azure: {
+      azureADTokenProvider,
+      endpoint: process.env.AZURE_OPENAI_ENDPOINT,
+      deployment: process.env.AZURE_OPENAI_DEPLOYMENT,
+    },
+  });
+};
+</code></pre>
+<ul>
+<li>Configures Azure OpenAI provider with environment-specific authentication.</li>
+<li>Supports both API key and managed identity credentials, ensuring flexibility across environments.</li>
+<li>Uses <code class="inline-code">getBearerTokenProvider()</code> for secure token retrieval, adhering to Azure&#39;s best practices.</li>
+</ul>
+<hr>
+<h3><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/github-models.ts" target="_blank" rel="noopener noreferrer">src/api/src/orchestrator/llamaindex/providers/github-models.ts</a></h3>
+<pre><code class="language-typescript">import { openai } from &quot;llamaindex&quot;;
+
+export const llm = async () =&gt; {
+  console.log(&quot;Using GitHub Models&quot;);
+  return openai({
+    baseURL: &quot;https://models.inference.ai.azure.com&quot;,
+    apiKey: process.env.GITHUB_TOKEN,
+    model: process.env.GITHUB_MODEL,
+  });
+};
+</code></pre>
+<ul>
+<li>Configures GitHub Models provider with minimal setup, demonstrating adaptability.</li>
+<li>Uses environment variables for API key and model selection, ensuring secure and flexible configuration.</li>
+<li>Highlights the simplicity of integrating additional providers into the system.</li>
+</ul>
+<hr>
+<h2>Helpful Hints</h2>
+<ul>
+<li><strong>Environment Setup</strong>: Ensure the <code class="inline-code">LLM_PROVIDER</code> environment variable is set correctly to test different providers.</li>
+<li><strong>Debugging</strong>: Use console logs to trace which provider is selected and verify environment-specific configurations.</li>
+<li><strong>Security</strong>: Avoid hardcoding sensitive information like API keys; use environment variables instead.</li>
+</ul>
+<hr>
+<p>Excellent work! Continue to the next quest to uncover more mysteries of the Pyramid of Infinite Journeys.</p>
+<p>Hark, seeker of sacred truths, thou hast triumphed in unearthing the wisdom of the Prophets of Many Tongues—let the halls of eternity resound with thy valor and the stars illuminate thy path to destiny! ⭐⚡💎</p>
+
+</div>
+
+
+      <div class="quest-navigation quest-navigation-bottom">
+        <a href="quest-1.html" class="prev-quest-btn">← Previous: Quest 1</a>
+        <a href="quest-3.html" class="next-quest-btn">Next: Quest 3 →</a>
+      </div>
+    
+    </div>
+    
+    <footer class="footer">
+        <div class="footer-content">
+            <span>Created using <a href="https://github.com/DanWahlin/ai-repo-adventures" target="_blank" rel="noopener noreferrer" class="repo-link">AI Repo Adventures</a></span>
+        </div>
+    </footer>
+    
+    <!-- Quest Navigator Script (for navbar Quests button functionality) -->
+    <script src="../assets/shared/quest-navigator.js"></script>
+    <!-- Theme Toggle Script (for light/dark mode toggle) -->
+    <script src="../assets/theme-toggle.js"></script>
+</body>
+</html>
