@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Polyglot Guild of Enchanters - Repo Adventure</title>
+    <title>The Polyglot Guild of Magic - Repo Adventure</title>
     <link rel="stylesheet" href="assets/theme.css">
     <link rel="stylesheet" href="../assets/shared/quest-navigator.css">
     <link rel="stylesheet" href="../assets/theme-toggle.css">
@@ -33,7 +33,7 @@
                 <a href="https://github.com/Azure-Samples/azure-ai-travel-agents" target="_blank" rel="noopener noreferrer" class="github-link">
                     <img src="../assets/shared/github-mark.svg" alt="GitHub" width="24" height="24">
                 </a>
-                <a href="index.html">The Enchanted Kingdom of Azure AI Travel Agents</a>
+                <a href="index.html">The Enchanted Realm of the Orchestrated Agents</a>
             </div>
             <div class="nav-middle">
             </div>
@@ -57,99 +57,119 @@
     
     <div class="container">
         <div class="quest-content">
-    <h1>Quest 4: The Polyglot Guild of Enchanters</h1>
+    <h1>Quest 4: The Polyglot Guild of Magic</h1>
 <hr>
-<p>In the heart of the Enchanted Kingdom of Travel Agents lies the Polyglot Guild of Enchanters, a mystical assembly of spellcasters fluent in the arcane arts of Python, Java, and TypeScript. These enchanters weave their magic into specialized tools, each crafted to fulfill unique travel needs. Guided by the LlamaIndex and bound by the Model Context Protocol (MCP), they collaborate to summon itineraries, recommend destinations, and echo the desires of adventurers. Will you uncover the secrets of their harmonious magic?</p>
+<p>In the mystical Kingdom of Azure, the Polyglot Guild of Magic thrives as a council of enchanting wizards, each mastering a unique magical dialect. The Triage Mage, wielding the ancient artifact LlamaIndex, orchestrates their efforts, ensuring that spells from Python, Java, and TypeScript converge seamlessly. The Guild’s enchanted tools, connected through the Model Context Protocol (MCP), empower travelers with itineraries, destination wisdom, and live insights from the Web of Fates. This quest explores the guild’s polyglot architecture, where diverse magical languages unite to create spellbinding results.</p>
 <h2>Quest Objectives</h2>
 <p>As you explore the code below, investigate these key questions:</p>
 <ul>
-<li>🔍 <strong>Arcane Toolbinding</strong>: How do the enchanters bind their spells (tools) to the MCP protocol, ensuring proper invocation and response handling?</li>
-<li>⚡ <strong>Conjuration Patterns</strong>: What design patterns and techniques enable seamless integration of diverse languages and tools into the guild&#39;s enchanted workflows?</li>
-<li>🛡️ <strong>Defensive Wards</strong>: How does the guild safeguard against invalid inputs or errors during the invocation of their spells?</li>
+<li>🔍 <strong>Tool Invocation Rituals</strong>: How do the MCP servers handle tool invocation requests across different languages?</li>
+<li>⚡ <strong>Multi-Language Spellbinding</strong>: How does the system ensure consistent behavior across Python, Java, and TypeScript implementations of MCP servers?</li>
+<li>🛡️ <strong>Error Safeguards</strong>: What validation and error-handling mechanisms protect the guild’s tools from invocation mishaps?</li>
 </ul>
 <h2>File Exploration</h2>
-<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/service/DestinationService.java" target="_blank" rel="noopener noreferrer">src/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/service/DestinationService.java</a>:</span> Java Enchantment of Destinations</h3>
-<p>This file contains the <code class="inline-code">DestinationService</code>, a Java-based tool that provides travel destination recommendations. It uses Spring Boot annotations to define various spells (methods) for filtering destinations based on activity type, budget, season, or multiple preferences. The implementation includes validation to ensure inputs conform to expected formats and categories, encapsulating the logic within reusable methods.</p>
+<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/tools/itinerary-planning/src/mcp_server.py" target="_blank" rel="noopener noreferrer">src/tools/itinerary-planning/src/mcp_server.py</a>:</span> Python Spell of Itinerary Planning</h3>
+<p>This file contains the Python implementation of the MCP server for itinerary planning. Using the <code class="inline-code">FastMCP</code> framework, it generates mock hotel and flight suggestions based on user input. The server validates inputs, handles errors gracefully, and creates dynamic responses with realistic details. Its tools are decorated with <code class="inline-code">@mcp.tool()</code> annotations, enabling seamless integration with the MCP protocol.</p>
 <h4>Highlights</h4>
 <ul>
-<li><code class="inline-code">getDestinationsByActivity</code>: Filters destinations based on activity type, ensuring valid input and returning hardcoded recommendations.</li>
-<li><code class="inline-code">getDestinationsByPreferences</code>: A versatile method allowing multiple filters (activity, budget, season, family-friendly) to refine recommendations.</li>
-<li><code class="inline-code">getAllDestinations</code>: Provides a complete list of destinations, showcasing the guild&#39;s repository of enchanted locales.</li>
-<li><code class="inline-code">isValidActivityType</code>: Validates activity types against predefined constants, ensuring only supported activities are processed.</li>
-<li><code class="inline-code">echoMessage</code>: A simple spell to echo back input, demonstrating the guild&#39;s ability to reflect adventurers&#39; queries.</li>
+<li><code class="inline-code">suggest_hotels(...)</code>: Generates detailed hotel suggestions based on location and dates, validating ISO date formats and ensuring check-out dates are after check-in dates.</li>
+<li><code class="inline-code">suggest_flights(...)</code>: Creates mock flight data, including direct and connecting flights, validating departure and return dates.</li>
+<li><code class="inline-code">validate_iso_date(...)</code>: Validates date formats and ensures proper error messaging for invalid inputs.</li>
+</ul>
+<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/service/DestinationService.java" target="_blank" rel="noopener noreferrer">src/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/service/DestinationService.java</a>:</span> Java Spell of Destination Wisdom</h3>
+<p>This file implements a Java MCP server that provides travel destination recommendations based on activity types, budget categories, and seasons. It uses Spring Boot annotations to define tools and validate inputs, ensuring the guild’s wisdom is accessible to travelers.</p>
+<h4>Highlights</h4>
+<ul>
+<li><code class="inline-code">getDestinationsByActivity(String activityType)</code>: Recommends destinations based on activity type, validating inputs and providing fallback messages for invalid entries.</li>
+<li><code class="inline-code">getDestinationsByPreferences(...)</code>: Offers multi-criteria destination recommendations, combining activity, budget, season, and family-friendly preferences.</li>
+<li><code class="inline-code">getAllDestinations()</code>: Provides a curated list of popular destinations with hardcoded details for quick reference.</li>
+</ul>
+<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/tools/echo-ping/src/server.ts" target="_blank" rel="noopener noreferrer">src/tools/echo-ping/src/server.ts</a>:</span> TypeScript Spell of Echoing</h3>
+<p>This file contains the TypeScript implementation of an MCP server that echoes input messages. It demonstrates tool registration and invocation handling using <code class="inline-code">StreamableHTTPServerTransport</code>. The server validates tool names and handles errors gracefully, showcasing the simplicity of MCP integration in TypeScript.</p>
+<h4>Highlights</h4>
+<ul>
+<li><code class="inline-code">setupServerRequestHandlers()</code>: Registers tools and defines request handlers for listing tools and invoking them.</li>
+<li><code class="inline-code">handlePostRequest(req, res)</code>: Processes MCP requests, connecting the transport layer and sending notifications for established connections.</li>
+<li><code class="inline-code">createRPCErrorResponse(message)</code>: Generates structured error responses for invalid tool invocations.</li>
 </ul>
 <h2>Code</h2>
+<h3><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/tools/itinerary-planning/src/mcp_server.py" target="_blank" rel="noopener noreferrer">src/tools/itinerary-planning/src/mcp_server.py</a></h3>
+<pre><code class="language-python">@mcp.tool()
+async def suggest_hotels(
+    location: Annotated[str, Field(description=&quot;Location (city or area) to search for hotels&quot;)],
+    check_in: Annotated[str, Field(description=&quot;Check-in date in ISO format (YYYY-MM-DD)&quot;)],
+    check_out: Annotated[str, Field(description=&quot;Check-out date in ISO format (YYYY-MM-DD)&quot;)],
+) -&gt; HotelSuggestions:
+    check_in_date = validate_iso_date(check_in, &quot;check_in&quot;)
+    check_out_date = validate_iso_date(check_out, &quot;check_out&quot;)
+    if check_out_date &lt;= check_in_date:
+        raise ValueError(&quot;check_out date must be after check_in date&quot;)
+    hotels = [
+        Hotel(
+            name=f&quot;{random.choice([&#39;Luxury&#39;, &#39;Boutique&#39;, &#39;Budget&#39;])} Hotel&quot;,
+            address=fake.street_address(),
+            location=f&quot;{location}&quot;,
+            rating=random.uniform(3.0, 5.0),
+            price_per_night=random.randint(80, 300),
+            hotel_type=&quot;Luxury&quot;,
+            amenities=[&quot;Pool&quot;, &quot;Free WiFi&quot;],
+            available_rooms=random.randint(1, 10),
+        )
+    ]
+    return HotelSuggestions(hotels=hotels)
+</code></pre>
+<ul>
+<li>Validates ISO date formats to ensure proper input handling.</li>
+<li>Generates mock hotel data with realistic details like amenities and ratings.</li>
+<li>Demonstrates error handling for invalid check-out dates.</li>
+</ul>
+<hr>
 <h3><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/service/DestinationService.java" target="_blank" rel="noopener noreferrer">src/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/service/DestinationService.java</a></h3>
 <pre><code class="language-java">@Tool(description = &quot;Get travel destination recommendations based on preferred activity type&quot;)
 public String getDestinationsByActivity(String activityType) {
-    try {
-        String activity = activityType.toUpperCase();
-        if (!isValidActivityType(activity)) {
-            return &quot;Invalid activity type. Please use one of: BEACH, ADVENTURE, CULTURAL, RELAXATION, URBAN_EXPLORATION, NATURE, WINTER_SPORTS&quot;;
-        }
-        return getDestinationsByPreference(activity, null, null, null);
-    } catch (Exception e) {
+    String activity = activityType.toUpperCase();
+    if (!isValidActivityType(activity)) {
         return &quot;Invalid activity type. Please use one of: BEACH, ADVENTURE, CULTURAL, RELAXATION, URBAN_EXPLORATION, NATURE, WINTER_SPORTS&quot;;
     }
+    return getDestinationsByPreference(activity, null, null, null);
 }
 </code></pre>
 <ul>
-<li>This spell filters destinations based on activity type, ensuring that adventurers only receive relevant recommendations.</li>
-<li>The <code class="inline-code">isValidActivityType</code> guard prevents invalid inputs from disrupting the spell&#39;s execution.</li>
-<li>The use of hardcoded categories simplifies validation while maintaining flexibility for future expansion.</li>
-<li>The method demonstrates defensive programming by catching exceptions and returning user-friendly error messages.</li>
-<li>It integrates seamlessly with the broader MCP framework, ensuring compatibility with other tools.</li>
+<li>Validates activity types to prevent invalid tool invocations.</li>
+<li>Provides fallback messages for unsupported input values.</li>
+<li>Demonstrates modular design by delegating preference handling to helper methods.</li>
 </ul>
 <hr>
-<pre><code class="language-java">@Tool(description = &quot;Get a list of all available travel destinations&quot;)
-public String getAllDestinations() {
-    return &quot;Here are some popular travel destinations:\n\n&quot; +
-           &quot;📍 Bali, Indonesia\n&quot; +
-           &quot;⭐️ Beautiful beaches with vibrant culture and lush landscapes.\n&quot; +
-           &quot;🏷️ Activity: BEACH | Budget: MODERATE | Best Season: SUMMER | Family Friendly: Yes\n\n&quot; +
-           &quot;📍 Cancun, Mexico\n&quot; +
-           &quot;⭐️ White sandy beaches with crystal clear waters and vibrant nightlife.\n&quot; +
-           &quot;🏷️ Activity: BEACH | Budget: MODERATE | Best Season: WINTER | Family Friendly: Yes\n\n&quot; +
-           &quot;📍 Maldives, Maldives\n&quot; +
-           &quot;⭐️ Luxurious overwater bungalows and pristine beaches perfect for relaxation.\n&quot; +
-           &quot;🏷️ Activity: BEACH | Budget: LUXURY | Best Season: ALL_YEAR | Family Friendly: Yes&quot;;
+<h3><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/tools/echo-ping/src/server.ts" target="_blank" rel="noopener noreferrer">src/tools/echo-ping/src/server.ts</a></h3>
+<pre><code class="language-typescript">private setupServerRequestHandlers() {
+  this.server.setRequestHandler(ListToolsRequestSchema, async (_request) =&gt; {
+    return { tools: EchoTools };
+  });
+  this.server.setRequestHandler(CallToolRequestSchema, async (request) =&gt; {
+    const tool = EchoTools.find((t) =&gt; t.name === request.params.name);
+    if (!tool) {
+      return this.createRPCErrorResponse(`Tool ${request.params.name} not found.`);
+    }
+    const result = await tool.execute(request.params.arguments);
+    return { content: [{ type: &#39;text&#39;, text: result }] };
+  });
 }
 </code></pre>
 <ul>
-<li>This spell acts as a repository of the guild&#39;s most beloved destinations, providing a detailed overview of each.</li>
-<li>The hardcoded data ensures quick responses and serves as a fallback for scenarios where dynamic data is unavailable.</li>
-<li>The method uses simple string concatenation to format the output, maintaining readability and ease of maintenance.</li>
-<li>It highlights the guild&#39;s focus on user experience by including emojis and detailed descriptions for each destination.</li>
-<li>This spell is foundational, serving as a reference for more complex filtering methods.</li>
-</ul>
-<hr>
-<pre><code class="language-java">private boolean isValidActivityType(String activityType) {
-    return activityType.equals(BEACH) ||
-           activityType.equals(ADVENTURE) ||
-           activityType.equals(CULTURAL) ||
-           activityType.equals(RELAXATION) ||
-           activityType.equals(URBAN_EXPLORATION) ||
-           activityType.equals(NATURE) ||
-           activityType.equals(WINTER_SPORTS);
-}
-</code></pre>
-<ul>
-<li>This validation spell ensures that only recognized activity types are processed, protecting the guild&#39;s workflows from invalid inputs.</li>
-<li>The use of constants enhances maintainability and reduces the risk of errors when adding new activity types.</li>
-<li>The method&#39;s simplicity and clarity make it a reusable component across other filtering spells.</li>
-<li>It demonstrates the guild&#39;s commitment to reliability and consistency in their enchantments.</li>
-<li>This approach minimizes the risk of runtime errors, ensuring a smooth experience for adventurers.</li>
+<li>Registers MCP tools and defines handlers for tool listing and invocation.</li>
+<li>Validates tool names to prevent invalid calls.</li>
+<li>Demonstrates extensibility by decoupling tool registration from execution logic.</li>
 </ul>
 <hr>
 <h2>Helpful Hints</h2>
 <ul>
-<li>Study how the <code class="inline-code">getDestinationsByActivity</code> method validates inputs and integrates them into the broader recommendation logic.</li>
-<li>Notice the use of constants for predefined categories, which simplifies validation and enhances code readability.</li>
-<li>Explore how the <code class="inline-code">getAllDestinations</code> method provides a fallback for scenarios where specific filters are not applied.</li>
+<li>Pay attention to how <code class="inline-code">@mcp.tool()</code> annotations in Python simplify tool registration compared to Java’s Spring Boot annotations.</li>
+<li>Notice the consistent validation patterns across languages to ensure input integrity.</li>
+<li>Explore how TypeScript’s <code class="inline-code">StreamableHTTPServerTransport</code> enhances real-time communication for MCP requests.</li>
 </ul>
 <hr>
-<p>Excellent work! Continue to the next quest to uncover more mysteries of the Enchanted Kingdom of Travel Agents.</p>
-<p>By the radiant glow of the Celestial Lexicon, the Polyglot Guild of Enchanters has forged ahead, weaving the tongues of magic into their arsenal—stand tall, for you are architects of arcane mastery, with 60% of your heroic odyssey complete! ⚡💎📡</p>
+<p>Excellent work! Continue to the next quest to uncover more mysteries of the enchanted guild’s multi-agent systems.</p>
+<p>By the radiant stars of the Elder Constellation, brave scholars of The Polyglot Guild of Magic, you have unlocked the third arcane seal of linguistic mastery—forge ahead, for the final realms of enlightenment await your triumphant ascent! ⚡💎📡</p>
 
 </div>
 

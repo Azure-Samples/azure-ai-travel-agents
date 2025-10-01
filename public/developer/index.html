@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multi-Agent Orchestration with Azure AI Travel Agents - Repo Adventure</title>
+    <title>Multi-Agent Orchestration with LlamaIndex and MCP - Repo Adventure</title>
     <link rel="stylesheet" href="assets/theme.css">
     <link rel="stylesheet" href="../assets/shared/quest-navigator.css">
     <link rel="stylesheet" href="../assets/theme-toggle.css">
@@ -33,7 +33,7 @@
                 <a href="https://github.com/Azure-Samples/azure-ai-travel-agents" target="_blank" rel="noopener noreferrer" class="github-link">
                     <img src="../assets/shared/github-mark.svg" alt="GitHub" width="24" height="24">
                 </a>
-                <a href="index.html">Multi-Agent Orchestration with Azure AI Travel Agents</a>
+                <a href="index.html">Multi-Agent Orchestration with LlamaIndex and MCP</a>
             </div>
             <div class="nav-middle">
             </div>
@@ -57,8 +57,8 @@
     
     <div class="container">
         <div class="story-content">
-    <h1>Multi-Agent Orchestration with Azure AI Travel Agents</h1>
-    <p>The Azure AI Travel Agents project is a sophisticated multi-agent orchestration system that uses LlamaIndex to coordinate specialized AI agents across diverse programming languages. Each agent is a containerized MCP server, providing services like customer query analysis, destination recommendations, and itinerary planning. By leveraging the MCP protocol, the system dynamically discovers tools and routes requests through an Express.js API, enabling seamless collaboration between agents. This architecture demonstrates cutting-edge patterns in AI-driven workflows, modular microservices, and scalable cloud deployment.</p>
+    <h1>Multi-Agent Orchestration with LlamaIndex and MCP</h1>
+    <p>The Azure AI Travel Agents project demonstrates a cutting-edge multi-agent orchestration pattern. At its core, LlamaIndex coordinates specialized AI agents, each implemented as an MCP (Model Context Protocol) service in a polyglot architecture. These agents handle tasks such as customer query analysis, destination recommendations, and itinerary planning, communicating seamlessly via HTTP APIs. The system showcases how dynamic tool discovery and flexible LLM (Large Language Model) provider strategies can power complex workflows across diverse technologies.</p>
 <p><strong>Adventure Awaits</strong> – Choose your quest wisely, developer!</p>
 
 </div>
@@ -67,23 +67,23 @@
     <h2>Choose a Quest</h2>
     <a href="quest-1.html" class="quest-link">
   <h3>Multi-Agent Workflow Orchestration</h3>
-  <p>Explore how <strong>index.ts</strong>, <strong>llamaindex/tools/index.ts</strong>, and <strong>llamaindex/index.ts</strong> configure agent workflows, triage requests, and manage tool interactions.</p>
+  <p>Explore how <strong>index.ts</strong>, <strong>tools/index.ts</strong>, and <strong>llamaindex/index.ts</strong> implement agent workflows using multi-agent patterns and dynamic tool selection.</p>
 </a>
 <a href="quest-2.html" class="quest-link">
   <h3>Flexible LLM Provider Strategy</h3>
-  <p>Investigate how <strong>providers/index.ts</strong>, <strong>azure-openai.ts</strong>, and <strong>github-models.ts</strong> implement dynamic model selection and environment-aware LLM configurations.</p>
+  <p>Discover the modular LLM integration in <strong>providers/index.ts</strong>, <strong>azure-openai.ts</strong>, and <strong>ollama-models.ts</strong>, enabling seamless model switching and environment-specific configurations.</p>
 </a>
 <a href="quest-3.html" class="quest-link">
-  <h3>MCP Protocol Integration</h3>
-  <p>Examine how <strong>mcp-tools.ts</strong>, <strong>mcp-http-client.ts</strong>, and <strong>mcp-sse-client.ts</strong> enable tool discovery, communication, and protocol compliance.</p>
+  <h3>MCP Protocol and Tool Discovery</h3>
+  <p>Investigate how <strong>mcp-tools.ts</strong>, <strong>mcp-http-client.ts</strong>, and <strong>mcp-sse-client.ts</strong> enable dynamic tool discovery and standardized communication using MCP.</p>
 </a>
 <a href="quest-4.html" class="quest-link">
-  <h3>Polyglot MCP Services</h3>
-  <p>Analyze how <strong>itinerary-planning/mcp_server.py</strong>, <strong>destination-recommendation/McpServerApplication.java</strong>, and <strong>echo-ping/server.ts</strong> implement MCP servers in Python, Java, and TypeScript.</p>
+  <h3>Polyglot MCP Service Implementation</h3>
+  <p>Examine the polyglot architecture of MCP services in <strong>mcp_server.py</strong>, <strong>McpServerApplication.java</strong>, and <strong>server.ts</strong>, showcasing language-specific implementations for specialized tools.</p>
 </a>
 <a href="quest-5.html" class="quest-link">
-  <h3>Streaming Chat UI</h3>
-  <p>Discover how <strong>chat-conversation.component.ts</strong>, <strong>chat-conversation.service.ts</strong>, and <strong>api.service.ts</strong> create a real-time chat interface with Angular and server-sent events.</p>
+  <h3>Streaming Chat UI with Angular</h3>
+  <p>Analyze the real-time chat interface in <strong>chat-conversation.component.ts</strong>, <strong>chat-conversation.service.ts</strong>, and <strong>api.service.ts</strong>, leveraging Angular observables and server-sent events for dynamic user interactions.</p>
 </a>
 </div>
     </div>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Polyglot Chambers - Repo Adventure</title>
+    <title>The Sanctuaries of Service - Repo Adventure</title>
     <link rel="stylesheet" href="assets/theme.css">
     <link rel="stylesheet" href="../assets/shared/quest-navigator.css">
     <link rel="stylesheet" href="../assets/theme-toggle.css">
@@ -33,7 +33,7 @@
                 <a href="https://github.com/Azure-Samples/azure-ai-travel-agents" target="_blank" rel="noopener noreferrer" class="github-link">
                     <img src="../assets/shared/github-mark-white.svg" alt="GitHub" width="24" height="24">
                 </a>
-                <a href="index.html">The Pyramid of Infinite Agents</a>
+                <a href="index.html">The Temple of LlamaIndex: Secrets of the Multi-Agent Codex</a>
             </div>
             <div class="nav-middle">
             </div>
@@ -57,124 +57,108 @@
     
     <div class="container">
         <div class="quest-content">
-    <h1>Quest 4: The Polyglot Chambers</h1>
+    <h1>Quest 4: Polyglot MCP Services Architecture</h1>
 <hr>
-<p>Within the Pyramid of Infinite Agents lies the Polyglot Chambers, a sacred space where the ancient architects encoded their wisdom in a multitude of languages. Here, explorers encounter tools crafted in Python, Java, and TypeScript, each harmonized by the Codex Orchestrator to achieve a singular purpose. The chamber resonates with the hum of these tools communicating through the Model Context Protocol, revealing the secrets of multi-language orchestration.</p>
+<p>In the shadow of the Temple&#39;s inner sanctum, you encounter the Polyglot Chamber, a testament to the lost civilization&#39;s mastery of diverse languages and tools. Here, the Codex of Multi-Agent Wisdom orchestrates specialized services written in Python, Java, and TypeScript, each serving as a sacred tool for deciphering the unknown. The chamber hums with the interconnected energy of the Model Context Protocol, binding these polyglot tools into a unified framework of wisdom.</p>
 <h2>Quest Objectives</h2>
 <p>As you explore the code below, investigate these key questions:</p>
 <ul>
-<li>🔍 <strong>Sacred Tool Invocation</strong>: How do the tools handle requests and provide responses in their respective languages?</li>
-<li>⚡ <strong>Harmony of Diversity</strong>: What patterns enable seamless integration of tools written in Python, Java, and TypeScript within the MCP ecosystem?</li>
-<li>🛡️ <strong>Ritual Safeguards</strong>: How do the tools validate input and manage errors to ensure the integrity of their sacred functions?</li>
+<li>🔍 <strong>Tool Invocation Rituals</strong>: How does each MCP service define and execute its tools for responding to queries?</li>
+<li>⚡ <strong>Interconnection Glyphs</strong>: What mechanisms ensure seamless communication between services written in different programming languages?</li>
+<li>🛡️ <strong>Validation Safeguards</strong>: How do the services handle invalid inputs and ensure reliable execution?</li>
 </ul>
 <h2>File Exploration</h2>
-<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/tools/itinerary-planning/src/mcp_server.py" target="_blank" rel="noopener noreferrer">src/tools/itinerary-planning/src/mcp_server.py</a>:</span> Python&#39;s Ritual of Itinerary Planning</h3>
-<p>The Python-based itinerary planning tool uses the <code class="inline-code">FastMCP</code> framework to provide hotel and flight suggestions. It showcases robust input validation, dynamic data generation, and the use of modern Python features like type annotations and data classes. This tool exemplifies how Python&#39;s flexibility is harnessed in the MCP ecosystem.</p>
+<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/service/DestinationService.java" target="_blank" rel="noopener noreferrer">src/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/service/DestinationService.java</a>:</span> Java MCP Service</h3>
+<p>The <code class="inline-code">DestinationService</code> is a Java-based MCP tool that provides travel destination recommendations. It uses annotations to define tools, allowing Spring Boot integration to manage the service lifecycle. The service validates inputs, handles multiple preferences, and returns hardcoded destination suggestions based on activity type, budget, season, or a combination of criteria.</p>
 <h4>Highlights</h4>
 <ul>
-<li><code class="inline-code">suggest_hotels</code>: Suggests hotels based on location and date, validating input and generating realistic mock data.</li>
-<li><code class="inline-code">suggest_flights</code>: Suggests flights based on departure and return locations, with dynamic flight data generation and connection handling.</li>
-<li><code class="inline-code">validate_iso_date</code>: Ensures input dates conform to ISO format and are valid.</li>
-</ul>
-<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/service/DestinationService.java" target="_blank" rel="noopener noreferrer">src/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/service/DestinationService.java</a>:</span> Java&#39;s Oracle of Destination Insights</h3>
-<p>This Java service provides destination recommendations, leveraging the Spring Boot framework. It emphasizes modularity and extensibility, with methods tailored to specific preferences like activity type, budget, and season.</p>
-<h4>Highlights</h4>
-<ul>
-<li><code class="inline-code">getDestinationsByActivity</code>: Recommends destinations based on activity type, validating input and returning hardcoded data.</li>
-<li><code class="inline-code">getDestinationsByPreferences</code>: Handles multiple criteria for destination recommendations, validating and combining preferences.</li>
-<li><code class="inline-code">getAllDestinations</code>: Returns a curated list of all available destinations.</li>
-</ul>
-<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/tools/echo-ping/src/server.ts" target="_blank" rel="noopener noreferrer">src/tools/echo-ping/src/server.ts</a>:</span> TypeScript&#39;s Echoing Chamber</h3>
-<p>The Echo MCP Server is a simple TypeScript-based tool that demonstrates the fundamentals of MCP integration. It handles requests, validates tools, and executes commands, serving as a template for more complex tools.</p>
-<h4>Highlights</h4>
-<ul>
-<li><code class="inline-code">setupServerRequestHandlers</code>: Configures handlers for listing and invoking tools.</li>
-<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/tools/echo-ping/src/server.ts#L37" target="_blank" rel="noopener noreferrer"><code class="inline-code">handlePostRequest</code></a>: Manages incoming POST requests, connecting the server to the transport layer.</li>
-<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/tools/echo-ping/src/server.ts#L137" target="_blank" rel="noopener noreferrer"><code class="inline-code">createRPCErrorResponse</code></a>: Generates structured error responses for invalid requests.</li>
+<li><code class="inline-code">getDestinationsByActivity</code>: Recommends destinations based on activity type, validating inputs and returning suggestions.</li>
+<li><code class="inline-code">getDestinationsByPreferences</code>: Handles multiple criteria for destination recommendations, ensuring all inputs are validated before execution.</li>
+<li><code class="inline-code">getAllDestinations</code>: Provides a list of all available destinations, demonstrating the service&#39;s ability to respond to generic queries.</li>
 </ul>
 <h2>Code</h2>
-<h3><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/tools/itinerary-planning/src/mcp_server.py" target="_blank" rel="noopener noreferrer">src/tools/itinerary-planning/src/mcp_server.py</a></h3>
-<pre><code class="language-python">@mcp.tool()
-async def suggest_hotels(
-    location: Annotated[str, Field(description=&quot;Location (city or area) to search for hotels&quot;)],
-    check_in: Annotated[str, Field(description=&quot;Check-in date in ISO format (YYYY-MM-DD)&quot;)],
-    check_out: Annotated[str, Field(description=&quot;Check-out date in ISO format (YYYY-MM-DD)&quot;)],
-) -&gt; HotelSuggestions:
-    check_in_date = validate_iso_date(check_in, &quot;check_in&quot;)
-    check_out_date = validate_iso_date(check_out, &quot;check_out&quot;)
-    if check_out_date &lt;= check_in_date:
-        raise ValueError(&quot;check_out date must be after check_in date&quot;)
-    hotels = [
-        Hotel(
-            name=f&quot;Hotel {i}&quot;,
-            address=fake.street_address(),
-            location=location,
-            rating=random.uniform(3.0, 5.0),
-            price_per_night=random.randint(100, 500),
-            hotel_type=random.choice([&quot;Luxury&quot;, &quot;Budget&quot;]),
-            amenities=random.sample([&quot;WiFi&quot;, &quot;Pool&quot;, &quot;Gym&quot;], 2),
-            available_rooms=random.randint(1, 10),
-        )
-        for i in range(5)
-    ]
-    return HotelSuggestions(hotels=hotels)
-</code></pre>
-<ul>
-<li>Validates ISO date inputs to ensure proper formatting and logical consistency.</li>
-<li>Dynamically generates realistic hotel data, showcasing Python&#39;s data manipulation capabilities.</li>
-<li>Uses <code class="inline-code">dataclasses</code> and type annotations to define structured data models.</li>
-</ul>
-<hr>
 <h3><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/service/DestinationService.java" target="_blank" rel="noopener noreferrer">src/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/service/DestinationService.java</a></h3>
 <pre><code class="language-java">@Tool(description = &quot;Get travel destination recommendations based on preferred activity type&quot;)
 public String getDestinationsByActivity(String activityType) {
-    String activity = activityType.toUpperCase();
-    if (!isValidActivityType(activity)) {
+    try {
+        String activity = activityType.toUpperCase();
+        if (!isValidActivityType(activity)) {
+            return &quot;Invalid activity type. Please use one of: BEACH, ADVENTURE, CULTURAL, RELAXATION, URBAN_EXPLORATION, NATURE, WINTER_SPORTS&quot;;
+        }
+        return getDestinationsByPreference(activity, null, null, null);
+    } catch (Exception e) {
         return &quot;Invalid activity type. Please use one of: BEACH, ADVENTURE, CULTURAL, RELAXATION, URBAN_EXPLORATION, NATURE, WINTER_SPORTS&quot;;
     }
-    return &quot;Here are some destinations for activity type: &quot; + activity;
-}
-
-private boolean isValidActivityType(String activityType) {
-    return activityType.equals(&quot;BEACH&quot;) || activityType.equals(&quot;ADVENTURE&quot;);
 }
 </code></pre>
 <ul>
-<li>Validates input to ensure only recognized activity types are processed.</li>
-<li>Returns hardcoded recommendations, simplifying the logic for demonstration purposes.</li>
-<li>Demonstrates the use of Java annotations to define tool metadata.</li>
+<li>Validates activity type using <code class="inline-code">isValidActivityType</code>, ensuring only recognized options are processed.</li>
+<li>Returns hardcoded destination suggestions based on the validated activity type.</li>
+<li>Demonstrates error handling by catching exceptions and returning informative messages.</li>
 </ul>
 <hr>
-<h3><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/tools/echo-ping/src/server.ts" target="_blank" rel="noopener noreferrer">src/tools/echo-ping/src/server.ts</a></h3>
-<pre><code class="language-typescript">private setupServerRequestHandlers() {
-  this.server.setRequestHandler(ListToolsRequestSchema, async (_request) =&gt; {
-    return { tools: EchoTools };
-  });
-  this.server.setRequestHandler(CallToolRequestSchema, async (request) =&gt; {
-    const tool = EchoTools.find((tool) =&gt; tool.name === request.params.name);
-    if (!tool) {
-      return this.createRPCErrorResponse(`Tool ${request.params.name} not found.`);
+<pre><code class="language-java">@Tool(description = &quot;Get travel destination recommendations based on multiple criteria&quot;)
+public String getDestinationsByPreferences(String activity, String budget, String season, Boolean familyFriendly) {
+    try {
+        if (activity != null &amp;&amp; !activity.isEmpty()) {
+            String activityUpper = activity.toUpperCase();
+            if (!isValidActivityType(activityUpper)) {
+                return &quot;Invalid activity type. Please use one of: BEACH, ADVENTURE, CULTURAL, RELAXATION, URBAN_EXPLORATION, NATURE, WINTER_SPORTS&quot;;
+            }
+        }
+        if (budget != null &amp;&amp; !budget.isEmpty()) {
+            String budgetUpper = budget.toUpperCase();
+            if (!isValidBudgetCategory(budgetUpper)) {
+                return &quot;Invalid budget category. Please use one of: BUDGET, MODERATE, LUXURY&quot;;
+            }
+        }
+        if (season != null &amp;&amp; !season.isEmpty()) {
+            String seasonUpper = season.toUpperCase();
+            if (!isValidSeason(seasonUpper)) {
+                return &quot;Invalid season. Please use one of: SPRING, SUMMER, AUTUMN, WINTER, ALL_YEAR&quot;;
+            }
+        }
+        return getDestinationsByPreference(activity, budget, season, familyFriendly);
+    } catch (Exception e) {
+        return &quot;Invalid input. Please check your parameters and try again.&quot;;
     }
-    const result = await tool.execute(request.params.arguments);
-    return { content: [{ type: &#39;text&#39;, text: `Result: ${result}` }] };
-  });
 }
 </code></pre>
 <ul>
-<li>Configures handlers for listing and invoking tools, enabling dynamic tool discovery.</li>
-<li>Validates tool existence before execution, ensuring robustness.</li>
-<li>Demonstrates the use of TypeScript&#39;s async/await for handling asynchronous operations.</li>
+<li>Handles multiple criteria for destination recommendations, validating each input individually.</li>
+<li>Ensures all preferences are checked before invoking <code class="inline-code">getDestinationsByPreference</code>.</li>
+<li>Provides detailed error messages for invalid inputs, enhancing user experience.</li>
+</ul>
+<hr>
+<pre><code class="language-java">@Tool(description = &quot;Get a list of all available travel destinations&quot;)
+public String getAllDestinations() {
+    return &quot;Here are some popular travel destinations:\n\n&quot; +
+           &quot;📍 Bali, Indonesia\n&quot; +
+           &quot;⭐️ Beautiful beaches with vibrant culture and lush landscapes.\n&quot; +
+           &quot;🏷️ Activity: BEACH | Budget: MODERATE | Best Season: SUMMER | Family Friendly: Yes\n\n&quot; +
+           &quot;📍 Cancun, Mexico\n&quot; +
+           &quot;⭐️ White sandy beaches with crystal clear waters and vibrant nightlife.\n&quot; +
+           &quot;🏷️ Activity: BEACH | Budget: MODERATE | Best Season: WINTER | Family Friendly: Yes\n\n&quot; +
+           &quot;📍 Maldives, Maldives\n&quot; +
+           &quot;⭐️ Luxurious overwater bungalows and pristine beaches perfect for relaxation.\n&quot; +
+           &quot;🏷️ Activity: BEACH | Budget: LUXURY | Best Season: ALL_YEAR | Family Friendly: Yes&quot;;
+}
+</code></pre>
+<ul>
+<li>Returns a hardcoded list of destinations, demonstrating the ability to handle generic queries.</li>
+<li>Provides detailed descriptions for each destination, showcasing the service&#39;s informative response capabilities.</li>
+<li>Acts as a fallback for queries that do not match specific criteria.</li>
 </ul>
 <hr>
 <h2>Helpful Hints</h2>
 <ul>
-<li>Pay attention to how each tool validates input to maintain the integrity of its operations.</li>
-<li>Observe the use of annotations and metadata in Java and Python to define tool behavior.</li>
-<li>Study the TypeScript server&#39;s structure for insights into MCP server design patterns.</li>
+<li>Notice how the <code class="inline-code">@Tool</code> annotations define methods as MCP tools, making them discoverable by the protocol.</li>
+<li>Study the validation patterns for inputs, ensuring only recognized values are processed.</li>
+<li>Explore the error handling mechanisms that provide informative feedback for invalid queries.</li>
 </ul>
 <hr>
-<p>Excellent work! Continue to the next quest to uncover more mysteries hidden within the Pyramid of Infinite Agents.</p>
-<p>By the sacred flame of wisdom, thou hast unlocked the arcane tongues of The Polyglot Chambers, etching thy name among the seekers of ancient mastery—press ever onward, for the stars yet hold treasures untold! ⭐⚡💎</p>
+<p>Excellent work! Continue to the next quest to uncover more mysteries of the Temple&#39;s interconnected wisdom.</p>
+<p>Hail, seeker of wisdom, for thou hast triumphed in the hallowed Sanctuaries of Service, etching thy name upon the sacred scrolls with the valor of one who journeys steadfast toward enlightenment—thy path now gleams with the brilliance of ancient stars! ⭐⚡💎</p>
 
 </div>
 
