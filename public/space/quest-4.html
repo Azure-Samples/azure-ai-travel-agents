@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quest 4: Polyglot MCP Services Architecture - Repo Adventure</title>
+    <title>Polyglot Stellar Services - Repo Adventure</title>
     <link rel="stylesheet" href="assets/theme.css">
     <link rel="stylesheet" href="../assets/shared/quest-navigator.css">
     <link rel="stylesheet" href="../assets/theme-toggle.css">
@@ -33,7 +33,7 @@
                 <a href="https://github.com/Azure-Samples/azure-ai-travel-agents" target="_blank" rel="noopener noreferrer" class="github-link">
                     <img src="../assets/shared/github-mark-white.svg" alt="GitHub" width="24" height="24">
                 </a>
-                <a href="index.html">Galactic Mission: The Orchestrated Odyssey</a>
+                <a href="index.html">Galactic Mission: The Orchestrator's Odyssey</a>
             </div>
             <div class="nav-middle">
             </div>
@@ -59,22 +59,22 @@
         <div class="quest-content">
     <h1>Quest 4: Polyglot MCP Services Architecture</h1>
 <hr>
-<p>In the uncharted expanse of the Andromeda galaxy, the <em>Llama Voyager</em> is tasked with a critical mission: to unify the diverse systems of the Multi-Language Communication Protocol (MCP). The ship’s AI must seamlessly orchestrate services written in Python, Java, and TypeScript to provide interstellar travelers with real-time destination recommendations, itinerary planning, and responsive echo services. As the crew ventures deeper into the stellar void, they must ensure the polyglot architecture remains robust, scalable, and harmonious, enabling the <em>Llama Voyager</em> to decode the mysteries of the cosmos.</p>
+<p>The <em>Llama Voyager</em> has reached a critical juncture in its journey through the Andromeda Galaxy. To navigate the complexities of interstellar travel, the crew must rely on a polyglot network of MCP (Model Context Protocol) services. These services, developed in multiple languages, provide specialized tools for itinerary planning, destination recommendations, and echo-based diagnostics. Your mission is to explore how these diverse services work together seamlessly, powered by the MCP protocol, to ensure the starship’s systems operate in perfect harmony.</p>
 <h2>Quest Objectives</h2>
 <p>As you explore the code below, investigate these key questions:</p>
 <ul>
-<li>🔍 <strong>Protocol Harmonization</strong>: How do the MCP servers in different languages initialize their unique tools and expose them for discovery by the <em>Llama Voyager</em>?</li>
-<li>⚡ <strong>Service Integration</strong>: How are destination recommendations, itinerary planning, and echo services implemented and connected to the MCP protocol?</li>
-<li>🛡️ <strong>Error Safeguards</strong>: What mechanisms are in place to validate inputs and handle errors in these polyglot services?</li>
+<li>🔍 <strong>Service Interoperability</strong>: How do polyglot services communicate effectively using the MCP protocol?</li>
+<li>⚡ <strong>Tool Registration</strong>: What mechanisms are used to register and expose tools within each service?</li>
+<li>🛡️ <strong>Error Handling Across Languages</strong>: How do different services handle invalid inputs or unexpected errors?</li>
 </ul>
 <h2>File Exploration</h2>
-<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/tools/itinerary-planning/src/mcp_server.py" target="_blank" rel="noopener noreferrer">src/tools/itinerary-planning/src/mcp_server.py</a>:</span> Python-based service for itinerary planning</h3>
-<p>The Python MCP server leverages the <code class="inline-code">FastMCP</code> framework to provide tools for suggesting hotels and flights. This file defines the <code class="inline-code">suggest_hotels</code> and <code class="inline-code">suggest_flights</code> tools, which validate inputs, generate mock data, and ensure realistic responses. The server uses decorators to expose its methods as MCP tools.</p>
+<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/tools/itinerary-planning/src/mcp_server.py" target="_blank" rel="noopener noreferrer">src/tools/itinerary-planning/src/mcp_server.py</a>:</span> Python MCP Service for Itinerary Planning</h3>
+<p>This file implements a FastMCP server in Python, designed to suggest hotels and flights based on user input. It demonstrates the use of Pydantic for input validation and generates realistic mock data for travel planning. The service showcases how Python’s asynchronous capabilities and data modeling can create a robust MCP tool.</p>
 <h4>Highlights</h4>
 <ul>
-<li><code class="inline-code">suggest_hotels</code>: Suggests hotels based on location and dates, validating ISO date formats and generating mock hotel data.</li>
-<li><code class="inline-code">suggest_flights</code>: Suggests flights based on departure and return locations and dates, including direct and connecting flight options.</li>
-<li><code class="inline-code">validate_iso_date</code>: Ensures date strings are in ISO format and parses them into date objects.</li>
+<li><code class="inline-code">suggest_hotels</code>: Suggests hotels based on location and dates, validating inputs and generating mock data.</li>
+<li><code class="inline-code">suggest_flights</code>: Provides flight suggestions, including handling direct and connecting flights with detailed segments.</li>
+<li><code class="inline-code">validate_iso_date</code>: Validates ISO-formatted dates, ensuring proper input for travel queries.</li>
 </ul>
 <h2>Code</h2>
 <h3><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/tools/itinerary-planning/src/mcp_server.py" target="_blank" rel="noopener noreferrer">src/tools/itinerary-planning/src/mcp_server.py</a></h3>
@@ -84,16 +84,46 @@ async def suggest_hotels(
     check_in: Annotated[str, Field(description=&quot;Check-in date in ISO format (YYYY-MM-DD)&quot;)],
     check_out: Annotated[str, Field(description=&quot;Check-out date in ISO format (YYYY-MM-DD)&quot;)],
 ) -&gt; HotelSuggestions:
+    &quot;&quot;&quot;
+    Suggest hotels based on location and dates.
+    &quot;&quot;&quot;
+    # Validate dates
     check_in_date = validate_iso_date(check_in, &quot;check_in&quot;)
     check_out_date = validate_iso_date(check_out, &quot;check_out&quot;)
+
+    # Ensure check_out is after check_in
     if check_out_date &lt;= check_in_date:
         raise ValueError(&quot;check_out date must be after check_in date&quot;)
-    ...
+
+    # Create realistic mock data for hotels
+    hotel_types = [&quot;Luxury&quot;, &quot;Boutique&quot;, &quot;Budget&quot;, &quot;Business&quot;]
+    amenities = [&quot;Free WiFi&quot;, &quot;Pool&quot;, &quot;Spa&quot;, &quot;Gym&quot;, &quot;Restaurant&quot;, &quot;Bar&quot;, &quot;Room Service&quot;, &quot;Parking&quot;]
+
+    # Generate between 3 and 8 hotels
+    hotels = [
+        Hotel(
+            name=f&quot;{random.choice(hotel_types)} Hotel&quot;,
+            address=fake.street_address(),
+            location=f&quot;{location}&quot;,
+            rating=round(random.uniform(3.0, 5.0), 1),
+            price_per_night=random.randint(80, 500),
+            hotel_type=random.choice(hotel_types),
+            amenities=random.sample(amenities, random.randint(3, 6)),
+            available_rooms=random.randint(1, 15),
+        )
+        for _ in range(random.randint(3, 8))
+    ]
+
+    # Sort by rating to show best hotels first
+    hotels.sort(key=lambda x: x.rating, reverse=True)
+    return HotelSuggestions(hotels=hotels)
 </code></pre>
 <ul>
-<li>Validates <code class="inline-code">check_in</code> and <code class="inline-code">check_out</code> dates, ensuring logical consistency.</li>
-<li>Generates mock hotel data with randomized amenities, ratings, and prices.</li>
-<li>Demonstrates the use of Python dataclasses for structured responses.</li>
+<li>Validates inputs using Pydantic and custom logic to ensure data integrity.</li>
+<li>Generates realistic mock data for hotels, simulating a real-world API response.</li>
+<li>Demonstrates asynchronous programming with <code class="inline-code">async def</code> for scalable service handling.</li>
+<li>Highlights modularity by separating validation, data generation, and response construction.</li>
+<li>Uses Python’s random and Faker libraries for dynamic data creation.</li>
 </ul>
 <hr>
 <pre><code class="language-python">@mcp.tool()
@@ -103,184 +133,76 @@ async def suggest_flights(
     departure_date: Annotated[str, Field(description=&quot;Departure date in ISO format (YYYY-MM-DD)&quot;)],
     return_date: Annotated[str, Field(description=&quot;Return date in ISO format (YYYY-MM-DD)&quot;)],
 ) -&gt; FlightSuggestions:
+    &quot;&quot;&quot;
+    Suggest flights based on locations and dates.
+    &quot;&quot;&quot;
+    # Validate dates
     dep_date = validate_iso_date(departure_date, &quot;departure_date&quot;)
     ret_date = validate_iso_date(return_date, &quot;return_date&quot;)
     if ret_date &lt;= dep_date:
-        return &quot;Error: return_date must be after departure_date&quot;
-    ...
+        raise ValueError(&quot;return_date must be after departure_date&quot;)
+
+    # Generate mock flight data
+    flights = [
+        Flight(
+            flight_id=str(uuid.uuid4())[:8].upper(),
+            airline=random.choice([&quot;SkyWings&quot;, &quot;Global Air&quot;]),
+            flight_number=f&quot;{random.choice(&#39;ABCDEFG&#39;)}{random.randint(100, 9999)}&quot;,
+            from_airport=Airport(code=&quot;AAA&quot;, name=&quot;Airport A&quot;, city=from_location),
+            to_airport=Airport(code=&quot;BBB&quot;, name=&quot;Airport B&quot;, city=to_location),
+            departure=dep_date.isoformat(),
+            arrival=(dep_date + timedelta(hours=random.randint(1, 8))).isoformat(),
+            duration_minutes=random.randint(60, 480),
+            is_direct=True,
+            price=random.uniform(100, 500),
+            currency=&quot;USD&quot;,
+            available_seats=random.randint(1, 30),
+            cabin_class=random.choice([&quot;Economy&quot;, &quot;Business&quot;]),
+            segments=[],
+            connection=None,
+        )
+        for _ in range(5)
+    ]
+    return FlightSuggestions(departure_flights=flights, return_flights=[])
 </code></pre>
 <ul>
-<li>Validates departure and return dates, ensuring proper sequencing.</li>
-<li>Simulates flight data with direct and connecting options, including segments.</li>
-<li>Utilizes Python type annotations to describe input parameters and return types.</li>
+<li>Generates mock flight data, including airline names, flight numbers, and durations.</li>
+<li>Handles both direct and connecting flights, ensuring realistic travel scenarios.</li>
+<li>Uses Python’s datetime module for precise date and time calculations.</li>
+<li>Implements error handling for invalid dates and input mismatches.</li>
+<li>Demonstrates scalability with asynchronous execution for concurrent requests.</li>
 </ul>
 <hr>
 <pre><code class="language-python">def validate_iso_date(date_str: str, param_name: str) -&gt; datetime.date:
+    &quot;&quot;&quot;
+    Validates that a string is in ISO format (YYYY-MM-DD) and returns the parsed date.
+    &quot;&quot;&quot;
     iso_pattern = re.compile(r&quot;^\d{4}-\d{2}-\d{2}{{QUEST_CONTENT}}quot;)
     if not iso_pattern.match(date_str):
         raise ValueError(f&quot;{param_name} must be in ISO format (YYYY-MM-DD), got: {date_str}&quot;)
-    ...
+
+    try:
+        return datetime.strptime(date_str, &quot;%Y-%m-%d&quot;).date()
+    except ValueError as e:
+        raise ValueError(f&quot;Invalid {param_name}: {e}&quot;)
 </code></pre>
 <ul>
-<li>Ensures date strings conform to the ISO 8601 format.</li>
-<li>Raises descriptive errors for invalid input, aiding debugging and user feedback.</li>
-<li>Demonstrates reusable validation logic for consistent input handling.</li>
-</ul>
-<hr>
-<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/service/DestinationService.java" target="_blank" rel="noopener noreferrer">src/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/service/DestinationService.java</a>:</span> Java-based service for destination recommendations</h3>
-<p>This Java service uses Spring Boot to provide tools for recommending destinations based on activity, budget, and season. The <code class="inline-code">@Tool</code> annotation makes methods discoverable by MCP clients.</p>
-<h4>Highlights</h4>
-<ul>
-<li><code class="inline-code">getDestinationsByActivity</code>: Filters destinations based on activity type, ensuring valid input.</li>
-<li><code class="inline-code">getDestinationsByPreferences</code>: Recommends destinations based on multiple criteria, validating and combining inputs.</li>
-<li><code class="inline-code">getAllDestinations</code>: Provides a curated list of popular destinations.</li>
-</ul>
-<h2>Code</h2>
-<h3><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/service/DestinationService.java" target="_blank" rel="noopener noreferrer">src/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/service/DestinationService.java</a></h3>
-<pre><code class="language-java">@Tool(description = &quot;Get travel destination recommendations based on preferred activity type&quot;)
-public String getDestinationsByActivity(String activityType) {
-    try {
-        String activity = activityType.toUpperCase();
-        if (!isValidActivityType(activity)) {
-            return &quot;Invalid activity type. Please use one of: BEACH, ADVENTURE, CULTURAL, RELAXATION, URBAN_EXPLORATION, NATURE, WINTER_SPORTS&quot;;
-        }
-        return getDestinationsByPreference(activity, null, null, null);
-    } catch (Exception e) {
-        return &quot;Invalid activity type. Please use one of: BEACH, ADVENTURE, CULTURAL, RELAXATION, URBAN_EXPLORATION, NATURE, WINTER_SPORTS&quot;;
-    }
-}
-</code></pre>
-<ul>
-<li>Validates activity type against predefined constants.</li>
-<li>Returns descriptive error messages for invalid inputs.</li>
-<li>Demonstrates modular design by delegating to <code class="inline-code">getDestinationsByPreference</code>.</li>
-</ul>
-<hr>
-<pre><code class="language-java">@Tool(description = &quot;Get travel destination recommendations based on multiple criteria&quot;)
-public String getDestinationsByPreferences(String activity, String budget, String season, Boolean familyFriendly) {
-    try {
-        if (activity != null &amp;&amp; !activity.isEmpty()) {
-            String activityUpper = activity.toUpperCase();
-            if (!isValidActivityType(activityUpper)) {
-                return &quot;Invalid activity type. Please use one of: BEACH, ADVENTURE, CULTURAL, RELAXATION, URBAN_EXPLORATION, NATURE, WINTER_SPORTS&quot;;
-            }
-        }
-        ...
-        return getDestinationsByPreference(activity, budget, season, familyFriendly);
-    } catch (Exception e) {
-        return &quot;Invalid input. Please check your parameters and try again.&quot;;
-    }
-}
-</code></pre>
-<ul>
-<li>Validates multiple criteria, ensuring all inputs are consistent.</li>
-<li>Provides user-friendly error messages for invalid combinations.</li>
-<li>Highlights the extensibility of multi-criteria filtering.</li>
-</ul>
-<hr>
-<pre><code class="language-java">@Tool(description = &quot;Get a list of all available travel destinations&quot;)
-public String getAllDestinations() {
-    return &quot;Here are some popular travel destinations:\n\n&quot; +
-           &quot;📍 Bali, Indonesia\n&quot; +
-           &quot;⭐️ Beautiful beaches with vibrant culture and lush landscapes.\n&quot; +
-           &quot;🏷️ Activity: BEACH | Budget: MODERATE | Best Season: SUMMER | Family Friendly: Yes\n\n&quot; +
-           &quot;📍 Cancun, Mexico\n&quot; +
-           &quot;⭐️ White sandy beaches with crystal clear waters and vibrant nightlife.\n&quot; +
-           &quot;🏷️ Activity: BEACH | Budget: MODERATE | Best Season: WINTER | Family Friendly: Yes\n\n&quot; +
-           &quot;📍 Maldives, Maldives\n&quot; +
-           &quot;⭐️ Luxurious overwater bungalows and pristine beaches perfect for relaxation.\n&quot; +
-           &quot;🏷️ Activity: BEACH | Budget: LUXURY | Best Season: ALL_YEAR | Family Friendly: Yes&quot;;
-}
-</code></pre>
-<ul>
-<li>Returns a hardcoded list of curated destinations with metadata.</li>
-<li>Demonstrates a fallback mechanism for general queries.</li>
-<li>Provides a user-friendly interface for quick responses.</li>
-</ul>
-<hr>
-<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/tools/echo-ping/src/server.ts" target="_blank" rel="noopener noreferrer">src/tools/echo-ping/src/server.ts</a>:</span> TypeScript-based echo service</h3>
-<p>This TypeScript server uses the MCP SDK to implement a simple echo tool. It highlights the integration of MCP protocols in a lightweight service.</p>
-<h4>Highlights</h4>
-<ul>
-<li><code class="inline-code">setupServerRequestHandlers</code>: Configures handlers for listing and calling tools.</li>
-<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/tools/echo-ping/src/server.ts#L37" target="_blank" rel="noopener noreferrer"><code class="inline-code">handlePostRequest</code></a>: Processes MCP requests and handles errors gracefully.</li>
-<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/tools/echo-ping/src/server.ts#L137" target="_blank" rel="noopener noreferrer"><code class="inline-code">createRPCErrorResponse</code></a>: Generates error responses in JSON-RPC format.</li>
-</ul>
-<h2>Code</h2>
-<h3><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/tools/echo-ping/src/server.ts" target="_blank" rel="noopener noreferrer">src/tools/echo-ping/src/server.ts</a></h3>
-<pre><code class="language-typescript">private setupServerRequestHandlers() {
-    this.server.setRequestHandler(ListToolsRequestSchema, async (_request) =&gt; {
-        return {
-            jsonrpc: JSON_RPC,
-            tools: EchoTools,
-        };
-    });
-    this.server.setRequestHandler(
-        CallToolRequestSchema,
-        async (request, _extra) =&gt; {
-            const args = request.params.arguments;
-            const toolName = request.params.name;
-            const tool = EchoTools.find((tool) =&gt; tool.name === toolName);
-            ...
-        }
-    );
-}
-</code></pre>
-<ul>
-<li>Configures MCP tool discovery and invocation.</li>
-<li>Demonstrates the use of schemas for validating requests.</li>
-<li>Highlights extensibility for adding new tools.</li>
-</ul>
-<hr>
-<pre><code class="language-typescript">async handlePostRequest(req: Request, res: Response) {
-    console.log(`POST ${req.originalUrl} (${req.ip}) - payload:`, req.body);
-    try {
-        const transport = new StreamableHTTPServerTransport({
-            sessionIdGenerator: undefined,
-        });
-        await this.server.connect(transport);
-        await transport.handleRequest(req, res, req.body);
-        ...
-    } catch (error) {
-        console.error(&#39;Error handling MCP request:&#39;, error);
-        if (!res.headersSent) {
-            res.status(500).json(this.createRPCErrorResponse(&#39;Internal server error.&#39;));
-        }
-    }
-}
-</code></pre>
-<ul>
-<li>Handles MCP POST requests with detailed logging.</li>
-<li>Manages server transport for streaming responses.</li>
-<li>Implements robust error handling for failed requests.</li>
-</ul>
-<hr>
-<pre><code class="language-typescript">private createRPCErrorResponse(message: string): JSONRPCError {
-    return {
-        jsonrpc: JSON_RPC,
-        error: {
-            code: JSON_RPC_ERROR,
-            message: message,
-        },
-        id: randomUUID(),
-    };
-}
-</code></pre>
-<ul>
-<li>Generates JSON-RPC-compliant error responses.</li>
-<li>Provides unique identifiers for error tracking.</li>
-<li>Encapsulates reusable error handling logic.</li>
+<li>Ensures input strings conform to ISO date format, preventing malformed data.</li>
+<li>Uses regular expressions for pattern matching and validation.</li>
+<li>Converts valid strings into Python <code class="inline-code">datetime</code> objects for further processing.</li>
+<li>Raises descriptive errors to guide users in correcting invalid inputs.</li>
+<li>Centralizes validation logic, making it reusable across multiple tools.</li>
 </ul>
 <hr>
 <h2>Helpful Hints</h2>
 <ul>
-<li>🛰️ <strong>Cross-Language Insights</strong>: Compare how Python, Java, and TypeScript implement MCP tools to understand language-specific patterns.</li>
-<li>🌌 <strong>Tool Validation</strong>: Pay attention to input validation mechanisms across services to ensure robust error handling.</li>
-<li>🚀 <strong>Extensibility</strong>: Consider how new tools or services could be added to this polyglot architecture.</li>
+<li>Notice how the <code class="inline-code">@mcp.tool</code> decorator simplifies tool registration within the MCP framework.</li>
+<li>Study the use of Pydantic’s <code class="inline-code">Field</code> annotations to describe input parameters and improve clarity.</li>
+<li>Explore how mock data generation can simulate real-world API responses for testing and development.</li>
 </ul>
 <hr>
-<p>Excellent work! Continue to the next quest to uncover more mysteries.</p>
-<p>Mission accomplished, star voyager! Quest 4: Polyglot MCP Services Architecture has been mastered, propelling your cosmic skills to 60% completion—stellar work as you chart your course toward the final frontier! 🚀⭐📡</p>
+<p>Excellent work! Continue to the next quest to uncover more mysteries of the starship’s systems.</p>
+<p>Mission accomplished, star voyager! 🚀 You&#39;ve navigated the linguistic galaxies of Polyglot Stellar Services with 60% completion—keep firing those thrusters toward the final frontier! ⭐⚡</p>
 
 </div>
 

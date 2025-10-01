@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quest 5: The Mystic Mirror - Repo Adventure</title>
+    <title>The Oracle of Streaming Conversations - Repo Adventure</title>
     <link rel="stylesheet" href="assets/theme.css">
     <link rel="stylesheet" href="../assets/shared/quest-navigator.css">
     <link rel="stylesheet" href="../assets/theme-toggle.css">
@@ -33,7 +33,7 @@
                 <a href="https://github.com/Azure-Samples/azure-ai-travel-agents" target="_blank" rel="noopener noreferrer" class="github-link">
                     <img src="../assets/shared/github-mark.svg" alt="GitHub" width="24" height="24">
                 </a>
-                <a href="index.html">The Enchanted Kingdom of Azure AI: Chronicles of the Multi-Agent Alliance</a>
+                <a href="index.html">The Enchanted Kingdom of Azure AI Travel Agents</a>
             </div>
             <div class="nav-middle">
             </div>
@@ -57,145 +57,174 @@
     
     <div class="container">
         <div class="quest-content">
-    <h1>Quest 5: The Mystic Mirror</h1>
+    <h1>Quest 5: The Oracle of Streaming Conversations</h1>
 <hr>
-<p>In the mythical Kingdom of Azure AI, the enchanted artifact known as the <strong>Mystic Mirror</strong> has been discovered. This magical device reflects the wisdom of the grand council of agents, projecting their insights into the mortal realm. But its power lies in its ability to stream knowledge dynamically, channeling the voices of the agents as they collaborate. To harness this artifact, the kingdom&#39;s heroes must delve into the secrets of the <strong>Streaming Chat UI</strong>, where the Mystic Mirror&#39;s reflections are shaped. Will you uncover the spells that bind the agents&#39; voices to the mirror?</p>
+<p>In the heart of the Enchanted Kingdom of Travel Agents, the Oracle of Streaming Conversations sits atop the Tower of Interaction. This mystical being, fueled by the synergy of Angular and the Model Context Protocol, ensures seamless communication between adventurers and the kingdom&#39;s magical agents. The Oracle’s power lies in its ability to process real-time messages, coordinate enchanted tools, and transform inquiries into actionable wisdom. To master the Oracle&#39;s secrets is to command the flow of dialogue across the enchanted land.</p>
 <h2>Quest Objectives</h2>
 <p>As you explore the code below, investigate these key questions:</p>
 <ul>
-<li>🔍 <strong>Agent Reflections</strong>: How does the <code class="inline-code">ChatService</code> process and manage agent events to ensure smooth communication with the chat interface?</li>
-<li>⚡ <strong>Dynamic Streams</strong>: What mechanisms in the <code class="inline-code">ApiService</code> enable the streaming of messages and real-time updates in the chat interface?</li>
-<li>🛡️ <strong>Error Safeguards</strong>: How does the system handle errors during message streaming, and what patterns are used to ensure resilience?</li>
+<li>🔍 <strong>Message Stream Alchemy</strong>: How does the Oracle manage and update the message stream to ensure real-time communication with agents?</li>
+<li>⚡ <strong>Tool Invocation Runes</strong>: What mechanisms are used to discover, select, and invoke the enchanted tools during a conversation?</li>
+<li>🛡️ <strong>Error Shielding</strong>: How does the Oracle handle errors during streaming conversations to maintain the flow of dialogue?</li>
 </ul>
 <h2>File Exploration</h2>
-<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.service.ts" target="_blank" rel="noopener noreferrer">src/ui/src/app/chat-conversation/chat-conversation.service.ts</a>:</span> Core Chat Logic</h3>
-<p>The <code class="inline-code">ChatService</code> is the heart of the Mystic Mirror, responsible for managing user messages, processing agent events, and maintaining the chat&#39;s state. It acts as the bridge between the UI and the backend, ensuring the seamless reflection of agent insights.</p>
+<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.service.ts" target="_blank" rel="noopener noreferrer">src/ui/src/app/chat-conversation/chat-conversation.service.ts</a>:</span> The Oracle&#39;s Message Conduit</h3>
+<p>This file contains the <code class="inline-code">ChatService</code>, which acts as the conduit for orchestrating messages between the user and the enchanted tools. It manages real-time updates to the message stream, processes agent events, and handles tool invocation. The <code class="inline-code">ChatService</code> is the backbone of the Oracle&#39;s operations, ensuring that every message is delivered, processed, and responded to in a seamless manner.</p>
 <h4>Highlights</h4>
 <ul>
-<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.service.ts#L68" target="_blank" rel="noopener noreferrer"><code class="inline-code">fetchAvailableTools</code></a>: Fetches and filters the tools available to the agents, ensuring only selected tools are used in the conversation.</li>
-<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.component.ts#L170" target="_blank" rel="noopener noreferrer"><code class="inline-code">sendMessage</code></a>: Handles user input, sends messages to the backend, and updates the chat stream.</li>
-<li><code class="inline-code">processAgentEvents</code>: Processes events streamed from the agents, updating the chat state dynamically.</li>
-<li><code class="inline-code">updateAndNotifyAgentChatMessageState</code>: Updates the last assistant message with new data and notifies the UI of state changes.</li>
-<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.service.ts#L211" target="_blank" rel="noopener noreferrer"><code class="inline-code">resetChat</code></a>: Resets the chat to its initial state, clearing all buffers and streams.</li>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.service.ts#L68" target="_blank" rel="noopener noreferrer"><code class="inline-code">fetchAvailableTools</code></a>: Retrieves a list of available tools from the kingdom&#39;s enchanted repository, filtering for selected tools.</li>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.component.ts#L170" target="_blank" rel="noopener noreferrer"><code class="inline-code">sendMessage</code></a>: Sends a user&#39;s message to the Oracle, coordinating the invocation of selected tools and managing the message buffer.</li>
+<li><code class="inline-code">processAgentEvents</code>: Processes events returned by the agents, updating the message stream with dynamic content and metadata.</li>
+<li><code class="inline-code">updateAndNotifyAgentChatMessageState</code>: Updates the state of the current agent&#39;s message, appending content and metadata as it streams in.</li>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.service.ts#L211" target="_blank" rel="noopener noreferrer"><code class="inline-code">resetChat</code></a>: Resets the Oracle&#39;s state, clearing all buffers and preparing for a new session.</li>
 </ul>
 <h2>Code</h2>
 <h3><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.service.ts" target="_blank" rel="noopener noreferrer">src/ui/src/app/chat-conversation/chat-conversation.service.ts</a></h3>
 <pre><code class="language-typescript">async fetchAvailableTools() {
-    const toolsResult = await this.apiService.fetchAvailableTools();
-    if (toolsResult) {
-      this.tools.set(toolsResult.tools.filter((tool) =&gt; tool.selected));
-    }
+  const toolsResult = await this.apiService.fetchAvailableTools();
+  if (toolsResult) {
+    this.tools.set(toolsResult.tools.filter((tool) =&gt; tool.selected));
+  }
 }
 </code></pre>
 <ul>
-<li>Fetches tools from the API and filters out unselected ones.</li>
-<li>Ensures that only relevant tools are available for use.</li>
-<li>Highlights the dynamic nature of tool discovery.</li>
+<li>This method queries the API for the list of available tools and filters them based on their selection status.</li>
+<li>The use of <code class="inline-code">signal</code> ensures that the selected tools are reactively updated in the Oracle&#39;s state.</li>
+<li>This approach decouples tool discovery from the rest of the system, enabling dynamic updates without modifying core logic.</li>
 </ul>
 <hr>
 <pre><code class="language-typescript">async sendMessage(event: Event) {
-    if ((event as KeyboardEvent).shiftKey) {
-      return;
-    }
+  if ((event as KeyboardEvent).shiftKey) {
+    return;
+  }
 
-    const messageText = this.userMessage();
-    if (!messageText.trim()) return;
+  const messageText = this.userMessage();
+  if (!messageText.trim()) return;
 
-    this.messagesBuffer.push({
-      role: &#39;user&#39;,
-      content: messageText,
-      reasoning: [],
-      timestamp: new Date(),
-    });
+  this.messagesBuffer.push({
+    role: &#39;user&#39;,
+    content: messageText,
+    reasoning: [],
+    timestamp: new Date(),
+  });
 
-    this.userMessage.set(&#39;&#39;);
-    this.isLoading.set(true);
-    this.assistantMessageInProgress.set(false);
+  this.userMessage.set(&#39;&#39;);
+  this.isLoading.set(true);
+  this.assistantMessageInProgress.set(false);
 
-    await this.apiService.streamChatMessage(
-      messageText,
-      this.tools().filter((tool) =&gt; tool.selected)
-    );
+  await this.apiService.streamChatMessage(
+    messageText,
+    this.tools().filter((tool) =&gt; tool.selected)
+  );
 }
 </code></pre>
 <ul>
-<li>Handles user input and sends it to the backend.</li>
-<li>Updates the chat stream with the user&#39;s message.</li>
-<li>Demonstrates the integration of user interactions with backend streaming.</li>
+<li>This method handles user input, pushing the message into the buffer and invoking the <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/services/api.service.ts#L85" target="_blank" rel="noopener noreferrer"><code class="inline-code">streamChatMessage</code></a> API for processing.</li>
+<li>It ensures that only non-empty messages are sent, maintaining the integrity of the conversation.</li>
+<li>The use of reactive signals (<code class="inline-code">isLoading</code>, <code class="inline-code">assistantMessageInProgress</code>) provides real-time feedback to the user interface.</li>
 </ul>
 <hr>
 <pre><code class="language-typescript">private processAgentEvents(event?: ChatEvent) {
-    if (event &amp;&amp; event.type === &#39;metadata&#39;) {
-      this.currentAgentName.set(event.data?.agentName || null);
-      this.agentEventsBuffer.push(event);
+  if (event &amp;&amp; event.type === &#39;metadata&#39;) {
+    this.currentAgentName.set(event.data?.agentName || null);
+    this.agentEventsBuffer.push(event);
 
-      const delta: string = event.data?.delta || &#39;&#39;;
+    const delta: string = event.data?.delta || &#39;&#39;;
 
-      switch (event.event) {
-        case &#39;StartEvent&#39;:
-          this.updateAndNotifyAgentChatMessageState(delta, {
-            metadata: {
-              events: this.agentEventsBuffer,
-            },
-          });
-
-          this.assistantMessageInProgress.set(false);
-          break;
-        case &#39;StopEvent&#39;:
-          this.updateAndNotifyAgentChatMessageState(delta, {
-            metadata: {
-              events: this.agentEventsBuffer,
-            },
-          });
-
-          this.assistantMessageInProgress.set(false);
-          this.isLoading.set(false);
-          break;
-        case &#39;AgentToolCallResult&#39;:
-          let state = {};
-          if (typeof event.data.raw === &#39;string&#39;) {
-            state = {
-              reasoning: [
-                {
-                  content: event.data.raw,
-                },
-              ],
-            };
-          }
-          this.updateAndNotifyAgentChatMessageState(delta, state);
-          break;
-
-        case &#39;AgentStream&#39;:
-          this.assistantMessageInProgress.set(true);
-
-          if (delta.trim()) {
-            this.agentEventsBuffer.push(event);
-            this.updateAndNotifyAgentChatMessageState(delta, {
-              metadata: {
-                events: this.agentEventsBuffer,
+    switch (event.event) {
+      case &#39;StartEvent&#39;:
+        this.updateAndNotifyAgentChatMessageState(delta, {
+          metadata: {
+            events: this.agentEventsBuffer,
+          },
+        });
+        this.assistantMessageInProgress.set(false);
+        break;
+      case &#39;StopEvent&#39;:
+        this.updateAndNotifyAgentChatMessageState(delta, {
+          metadata: {
+            events: this.agentEventsBuffer,
+          },
+        });
+        this.assistantMessageInProgress.set(false);
+        this.isLoading.set(false);
+        break;
+      case &#39;AgentToolCallResult&#39;:
+        let state = {};
+        if (typeof event.data.raw === &#39;string&#39;) {
+          state = {
+            reasoning: [
+              {
+                content: event.data.raw,
               },
-            });
-          }
-          break;
-      }
+            ],
+          };
+        }
+        this.updateAndNotifyAgentChatMessageState(delta, state);
+        break;
+      // Other event cases omitted for brevity
     }
+  }
 }
 </code></pre>
 <ul>
-<li>Processes agent events and updates the chat state dynamically.</li>
-<li>Handles different event types, including metadata, tool results, and streaming.</li>
-<li>Illustrates the reactive design of the chat service.</li>
+<li>This function processes events emitted by the agents, dynamically updating the message stream based on the event type.</li>
+<li>The <code class="inline-code">delta</code> mechanism allows for incremental updates, enabling real-time streaming of agent responses.</li>
+<li>The handling of <code class="inline-code">AgentToolCallResult</code> demonstrates how tool outputs are integrated into the conversation flow.</li>
+</ul>
+<hr>
+<pre><code class="language-typescript">updateAndNotifyAgentChatMessageState(
+  delta: string,
+  state?: Partial&lt;ChatMessage&gt;
+) {
+  const lastMessage = this.messagesBuffer[this.messagesBuffer.length - 1];
+  if (lastMessage?.role === &#39;assistant&#39;) {
+    lastMessage.content += delta;
+    lastMessage.metadata = {
+      ...lastMessage.metadata,
+      ...state?.metadata,
+      events: state?.metadata?.events,
+    };
+    lastMessage.reasoning = [
+      ...(lastMessage.reasoning || []),
+      ...(state?.reasoning || []),
+    ];
+    lastMessage.timestamp = new Date();
+    this.messagesStream.next([...this.messagesBuffer]);
+  }
+}
+</code></pre>
+<ul>
+<li>This method updates the content and metadata of the last agent message in the buffer, broadcasting changes to the message stream.</li>
+<li>The use of spread operators ensures that new metadata and reasoning are appended without overwriting existing data.</li>
+<li>By broadcasting the updated buffer, the Oracle ensures that the UI reflects the latest state of the conversation.</li>
+</ul>
+<hr>
+<pre><code class="language-typescript">resetChat() {
+  this.userMessage.set(&#39;&#39;);
+  this.messagesBuffer = [];
+  this.messagesStream.next(this.messagesBuffer);
+  this.agentEventsBuffer = [];
+  this.isLoading.set(false);
+  this.assistantMessageInProgress.set(false);
+  this.currentAgentName.set(null);
+}
+</code></pre>
+<ul>
+<li>This method clears all state variables, resetting the Oracle for a new session.</li>
+<li>It ensures that no residual data from previous conversations affects the next interaction.</li>
+<li>The use of reactive signals guarantees that the UI is updated to reflect the reset state.</li>
 </ul>
 <hr>
 <h2>Helpful Hints</h2>
 <ul>
-<li>🧙‍♂️ <strong>Explore the Event Flow</strong>: Follow how <code class="inline-code">processAgentEvents</code> handles different event types to understand the dynamic updates.</li>
-<li>🔮 <strong>Trace the Streaming Logic</strong>: Investigate how <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.component.ts#L170" target="_blank" rel="noopener noreferrer"><code class="inline-code">sendMessage</code></a> and <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/services/api.service.ts#L85" target="_blank" rel="noopener noreferrer"><code class="inline-code">streamChatMessage</code></a> work together for real-time communication.</li>
-<li>🛠️ <strong>Focus on Tool Integration</strong>: Pay attention to <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.service.ts#L68" target="_blank" rel="noopener noreferrer"><code class="inline-code">fetchAvailableTools</code></a> to see how tools are dynamically discovered and filtered.</li>
+<li>Use the <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.service.ts#L68" target="_blank" rel="noopener noreferrer"><code class="inline-code">fetchAvailableTools</code></a> method to explore how the Oracle dynamically discovers and selects enchanted tools.</li>
+<li>Study the <code class="inline-code">processAgentEvents</code> function to understand how the Oracle handles different types of agent events and updates the conversation in real time.</li>
+<li>Pay close attention to the <code class="inline-code">updateAndNotifyAgentChatMessageState</code> method to see how incremental updates are managed within the message buffer.</li>
 </ul>
 <hr>
-<p>You have mastered all the secrets of the Mystic Mirror and the enchanted Kingdom of Azure AI! Your adventure is complete.</p>
-<p>Brave seeker of wisdom, you have gazed into the Mystic Mirror and unlocked its arcane truths, bringing your quest to 80% completion—onward, valiant soul, for the final chapter of glory awaits! ⚔️👁️💎</p>
+<p>You have mastered all the secrets of the Enchanted Kingdom of Travel Agents! Your adventure is complete.</p>
+<p>Rejoice, valiant seeker of wisdom, for you have unlocked the sacred revelations of &#39;The Oracle of Streaming Conversations,&#39; weaving the threads of celestial insight into the tapestry of your heroic journey—press onward, for the final triumph glimmers on the horizon like a beacon of destiny! ⭐⚡👁️</p>
 
 </div>
 
