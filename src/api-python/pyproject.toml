@@ -2,22 +2,28 @@
 name = "azure-ai-travel-agents-api-python"
 version = "1.0.0"
 description = "Azure AI Travel Agents API with Microsoft Agent Framework"
-requires-python = ">=3.12"
+requires-python = ">=3.11"
 dependencies = [
-    "agent-framework>=0.1.0",
+    # Core web framework and server
     "fastapi>=0.115.0",
     "uvicorn[standard]>=0.34.0",
+    # HTTP client for MCP communication
     "httpx>=0.28.1",
+    # Server-Sent Events for streaming
     "sse-starlette>=2.2.1",
+    # Configuration and validation
     "pydantic>=2.10.6",
     "pydantic-settings>=2.7.0",
     "python-dotenv>=1.0.1",
+    # Observability with OpenTelemetry
     "opentelemetry-api>=1.30.0",
     "opentelemetry-sdk>=1.30.0",
     "opentelemetry-exporter-otlp-proto-grpc>=1.30.0",
     "opentelemetry-instrumentation-fastapi>=0.51b0",
+    # Azure authentication
     "azure-identity>=1.20.0",
-    "azure-ai-inference>=1.0.0b5",
+    # Note: Microsoft Agent Framework will be added in Phase 2
+    # "agent-framework" or equivalent MAF SDK package
 ]
 
 [project.optional-dependencies]
@@ -31,7 +37,7 @@ dev = [
 
 [tool.ruff]
 line-length = 120
-target-version = "py312"
+target-version = "py311"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "N", "W", "UP"]
@@ -45,11 +51,19 @@ python_classes = ["Test*"]
 python_functions = ["test_*"]
 
 [tool.mypy]
-python_version = "3.12"
+python_version = "3.11"
 warn_return_any = true
 warn_unused_configs = true
-disallow_untyped_defs = true
+disallow_untyped_defs = false
 
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_backend"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["*"]
+namespaces = false

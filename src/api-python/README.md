@@ -6,6 +6,10 @@ Python-based API server using Microsoft Agent Framework for multi-agent orchestr
 
 This is the Python implementation of the orchestration layer using Microsoft Agent Framework (MAF). It provides the same API endpoints as the TypeScript version but uses Python and MAF for agent orchestration.
 
+**Current Status: Phase 1 - Foundation Complete**
+
+The foundation layer is implemented with configuration management, MCP client integration, and basic API endpoints. Microsoft Agent Framework integration will be added in Phase 2.
+
 ## Setup
 
 ### Prerequisites
