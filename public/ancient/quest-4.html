@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Halls of Polyglot Services - Repo Adventure</title>
+    <title>The Polyglot Shrines - Repo Adventure</title>
     <link rel="stylesheet" href="assets/theme.css">
     <link rel="stylesheet" href="../assets/shared/quest-navigator.css">
     <link rel="stylesheet" href="../assets/theme-toggle.css">
@@ -33,12 +33,12 @@
                 <a href="https://github.com/Azure-Samples/azure-ai-travel-agents" target="_blank" rel="noopener noreferrer" class="github-link">
                     <img src="../assets/shared/github-mark-white.svg" alt="GitHub" width="24" height="24">
                 </a>
-                <a href="index.html">The Codex of Ancient Agents</a>
+                <a href="index.html">The Sacred Codex of the Azure Agents</a>
             </div>
             <div class="nav-middle">
             </div>
             <div class="nav-right">
-                <a href="../index.html" class="nav-link">Change Theme</a>
+                <a href="../index.html" class="nav-link">Change Adventure</a>
                 <a href="#" class="nav-link quest-map-trigger">Quests</a>
                 <button class="theme-toggle-btn" aria-label="Switch to light mode" type="button">
                     <div class="theme-toggle-slider">
@@ -57,139 +57,162 @@
     
     <div class="container">
         <div class="quest-content">
-    <h1>Quest 4: The Halls of Polyglot Services</h1>
+    <h1>Quest 4: The Polyglot Shrines</h1>
 <hr>
-<p>Deep within the labyrinthine Halls of Polyglot Services, you uncover chambers where the &quot;Ancient Agents&quot; once worked in harmony. Each chamber represents a distinct language, its walls inscribed with sacred scripts that encode the secrets of multi-lingual collaboration. Here, the Codex orchestrates tools written in Python, Java, and TypeScript, ensuring seamless communication through the ancient Model Context Protocol (MCP). As you explore, you begin to see how this polyglot architecture allowed the ancients to harness the strengths of diverse tools, creating a unified system of unparalleled wisdom.</p>
+<p>The Temple of Azure holds many secrets, but none are as enigmatic as the Polyglot Shrines. These sacred halls are dedicated to the Codex of Orchestration, where mystical agents, each speaking in a different tongue, harmonize to solve the riddles of the world. Scholars from far lands have deciphered that these shrines represent the unity of diverse disciplines, powered by the Model Context Protocol (MCP). Your task is to explore how these polyglot agents—written in Python, Java, and TypeScript—collaborate to bring wisdom to the temple’s pilgrims.</p>
 <h2>Key Takeaways</h2>
 <p>After completing this quest, you will understand:</p>
 <ul>
-<li>🎯 <strong>MCP Integration</strong>: How to use MCP to enable seamless communication between polyglot services.</li>
-<li>🔍 <strong>Tool Discovery</strong>: How tools are dynamically registered and invoked using MCP protocols.</li>
-<li>⚡ <strong>Polyglot Design</strong>: How multi-language services can work together in a cohesive architecture.</li>
-<li>💡 <strong>Service-Oriented Architecture</strong>: How modularity enhances scalability and maintainability in distributed systems.</li>
+<li>🎯 <strong>Tool Annotation</strong>: How specific methods are annotated to expose their functionality as MCP tools.</li>
+<li>🔍 <strong>Dynamic Tool Discovery</strong>: How MCP servers dynamically register and expose tools for orchestration.</li>
+<li>⚡ <strong>Polyglot Integration</strong>: How agents written in different languages (Python, Java, TypeScript) adhere to MCP for seamless communication.</li>
+<li>💡 <strong>Practical Applications</strong>: How to extend the system by adding new tools or enhancing existing ones.</li>
 </ul>
 <h2>File Exploration</h2>
-<h3><span class="header-prefix">File:</span> <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/tools/itinerary-planning/src/mcp_server.py" target="_blank" rel="noopener noreferrer"><code class="inline-code">src/tools/itinerary-planning/src/mcp_server.py</code></a></h3>
-<p>The Python-based Itinerary Planning tool demonstrates the use of FastMCP to provide hotel and flight suggestions. It uses Python&#39;s dataclasses and asynchronous tools to create a modular and extensible service that integrates seamlessly with the MCP ecosystem.</p>
+<h3><span class="header-prefix">File:</span> <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/service/DestinationService.java" target="_blank" rel="noopener noreferrer"><code class="inline-code">src/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/service/DestinationService.java</code></a></h3>
+<p>This file defines the <code class="inline-code">DestinationService</code>, a Java-based MCP tool responsible for recommending travel destinations based on user preferences. It uses Spring Boot annotations to expose methods as callable tools. The service is modular, allowing recommendations to be filtered by activity, budget, season, or multiple criteria.</p>
 <h4>Highlights</h4>
 <ul>
-<li><code class="inline-code">suggest_hotels</code>: Generates hotel recommendations based on location and dates, with validation for ISO date formats.</li>
-<li><code class="inline-code">suggest_flights</code>: Provides flight options, including direct and connecting flights, based on departure and return dates.</li>
-<li><code class="inline-code">validate_iso_date</code>: Ensures date inputs conform to the ISO format, preventing invalid data from entering the system.</li>
-<li><code class="inline-code">mcp.run</code>: Initializes the FastMCP server for handling requests.</li>
+<li><code class="inline-code">echoMessage</code> echoes back any input, demonstrating a simple tool implementation.</li>
+<li><code class="inline-code">getDestinationsByActivity</code> recommends destinations based on activity type, validating input before processing.</li>
+<li><code class="inline-code">getAllDestinations</code> provides a static list of destinations, useful for fallback or general queries.</li>
+<li><code class="inline-code">getDestinationsByPreference</code> handles multiple filters (activity, budget, season, family-friendly) for complex queries.</li>
+</ul>
+<h4>Code</h4>
+<pre><code class="language-java">@Tool(description = &quot;Echo back the input message exactly as received&quot;)
+public String echoMessage(String message) {
+    return message;
+}
+</code></pre>
+<ul>
+<li>Demonstrates the use of the <code class="inline-code">@Tool</code> annotation to expose a method as an MCP tool.</li>
+<li>Simple implementation provides a baseline for more complex tools.</li>
+<li>Useful for debugging and validating MCP connectivity.</li>
+</ul>
+<hr>
+<pre><code class="language-java">@Tool(description = &quot;Get travel destination recommendations based on preferred activity type&quot;)
+public String getDestinationsByActivity(String activityType) {
+    try {
+        String activity = activityType.toUpperCase();
+        if (!isValidActivityType(activity)) {
+            return &quot;Invalid activity type. Please use one of: BEACH, ADVENTURE, CULTURAL, RELAXATION, URBAN_EXPLORATION, NATURE, WINTER_SPORTS&quot;;
+        }
+        return getDestinationsByPreference(activity, null, null, null);
+    } catch (Exception e) {
+        return &quot;Invalid activity type. Please use one of: BEACH, ADVENTURE, CULTURAL, RELAXATION, URBAN_EXPLORATION, NATURE, WINTER_SPORTS&quot;;
+    }
+}
+</code></pre>
+<ul>
+<li>Validates user input to ensure only supported activity types are processed.</li>
+<li>Leverages helper methods to centralize validation logic.</li>
+<li>Demonstrates how to chain filters for more complex queries.</li>
+</ul>
+<hr>
+<pre><code class="language-java">@Tool(description = &quot;Get a list of all available travel destinations&quot;)
+public String getAllDestinations() {
+    return &quot;Here are some popular travel destinations:\n\n&quot; +
+           &quot;📍 Bali, Indonesia\n&quot; +
+           &quot;⭐️ Beautiful beaches with vibrant culture and lush landscapes.\n&quot; +
+           &quot;🏷️ Activity: BEACH | Budget: MODERATE | Best Season: SUMMER | Family Friendly: Yes\n\n&quot; +
+           &quot;📍 Cancun, Mexico\n&quot; +
+           &quot;⭐️ White sandy beaches with crystal clear waters and vibrant nightlife.\n&quot; +
+           &quot;🏷️ Activity: BEACH | Budget: MODERATE | Best Season: WINTER | Family Friendly: Yes&quot;;
+}
+</code></pre>
+<ul>
+<li>Provides a static list of destinations, ensuring the service always returns useful data.</li>
+<li>Includes metadata (activity, budget, season, family-friendly) for each destination.</li>
+<li>Acts as a fallback when specific filters are not applied.</li>
+</ul>
+<hr>
+<h3><span class="header-prefix">File:</span> <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/tools/echo-ping/src/server.ts" target="_blank" rel="noopener noreferrer"><code class="inline-code">src/tools/echo-ping/src/server.ts</code></a></h3>
+<p>The <code class="inline-code">EchoMCPServer</code> is a TypeScript-based MCP server that demonstrates how to handle tool registration and request processing. This server is lightweight and focuses on simplicity, making it ideal for testing and debugging.</p>
+<h4>Highlights</h4>
+<ul>
+<li><code class="inline-code">setupServerRequestHandlers</code> registers tools and defines their schemas.</li>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/tools/echo-ping/src/server.ts#L37" target="_blank" rel="noopener noreferrer"><code class="inline-code">handlePostRequest</code></a> processes MCP requests and routes them to the appropriate tool.</li>
+<li><code class="inline-code">sendNotification</code> demonstrates how to send server-sent events (SSE) for real-time updates.</li>
+</ul>
+<h4>Code</h4>
+<pre><code class="language-typescript">this.server.setRequestHandler(ListToolsRequestSchema, async (_request) =&gt; {
+    return {
+        jsonrpc: JSON_RPC,
+        tools: EchoTools,
+    };
+});
+</code></pre>
+<ul>
+<li>Registers the <code class="inline-code">ListToolsRequestSchema</code> handler, enabling dynamic tool discovery.</li>
+<li>Returns a manifest of available tools, essential for orchestration.</li>
+</ul>
+<hr>
+<pre><code class="language-typescript">async handlePostRequest(req: Request, res: Response) {
+    try {
+        const transport = new StreamableHTTPServerTransport();
+        await this.server.connect(transport);
+        await transport.handleRequest(req, res, req.body);
+        res.on(&#39;close&#39;, () =&gt; transport.close());
+    } catch (error) {
+        res.status(500).json(this.createRPCErrorResponse(&#39;Internal server error.&#39;));
+    }
+}
+</code></pre>
+<ul>
+<li>Processes incoming MCP requests, routing them to the appropriate tool.</li>
+<li>Demonstrates error handling to ensure server stability.</li>
+</ul>
+<hr>
+<h3><span class="header-prefix">File:</span> <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/tools/itinerary-planning/src/mcp_server.py" target="_blank" rel="noopener noreferrer"><code class="inline-code">src/tools/itinerary-planning/src/mcp_server.py</code></a></h3>
+<p>This Python-based MCP server uses FastMCP to provide tools for suggesting hotels and flights. It employs data validation and mock data generation to simulate real-world travel planning.</p>
+<h4>Highlights</h4>
+<ul>
+<li><code class="inline-code">suggest_hotels</code> generates hotel recommendations based on location and dates.</li>
+<li><code class="inline-code">suggest_flights</code> provides flight options, including direct and connecting flights.</li>
+<li><code class="inline-code">validate_iso_date</code> ensures date inputs are in the correct format.</li>
 </ul>
 <h4>Code</h4>
 <pre><code class="language-python">@mcp.tool()
-async def suggest_hotels(
-    location: Annotated[str, Field(description=&quot;Location (city or area) to search for hotels&quot;)],
-    check_in: Annotated[str, Field(description=&quot;Check-in date in ISO format (YYYY-MM-DD)&quot;)],
-    check_out: Annotated[str, Field(description=&quot;Check-out date in ISO format (YYYY-MM-DD)&quot;)],
-) -&gt; HotelSuggestions:
+async def suggest_hotels(location: str, check_in: str, check_out: str) -&gt; HotelSuggestions:
     check_in_date = validate_iso_date(check_in, &quot;check_in&quot;)
     check_out_date = validate_iso_date(check_out, &quot;check_out&quot;)
     if check_out_date &lt;= check_in_date:
         raise ValueError(&quot;check_out date must be after check_in date&quot;)
-    # Generate mock hotel data
-    hotels = [Hotel(name=&quot;Luxury Suites&quot;, location=location, rating=4.5, price_per_night=300, amenities=[&quot;WiFi&quot;, &quot;Pool&quot;], available_rooms=5)]
-    return HotelSuggestions(hotels=hotels)
+    # Generate hotel data...
 </code></pre>
 <ul>
-<li>Validates input dates to ensure accuracy and reliability of hotel suggestions.</li>
-<li>Uses Python&#39;s <code class="inline-code">dataclasses</code> to structure hotel data, promoting readability and maintainability.</li>
-<li>Demonstrates how MCP tools can provide structured outputs for downstream agents.</li>
+<li>Validates input dates to prevent logical errors.</li>
+<li>Uses mock data to simulate hotel listings, making the tool useful for testing.</li>
 </ul>
 <hr>
 <pre><code class="language-python">@mcp.tool()
-async def suggest_flights(
-    from_location: Annotated[str, Field(description=&quot;Departure location&quot;)],
-    to_location: Annotated[str, Field(description=&quot;Destination location&quot;)],
-    departure_date: Annotated[str, Field(description=&quot;Departure date in ISO format&quot;)],
-    return_date: Annotated[str, Field(description=&quot;Return date in ISO format&quot;)],
-) -&gt; FlightSuggestions:
+async def suggest_flights(from_location: str, to_location: str, departure_date: str, return_date: str) -&gt; FlightSuggestions:
     dep_date = validate_iso_date(departure_date, &quot;departure_date&quot;)
     ret_date = validate_iso_date(return_date, &quot;return_date&quot;)
     if ret_date &lt;= dep_date:
         raise ValueError(&quot;return_date must be after departure_date&quot;)
-    # Generate mock flight data
-    flights = [Flight(flight_id=&quot;123&quot;, airline=&quot;SkyWings&quot;, price=199.99, is_direct=True, departure=departure_date, arrival=return_date)]
-    return FlightSuggestions(departure_flights=flights, return_flights=flights)
+    # Generate flight data...
 </code></pre>
 <ul>
-<li>Implements flight suggestion logic with validation for departure and return dates.</li>
-<li>Shows how to structure complex data like flight segments and connections using Python&#39;s type annotations.</li>
-<li>Highlights the importance of error handling in asynchronous MCP tools.</li>
-</ul>
-<hr>
-<h3><span class="header-prefix">File:</span> <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/McpServerApplication.java" target="_blank" rel="noopener noreferrer"><code class="inline-code">src/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/McpServerApplication.java</code></a></h3>
-<p>This Java-based MCP server leverages Spring Boot to provide destination recommendations. It demonstrates the use of annotations and dependency injection for integrating services.</p>
-<h4>Highlights</h4>
-<ul>
-<li><code class="inline-code">@SpringBootApplication</code>: Marks the main application class for Spring Boot initialization.</li>
-<li><code class="inline-code">destinationTools</code>: Registers the <code class="inline-code">DestinationService</code> as an MCP tool provider.</li>
-<li><code class="inline-code">main</code>: Bootstraps the Spring application and starts the MCP server.</li>
-</ul>
-<h4>Code</h4>
-<pre><code class="language-java">@SpringBootApplication
-public class McpServerApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(McpServerApplication.class, args);
-    }
-
-    @Bean
-    public ToolCallbackProvider destinationTools(DestinationService destinationService) {
-        return MethodToolCallbackProvider.builder().toolObjects(destinationService).build();
-    }
-}
-</code></pre>
-<ul>
-<li>Uses Spring Boot&#39;s <code class="inline-code">@SpringBootApplication</code> annotation for streamlined application setup.</li>
-<li>Registers <code class="inline-code">DestinationService</code> as an MCP tool provider, enabling dynamic tool discovery.</li>
-<li>Demonstrates Java&#39;s strong typing and dependency injection capabilities for creating modular services.</li>
-</ul>
-<hr>
-<h3><span class="header-prefix">File:</span> <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/tools/echo-ping/src/server.ts" target="_blank" rel="noopener noreferrer"><code class="inline-code">src/tools/echo-ping/src/server.ts</code></a></h3>
-<p>The Echo Ping tool is a minimal TypeScript-based MCP server designed for testing and debugging. It highlights how MCP servers handle tool registration and request routing.</p>
-<h4>Highlights</h4>
-<ul>
-<li><code class="inline-code">setupServerRequestHandlers</code>: Configures MCP request handlers for listing and invoking tools.</li>
-<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/tools/echo-ping/src/server.ts#L37" target="_blank" rel="noopener noreferrer"><code class="inline-code">handlePostRequest</code></a>: Processes incoming tool invocation requests and handles errors gracefully.</li>
-<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/tools/echo-ping/src/server.ts#L137" target="_blank" rel="noopener noreferrer"><code class="inline-code">createRPCErrorResponse</code></a>: Generates standardized error responses for invalid requests.</li>
-</ul>
-<h4>Code</h4>
-<pre><code class="language-typescript">private setupServerRequestHandlers() {
-    this.server.setRequestHandler(ListToolsRequestSchema, async () =&gt; ({
-        tools: EchoTools,
-    }));
-    this.server.setRequestHandler(CallToolRequestSchema, async (request) =&gt; {
-        const tool = EchoTools.find((t) =&gt; t.name === request.params.name);
-        if (!tool) {
-            return this.createRPCErrorResponse(`Tool ${request.params.name} not found.`);
-        }
-        return { content: `Executed tool ${tool.name}` };
-    });
-}
-</code></pre>
-<ul>
-<li>Dynamically registers tools, enabling extensibility without modifying core server logic.</li>
-<li>Implements error handling to ensure robust tool invocation.</li>
-<li>Demonstrates the use of TypeScript for type-safe development in MCP servers.</li>
+<li>Handles both direct and connecting flights, simulating realistic scenarios.</li>
+<li>Ensures return dates are after departure dates, preventing invalid itineraries.</li>
 </ul>
 <hr>
 <h2>Helpful Hints</h2>
 <ul>
-<li>Explore how <code class="inline-code">validate_iso_date</code> ensures consistent input validation in the Python server.</li>
-<li>Study the <code class="inline-code">destinationTools</code> bean to understand how Spring Boot integrates MCP services.</li>
-<li>Use the Echo Ping server as a starting point for creating new MCP tools in TypeScript.</li>
+<li>Study how <code class="inline-code">@Tool</code> annotations in Java and Python expose methods as callable MCP tools.</li>
+<li>Explore how the <code class="inline-code">EchoMCPServer</code> in TypeScript uses handlers to dynamically register and route tools.</li>
+<li>Review the Python server’s data validation patterns to understand how to enforce input integrity.</li>
 </ul>
 <h2>Try This</h2>
 <p>Challenge yourself to deepen your understanding:</p>
 <ol>
-<li><strong>Extend Hotel Tool</strong>: Add a new feature to the <code class="inline-code">suggest_hotels</code> tool that filters hotels by rating or price range. Test it by invoking the tool via MCP.</li>
-<li><strong>Create a New Java Tool</strong>: Implement a new tool in the <code class="inline-code">DestinationService</code> that recommends destinations based on user-defined tags like &quot;adventure&quot; or &quot;relaxation&quot;. Register it in the <code class="inline-code">McpServerApplication</code>.</li>
+<li><strong>Add a New Tool</strong>: Implement a new tool in the <code class="inline-code">DestinationService</code> that recommends destinations based on climate. Use the <code class="inline-code">@Tool</code> annotation to expose it.</li>
+<li><strong>Trace Request Flow</strong>: Add logging to the <code class="inline-code">EchoMCPServer</code> to trace the lifecycle of an MCP request, from receipt to response. Observe how data flows through the system.</li>
 </ol>
 <hr>
-<p>Excellent work! Continue to the next quest to uncover more mysteries of the ancient Codex and its interconnected systems.</p>
-<p>By the sacred flame of the Oracle&#39;s altar, thou hast triumphed in the Halls of Polyglot Services, carving thy name upon the tablets of wisdom—press onward, for the stars yet hold 40% of thy destined glory! ⭐⚡💎</p>
+<p>Excellent work! Continue to the next quest to uncover more mysteries of the Temple of Azure.</p>
+<p>By the sacred fires of wisdom, thou hast unlocked the third shrine of tongues, ascending closer to the pantheon of eternal polyglots—thy journey shines with the brilliance of ⭐ divine knowledge!</p>
 
 </div>
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Chamber of Orchestration - Repo Adventure</title>
+    <title>The Ritual of Orchestration - Repo Adventure</title>
     <link rel="stylesheet" href="assets/theme.css">
     <link rel="stylesheet" href="../assets/shared/quest-navigator.css">
     <link rel="stylesheet" href="../assets/theme-toggle.css">
@@ -33,12 +33,12 @@
                 <a href="https://github.com/Azure-Samples/azure-ai-travel-agents" target="_blank" rel="noopener noreferrer" class="github-link">
                     <img src="../assets/shared/github-mark-white.svg" alt="GitHub" width="24" height="24">
                 </a>
-                <a href="index.html">The Codex of Ancient Agents</a>
+                <a href="index.html">The Sacred Codex of the Azure Agents</a>
             </div>
             <div class="nav-middle">
             </div>
             <div class="nav-right">
-                <a href="../index.html" class="nav-link">Change Theme</a>
+                <a href="../index.html" class="nav-link">Change Adventure</a>
                 <a href="#" class="nav-link quest-map-trigger">Quests</a>
                 <button class="theme-toggle-btn" aria-label="Switch to light mode" type="button">
                     <div class="theme-toggle-slider">
@@ -57,25 +57,80 @@
     
     <div class="container">
         <div class="quest-content">
-    <h1>Quest 1: The Chamber of Orchestration</h1>
+    <h1>Quest 1: The Ritual of Orchestration</h1>
 <hr>
-<p>As you traverse the overgrown pathways of the Temple of the Codex, you arrive at a grand chamber etched with intricate glyphs. This is the Chamber of Orchestration, where the &quot;Ancient Agents&quot; once convened to harmonize their collective wisdom. At the center lies the Codex, pulsating with energy, orchestrating the flow of knowledge among the agents. Your task is to decode the Codex&#39;s orchestration system, unveiling how its components work in unison to guide the agents in solving the riddles of their civilization. The secrets of this chamber will reveal the ancient art of multi-agent coordination.</p>
+<p>In the heart of the dense jungle, the Temple of Azure stands as a marvel of ancient ingenuity. Within its sacred chambers, the Codex of Orchestration hums softly, its power connecting a network of mystical agents. These agents, each with unique capabilities, work in harmony to guide adventurers through the perils of their journeys. To unlock the Codex&#39;s full potential, one must master the Ritual of Orchestration, an ancient practice that coordinates these agents using the mystical LlamaIndex and the Model Context Protocol. Your journey begins with understanding how the Codex orchestrates its agents.</p>
 <h2>Key Takeaways</h2>
 <p>After completing this quest, you will understand:</p>
 <ul>
-<li>🎯 <strong>Agent Orchestration</strong>: How a centralized triage agent coordinates specialized agents using LlamaIndex.</li>
-<li>🔍 <strong>Dynamic Tool Discovery</strong>: How the MCP protocol enables dynamic configuration and tool registration.</li>
-<li>⚡ <strong>Streaming Responses</strong>: How Server-Sent Events (SSE) are used for real-time streaming of agent responses.</li>
-<li>💡 <strong>Extensible Architecture</strong>: How modular design supports the addition of new agents and tools with minimal changes.</li>
+<li>🎯 <strong>Agent Coordination</strong>: How the <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/index.ts#L11" target="_blank" rel="noopener noreferrer"><code class="inline-code">setupAgents</code></a> function dynamically configures and integrates specialized agents into a multi-agent workflow.</li>
+<li>🔍 <strong>MCP Tool Configuration</strong>: The structure and significance of <code class="inline-code">McpToolsConfig</code> in defining the capabilities of each agent.</li>
+<li>⚡ <strong>Streaming Communication</strong>: How server-sent events (SSE) enable real-time communication between the Codex and its agents.</li>
+<li>💡 <strong>Error Handling</strong>: Techniques for managing tool discovery and execution errors in a distributed system.</li>
 </ul>
 <h2>File Exploration</h2>
-<h3><span class="header-prefix">File:</span> <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/index.ts" target="_blank" rel="noopener noreferrer"><code class="inline-code">src/api/src/index.ts</code></a></h3>
-<p>This file serves as the entry point for the orchestration API, managing HTTP endpoints and setting up the multi-agent workflow. It includes the <code class="inline-code">/chat</code> endpoint, which streams responses from agents using Server-Sent Events (SSE), and the <code class="inline-code">/tools</code> endpoint, which dynamically lists available MCP tools.</p>
+<h3><span class="header-prefix">File:</span> <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/index.ts" target="_blank" rel="noopener noreferrer"><code class="inline-code">src/api/src/orchestrator/llamaindex/index.ts</code></a></h3>
+<p>The <code class="inline-code">index.ts</code> file is the heart of the orchestration process, responsible for setting up agents and defining their workflows. It uses the LlamaIndex library to coordinate the interactions between agents and tools, ensuring seamless communication and task delegation. This file demonstrates the dynamic creation of agents and the triage mechanism that routes queries to the appropriate agent.</p>
 <h4>Highlights</h4>
 <ul>
-<li><code class="inline-code">apiRouter.post(&quot;/chat&quot;)</code> handles incoming chat requests, orchestrating agents and streaming responses via SSE.</li>
-<li><code class="inline-code">pipeline(readableStream, res)</code> streams agent responses to the client in real-time.</li>
-<li><code class="inline-code">apiRouter.get(&quot;/tools&quot;)</code> dynamically fetches and lists available tools from MCP servers.</li>
+<li><code class="inline-code">setupAgents(filteredTools)</code>: Dynamically configures agents based on the tools provided, creating a multi-agent workflow with a triage agent.</li>
+<li><code class="inline-code">multiAgent({ agents: agentsList, rootAgent: travelAgent })</code>: Establishes the root agent and integrates all specialized agents into a cohesive system.</li>
+<li><code class="inline-code">agent() configuration blocks</code>: Defines the behavior and system prompts for each specialized agent, ensuring their tasks are clearly scoped.</li>
+</ul>
+<h4>Code</h4>
+<pre><code class="language-typescript">export async function setupAgents(filteredTools: McpServerDefinition[] = []) {
+  const tools = Object.fromEntries(
+    filteredTools.map((tool) =&gt; [tool.id, true])
+  );
+  console.log(&quot;Filtered tools:&quot;, tools);
+
+  let agentsList = [];
+  let handoffTargets = [];
+  let toolsList = [];
+  const verbose = false;
+  const mcpToolsConfig = McpToolsConfig();
+
+  let llm: ToolCallLLM = {} as ToolCallLLM;
+  try {
+    llm = await llmProvider();
+  } catch (error) {
+    throw new Error(error instanceof Error ? error.message : String(error));
+  }
+
+  if (tools[&quot;echo-ping&quot;]) {
+    const mcpServerConfig = mcpToolsConfig[&quot;echo-ping&quot;].config;
+    const tools = await mcp(mcpServerConfig).tools();
+    const echoAgent = agent({
+      name: &quot;EchoAgent&quot;,
+      systemPrompt:
+        &quot;Echo back the received input. Do not respond with anything else. Always call the tools.&quot;,
+      tools,
+      llm,
+      verbose,
+    });
+    agentsList.push(echoAgent);
+    handoffTargets.push(echoAgent);
+    toolsList.push(...tools);
+  }
+
+  // Additional agent setup logic...
+}
+</code></pre>
+<ul>
+<li>This code dynamically configures agents based on the provided tools, ensuring flexibility and scalability.</li>
+<li>The <code class="inline-code">agent</code> function defines each agent&#39;s behavior, including its system prompt and tools.</li>
+<li>The <code class="inline-code">toolsList</code> array aggregates all tools for use by the triage agent, enabling comprehensive query handling.</li>
+<li>Error handling ensures the system remains operational even if a tool or agent fails to initialize.</li>
+<li>The <code class="inline-code">verbose</code> flag allows for detailed logging during development and debugging.</li>
+</ul>
+<hr>
+<h3><span class="header-prefix">File:</span> <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/index.ts" target="_blank" rel="noopener noreferrer"><code class="inline-code">src/api/src/index.ts</code></a></h3>
+<p>This file initializes the API server and defines endpoints for interacting with the Codex. It includes an SSE-based <code class="inline-code">/chat</code> endpoint for real-time communication and a <code class="inline-code">/tools</code> endpoint for discovering available tools.</p>
+<h4>Highlights</h4>
+<ul>
+<li><code class="inline-code">apiRouter.post(&quot;/chat&quot;)</code>: Streams responses from the agents to the client using SSE, enabling real-time interaction.</li>
+<li><code class="inline-code">pipeline(readableStream, res)</code>: Streams agent events to the client, ensuring low-latency updates.</li>
+<li><code class="inline-code">apiRouter.get(&quot;/tools&quot;)</code>: Lists all available tools, providing insight into the system&#39;s capabilities.</li>
 </ul>
 <h4>Code</h4>
 <pre><code class="language-typescript">apiRouter.post(&quot;/chat&quot;, async (req, res) =&gt; {
@@ -84,13 +139,22 @@
   });
 
   if (!req.body) {
+    console.error(
+      &quot;Request body is undefined. Check Content-Type header in the request.&quot;
+    );
     return res.status(400).json({
-      error: &quot;Request body is undefined. Make sure to set Content-Type to application/json.&quot;,
+      error:
+        &quot;Request body is undefined. Make sure to set Content-Type to application/json.&quot;,
     });
   }
 
   const message = req.body.message;
   const tools = req.body.tools;
+  console.log(&quot;Tools to use:&quot;, JSON.stringify(tools, null, 2));
+
+  if (!message) {
+    return res.status(400).json({ error: &quot;Message is required&quot; });
+  }
 
   res.setHeader(&quot;Content-Type&quot;, &quot;text/event-stream&quot;);
   res.setHeader(&quot;Cache-Control&quot;, &quot;no-cache&quot;);
@@ -102,16 +166,22 @@
 
     const readableStream = new Readable({
       async read() {
-        for await (const event of context) {
-          const serializedData = JSON.stringify({
-            type: &quot;metadata&quot;,
-            agent: event.data?.currentAgentName || null,
-            event: event.displayName,
-            data: event.data ? JSON.parse(JSON.stringify(event.data)) : null,
-          });
-          this.push(serializedData + &quot;\n\n&quot;);
+        try {
+          for await (const event of context) {
+            const { displayName, data } = event;
+            const serializedData = JSON.stringify({
+              type: &quot;metadata&quot;,
+              agent: (data as any)?.currentAgentName || null,
+              event: displayName,
+              data: data ? JSON.parse(JSON.stringify(data)) : null,
+            });
+            this.push(serializedData + CHUNK_END);
+            console.log(&quot;Pushed event:&quot;, serializedData);
+          }
+          this.push(null); // Close the stream
+        } catch (error: any) {
+          console.error(&quot;Error during streaming:&quot;, error?.message);
         }
-        this.push(null);
       },
     });
 
@@ -119,101 +189,50 @@
   } catch (error) {
     console.error(&quot;Error occurred:&quot;, error);
     if (!res.headersSent) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: (error as any).message });
+    } else {
+      res.write(
+        `${JSON.stringify({
+          type: &quot;error&quot;,
+          message: (error as any).message,
+        })}` + CHUNK_END
+      );
+      res.end();
     }
   }
 });
 </code></pre>
 <ul>
-<li>This function orchestrates agent workflows by invoking <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/index.ts#L11" target="_blank" rel="noopener noreferrer"><code class="inline-code">setupAgents</code></a> and running the message through the agent context.</li>
-<li>The <code class="inline-code">Readable</code> stream pushes serialized events to the client, enabling real-time updates via SSE.</li>
-<li>Defensive programming ensures graceful handling of undefined request bodies and unexpected errors.</li>
-<li>The use of <code class="inline-code">pipeline</code> efficiently manages the streaming lifecycle, ensuring responses are properly terminated.</li>
-</ul>
-<hr>
-<pre><code class="language-typescript">apiRouter.get(&quot;/tools&quot;, async (req, res) =&gt; {
-  try {
-    const tools = await mcpToolsList(Object.values(McpToolsConfig()));
-    res.status(200).json({ tools });
-  } catch (error) {
-    console.error(&quot;Error fetching MCP tools:&quot;, error);
-    res.status(500).json({ error: &quot;Error fetching MCP tools&quot; });
-  }
-});
-</code></pre>
-<ul>
-<li>Dynamically retrieves the list of available tools from MCP servers using <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/mcp/mcp-tools.ts#L31" target="_blank" rel="noopener noreferrer"><code class="inline-code">mcpToolsList</code></a>.</li>
-<li>Centralizes tool discovery, ensuring the client always has an up-to-date list of capabilities.</li>
-<li>Demonstrates modularity by relying on the <code class="inline-code">McpToolsConfig</code> object for configuration.</li>
-</ul>
-<hr>
-<h3><span class="header-prefix">File:</span> <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/index.ts" target="_blank" rel="noopener noreferrer"><code class="inline-code">src/api/src/orchestrator/llamaindex/index.ts</code></a></h3>
-<p>This file defines the <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/index.ts#L11" target="_blank" rel="noopener noreferrer"><code class="inline-code">setupAgents</code></a> function, which initializes and configures agents for the multi-agent workflow. It uses LlamaIndex to manage agent interactions and MCP to connect with external tools.</p>
-<h4>Highlights</h4>
-<ul>
-<li><code class="inline-code">setupAgents(filteredTools)</code> dynamically configures agents based on selected tools.</li>
-<li><code class="inline-code">multiAgent({ agents: agentsList, rootAgent: travelAgent })</code> creates the multi-agent workflow.</li>
-<li><code class="inline-code">agent()</code> configuration blocks define the behavior and tools for each specialized agent.</li>
-</ul>
-<h4>Code</h4>
-<pre><code class="language-typescript">export async function setupAgents(filteredTools: McpServerDefinition[] = []) {
-  const tools = Object.fromEntries(filteredTools.map((tool) =&gt; [tool.id, true]));
-  let agentsList = [];
-  let handoffTargets = [];
-  let toolsList = [];
-  const mcpToolsConfig = McpToolsConfig();
-  const llm = await llmProvider();
-
-  if (tools[&quot;echo-ping&quot;]) {
-    const mcpServerConfig = mcpToolsConfig[&quot;echo-ping&quot;].config;
-    const tools = await mcp(mcpServerConfig).tools();
-    const echoAgent = agent({
-      name: &quot;EchoAgent&quot;,
-      systemPrompt: &quot;Echo back the received input.&quot;,
-      tools,
-      llm,
-    });
-    agentsList.push(echoAgent);
-    handoffTargets.push(echoAgent);
-    toolsList.push(...tools);
-  }
-
-  const travelAgent = agent({
-    name: &quot;TravelAgent&quot;,
-    systemPrompt: &quot;Acts as a triage agent to determine the best course of action.&quot;,
-    tools: [...toolsList],
-    canHandoffTo: handoffTargets.flatMap((target) =&gt; target.getAgents().map((agent) =&gt; agent.name)),
-    llm,
-  });
-  agentsList.push(travelAgent);
-
-  return multiAgent({
-    agents: agentsList,
-    rootAgent: travelAgent,
-  });
-}
-</code></pre>
-<ul>
-<li>The <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/index.ts#L11" target="_blank" rel="noopener noreferrer"><code class="inline-code">setupAgents</code></a> function dynamically constructs agents based on the selected tools, showcasing flexibility.</li>
-<li>Each agent is configured with a specific <code class="inline-code">systemPrompt</code> and toolset, aligning with its specialization.</li>
-<li>The <code class="inline-code">TravelAgent</code> acts as the root triage agent, coordinating the workflow and determining handoff targets.</li>
+<li>This code implements a streaming <code class="inline-code">POST</code> endpoint for real-time query handling, leveraging SSE for low-latency updates.</li>
+<li>The <code class="inline-code">Readable</code> stream processes agent events and sends them to the client in chunks.</li>
+<li>Robust error handling ensures that issues in agent execution or streaming do not crash the server.</li>
+<li>The <code class="inline-code">pipeline</code> function connects the readable stream to the response, simplifying resource management.</li>
+<li>Logging provides transparency into the system&#39;s operation, aiding debugging and monitoring.</li>
 </ul>
 <hr>
 <h3><span class="header-prefix">File:</span> <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/tools/index.ts" target="_blank" rel="noopener noreferrer"><code class="inline-code">src/api/src/orchestrator/llamaindex/tools/index.ts</code></a></h3>
-<p>This file defines the <code class="inline-code">McpToolsConfig</code> function, which provides configuration details for each MCP server. It enables dynamic tool registration and integration.</p>
+<p>This file defines the configuration for all MCP tools, specifying their endpoints, authentication, and communication protocols.</p>
 <h4>Highlights</h4>
 <ul>
-<li><code class="inline-code">McpToolsConfig()</code> maps tool names to their configurations.</li>
-<li><code class="inline-code">MCP_API_HTTP_PATH</code> constant standardizes HTTP API paths for MCP servers.</li>
-<li>Tool configuration objects define the URL, transport type, and other settings for each tool.</li>
+<li><code class="inline-code">McpToolsConfig()</code>: Returns a configuration object for all MCP tools, enabling dynamic tool discovery.</li>
+<li><code class="inline-code">MCP_API_HTTP_PATH constant</code>: Standardizes the HTTP endpoint path for MCP tools.</li>
+<li>Tool configuration objects: Define the URL, type, and additional options for each tool.</li>
 </ul>
 <h4>Code</h4>
-<pre><code class="language-typescript">export const McpToolsConfig = (): { [k in McpServerName]: McpServerDefinition } =&gt; ({
+<pre><code class="language-typescript">export const McpToolsConfig = (): {
+  [k in McpServerName]: McpServerDefinition;
+} =&gt; ({
   &quot;echo-ping&quot;: {
     config: {
       url: process.env[&quot;MCP_ECHO_PING_URL&quot;] + MCP_API_HTTP_PATH,
       type: &quot;http&quot;,
       verbose: true,
+      requestInit: {
+          headers: {
+              &quot;Authorization&quot;: &quot;Bearer &quot; + process.env[&quot;MCP_ECHO_PING_ACCESS_TOKEN&quot;],
+          }
+      },
+      useSSETransport: false
     },
     id: &quot;echo-ping&quot;,
     name: &quot;Echo Test&quot;,
@@ -223,6 +242,7 @@
       url: process.env[&quot;MCP_CUSTOMER_QUERY_URL&quot;] + MCP_API_HTTP_PATH,
       type: &quot;http&quot;,
       verbose: true,
+      useSSETransport: false
     },
     id: &quot;customer-query&quot;,
     name: &quot;Customer Query&quot;,
@@ -231,27 +251,35 @@
 });
 </code></pre>
 <ul>
-<li>The <code class="inline-code">McpToolsConfig</code> function centralizes tool configuration, simplifying maintenance and updates.</li>
-<li>Each tool configuration includes details like URL, transport type, and verbosity settings.</li>
-<li>The use of environment variables ensures flexibility across different deployment environments.</li>
+<li>This code defines the structure for configuring MCP tools, including their URLs and authentication headers.</li>
+<li>The <code class="inline-code">MCP_API_HTTP_PATH</code> constant ensures consistency across tool endpoints.</li>
+<li>Each tool configuration includes a <code class="inline-code">type</code> field, enabling support for both HTTP and SSE protocols.</li>
+<li>The <code class="inline-code">useSSETransport</code> flag indicates whether a tool uses server-sent events for communication.</li>
+<li>The <code class="inline-code">requestInit</code> object allows for custom headers, such as authorization tokens, ensuring secure communication.</li>
 </ul>
 <hr>
 <h2>Helpful Hints</h2>
 <ul>
-<li>Explore how the <code class="inline-code">Readable</code> stream in <code class="inline-code">apiRouter.post(&quot;/chat&quot;)</code> enables real-time updates and consider its implications for user experience.</li>
-<li>Study the modular design of <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/index.ts#L11" target="_blank" rel="noopener noreferrer"><code class="inline-code">setupAgents</code></a> to understand how new agents can be added with minimal changes.</li>
-<li>Examine the <code class="inline-code">McpToolsConfig</code> function to see how environment variables are used for dynamic configuration.</li>
+<li>Explore the <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/index.ts#L11" target="_blank" rel="noopener noreferrer"><code class="inline-code">setupAgents</code></a> function to understand how agents are dynamically created and integrated into the workflow.</li>
+<li>Use the <code class="inline-code">/tools</code> endpoint to discover the capabilities of the Codex and the available agents.</li>
+<li>Experiment with the <code class="inline-code">verbose</code> flag to gain insights into the system&#39;s operation during development.</li>
 </ul>
 <h2>Try This</h2>
 <p>Challenge yourself to deepen your understanding:</p>
 <ol>
-<li><strong>Add a New Agent</strong>: Create a new agent that analyzes user sentiment. Configure it in <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/index.ts#L11" target="_blank" rel="noopener noreferrer"><code class="inline-code">setupAgents</code></a> and add a corresponding MCP server in <code class="inline-code">McpToolsConfig</code>.</li>
-<li><strong>Trace Agent Workflow</strong>: Add logging statements to <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/index.ts#L11" target="_blank" rel="noopener noreferrer"><code class="inline-code">setupAgents</code></a> and observe the flow of messages between agents in a multi-agent scenario.</li>
-<li><strong>Enhance Error Handling</strong>: Modify the <code class="inline-code">/chat</code> endpoint to return more descriptive error messages when tools fail to initialize.</li>
+<li><p><strong>Add a New Agent</strong>: Implement a new MCP tool and register it in <code class="inline-code">McpToolsConfig</code>. Update <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/index.ts#L11" target="_blank" rel="noopener noreferrer"><code class="inline-code">setupAgents</code></a> to include the new agent in the workflow.</p>
+<ul>
+<li>Example: Create a <code class="inline-code">HotelBookingAgent</code> that suggests hotels based on user preferences.</li>
+</ul>
+</li>
+<li><p><strong>Trace Data Flow</strong>: Add logging statements in the <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/index.ts#L11" target="_blank" rel="noopener noreferrer"><code class="inline-code">setupAgents</code></a> and <code class="inline-code">/chat</code> endpoint to trace the flow of data from the client to the agents and back.</p>
+</li>
+<li><p><strong>Enhance Error Messages</strong>: Modify the error handling in the <code class="inline-code">/chat</code> endpoint to provide more detailed feedback, including the tool or agent that caused the issue.</p>
+</li>
 </ol>
 <hr>
-<p>Excellent work! Continue to the next quest to uncover more mysteries of the Temple of the Codex.</p>
-<p>By the sacred light of the ancients, thou hast conquered the Chamber of Orchestration, a feat worthy of eternal inscription upon the scrolls of wisdom—press on, for the stars yet hold treasures untold! ⭐⚡💎</p>
+<p>Excellent work! Continue to the next quest to uncover more mysteries of the Codex of Orchestration.</p>
+<p>By the sacred fires of the ancients, thou hast orchestrated the celestial symphony with mastery, a triumph worthy of the temple&#39;s eternal scrolls—press onward, seeker of wisdom, for the stars yet beckon thy journey!</p>
 
 </div>
 

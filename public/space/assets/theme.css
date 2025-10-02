@@ -306,7 +306,7 @@ body::before {
   display: block;
 }
 
-/* Navigation links styling (Quests, Change Theme) - smaller size */
+/* Navigation links styling (Quests, Change Adventure) - smaller size */
 .nav-middle .nav-link,
 .nav-right .nav-link {
   color: var(--nav-link-text, #ffffff);
@@ -352,7 +352,7 @@ body::before {
   transform: translateY(-1px);
 }
 
-/* Change Theme link styling - different themed pill */
+/* Change Adventure link styling - different themed pill */
 .nav-middle .nav-link:not(.quest-map-trigger),
 .nav-right .nav-link:not(.quest-map-trigger) {
   background: var(--nav-theme-pill-bg, rgba(130, 177, 255, 0.15));

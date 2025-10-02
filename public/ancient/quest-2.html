@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Scrolls of the LLM Oracle - Repo Adventure</title>
+    <title>The Scrolls of the Divine Models - Repo Adventure</title>
     <link rel="stylesheet" href="assets/theme.css">
     <link rel="stylesheet" href="../assets/shared/quest-navigator.css">
     <link rel="stylesheet" href="../assets/theme-toggle.css">
@@ -33,12 +33,12 @@
                 <a href="https://github.com/Azure-Samples/azure-ai-travel-agents" target="_blank" rel="noopener noreferrer" class="github-link">
                     <img src="../assets/shared/github-mark-white.svg" alt="GitHub" width="24" height="24">
                 </a>
-                <a href="index.html">The Codex of Ancient Agents</a>
+                <a href="index.html">The Sacred Codex of the Azure Agents</a>
             </div>
             <div class="nav-middle">
             </div>
             <div class="nav-right">
-                <a href="../index.html" class="nav-link">Change Theme</a>
+                <a href="../index.html" class="nav-link">Change Adventure</a>
                 <a href="#" class="nav-link quest-map-trigger">Quests</a>
                 <button class="theme-toggle-btn" aria-label="Switch to light mode" type="button">
                     <div class="theme-toggle-slider">
@@ -57,30 +57,31 @@
     
     <div class="container">
         <div class="quest-content">
-    <h1>Quest 2: The Codex of Adaptive LLMs</h1>
+    <h1>Quest 2: The Codex of Orchestration&#39;s Guardians</h1>
 <hr>
-<p>Deep within the Temple of the Codex, you discover a chamber illuminated by a faint azure glow. Inscribed on the walls are the secrets of the &quot;Flexible LLM Provider Strategy,&quot; a system that allows the Codex to adapt to various mystical energies, known as language models. The ancients devised a method to dynamically select and authenticate these models, ensuring harmony regardless of the environment. The air hums with the power of these ancient integrations, waiting for you to uncover their mysteries.</p>
+<p>In the sacred halls of the Temple of Azure, the Codex of Orchestration hums with ancient energy, its power drawn from the harmony of its mystical agents. To unlock the true potential of this artifact, one must understand the guardians that protect its secrets—the LLM providers. These guardians, each with their unique strengths, are invoked through sacred rituals and environment-specific incantations. By mastering their configuration, the adventurer can wield the Codex to summon the right guardian for any challenge, ensuring the temple&#39;s wisdom is accessible to all who seek it.</p>
 <h2>Key Takeaways</h2>
-<p>After completing this quest, you will understand:</p>
+<p>After completing this quest, you will understand:  </p>
 <ul>
-<li>🎯 <strong>Dynamic LLM Selection</strong>: How to implement a provider strategy that adapts to different LLM environments.</li>
-<li>🔍 <strong>Credential Management</strong>: How to securely handle authentication for cloud-based and local LLMs.</li>
-<li>⚡ <strong>Error Handling</strong>: Strategies for managing unknown providers and ensuring system robustness.</li>
-<li>💡 <strong>Environment Awareness</strong>: How to configure LLMs dynamically based on runtime conditions.</li>
+<li>🎯 <strong>Dynamic LLM Provider Strategy</strong>: How the system selects and configures different LLM providers based on environment variables.  </li>
+<li>🔍 <strong>Azure Managed Identity Integration</strong>: How <code class="inline-code">DefaultAzureCredential</code> and <code class="inline-code">ManagedIdentityCredential</code> are used for secure authentication in cloud environments.  </li>
+<li>⚡ <strong>Environment-Specific Configuration</strong>: How the <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm()</code></a> factory function adapts to local or production environments.  </li>
+<li>💡 <strong>Error Handling Patterns</strong>: How the system ensures robustness when an unknown provider is specified.</li>
 </ul>
 <h2>File Exploration</h2>
 <h3><span class="header-prefix">File:</span> <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/azure-openai.ts" target="_blank" rel="noopener noreferrer"><code class="inline-code">src/api/src/orchestrator/llamaindex/providers/azure-openai.ts</code></a></h3>
-<p>This file contains the implementation for connecting to Azure&#39;s OpenAI service. It demonstrates the use of environment-based authentication strategies, including API keys for local environments and managed identities for production.</p>
+<p>This file defines the configuration for the Azure OpenAI guardian, enabling the Codex to harness Azure&#39;s cognitive services. It dynamically adapts to local and production environments, utilizing either an API key or Azure Managed Identity for authentication. This flexibility ensures the Codex remains accessible regardless of its operational context.  </p>
 <h4>Highlights</h4>
 <ul>
-<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm</code></a> dynamically configures Azure OpenAI connections based on runtime environment.</li>
-<li>Uses <code class="inline-code">DefaultAzureCredential</code> and <code class="inline-code">ManagedIdentityCredential</code> for secure authentication in Azure environments.</li>
-<li>Implements fallback to API key authentication for local Docker environments.</li>
-<li>Demonstrates the use of <code class="inline-code">getBearerTokenProvider</code> for token-based authentication.</li>
-<li>Logs key decisions, aiding in debugging and operational transparency.</li>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm</code></a>: Configures and returns an Azure OpenAI client, adapting to local or cloud environments.  </li>
+<li><code class="inline-code">DefaultAzureCredential</code>: Authenticates using Azure Managed Identity when running in production.  </li>
+<li><code class="inline-code">ManagedIdentityCredential</code>: Allows specifying a client ID for more granular control in production environments.</li>
 </ul>
 <h4>Code</h4>
-<pre><code class="language-typescript">export const llm = async () =&gt; {
+<pre><code class="language-typescript">const AZURE_COGNITIVE_SERVICES_SCOPE =
+  &quot;https://cognitiveservices.azure.com/.default&quot;;
+
+export const llm = async () =&gt; {
   console.log(&quot;Using Azure OpenAI&quot;);
 
   const isRunningInLocalDocker = process.env.IS_LOCAL_DOCKER_ENV === &quot;true&quot;;
@@ -89,6 +90,7 @@
     console.log(
       &quot;Running in local Docker environment, Azure Managed Identity is not supported. Authenticating with apiKey.&quot;
     );
+    
     return openai({
       azure: {
         endpoint: process.env.AZURE_OPENAI_ENDPOINT,
@@ -102,12 +104,14 @@
   const clientId = process.env.AZURE_CLIENT_ID;
   if (clientId) {
     console.log(&quot;Using Azure Client ID:&quot;, clientId);
-    credential = new ManagedIdentityCredential({ clientId });
+    credential = new ManagedIdentityCredential({
+      clientId,
+    });
   }
 
   const azureADTokenProvider = getBearerTokenProvider(
     credential,
-    &quot;https://cognitiveservices.azure.com/.default&quot;
+    AZURE_COGNITIVE_SERVICES_SCOPE
   );
 
   return openai({
@@ -120,20 +124,20 @@
 };
 </code></pre>
 <ul>
-<li>The <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm</code></a> function dynamically selects the authentication method based on the runtime environment.</li>
-<li><code class="inline-code">DefaultAzureCredential</code> simplifies authentication in Azure-hosted environments.</li>
-<li>The fallback to API key ensures compatibility in local development setups.</li>
-<li><code class="inline-code">getBearerTokenProvider</code> integrates with Azure&#39;s token-based authentication for secure access.</li>
-<li>Logging provides insight into the chosen authentication path, aiding in debugging.</li>
+<li>This code dynamically switches between API key authentication (local) and Azure Managed Identity (production) for flexibility across environments.  </li>
+<li>The <code class="inline-code">DefaultAzureCredential</code> simplifies authentication by automatically selecting the best available method.  </li>
+<li>The <code class="inline-code">ManagedIdentityCredential</code> allows specifying a client ID, providing fine-grained access control.  </li>
+<li>The <code class="inline-code">getBearerTokenProvider</code> enables token-based authentication for secure API access.  </li>
+<li>This approach ensures the system can operate seamlessly in both development and production environments.</li>
 </ul>
 <hr>
 <h3><span class="header-prefix">File:</span> <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/github-models.ts" target="_blank" rel="noopener noreferrer"><code class="inline-code">src/api/src/orchestrator/llamaindex/providers/github-models.ts</code></a></h3>
-<p>This file configures connections to GitHub-hosted models. It demonstrates a straightforward approach to integrating external LLMs via API keys.</p>
+<p>This file configures the GitHub Models guardian, enabling the Codex to interact with GitHub-hosted LLMs. It uses a straightforward API key-based authentication mechanism, making it ideal for environments where GitHub models are deployed.  </p>
 <h4>Highlights</h4>
 <ul>
-<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm</code></a> configures GitHub-hosted models with minimal setup.</li>
-<li>Uses <code class="inline-code">apiKey</code> and <code class="inline-code">baseURL</code> for authentication and endpoint configuration.</li>
-<li>Simplifies integration with GitHub&#39;s model inference API.</li>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm</code></a>: Configures a GitHub-hosted LLM client for use by the Codex.  </li>
+<li><code class="inline-code">apiKey</code>: Uses a GitHub token for secure authentication.  </li>
+<li><code class="inline-code">model</code>: Allows dynamic selection of the GitHub model to be used.</li>
 </ul>
 <h4>Code</h4>
 <pre><code class="language-typescript">export const llm = async () =&gt; {
@@ -146,73 +150,74 @@
 };
 </code></pre>
 <ul>
-<li>The <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm</code></a> function sets up GitHub-hosted models with minimal configuration.</li>
-<li><code class="inline-code">baseURL</code> and <code class="inline-code">apiKey</code> are used to securely connect to the inference API.</li>
-<li>The design ensures simplicity while maintaining flexibility for future enhancements.</li>
-<li>Environmental variables allow easy configuration changes without modifying the code.</li>
-<li>This approach highlights the importance of clear separation between configuration and logic.</li>
+<li>This code demonstrates a minimalistic configuration approach, focusing on simplicity and direct integration.  </li>
+<li>The <code class="inline-code">apiKey</code> ensures secure access to GitHub-hosted LLMs.  </li>
+<li>The <code class="inline-code">model</code> parameter allows dynamic selection, making the system adaptable to different use cases.  </li>
+<li>This design is ideal for environments where GitHub models are the primary resource.  </li>
+<li>The use of <code class="inline-code">baseURL</code> ensures the client connects to the correct endpoint for GitHub-hosted models.</li>
 </ul>
 <hr>
 <h3><span class="header-prefix">File:</span> <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts" target="_blank" rel="noopener noreferrer"><code class="inline-code">src/api/src/orchestrator/llamaindex/providers/index.ts</code></a></h3>
-<p>This file acts as the central dispatcher for all LLM providers. It selects the appropriate provider based on the <code class="inline-code">LLM_PROVIDER</code> environment variable.</p>
+<p>This file serves as the central registry for all LLM providers, including Azure OpenAI, GitHub Models, Ollama Models, and others. It uses a factory pattern to dynamically select the appropriate provider based on the <code class="inline-code">LLM_PROVIDER</code> environment variable.  </p>
 <h4>Highlights</h4>
 <ul>
-<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm</code></a> acts as a factory function, dynamically selecting the appropriate LLM provider.</li>
-<li><code class="inline-code">LLMProvider</code> type ensures compile-time validation of supported providers.</li>
-<li>Implements robust error handling for unknown providers.</li>
-<li>Demonstrates modular design by delegating provider-specific logic to separate files.</li>
-<li>Uses environment variables to control provider selection.</li>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm</code></a>: Factory function that selects and returns the appropriate LLM provider.  </li>
+<li><code class="inline-code">LLMProvider</code>: Type definition for all supported LLM providers.  </li>
+<li>Error handling: Ensures robustness by throwing an error for unknown providers.</li>
 </ul>
 <h4>Code</h4>
-<pre><code class="language-typescript">export const llm = async () =&gt; {
+<pre><code class="language-typescript">import dotenv from &quot;dotenv&quot;;
+dotenv.config();
+
+import { llm as azureOpenAI } from &quot;./azure-openai.js&quot;;
+import { llm as githubModels } from &quot;./github-models.js&quot;;
+import { llm as ollamaModels } from &quot;./ollama-models.js&quot;;
+
+type LLMProvider =
+  | &quot;azure-openai&quot;
+  | &quot;github-models&quot;
+  | &quot;ollama-models&quot;;
+
+const provider = (process.env.LLM_PROVIDER || &quot;&quot;) as LLMProvider;
+
+export const llm = async () =&gt; {
   switch (provider) {
     case &quot;azure-openai&quot;:
       return azureOpenAI();
     case &quot;github-models&quot;:
       return githubModels();
-    case &quot;docker-models&quot;:
-      return dockerModels();
     case &quot;ollama-models&quot;:
       return ollamaModels();
-    case &quot;foundry-local&quot;:
-      return foundryLocal();
     default:
       throw new Error(
-        `Unknown LLM_PROVIDER &quot;${provider}&quot;. Valid options are: azure-openai, github-models, foundry-local, docker-models, ollama-models.`
+        `Unknown LLM_PROVIDER &quot;${provider}&quot;. Valid options are: azure-openai, github-models, ollama-models.`
       );
   }
 };
 </code></pre>
 <ul>
-<li>The <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm</code></a> function uses a switch statement for provider selection, ensuring clarity and extensibility.</li>
-<li>The <code class="inline-code">LLMProvider</code> type enforces strict adherence to supported providers.</li>
-<li>Error handling ensures the system fails gracefully when encountering unknown providers.</li>
-<li>Modular design simplifies the addition of new providers.</li>
-<li>Environment-based configuration allows dynamic changes without redeployment.</li>
+<li>This code uses a factory pattern to dynamically select the appropriate LLM provider based on the <code class="inline-code">LLM_PROVIDER</code> environment variable.  </li>
+<li>The <code class="inline-code">type LLMProvider</code> ensures type safety, reducing the risk of runtime errors.  </li>
+<li>The default case in the <code class="inline-code">switch</code> statement provides robust error handling for unknown providers.  </li>
+<li>The modular design makes it easy to add new providers without modifying existing code.  </li>
+<li>The use of <code class="inline-code">dotenv</code> simplifies environment variable management, enhancing developer experience.</li>
 </ul>
 <hr>
 <h2>Helpful Hints</h2>
 <ul>
-<li>Study how the <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm</code></a> function in each file adapts to different runtime environments and authentication methods.</li>
-<li>Notice how the <code class="inline-code">index.ts</code> file centralizes provider selection, making the system extensible and maintainable.</li>
-<li>Explore the use of environment variables for secure and dynamic configuration.</li>
+<li>Carefully study how <code class="inline-code">DefaultAzureCredential</code> simplifies authentication in cloud environments.  </li>
+<li>Observe how the <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm()</code></a> factory function uses the <code class="inline-code">switch</code> statement for dynamic provider selection.  </li>
+<li>Notice the use of environment variables to make the system configurable and adaptable to different contexts.</li>
 </ul>
 <h2>Try This</h2>
-<p>Challenge yourself to deepen your understanding:</p>
+<p>Challenge yourself to deepen your understanding:  </p>
 <ol>
-<li><p><strong>Add a New Provider</strong>: Implement a new provider for a hypothetical LLM service. Use the existing pattern to create a new provider file and integrate it into <code class="inline-code">index.ts</code>.</p>
-<ul>
-<li>Example: Add a provider for &quot;Custom-LLM&quot; that uses a unique API endpoint and authentication method.</li>
-</ul>
-</li>
-<li><p><strong>Trace Provider Selection</strong>: Add console logs to the <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm</code></a> function in <code class="inline-code">index.ts</code> to trace the provider selection process. Execute the system with different <code class="inline-code">LLM_PROVIDER</code> values and observe the output.</p>
-</li>
-<li><p><strong>Enhance Error Messages</strong>: Modify the error handling in <code class="inline-code">index.ts</code> to suggest the closest matching provider when an unknown provider is specified. Use string similarity algorithms for better user feedback.</p>
-</li>
+<li><strong>Add a New Provider</strong>: Implement a new LLM provider (e.g., &quot;custom-llm&quot;) by creating a new file in the <code class="inline-code">providers</code> directory. Register it in the <code class="inline-code">index.ts</code> file and test its integration.  </li>
+<li><strong>Trace Authentication Flow</strong>: Add console logs in the <code class="inline-code">azure-openai.ts</code> file to trace the authentication flow when using <code class="inline-code">DefaultAzureCredential</code> and <code class="inline-code">ManagedIdentityCredential</code>. Observe how tokens are generated and used.</li>
 </ol>
 <hr>
-<p>Excellent work! Continue to the next quest to uncover more mysteries of the ancient Codex.</p>
-<p>Hark, seeker of wisdom, thou hast unveiled the first sacred scroll of the LLM Oracle—may thy journey through the temple of knowledge continue with valor and divine illumination! ⚡📜⭐</p>
+<p>Excellent work! Continue to the next quest to uncover more mysteries of the Codex and its guardians.</p>
+<p>Hail, seeker of sacred truths, for thou hast unveiled the first of the Scrolls of the Divine Models, etching thy name upon the eternal temple of wisdom—let thy triumph kindle the stars as thou journey forth! ⭐⚡📜</p>
 
 </div>
 
