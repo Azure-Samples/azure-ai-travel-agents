@@ -249,6 +249,30 @@ The resource group and all the resources will be deleted.
 
 For more detailed information about the architecture, components, and how the application works, please refer to the [Technical Documentation](./overview.md).
 
+### Microsoft Agent Framework (MAF) Orchestration
+
+📚 **NEW**: Comprehensive documentation for reimplementing the orchestration layer using Microsoft Agent Framework (Python SDK).
+
+This alternative approach replaces the current LlamaIndex.TS orchestration with a Python-based solution using Microsoft's native agent framework. The documentation includes:
+
+- **[MAF Documentation Hub](./MAF-README.md)** - Start here for overview and navigation
+- **Design & Architecture** - Complete architectural design and patterns
+- **Implementation Guide** - Step-by-step implementation with code examples
+- **Migration Plan** - 20-week phased migration strategy
+- **Comparison Analysis** - LlamaIndex.TS vs MAF side-by-side
+- **Quick Reference** - Code snippets and common patterns
+
+**Key Benefits**:
+- ✅ Native Azure AI integration
+- ✅ Python AI/ML ecosystem
+- ✅ Microsoft backing and support
+- ✅ Modern agent architecture
+
+**Recommended Approach**: Parallel deployment for minimal risk migration.
+
+**Status**: Planning phase complete, implementation pending approval.
+
+For details, see [MAF Documentation Hub](./MAF-README.md).
 
 ## Advanced Setup
 

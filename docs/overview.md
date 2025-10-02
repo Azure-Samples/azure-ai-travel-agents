@@ -20,6 +20,16 @@ This directory contains comprehensive technical documentation for architects, de
 ### Operations & Deployment
 - **[Deployment Architecture](./deployment-architecture.md)** - Infrastructure, deployment strategies, and production configurations
 
+### 🆕 Microsoft Agent Framework (MAF) Orchestration
+- **[MAF Documentation Hub](./MAF-README.md)** ⭐ - Central hub for MAF orchestration documentation
+- **[MAF Design](./maf-orchestration-design.md)** - Architecture design for Python-based MAF implementation
+- **[MAF Implementation Guide](./maf-implementation-guide.md)** - Step-by-step technical implementation guide
+- **[MAF Migration Plan](./maf-migration-plan.md)** - 20-week phased migration strategy
+- **[MAF Comparison](./maf-comparison.md)** - LlamaIndex.TS vs MAF analysis
+- **[MAF Quick Reference](./maf-quick-reference.md)** - Code snippets and patterns
+
+> **Note**: The MAF documentation provides an alternative orchestration approach using Microsoft Agent Framework in Python, complementing the current LlamaIndex.TS implementation. Status: Planning phase complete.
+
 ## System Architecture Overview
 
 The Azure AI Travel Agents system is built on a microservices architecture using:
