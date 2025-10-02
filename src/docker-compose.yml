@@ -69,6 +69,27 @@ services:
     environment:
       - IS_LOCAL_DOCKER_ENV=true 
       - DEBUG=true # Enable Azure JS SDK debug logging
+  
+  api-python:
+    container_name: api-python
+    build: ./api-python
+    ports:
+      - "4000:4000"
+    depends_on:
+      - tool-customer-query
+      - tool-destination-recommendation
+      - tool-itinerary-planning
+      - tool-code-evaluation
+      - tool-model-inference
+      - tool-web-search
+      - tool-echo-ping
+    env_file: 
+      - "./api-python/.env"
+      - "./api-python/.env.docker" # override .env with .env.docker
+    environment:
+      - IS_LOCAL_DOCKER_ENV=true 
+      - DEBUG=true # Enable Azure JS SDK debug logging
+
 
   web-ui:
     container_name: web-ui
