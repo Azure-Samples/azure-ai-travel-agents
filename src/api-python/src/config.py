@@ -1,8 +1,17 @@
 """Configuration management for Azure AI Travel Agents API."""
 
-from typing import Optional
+from typing import Literal, Optional
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+# LLM Provider type
+LLMProvider = Literal[
+    "azure-openai",
+    "github-models",
+    "docker-models",
+    "ollama-models",
+    "foundry-local",
+]
 
 
 class Settings(BaseSettings):
@@ -15,11 +24,31 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
+    # LLM Provider Selection
+    llm_provider: LLMProvider = "azure-openai"
+
     # Azure OpenAI Configuration
-    azure_openai_endpoint: str
-    azure_openai_api_key: str
-    azure_openai_deployment: str
+    azure_openai_endpoint: Optional[str] = None
+    azure_openai_api_key: Optional[str] = None
+    azure_openai_deployment: Optional[str] = None
     azure_openai_api_version: str = "2024-02-15-preview"
+    azure_client_id: Optional[str] = None
+    is_local_docker_env: bool = False
+
+    # GitHub Models Configuration
+    github_token: Optional[str] = None
+    github_model: Optional[str] = None
+
+    # Docker Models Configuration
+    docker_model_endpoint: Optional[str] = None
+    docker_model: Optional[str] = None
+
+    # Ollama Models Configuration
+    ollama_model_endpoint: Optional[str] = None
+    ollama_model: Optional[str] = None
+
+    # Foundry Local Configuration
+    azure_foundry_local_model_alias: str = "phi-3.5-mini"
 
     # MCP Server URLs
     mcp_customer_query_url: str

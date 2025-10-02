@@ -43,10 +43,42 @@ cp .env.sample .env
 
 Edit `.env` file with your settings:
 
-- **Azure OpenAI**: Configure your Azure OpenAI endpoint and API key
+- **LLM Provider Selection**: Choose between different LLM providers:
+  - `azure-openai` - Azure OpenAI (default)
+  - `github-models` - GitHub Models
+  - `docker-models` - Docker Models (local model runner)
+  - `ollama-models` - Ollama Models
+  - `foundry-local` - Azure Foundry Local (not yet implemented in Python)
+
+- **Azure OpenAI**: Configure your Azure OpenAI endpoint and API key (for `azure-openai` provider)
+- **GitHub Models**: Configure GitHub token and model (for `github-models` provider)
+- **Docker Models**: Configure Docker endpoint and model (for `docker-models` provider)
+- **Ollama Models**: Configure Ollama endpoint and model (for `ollama-models` provider)
 - **MCP Server URLs**: Update URLs to match your environment (local/production)
 - **Server Settings**: Configure port and logging level
 - **OpenTelemetry**: Configure observability endpoints
+
+**Example `.env` configuration**:
+
+```env
+# Choose your LLM provider
+LLM_PROVIDER=azure-openai
+
+# Azure OpenAI Configuration (for LLM_PROVIDER=azure-openai)
+AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
+AZURE_OPENAI_API_KEY=your-api-key
+AZURE_OPENAI_DEPLOYMENT=gpt-4o
+
+# Or use GitHub Models (for LLM_PROVIDER=github-models)
+# GITHUB_TOKEN=your-github-token
+# GITHUB_MODEL=openai/gpt-4o
+
+# Or use Docker Models (for LLM_PROVIDER=docker-models)
+# DOCKER_MODEL_ENDPOINT=http://localhost:12434/engines/llama.cpp/v1
+# DOCKER_MODEL=ai/phi4:14B-Q4_0
+
+# ... (other configurations)
+```
 
 ## Running the Server
 
