@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multi-Agent Orchestration with LlamaIndex and MCP - Repo Adventure</title>
+    <title>Azure AI Travel Agents: Multi-Agent Orchestration Guide - Repo Adventure</title>
     <link rel="stylesheet" href="assets/theme.css">
     <link rel="stylesheet" href="../assets/shared/quest-navigator.css">
     <link rel="stylesheet" href="../assets/theme-toggle.css">
@@ -16,7 +16,7 @@
         if (window.Prism && window.Prism.plugins && window.Prism.plugins.autoloader) {
             window.Prism.plugins.autoloader.languages_path = 'https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/';
         }
-        
+
         // Trigger Prism highlighting after page load
         document.addEventListener('DOMContentLoaded', function() {
             if (window.Prism) {
@@ -33,7 +33,7 @@
                 <a href="https://github.com/Azure-Samples/azure-ai-travel-agents" target="_blank" rel="noopener noreferrer" class="github-link">
                     <img src="../assets/shared/github-mark.svg" alt="GitHub" width="24" height="24">
                 </a>
-                <a href="index.html">Multi-Agent Orchestration with LlamaIndex and MCP</a>
+                <a href="index.html">Azure AI Travel Agents: Multi-Agent Orchestration Guide</a>
             </div>
             <div class="nav-middle">
             </div>
@@ -57,33 +57,33 @@
     
     <div class="container">
         <div class="story-content">
-    <h1>Multi-Agent Orchestration with LlamaIndex and MCP</h1>
-    <p>The Azure AI Travel Agents project demonstrates a cutting-edge multi-agent orchestration pattern. At its core, LlamaIndex coordinates specialized AI agents, each implemented as an MCP (Model Context Protocol) service in a polyglot architecture. These agents handle tasks such as customer query analysis, destination recommendations, and itinerary planning, communicating seamlessly via HTTP APIs. The system showcases how dynamic tool discovery and flexible LLM (Large Language Model) provider strategies can power complex workflows across diverse technologies.</p>
-<p><strong>Adventure Awaits</strong> – Choose your quest wisely, developer!</p>
+    <h1>Azure AI Travel Agents: Multi-Agent Orchestration Guide</h1>
+    <p>The Azure AI Travel Agents application is a modular, multi-agent system designed to streamline travel agency operations using advanced AI technologies. At its core, LlamaIndex orchestrates specialized agents that perform tasks such as customer query analysis, destination recommendations, and itinerary planning. Each agent operates as an independent MCP server, built using diverse languages and frameworks, and communicates seamlessly via the Model Context Protocol. The system&#39;s architecture exemplifies scalable, polyglot microservices integrated into a unified workflow.</p>
+<p><strong>Adventure Awaits</strong> – Choose your quest wisely, brave developer!</p>
 
 </div>
 
 <div class="quests-section">
     <h2>Choose a Quest</h2>
     <a href="quest-1.html" class="quest-link">
-  <h3>Multi-Agent Workflow Orchestration</h3>
-  <p>Explore how <strong>index.ts</strong>, <strong>tools/index.ts</strong>, and <strong>llamaindex/index.ts</strong> implement agent workflows using multi-agent patterns and dynamic tool selection.</p>
+  <h3>Multi-Agent Orchestration</h3>
+  <p>Explore the coordination of agents and tools through <strong>index.ts</strong>, <strong>llamaindex/tools/index.ts</strong>, and <strong>llamaindex/index.ts</strong>, focusing on workflow setup and API integration.</p>
 </a>
 <a href="quest-2.html" class="quest-link">
   <h3>Flexible LLM Provider Strategy</h3>
-  <p>Discover the modular LLM integration in <strong>providers/index.ts</strong>, <strong>azure-openai.ts</strong>, and <strong>ollama-models.ts</strong>, enabling seamless model switching and environment-specific configurations.</p>
+  <p>Investigate dynamic model selection and credential management in <strong>providers/index.ts</strong>, <strong>azure-openai.ts</strong>, and <strong>ollama-models.ts</strong>.</p>
 </a>
 <a href="quest-3.html" class="quest-link">
-  <h3>MCP Protocol and Tool Discovery</h3>
-  <p>Investigate how <strong>mcp-tools.ts</strong>, <strong>mcp-http-client.ts</strong>, and <strong>mcp-sse-client.ts</strong> enable dynamic tool discovery and standardized communication using MCP.</p>
+  <h3>MCP Protocol Integration</h3>
+  <p>Examine tool discovery and communication patterns in <strong>mcp-tools.ts</strong>, <strong>mcp-http-client.ts</strong>, and <strong>mcp-sse-client.ts</strong>.</p>
 </a>
 <a href="quest-4.html" class="quest-link">
-  <h3>Polyglot MCP Service Implementation</h3>
-  <p>Examine the polyglot architecture of MCP services in <strong>mcp_server.py</strong>, <strong>McpServerApplication.java</strong>, and <strong>server.ts</strong>, showcasing language-specific implementations for specialized tools.</p>
+  <h3>Polyglot MCP Services</h3>
+  <p>Analyze diverse agent implementations across languages in <strong>mcp_server.py</strong>, <strong>McpServerApplication.java</strong>, and <strong>server.ts</strong>.</p>
 </a>
 <a href="quest-5.html" class="quest-link">
-  <h3>Streaming Chat UI with Angular</h3>
-  <p>Analyze the real-time chat interface in <strong>chat-conversation.component.ts</strong>, <strong>chat-conversation.service.ts</strong>, and <strong>api.service.ts</strong>, leveraging Angular observables and server-sent events for dynamic user interactions.</p>
+  <h3>Streaming Chat UI</h3>
+  <p>Dive into Angular-based real-time chat functionality in <strong>chat-conversation.component.ts</strong>, <strong>chat-conversation.service.ts</strong>, and <strong>api.service.ts</strong>.</p>
 </a>
 </div>
     </div>

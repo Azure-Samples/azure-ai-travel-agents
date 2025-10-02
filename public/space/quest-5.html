@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Streaming Galactic Communications - Repo Adventure</title>
+    <title>Streaming Chat Interface - Repo Adventure</title>
     <link rel="stylesheet" href="assets/theme.css">
     <link rel="stylesheet" href="../assets/shared/quest-navigator.css">
     <link rel="stylesheet" href="../assets/theme-toggle.css">
@@ -16,7 +16,7 @@
         if (window.Prism && window.Prism.plugins && window.Prism.plugins.autoloader) {
             window.Prism.plugins.autoloader.languages_path = 'https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/';
         }
-        
+
         // Trigger Prism highlighting after page load
         document.addEventListener('DOMContentLoaded', function() {
             if (window.Prism) {
@@ -33,7 +33,7 @@
                 <a href="https://github.com/Azure-Samples/azure-ai-travel-agents" target="_blank" rel="noopener noreferrer" class="github-link">
                     <img src="../assets/shared/github-mark-white.svg" alt="GitHub" width="24" height="24">
                 </a>
-                <a href="index.html">Galactic Codex: The Multi-Agent Odyssey</a>
+                <a href="index.html">Galactic Mission: The Stellar Codex</a>
             </div>
             <div class="nav-middle">
             </div>
@@ -57,27 +57,29 @@
     
     <div class="container">
         <div class="quest-content">
-    <h1>Quest 5: Streaming Galactic Communications</h1>
+    <h1>Quest 5: Streaming Chat Interface</h1>
 <hr>
-<p>The <em>Llama Voyager</em> hums with energy as its communication systems prepare for a vital mission: streaming real-time data across the galaxy. The <strong>Galactic Codex</strong> must seamlessly orchestrate interactions between the crew and the ship&#39;s specialized agents. Your task is to dive into the starship&#39;s Angular-based chat interface, where the crew and agents exchange mission-critical data. Uncover the secrets of streaming protocols, tool discovery, and inter-agent communication to ensure the Voyager&#39;s journey remains uninterrupted.</p>
-<h2>Quest Objectives</h2>
-<p>As you explore the code below, investigate these key questions:</p>
+<p>As the Azure Voyager glides through the cosmic expanse, the Streaming Chat Interface hums with activity, connecting the crew with specialized AI agents across multiple systems. Through this interface, the Stellar Codex orchestrates real-time communication between agents, allowing the crew to request itineraries, destination recommendations, and more. Your mission is to explore the Angular-powered chat interface, uncover its streaming mechanisms, and optimize its interaction with MCP services. Prepare to decode the mysteries of seamless agent collaboration!</p>
+<h2>Key Takeaways</h2>
+<p>After completing this quest, you will understand:</p>
 <ul>
-<li>🔍 <strong>Signal Synchronization</strong>: How does the system ensure real-time updates to the chat interface during streaming events?</li>
-<li>⚡ <strong>Tool Discovery</strong>: What mechanisms are used to fetch and display available tools for the crew&#39;s selection?</li>
-<li>🛡️ <strong>Error Containment</strong>: How does the system handle errors during streaming or tool discovery to maintain operational integrity?</li>
+<li>🎯 <strong>SSE Parsing Logic</strong>: How Server-Sent Events (SSE) are processed to enable real-time updates in the chat interface.</li>
+<li>🔍 <strong>Angular Signal Usage</strong>: How reactive signals and observables manage dynamic UI state changes.</li>
+<li>⚡ <strong>Agent Event Handling</strong>: How the system processes agent responses and updates the chat interface.</li>
+<li>💡 <strong>Dynamic Tool Discovery</strong>: How tools are fetched and integrated into the chat workflow.</li>
 </ul>
 <h2>File Exploration</h2>
-<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.service.ts" target="_blank" rel="noopener noreferrer">src/ui/src/app/chat-conversation/chat-conversation.service.ts</a>:</span> Communication Relay</h3>
-<p>This file contains the <code class="inline-code">ChatService</code>, which manages the flow of messages and events between the user interface and the backend API. It orchestrates the streaming of chat messages, processes agent events, and updates the chat interface in real time. The service leverages Angular&#39;s reactive programming features, such as <code class="inline-code">BehaviorSubject</code> and signals, to dynamically update the UI.</p>
+<h3><span class="header-prefix">File:</span> <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.service.ts" target="_blank" rel="noopener noreferrer"><code class="inline-code">src/ui/src/app/chat-conversation/chat-conversation.service.ts</code></a></h3>
+<p>The <code class="inline-code">ChatService</code> acts as the core communication layer between the Angular UI and the backend API. It processes user messages, interacts with MCP tools, and handles real-time chat events using Server-Sent Events (SSE). This service is critical for maintaining the responsiveness and interactivity of the chat interface.</p>
 <h4>Highlights</h4>
 <ul>
-<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.service.ts#L68" target="_blank" rel="noopener noreferrer"><code class="inline-code">fetchAvailableTools</code></a>: Fetches a list of tools from the backend and filters them for user selection.</li>
-<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.component.ts#L170" target="_blank" rel="noopener noreferrer"><code class="inline-code">sendMessage</code></a>: Handles user input, sends it to the backend, and manages the response stream.</li>
-<li><code class="inline-code">processAgentEvents</code>: Processes streaming events from the backend, updating the chat interface with agent responses.</li>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.service.ts#L68" target="_blank" rel="noopener noreferrer"><code class="inline-code">fetchAvailableTools</code></a>: Dynamically retrieves the list of MCP tools available for the current session.</li>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.component.ts#L170" target="_blank" rel="noopener noreferrer"><code class="inline-code">sendMessage</code></a>: Sends user messages to the backend and initiates the agent response stream.</li>
+<li><code class="inline-code">processAgentEvents</code>: Handles incoming events from MCP agents, updating chat state based on event types.</li>
+<li><code class="inline-code">updateAndNotifyAgentChatMessageState</code>: Updates the assistant&#39;s message buffer with event data and notifies the UI of changes.</li>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.service.ts#L211" target="_blank" rel="noopener noreferrer"><code class="inline-code">resetChat</code></a>: Clears all chat state, preparing for a new user session.</li>
 </ul>
-<h2>Code</h2>
-<h3><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.service.ts" target="_blank" rel="noopener noreferrer">src/ui/src/app/chat-conversation/chat-conversation.service.ts</a></h3>
+<h4>Code</h4>
 <pre><code class="language-typescript">async fetchAvailableTools() {
   const toolsResult = await this.apiService.fetchAvailableTools();
   if (toolsResult) {
@@ -86,9 +88,9 @@
 }
 </code></pre>
 <ul>
-<li>This method retrieves a list of tools from the backend using the <code class="inline-code">ApiService</code>.</li>
-<li>Filters tools to only include those marked as selected by the user or system.</li>
-<li>Updates the <code class="inline-code">tools</code> signal to reflect available options in the UI.</li>
+<li>This function fetches the list of available MCP tools from the backend API.</li>
+<li>Filters tools based on selection status, ensuring only relevant tools are displayed.</li>
+<li>Demonstrates dynamic tool discovery, enabling flexible integration of new tools.</li>
 </ul>
 <hr>
 <pre><code class="language-typescript">async sendMessage(event: Event) {
@@ -117,9 +119,9 @@
 }
 </code></pre>
 <ul>
-<li>Sends user input to the backend while updating the chat interface with the new message.</li>
-<li>Uses <code class="inline-code">ApiService</code> to initiate a streaming request with the selected tools.</li>
-<li>Manages UI state, such as loading indicators and message buffers, for a seamless user experience.</li>
+<li>Sends user input to the backend, initiating the agent response stream.</li>
+<li>Updates the UI state to reflect the user&#39;s message and loading status.</li>
+<li>Filters selected tools to ensure the backend receives relevant context.</li>
 </ul>
 <hr>
 <pre><code class="language-typescript">private processAgentEvents(event?: ChatEvent) {
@@ -138,7 +140,6 @@
         });
         this.assistantMessageInProgress.set(false);
         break;
-
       case &#39;StopEvent&#39;:
         this.updateAndNotifyAgentChatMessageState(delta, {
           metadata: {
@@ -148,37 +149,137 @@
         this.assistantMessageInProgress.set(false);
         this.isLoading.set(false);
         break;
-
-      case &#39;AgentStream&#39;:
-        this.assistantMessageInProgress.set(true);
-        if (delta.trim()) {
-          this.agentEventsBuffer.push(event);
-          this.updateAndNotifyAgentChatMessageState(delta, {
-            metadata: {
-              events: this.agentEventsBuffer,
-            },
-          });
+      case &#39;AgentToolCallResult&#39;:
+        let state = {};
+        if (typeof event.data.raw === &#39;string&#39;) {
+          state = {
+            reasoning: [
+              {
+                content: event.data.raw,
+              },
+            ],
+          };
         }
+        this.updateAndNotifyAgentChatMessageState(delta, state);
         break;
     }
   }
 }
 </code></pre>
 <ul>
-<li>Processes streaming events from the backend, including metadata, start, stop, and streaming updates.</li>
-<li>Updates the chat message buffer in real time based on agent responses.</li>
-<li>Ensures the UI reflects the latest state of the conversation, including loading indicators and agent names.</li>
+<li>Processes incoming events from agents, updating the chat interface based on event types.</li>
+<li>Handles metadata updates, tool call results, and agent-specific events.</li>
+<li>Demonstrates robust event handling for real-time streaming.</li>
+</ul>
+<hr>
+<h3><span class="header-prefix">File:</span> <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/services/api.service.ts" target="_blank" rel="noopener noreferrer"><code class="inline-code">src/ui/src/app/services/api.service.ts</code></a></h3>
+<p>The <code class="inline-code">ApiService</code> bridges the Angular frontend with the backend API, managing HTTP requests and Server-Sent Events (SSE). It provides methods for tool discovery and streaming chat messages, ensuring seamless communication between the UI and MCP services.</p>
+<h4>Highlights</h4>
+<ul>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.service.ts#L68" target="_blank" rel="noopener noreferrer"><code class="inline-code">fetchAvailableTools</code></a>: Retrieves the list of MCP tools via an HTTP GET request.</li>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/services/api.service.ts#L85" target="_blank" rel="noopener noreferrer"><code class="inline-code">streamChatMessage</code></a>: Initiates a chat session and processes SSE for real-time updates.</li>
+<li><code class="inline-code">handleApiError</code>: Centralized error handling for API requests.</li>
+</ul>
+<h4>Code</h4>
+<pre><code class="language-typescript">async fetchAvailableTools(): Promise&lt;{tools: Tools[]} | void&gt; {
+  try {
+    const response = await fetch(`${this.apiUrl}/api/tools`, {
+      method: &#39;GET&#39;,
+      headers: {
+        &#39;Content-Type&#39;: &#39;application/json&#39;,
+      },
+    });
+    if (!response.ok) {
+      const { error } = await response.json();
+      return this.handleApiError(
+        new Error(error || &#39;An error occurred while fetching tools&#39;),
+        response.status
+      );
+    }
+    return (await response.json());
+  } catch (error) {
+    return this.handleApiError(error, 0);
+  }
+}
+</code></pre>
+<ul>
+<li>Fetches the list of available tools from the backend API.</li>
+<li>Implements error handling to ensure resilience against network issues.</li>
+<li>Demonstrates the use of HTTP GET for tool discovery.</li>
+</ul>
+<hr>
+<pre><code class="language-typescript">async streamChatMessage(message: string, tools: Tools[]) {
+  try {
+    const response = await fetch(`${this.apiUrl}/api/chat`, {
+      method: &#39;POST&#39;,
+      headers: {
+        &#39;Content-Type&#39;: &#39;application/json&#39;,
+      },
+      body: JSON.stringify({ message, tools }),
+    });
+
+    if (!response.ok) {
+      const { error } = await response.json();
+      return this.handleApiError(
+        new Error(error || &#39;An error occurred&#39;),
+        response.status
+      );
+    }
+
+    const decoder = new TextDecoder(&#39;utf-8&#39;);
+
+    if (!response.body) {
+      throw new Error(&#39;Readable stream not supported&#39;);
+    }
+
+    this.chatStreamState.next({ type: &#39;START&#39; });
+
+    for await (const chunk of response.body) {
+      const value = decoder.decode(chunk, { stream: true });
+
+      const jsonValues = value.trim().split(/\n\n+/);
+
+      for (const jsonValue of jsonValues) {
+        try {
+          const parsedData = JSON.parse(jsonValue);
+          this.chatStreamState.next({
+            type: &#39;MESSAGE&#39;,
+            event: parsedData,
+          });
+        } catch (error) {
+          console.error(&#39;Error parsing JSON chunk:&#39;, error);
+        }
+      }
+    }
+
+    this.chatStreamState.next({ type: &#39;END&#39; });
+  } catch (error) {
+    this.handleApiError(error, 0);
+  }
+}
+</code></pre>
+<ul>
+<li>Initiates a streaming chat session via HTTP POST.</li>
+<li>Parses SSE chunks to process real-time agent responses.</li>
+<li>Demonstrates advanced SSE handling for dynamic chat updates.</li>
 </ul>
 <hr>
 <h2>Helpful Hints</h2>
 <ul>
-<li>Observe how <code class="inline-code">BehaviorSubject</code> is used to emit real-time updates to the UI. This is a key pattern for reactive programming in Angular.</li>
-<li>Explore the filtering logic in <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.service.ts#L68" target="_blank" rel="noopener noreferrer"><code class="inline-code">fetchAvailableTools</code></a> to understand how tools are dynamically selected and displayed.</li>
-<li>Study the error handling in <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.component.ts#L170" target="_blank" rel="noopener noreferrer"><code class="inline-code">sendMessage</code></a> to see how the system gracefully manages invalid inputs or backend failures.</li>
+<li>Pay attention to how <code class="inline-code">BehaviorSubject</code> and Angular signals are used to manage reactive state.</li>
+<li>Study the <code class="inline-code">processAgentEvents</code> method to understand how different event types are handled.</li>
+<li>Explore the <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/services/api.service.ts#L85" target="_blank" rel="noopener noreferrer"><code class="inline-code">streamChatMessage</code></a> function to see how SSE parsing enables real-time updates.</li>
 </ul>
+<h2>Try This</h2>
+<p>Challenge yourself to deepen your understanding:</p>
+<ol>
+<li><strong>Add a New Tool</strong>: Extend the <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/chat-conversation/chat-conversation.service.ts#L68" target="_blank" rel="noopener noreferrer"><code class="inline-code">fetchAvailableTools</code></a> method to include a new MCP service. Create a mock tool and observe how it integrates into the chat interface.</li>
+<li><strong>Trace SSE Flow</strong>: Insert debug logs into the <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/ui/src/app/services/api.service.ts#L85" target="_blank" rel="noopener noreferrer"><code class="inline-code">streamChatMessage</code></a> method to trace how SSE chunks are parsed and processed. Analyze the data transformation flow.</li>
+<li><strong>Enhance Error Handling</strong>: Modify the <code class="inline-code">handleApiError</code> method to provide more detailed feedback, including suggestions for resolving common issues.</li>
+</ol>
 <hr>
-<p>You have mastered all the secrets of the <em>Llama Voyager</em>! Your adventure is complete. The galaxy awaits your next exploration.</p>
-<p>Mission accomplished, stellar navigator! You&#39;ve successfully established Streaming Galactic Communications, propelling your cosmic journey to 80% completion—keep soaring among the stars! 🚀⭐📡</p>
+<p>You have mastered all the secrets of the Azure Voyager&#39;s systems! Your adventure is complete.</p>
+<p>Mission accomplished, cadet—your Streaming Chat Interface is now orbiting excellence at warp speed, propelling you to 80% completion with cosmic brilliance! ⭐🚀📡</p>
 
 </div>
 

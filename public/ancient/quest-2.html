@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Glyphs of Adaptation - Repo Adventure</title>
+    <title>The Scrolls of Prophecy - Repo Adventure</title>
     <link rel="stylesheet" href="assets/theme.css">
     <link rel="stylesheet" href="../assets/shared/quest-navigator.css">
     <link rel="stylesheet" href="../assets/theme-toggle.css">
@@ -16,7 +16,7 @@
         if (window.Prism && window.Prism.plugins && window.Prism.plugins.autoloader) {
             window.Prism.plugins.autoloader.languages_path = 'https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/';
         }
-        
+
         // Trigger Prism highlighting after page load
         document.addEventListener('DOMContentLoaded', function() {
             if (window.Prism) {
@@ -33,7 +33,7 @@
                 <a href="https://github.com/Azure-Samples/azure-ai-travel-agents" target="_blank" rel="noopener noreferrer" class="github-link">
                     <img src="../assets/shared/github-mark-white.svg" alt="GitHub" width="24" height="24">
                 </a>
-                <a href="index.html">The Temple of LlamaIndex: Secrets of the Multi-Agent Codex</a>
+                <a href="index.html">The Temple of Multi-Agent Wisdom</a>
             </div>
             <div class="nav-middle">
             </div>
@@ -57,45 +57,42 @@
     
     <div class="container">
         <div class="quest-content">
-    <h1>Quest 2: The Glyphs of Adaptation</h1>
+    <h1>Quest 2: The Scrolls of Prophecy</h1>
 <hr>
-<p>In the shadowed halls of the Temple of LlamaIndex, your path leads to the Chamber of Adaptation. Here, the ancients devised a method to choose the most fitting glyphs—representing powerful LLMs—to guide their wisdom. The air hums with the energy of decisions made long ago, as the temple&#39;s mechanisms adapt to the environment and the needs of its explorers. Your task is to decipher the Glyphs of Adaptation and understand how the temple dynamically selects the appropriate glyph to channel its power.</p>
-<h2>Quest Objectives</h2>
-<p>As you explore the code below, investigate these key questions:</p>
+<p>In the sacred halls of the Temple of Multi-Agent Wisdom, an ancient prophecy is etched into the Scrolls of Prophecy. These scrolls speak of the Oracle’s ability to adapt to any environment, selecting the most fitting tools for each query. To unlock this wisdom, adventurers must decipher the intricate mechanisms through which the Oracle dynamically chooses its agents, guided by the LlamaIndex. The scrolls whisper of a flexible provider strategy, enabling the Oracle to summon knowledge from Azure, GitHub, and other realms.</p>
+<h2>Key Takeaways</h2>
+<p>After completing this quest, you will understand:</p>
 <ul>
-<li>🔍 <strong>Adaptive Glyph Selection</strong>: How does the temple dynamically choose the correct glyph (LLM provider) based on the environment and configuration?</li>
-<li>⚡ <strong>Credential Binding Rituals</strong>: How are Azure credentials securely managed and applied to summon specific glyphs?</li>
-<li>🛡️ <strong>Fallback Mechanisms</strong>: What happens when the glyph selection fails or an unknown glyph is invoked?</li>
+<li>🎯 <strong>Dynamic LLM Provider Strategy</strong>: How the Oracle selects and configures LLM providers based on environment variables.</li>
+<li>🔍 <strong>Credential Management</strong>: How Azure credentials are leveraged for authentication in cloud-based environments.</li>
+<li>⚡ <strong>Error Handling Patterns</strong>: Techniques for ensuring robustness when encountering unknown providers.</li>
+<li>💡 <strong>Configuration Flexibility</strong>: Practical applications of modular provider selection for scalable systems.</li>
 </ul>
 <h2>File Exploration</h2>
-<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts" target="_blank" rel="noopener noreferrer">src/api/src/orchestrator/llamaindex/providers/index.ts</a>:</span> Glyph Selection Mechanism</h3>
-<p>This file serves as the temple&#39;s central decision-making mechanism for selecting the appropriate glyph (LLM provider). It dynamically determines which provider to use based on the environment and configuration. The <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm</code></a> function acts as the ritual to invoke the correct glyph, while the <code class="inline-code">LLMProvider</code> type ensures only valid glyphs are considered. Error handling is implemented to prevent invalid invocations, ensuring the temple&#39;s wisdom remains intact.</p>
+<h3><span class="header-prefix">File:</span> <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts" target="_blank" rel="noopener noreferrer"><code class="inline-code">src/api/src/orchestrator/llamaindex/providers/index.ts</code></a></h3>
+<p>This file serves as the central dispatch for the Oracle’s provider strategy, enabling it to dynamically select the appropriate LLM provider based on environment variables. By abstracting provider logic into modular components, the Oracle achieves unparalleled adaptability. The <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm</code></a> function acts as the gatekeeper, ensuring only valid providers are invoked and throwing errors for invalid configurations. This design demonstrates the importance of modularity and error handling in multi-agent systems.</p>
 <h4>Highlights</h4>
 <ul>
-<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm</code></a>: The central function that dynamically selects and invokes the correct LLM provider based on the <code class="inline-code">LLM_PROVIDER</code> environment variable.</li>
-<li><code class="inline-code">LLMProvider</code>: A type definition that restricts the glyph selection to valid options, ensuring consistency and preventing misuse.</li>
-<li>Error handling: Safeguards to ensure unknown or invalid glyphs are rejected, preserving the integrity of the temple&#39;s rituals.</li>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm</code></a> dynamically selects the LLM provider based on the <code class="inline-code">LLM_PROVIDER</code> environment variable.</li>
+<li><code class="inline-code">LLMProvider</code> defines valid provider types, enforcing strict constraints on provider selection.</li>
+<li>Modular imports allow for easy addition of new providers without affecting existing logic.</li>
+<li>Error handling ensures invalid configurations are caught early, preventing runtime failures.</li>
 </ul>
-<h3><span class="header-prefix"><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/azure-openai.ts" target="_blank" rel="noopener noreferrer">src/api/src/orchestrator/llamaindex/providers/azure-openai.ts</a>:</span> Azure Glyph Rituals</h3>
-<p>This file represents the invocation rituals for the Azure OpenAI glyph. It handles both local and production environments, adapting its credential management accordingly. The <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm</code></a> function configures the Azure OpenAI glyph, using either API keys or managed identities for authentication.</p>
-<h4>Highlights</h4>
-<ul>
-<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm</code></a>: Configures and returns the Azure OpenAI glyph, dynamically adapting to local or production environments.</li>
-<li><code class="inline-code">DefaultAzureCredential</code> and <code class="inline-code">ManagedIdentityCredential</code>: Credential mechanisms used to securely bind the Azure glyph to the temple&#39;s energy.</li>
-<li><code class="inline-code">getBearerTokenProvider</code>: A utility that generates bearer tokens for secure communication with Azure Cognitive Services.</li>
-</ul>
-<h2>Code</h2>
-<h3><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts" target="_blank" rel="noopener noreferrer">src/api/src/orchestrator/llamaindex/providers/index.ts</a></h3>
+<h4>Code</h4>
 <pre><code class="language-typescript">import dotenv from &quot;dotenv&quot;;
 dotenv.config();
 
 import { llm as azureOpenAI } from &quot;./azure-openai.js&quot;;
+import { llm as foundryLocal } from &quot;./foundry-local.js&quot;;
 import { llm as githubModels } from &quot;./github-models.js&quot;;
+import { llm as dockerModels } from &quot;./docker-models.js&quot;;
 import { llm as ollamaModels } from &quot;./ollama-models.js&quot;;
 
 type LLMProvider =
   | &quot;azure-openai&quot;
   | &quot;github-models&quot;
+  | &quot;foundry-local&quot;
+  | &quot;docker-models&quot;
   | &quot;ollama-models&quot;;
 
 const provider = (process.env.LLM_PROVIDER || &quot;&quot;) as LLMProvider;
@@ -106,23 +103,37 @@ export const llm = async () =&gt; {
       return azureOpenAI();
     case &quot;github-models&quot;:
       return githubModels();
+    case &quot;docker-models&quot;:
+      return dockerModels();
     case &quot;ollama-models&quot;:
       return ollamaModels();
+    case &quot;foundry-local&quot;:
+      return foundryLocal();
     default:
       throw new Error(
-        `Unknown LLM_PROVIDER &quot;${provider}&quot;. Valid options are: azure-openai, github-models, ollama-models.`
+        `Unknown LLM_PROVIDER &quot;${provider}&quot;. Valid options are: azure-openai, github-models, foundry-local, docker-models, ollama-models.`
       );
   }
 };
 </code></pre>
 <ul>
-<li>Dynamically selects the appropriate glyph (LLM provider) based on the <code class="inline-code">LLM_PROVIDER</code> environment variable.</li>
-<li>Uses <code class="inline-code">LLMProvider</code> type to restrict valid options, ensuring only recognized glyphs can be invoked.</li>
-<li>Includes robust error handling to throw an exception if an unknown glyph is specified, preserving system integrity.</li>
-<li>Centralizes glyph selection logic, making it easy to add new providers in the future.</li>
+<li>The <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm</code></a> function dynamically handles provider selection, showcasing a strategy for scalable multi-agent systems.</li>
+<li>The <code class="inline-code">LLMProvider</code> type enforces strict constraints, reducing the risk of invalid configurations.</li>
+<li>Modular imports allow seamless integration of new providers, illustrating the importance of extensibility.</li>
+<li>Error handling ensures invalid environment variables are caught early, maintaining system stability.</li>
+<li>This design reflects best practices in modular architecture and dynamic configuration.</li>
 </ul>
 <hr>
-<h3><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/azure-openai.ts" target="_blank" rel="noopener noreferrer">src/api/src/orchestrator/llamaindex/providers/azure-openai.ts</a></h3>
+<h3><span class="header-prefix">File:</span> <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/azure-openai.ts" target="_blank" rel="noopener noreferrer"><code class="inline-code">src/api/src/orchestrator/llamaindex/providers/azure-openai.ts</code></a></h3>
+<p>This file defines the Oracle’s Azure OpenAI provider configuration. It demonstrates how the Oracle adapts to different environments, using API keys for local development and Azure Managed Identity for production. The file highlights credential management and environment-specific logic, ensuring secure and reliable access to Azure services.</p>
+<h4>Highlights</h4>
+<ul>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm</code></a> dynamically configures Azure OpenAI based on environment variables.</li>
+<li><code class="inline-code">DefaultAzureCredential</code> and <code class="inline-code">ManagedIdentityCredential</code> provide secure authentication options.</li>
+<li>Environment detection logic differentiates local development from production configurations.</li>
+<li>The <code class="inline-code">getBearerTokenProvider</code> function enables secure token generation for Azure services.</li>
+</ul>
+<h4>Code</h4>
 <pre><code class="language-typescript">import { openai } from &quot;llamaindex&quot;;
 import {
   DefaultAzureCredential,
@@ -176,22 +187,63 @@ export const llm = async () =&gt; {
 };
 </code></pre>
 <ul>
-<li>Configures the Azure OpenAI glyph, dynamically adapting to local or production environments.</li>
-<li>Uses <code class="inline-code">DefaultAzureCredential</code> for production environments and <code class="inline-code">ManagedIdentityCredential</code> when a specific client ID is provided.</li>
-<li>Authenticates using API keys in local Docker environments, where managed identities are unavailable.</li>
-<li>Includes clear logging to indicate which authentication method is being used.</li>
-<li>Ensures secure communication with Azure Cognitive Services by generating bearer tokens via <code class="inline-code">getBearerTokenProvider</code>.</li>
+<li>The <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm</code></a> function adapts to local and production environments, illustrating robust credential management.</li>
+<li><code class="inline-code">DefaultAzureCredential</code> and <code class="inline-code">ManagedIdentityCredential</code> provide secure authentication options for Azure services.</li>
+<li>Environment detection logic ensures the Oracle uses appropriate credentials based on its deployment context.</li>
+<li>The <code class="inline-code">getBearerTokenProvider</code> function enables secure token generation, showcasing best practices in cloud authentication.</li>
+<li>This design highlights the importance of secure and flexible credential management in multi-agent systems.</li>
+</ul>
+<hr>
+<h3><span class="header-prefix">File:</span> <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/github-models.ts" target="_blank" rel="noopener noreferrer"><code class="inline-code">src/api/src/orchestrator/llamaindex/providers/github-models.ts</code></a></h3>
+<p>This file configures the Oracle to use GitHub Models, demonstrating a simpler provider setup. It highlights how environment variables are used to specify API keys and model configurations, ensuring flexibility and ease of integration.</p>
+<h4>Highlights</h4>
+<ul>
+<li><a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm</code></a> configures GitHub Models using environment variables.</li>
+<li>API keys are securely fetched from <code class="inline-code">process.env</code> for authentication.</li>
+<li>The configuration demonstrates modularity and simplicity in provider integration.</li>
+</ul>
+<h4>Code</h4>
+<pre><code class="language-typescript">import { openai } from &quot;llamaindex&quot;;
+
+export const llm = async () =&gt; {
+  console.log(&quot;Using GitHub Models&quot;);
+  return openai({
+    baseURL: &quot;https://models.inference.ai.azure.com&quot;,
+    apiKey: process.env.GITHUB_TOKEN,
+    model: process.env.GITHUB_MODEL,
+  });
+};
+</code></pre>
+<ul>
+<li>The <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm</code></a> function showcases a straightforward configuration for GitHub Models.</li>
+<li>Environment variables provide flexibility, allowing the Oracle to adapt to different deployments.</li>
+<li>API keys are securely managed, ensuring safe integration with external services.</li>
+<li>This design emphasizes simplicity and modularity in multi-agent systems.</li>
+<li>The provider setup demonstrates how new tools can be seamlessly integrated into the Oracle’s workflow.</li>
 </ul>
 <hr>
 <h2>Helpful Hints</h2>
 <ul>
-<li>Investigate how the <code class="inline-code">LLMProvider</code> type ensures that only valid glyphs can be invoked, preventing errors during glyph selection.</li>
-<li>Notice the fallback mechanisms in the Azure OpenAI configuration, which adapt to both local and production environments.</li>
-<li>Explore how error handling in the <a href="https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/src/api/src/orchestrator/llamaindex/providers/index.ts#L19" target="_blank" rel="noopener noreferrer"><code class="inline-code">llm</code></a> function safeguards the system against unknown or invalid glyph invocations.</li>
+<li>Study how modular imports in <code class="inline-code">index.ts</code> enable flexible provider selection without coupling logic.</li>
+<li>Observe how <code class="inline-code">azure-openai.ts</code> handles environment detection and credential management for secure authentication.</li>
+<li>Explore the use of environment variables in <code class="inline-code">github-models.ts</code> for dynamic configuration.</li>
 </ul>
+<h2>Try This</h2>
+<p>Challenge yourself to deepen your understanding:</p>
+<ol>
+<li><p><strong>Add a New Provider</strong>: Create a new provider configuration in <code class="inline-code">src/api/src/orchestrator/llamaindex/providers/</code> for a hypothetical service. Use environment variables for endpoint and authentication setup. Register it in <code class="inline-code">index.ts</code>.</p>
+<ul>
+<li>Example: &quot;Configure a provider for a new LLM service called <code class="inline-code">AncientWisdomAI</code> with a custom API key.&quot;</li>
+</ul>
+</li>
+<li><p><strong>Trace Provider Selection</strong>: Add <code class="inline-code">console.log</code> statements in <code class="inline-code">index.ts</code> to trace the flow of provider selection. Run the system with different <code class="inline-code">LLM_PROVIDER</code> values and observe the dynamic behavior.</p>
+</li>
+<li><p><strong>Enhance Error Messages</strong>: Modify the error handling in <code class="inline-code">index.ts</code> to suggest valid provider options when an unknown provider is encountered. This will improve developer experience and robustness.</p>
+</li>
+</ol>
 <hr>
-<p>Excellent work! Continue to the next quest to uncover more mysteries of the temple&#39;s ancient wisdom.</p>
-<p>By the sacred fires of enlightenment, thou hast unveiled the first of five ancient Glyphs of Adaptation—let this triumph echo through the hallowed halls of wisdom as a beacon of thy unyielding resolve! ⚡💎⭐</p>
+<p>Excellent work! Continue to the next quest to uncover more mysteries of the Oracle’s sacred configuration.</p>
+<p>Hail, seeker of wisdom, for thou hast unveiled the first of five sacred scrolls, etching thy name upon the eternal halls of prophecy—forge onward, for destiny awaits thy steadfast spirit! ⭐⚡💎</p>
 
 </div>
 

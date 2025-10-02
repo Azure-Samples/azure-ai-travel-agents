@@ -3,7 +3,7 @@
     "name": "Azure AI Travel Agents",
     "description": "Multi-agent AI travel planning system showcasing LlamaIndex orchestration, MCP protocol integration, and polyglot microservices.",
     "url": "https://github.com/Azure-Samples/azure-ai-travel-agents",
-    "customInstructions": "Focus on the multi-agent orchestration pattern where a triage agent coordinates specialized MCP services across multiple languages (TypeScript, Python, Java). Emphasize how LlamaIndex manages agent workflows and how the MCP protocol enables dynamic tool discovery.",
+    "customInstructions": "Focus on the multi-agent orchestration pattern where a triage agent coordinates specialized MCP services across multiple languages (TypeScript, Python, Java and .NET). Emphasize how LlamaIndex manages agent workflows and how the MCP protocol enables dynamic tool discovery.",
     "quests": [
       {
         "title": "Multi-Agent Orchestration with LlamaIndex",
@@ -37,7 +37,7 @@
               },
               {
                 "name": "pipeline(readableStream, res)",
-                "description": "Pipes the LlamaIndex-generated event stream into the HTTP response for real-time SSE updates to clients."
+                "description": "Pipes the LlamaIndex-generated event stream into the HTTP response for real-time SSE (Server Sent Events) updates to clients."
               },
               {
                 "name": "apiRouter.get(\"/mcp-tools\")",
@@ -59,7 +59,7 @@
               },
               {
                 "name": "Tool configuration objects",
-                "description": "Shows the structure for each MCP tool definition including eco-ping, customer-query, web-search, itinerary-planning, model-inference, and destination-recommendation."
+                "description": "Shows the structure for each MCP tool definition including echo-ping, customer-query, web-search, itinerary-planning, model-inference, and destination-recommendation."
               }
             ]
           }
@@ -173,7 +173,7 @@
           },
           {
             "path": "src/api/src/mcp/mcp-http-client.ts",
-            "description": "HTTP transport implementation for MCP protocol, enabling RESTful MCP server communication.",
+            "description": "Streamable HTTP transport implementation for MCP protocol, enabling streaming support for MCP server communication.",
             "highlights": [
               {
                 "name": "MCPClient.connect()",

@@ -770,6 +770,14 @@ li {
   font-size: 1.2rem;
 }
 
+/* Hide bullet points in Key Takeaways section only (emojis provide visual markers) */
+/* Target: <h2>Key Takeaways</h2><p>After completing...</p><ul> */
+.quest-content h2:first-of-type + p + ul,
+.story-content h2:first-of-type + p + ul {
+  list-style: none;
+  padding-left: 1rem;
+}
+
 /* ===== EMPHASIS ===== */
 strong {
   color: var(--accent-primary);
