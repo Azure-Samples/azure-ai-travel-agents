@@ -9,8 +9,12 @@ from .base_agent import BaseAgent
 class CustomerQueryAgent(BaseAgent):
     """Agent for analyzing customer preferences and requirements."""
 
-    def __init__(self):
-        """Initialize the Customer Query Agent."""
+    def __init__(self, tools: Optional[List] = None):
+        """Initialize the Customer Query Agent.
+        
+        Args:
+            tools: Optional list of customer query tools
+        """
         super().__init__(
             name="CustomerQueryAgent",
             description="Analyzes customer travel preferences and requirements",
@@ -25,6 +29,7 @@ Key responsibilities:
 - Provide personalized recommendations
 
 Always be empathetic, patient, and thorough in understanding customer needs.""",
+            tools=tools,
         )
 
 
