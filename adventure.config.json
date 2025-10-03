@@ -4,6 +4,8 @@
     "description": "Multi-agent AI travel planning system showcasing LlamaIndex orchestration, MCP protocol integration, and polyglot microservices.",
     "url": "https://github.com/Azure-Samples/azure-ai-travel-agents",
     "customInstructions": "Focus on the multi-agent orchestration pattern where a triage agent coordinates specialized MCP services across multiple languages (TypeScript, Python, Java and .NET). Emphasize how LlamaIndex manages agent workflows and how the MCP protocol enables dynamic tool discovery.",
+    "microsoftClarityCode": "",
+    "googleAnalyticsCode": "",
     "quests": [
       {
         "title": "Multi-Agent Orchestration with LlamaIndex",
