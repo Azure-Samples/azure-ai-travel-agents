@@ -3,8 +3,6 @@
 import logging
 from typing import Any, AsyncGenerator, Dict, List, Optional
 
-from agent_framework import Tool
-
 from ..config import settings
 from .providers import get_llm_client
 from .agents.triage_agent import TriageAgent

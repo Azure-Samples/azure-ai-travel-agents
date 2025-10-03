@@ -2,9 +2,10 @@
 
 import json
 import logging
-from typing import Any, Callable
+from typing import Any, Dict
+from pydantic import BaseModel, create_model
 
-from agent_framework import Tool, ToolResult
+from agent_framework import AIFunction
 
 from .mcp_client import HTTPMCPClient
 from .tool_config import MCPServerConfig
@@ -17,7 +18,7 @@ class MCPToolWrapper:
     Wrapper to convert MCP tools into MAF-compatible tools.
     
     This class bridges MCP server tools with Microsoft Agent Framework's
-    Tool interface, following MAF best practices for tool calling.
+    AIFunction interface, following MAF best practices for tool calling.
     """
 
     def __init__(self, server_config: MCPServerConfig, server_name: str):
@@ -36,12 +37,12 @@ class MCPToolWrapper:
         )
         logger.info(f"Initialized MCP tool wrapper for {server_name}")
 
-    async def get_tools(self) -> list[Tool]:
+    async def get_tools(self) -> list[AIFunction]:
         """
-        Get MAF-compatible tools from MCP server.
+        Get MAF-compatible AI functions from MCP server.
         
         Returns:
-            List of MAF Tool objects
+            List of MAF AIFunction objects
         """
         try:
             # List tools from MCP server
@@ -51,10 +52,10 @@ class MCPToolWrapper:
                 f"Retrieved {len(mcp_tools)} tools from {self.server_name}"
             )
             
-            # Convert each MCP tool to MAF Tool
+            # Convert each MCP tool to MAF AIFunction
             maf_tools = []
             for mcp_tool in mcp_tools:
-                maf_tool = self._create_maf_tool(mcp_tool)
+                maf_tool = self._create_maf_function(mcp_tool)
                 maf_tools.append(maf_tool)
             
             return maf_tools
@@ -65,29 +66,37 @@ class MCPToolWrapper:
             )
             return []
 
-    def _create_maf_tool(self, mcp_tool: dict[str, Any]) -> Tool:
+    def _create_maf_function(self, mcp_tool: dict[str, Any]) -> AIFunction:
         """
-        Create a MAF Tool from an MCP tool definition.
+        Create a MAF AIFunction from an MCP tool definition.
         
         Args:
             mcp_tool: MCP tool definition with name, description, inputSchema
             
         Returns:
-            MAF Tool object
+            MAF AIFunction object
         """
         tool_name = mcp_tool.get("name", "unknown")
         tool_description = mcp_tool.get("description", "")
         input_schema = mcp_tool.get("inputSchema", {})
         
+        # Create a dynamic Pydantic model for the input parameters
+        # Using a simple Dict[str, Any] model for flexibility with MCP tools
+        InputModel = create_model(
+            f"{tool_name}_Input",
+            __base__=BaseModel,
+            **{prop: (Any, ...) for prop in input_schema.get("properties", {}).keys()}
+        )
+        
         # Create tool function that calls MCP server
-        async def tool_function(**kwargs: Any) -> ToolResult:
+        async def tool_function(**kwargs: Any) -> str:
             """
             Execute the MCP tool with given arguments.
             
             Following MAF best practices:
             - Async execution
             - Proper error handling
-            - Structured ToolResult return
+            - String return value
             """
             try:
                 logger.info(
@@ -99,31 +108,25 @@ class MCPToolWrapper:
                 
                 logger.info(f"MCP tool {tool_name} returned successfully")
                 
-                # Return MAF ToolResult
-                return ToolResult(
-                    content=json.dumps(result) if isinstance(result, dict) else str(result),
-                    is_error=False
-                )
+                # Return result as string (MAF handles this)
+                return json.dumps(result) if isinstance(result, dict) else str(result)
                 
             except Exception as e:
                 logger.error(
                     f"Error calling MCP tool {tool_name}: {str(e)}"
                 )
-                return ToolResult(
-                    content=f"Error: {str(e)}",
-                    is_error=True
-                )
+                return f"Error calling {tool_name}: {str(e)}"
         
-        # Create MAF Tool
+        # Create MAF AIFunction
         # Following MAF SDK patterns for tool creation
-        maf_tool = Tool(
+        maf_function = AIFunction(
             name=tool_name,
-            description=tool_description,
-            parameters=input_schema,
-            function=tool_function
+            description=tool_description or f"MCP tool: {tool_name}",
+            func=tool_function,
+            input_model=InputModel
         )
         
-        return maf_tool
+        return maf_function
 
     async def close(self) -> None:
         """Clean up MCP client resources."""
