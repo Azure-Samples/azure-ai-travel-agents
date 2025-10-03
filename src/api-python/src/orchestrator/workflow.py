@@ -1,14 +1,12 @@
 """MAF Workflow Orchestrator for travel planning agents."""
 
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
-from agent_framework import Workflow, WorkflowConfig
-
-from ...config import settings
-from ..providers import get_llm_client
-from .triage_agent import TriageAgent
-from .specialized_agents import (
+from ..config import settings
+from .providers import get_llm_client
+from .agents.triage_agent import TriageAgent
+from .agents.specialized_agents import (
     CustomerQueryAgent,
     DestinationRecommendationAgent,
     ItineraryPlanningAgent,
@@ -26,12 +24,14 @@ class TravelWorkflowOrchestrator:
     
     This class manages the initialization and coordination of all agents
     in the travel planning system using Microsoft Agent Framework.
+    
+    Note: This is a simplified orchestrator that uses the triage agent
+    as the primary agent for routing requests.
     """
 
     def __init__(self):
         """Initialize the workflow orchestrator."""
         self.llm_client: Optional[Any] = None
-        self.workflow: Optional[Workflow] = None
         
         # Initialize all agents
         self.triage_agent = TriageAgent()
@@ -68,17 +68,6 @@ class TravelWorkflowOrchestrator:
         for agent in self.agents:
             await agent.initialize(self.llm_client)
         
-        # Create workflow configuration
-        workflow_config = WorkflowConfig(
-            name="TravelPlanningWorkflow",
-            description="Multi-agent workflow for comprehensive travel planning",
-            agents=[agent.get_agent() for agent in self.agents],
-            root_agent=self.triage_agent.get_agent(),
-        )
-        
-        # Initialize workflow
-        self.workflow = Workflow(config=workflow_config)
-        
         logger.info("MAF workflow fully initialized and ready")
 
     async def process_request(
@@ -98,17 +87,15 @@ class TravelWorkflowOrchestrator:
         Raises:
             RuntimeError: If workflow not initialized
         """
-        if not self.workflow:
+        if not self.llm_client:
             raise RuntimeError("Workflow not initialized. Call initialize() first.")
 
         logger.info(f"Processing request: {message[:100]}...")
         
         try:
-            # Execute workflow
-            result = await self.workflow.run(
-                message=message,
-                context=context or {}
-            )
+            # Use the triage agent to process the request
+            # The triage agent will coordinate with other agents as needed
+            result = await self.triage_agent.process(message, context)
             
             logger.info("Request processed successfully")
             return result

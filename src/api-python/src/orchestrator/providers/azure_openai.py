@@ -34,20 +34,17 @@ class AzureOpenAIProvider(LLMProvider):
         if not settings.azure_openai_deployment:
             raise ValueError("AZURE_OPENAI_DEPLOYMENT is required for azure-openai provider")
 
-        # Check if running in local Docker environment
-        if settings.is_local_docker_env:
-            logger.info("Running in local Docker environment, authenticating with API key")
-
-            if not settings.azure_openai_api_key:
-                raise ValueError("AZURE_OPENAI_API_KEY is required in local Docker environment")
-
+        # If API key is provided, use it (local development or explicit configuration)
+        if settings.azure_openai_api_key:
+            logger.info("Using API key authentication")
             return AsyncAzureOpenAI(
                 api_key=settings.azure_openai_api_key,
                 api_version=settings.azure_openai_api_version,
                 azure_endpoint=settings.azure_openai_endpoint,
             )
 
-        # Use Managed Identity in production
+        # Otherwise, use Managed Identity in Azure environments
+        logger.info("Using Managed Identity authentication")
         credential: Any = DefaultAzureCredential()
 
         if settings.azure_client_id:

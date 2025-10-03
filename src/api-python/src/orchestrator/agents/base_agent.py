@@ -3,7 +3,7 @@
 import logging
 from typing import Any, Dict, List, Optional
 
-from agent_framework import Agent, AgentConfig
+from agent_framework import ChatAgent
 
 logger = logging.getLogger(__name__)
 
@@ -34,25 +34,21 @@ class BaseAgent:
         self.description = description
         self.system_prompt = system_prompt
         self.tools = tools or []
-        self.agent: Optional[Agent] = None
+        self.agent: Optional[ChatAgent] = None
         logger.info(f"Initialized {name}")
 
     async def initialize(self, llm_client: Any) -> None:
         """Initialize the MAF agent with LLM client.
 
         Args:
-            llm_client: LLM client instance from provider
+            llm_client: LLM client instance from provider (AsyncAzureOpenAI or AsyncOpenAI)
         """
-        config = AgentConfig(
+        # Create ChatAgent with the LLM client
+        self.agent = ChatAgent(
+            chat_client=llm_client,
             name=self.name,
-            description=self.description,
             instructions=self.system_prompt,
-            tools=self.tools,
-        )
-        
-        self.agent = Agent(
-            config=config,
-            llm_client=llm_client,
+            tools=self.tools if self.tools else None,
         )
         
         logger.info(f"MAF agent {self.name} initialized")
@@ -75,20 +71,20 @@ class BaseAgent:
 
         logger.debug(f"{self.name} processing message: {message[:100]}...")
         
-        # Process with context if provided
-        if context:
-            response = await self.agent.run(message, context=context)
-        else:
-            response = await self.agent.run(message)
+        # Run the agent and get the response
+        result = await self.agent.run(message=message)
         
-        logger.debug(f"{self.name} response: {str(response)[:100]}...")
-        return response
+        # Extract the text response from the result
+        response_text = str(result)
+        
+        logger.debug(f"{self.name} response: {response_text[:100]}...")
+        return response_text
 
-    def get_agent(self) -> Agent:
+    def get_agent(self) -> ChatAgent:
         """Get the underlying MAF agent.
 
         Returns:
-            MAF Agent instance
+            MAF ChatAgent instance
 
         Raises:
             RuntimeError: If agent not initialized
