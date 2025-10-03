@@ -32,8 +32,8 @@ class MCPToolWrapper:
         self.server_config = server_config
         self.server_name = server_name
         self.client = HTTPMCPClient(
-            name=f"mcp-{server_name}",
-            url=server_config["url"]
+            base_url=server_config["url"],
+            access_token=server_config.get("accessToken")
         )
         logger.info(f"Initialized MCP tool wrapper for {server_name}")
 
