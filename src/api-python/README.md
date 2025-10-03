@@ -119,13 +119,13 @@ GET /api/tools
 
 Returns all available MCP tools from all servers.
 
-### Chat Endpoint
+### Chat Endpoint (Server-Sent Events)
 
 ```bash
 POST /api/chat
 ```
 
-Process travel planning requests through the MAF multi-agent workflow.
+Process travel planning requests through the MAF multi-agent workflow with **streaming responses**.
 
 **Request Body:**
 ```json
@@ -135,11 +135,86 @@ Process travel planning requests through the MAF multi-agent workflow.
 }
 ```
 
-**Response:**
+**Response:** Server-Sent Events (SSE) stream with `Content-Type: text/event-stream`
+
+**Event Schema:**
+Each event follows this structure:
 ```json
 {
-  "response": "I'd be happy to help you plan a 7-day vacation to Japan! ...",
-  "agent": "TravelPlanningWorkflow"
+  "type": "metadata",
+  "agent": "AgentName",
+  "event": "EventType",
+  "data": {
+    "message": "...",
+    "delta": "...",
+    "timestamp": null
+  }
+}
+```
+
+**Event Types:**
+- `AgentSetup` - Agent initialization
+- `AgentToolCall` - Agent calling a tool
+- `AgentStream` - Streaming response chunks
+- `AgentComplete` - Processing complete
+- `Error` - Error occurred
+
+**Example using curl:**
+```bash
+curl -N -X POST http://localhost:4000/api/chat \
+  -H "Content-Type: application/json" \
+  -d '{
+    "message": "Plan a 7-day trip to Japan",
+    "context": {}
+  }'
+```
+
+**Example using Python:**
+```python
+import httpx
+
+async with httpx.AsyncClient() as client:
+    async with client.stream(
+        "POST",
+        "http://localhost:4000/api/chat",
+        json={"message": "Plan a 7-day trip to Japan", "context": {}},
+        timeout=60.0
+    ) as response:
+        async for line in response.aiter_lines():
+            if line:
+                event = json.loads(line)
+                print(f"Event: {event['event']} from {event['agent']}")
+                print(f"Data: {event['data']}")
+```
+
+**Example using JavaScript:**
+```javascript
+const response = await fetch('http://localhost:4000/api/chat', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    message: 'Plan a 7-day trip to Japan',
+    context: {}
+  })
+});
+
+const reader = response.body.getReader();
+const decoder = new TextDecoder();
+
+while (true) {
+  const { done, value } = await reader.read();
+  if (done) break;
+  
+  const chunk = decoder.decode(value);
+  const lines = chunk.split('\n\n');
+  
+  for (const line of lines) {
+    if (line.trim()) {
+      const event = JSON.parse(line);
+      console.log('Event:', event.event, 'from', event.agent);
+      console.log('Data:', event.data);
+    }
+  }
 }
 ```
 

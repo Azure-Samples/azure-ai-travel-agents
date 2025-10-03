@@ -1,7 +1,7 @@
 """MAF Workflow Orchestrator for travel planning agents."""
 
 import logging
-from typing import Any, Dict, Optional
+from typing import Any, AsyncGenerator, Dict, Optional
 
 from ..config import settings
 from .providers import get_llm_client
@@ -102,6 +102,97 @@ class TravelWorkflowOrchestrator:
             
         except Exception as e:
             logger.error(f"Error processing request: {e}", exc_info=True)
+            raise
+
+    async def process_request_stream(
+        self,
+        message: str,
+        context: Optional[Dict[str, Any]] = None
+    ) -> AsyncGenerator[Dict[str, Any], None]:
+        """Process a travel planning request through the workflow with streaming.
+
+        Args:
+            message: User message/request
+            context: Optional context information
+
+        Yields:
+            Events in the format:
+            {
+                "agent": agent_name or None,
+                "event": event_type,
+                "data": event_data
+            }
+
+        Raises:
+            RuntimeError: If workflow not initialized
+        """
+        if not self.llm_client:
+            raise RuntimeError("Workflow not initialized. Call initialize() first.")
+
+        logger.info(f"Processing streaming request: {message[:100]}...")
+        
+        try:
+            # Send agent setup event
+            yield {
+                "agent": "TriageAgent",
+                "event": "AgentSetup",
+                "data": {
+                    "message": "Initializing travel planning workflow",
+                    "timestamp": None
+                }
+            }
+            
+            # Send agent tool call event
+            yield {
+                "agent": "TriageAgent",
+                "event": "AgentToolCall",
+                "data": {
+                    "message": "Processing travel request",
+                    "toolName": "triage_agent_process",
+                    "timestamp": None
+                }
+            }
+            
+            # Process through triage agent
+            result = await self.triage_agent.process(message, context)
+            
+            # Send streaming chunks of the response
+            # Split the response into chunks for streaming effect
+            chunk_size = 50
+            for i in range(0, len(result), chunk_size):
+                chunk = result[i:i + chunk_size]
+                yield {
+                    "agent": "TriageAgent",
+                    "event": "AgentStream",
+                    "data": {
+                        "delta": chunk,
+                        "timestamp": None
+                    }
+                }
+            
+            # Send completion event
+            yield {
+                "agent": "TriageAgent",
+                "event": "AgentComplete",
+                "data": {
+                    "message": "Request processed successfully",
+                    "result": result,
+                    "timestamp": None
+                }
+            }
+            
+            logger.info("Streaming request processed successfully")
+            
+        except Exception as e:
+            logger.error(f"Error processing streaming request: {e}", exc_info=True)
+            yield {
+                "agent": None,
+                "event": "Error",
+                "data": {
+                    "error": str(e),
+                    "timestamp": None
+                }
+            }
             raise
 
     async def get_agent_by_name(self, name: str) -> Optional[Any]:

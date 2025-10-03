@@ -1,11 +1,13 @@
 """Main FastAPI application for Azure AI Travel Agents (Python)."""
 
+import json
 import logging
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
 from .config import settings
@@ -101,39 +103,66 @@ async def list_tools() -> dict:
         return {"error": str(e)}
 
 
-@app.post("/api/chat", response_model=ChatResponse)
-async def chat(request: ChatRequest) -> ChatResponse:
-    """Process a chat request through the MAF workflow.
+@app.post("/api/chat")
+async def chat(request: ChatRequest) -> StreamingResponse:
+    """Process a chat request through the MAF workflow with SSE streaming.
 
     Args:
         request: Chat request with message and optional context
 
     Returns:
-        Chat response with agent output
+        StreamingResponse with Server-Sent Events
 
     Raises:
         HTTPException: If processing fails
     """
-    try:
-        logger.info(f"Processing chat request: {request.message[:100]}...")
-        
-        # Process through MAF workflow
-        response = await workflow_orchestrator.process_request(
-            message=request.message,
-            context=request.context
-        )
-        
-        return ChatResponse(
-            response=response,
-            agent="TravelPlanningWorkflow"
-        )
-        
-    except Exception as e:
-        logger.error(f"Error processing chat request: {e}", exc_info=True)
-        raise HTTPException(
-            status_code=500,
-            detail=f"Failed to process request: {str(e)}"
-        )
+    async def event_generator() -> AsyncGenerator[str, None]:
+        """Generate Server-Sent Events for the chat response."""
+        try:
+            logger.info(f"Processing chat request: {request.message[:100]}...")
+            
+            # Process through MAF workflow with streaming
+            async for event in workflow_orchestrator.process_request_stream(
+                message=request.message,
+                context=request.context
+            ):
+                # Format event according to schema:
+                # {
+                #   type: "metadata",
+                #   agent: current Agent Name || null,
+                #   event: event type,
+                #   data: stringified object containing the agent data
+                # }
+                event_data = {
+                    "type": "metadata",
+                    "agent": event.get("agent"),
+                    "event": event.get("event"),
+                    "data": event.get("data")
+                }
+                
+                # Send as SSE format
+                yield json.dumps(event_data) + "\n\n"
+            
+            logger.info("Request processed successfully")
+            
+        except Exception as e:
+            logger.error(f"Error processing chat request: {e}", exc_info=True)
+            error_event = {
+                "type": "metadata",
+                "agent": None,
+                "event": "error",
+                "data": {"error": str(e)}
+            }
+            yield json.dumps(error_event) + "\n\n"
+    
+    return StreamingResponse(
+        event_generator(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+        }
+    )
 
 
 if __name__ == "__main__":
