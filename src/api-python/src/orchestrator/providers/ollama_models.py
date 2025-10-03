@@ -3,6 +3,7 @@
 import logging
 from typing import Any
 
+from agent_framework.openai import OpenAIChatClient
 from openai import AsyncOpenAI
 
 from ...config import settings
@@ -15,10 +16,10 @@ class OllamaModelsProvider(LLMProvider):
     """Ollama Models LLM provider."""
 
     async def get_client(self) -> Any:
-        """Get Ollama Models client.
+        """Get Ollama Models chat client for Microsoft Agent Framework.
 
         Returns:
-            Configured OpenAI client for Ollama Models
+            OpenAIChatClient configured for Ollama Models
 
         Raises:
             ValueError: If required configuration is missing
@@ -31,7 +32,17 @@ class OllamaModelsProvider(LLMProvider):
         if not settings.ollama_model:
             raise ValueError("OLLAMA_MODEL is required for ollama-models provider")
 
-        return AsyncOpenAI(
+        # Create the underlying OpenAI async client for Ollama
+        async_client = AsyncOpenAI(
             base_url=settings.ollama_model_endpoint,
             api_key="OLLAMA_API_KEY",  # Placeholder API key for Ollama models
         )
+        
+        # Wrap with MAF's OpenAIChatClient
+        maf_client = OpenAIChatClient(
+            model_id=settings.ollama_model,
+            async_client=async_client,
+        )
+        
+        logger.info(f"Created MAF OpenAIChatClient with model: {settings.ollama_model}")
+        return maf_client
