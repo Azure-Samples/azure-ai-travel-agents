@@ -6,9 +6,9 @@ Python-based API server using Microsoft Agent Framework for multi-agent orchestr
 
 This is the Python implementation of the orchestration layer using Microsoft Agent Framework (MAF). It provides the same API endpoints as the TypeScript version but uses Python and MAF for agent orchestration.
 
-**Current Status: Phase 1 - Foundation Complete**
+**Current Status: Phase 2 - MAF Orchestration Implemented**
 
-The foundation layer is implemented with configuration management, MCP client integration, and basic API endpoints. Microsoft Agent Framework integration will be added in Phase 2.
+The foundation layer is implemented with configuration management, MCP client integration, LLM provider support, and **Microsoft Agent Framework orchestration** with 8 specialized agents.
 
 ## Setup
 
@@ -119,13 +119,29 @@ GET /api/tools
 
 Returns all available MCP tools from all servers.
 
-### Chat Endpoint (Coming in Phase 4)
+### Chat Endpoint
 
 ```bash
 POST /api/chat
 ```
 
-Multi-agent chat endpoint with streaming responses (to be implemented).
+Process travel planning requests through the MAF multi-agent workflow.
+
+**Request Body:**
+```json
+{
+  "message": "I want to plan a vacation to Japan for 7 days",
+  "context": {}
+}
+```
+
+**Response:**
+```json
+{
+  "response": "I'd be happy to help you plan a 7-day vacation to Japan! ...",
+  "agent": "TravelPlanningWorkflow"
+}
+```
 
 ## Development
 
@@ -191,27 +207,32 @@ src/api-python/
 
 ## Implementation Status
 
-- ✅ **Phase 1: Foundation** (Current)
+- ✅ **Phase 1: Foundation** (Complete)
   - Project structure
   - Configuration management
   - MCP client implementation
   - Tool registry
   - Basic API endpoints
 
-- ⏸️ **Phase 2: Agent Implementation** (Next)
-  - Agent base classes
-  - Specialized agents
-  - Tool integration
+- ✅ **Phase 2: MAF Orchestration** (Complete)
+  - Microsoft Agent Framework integration
+  - Base agent class
+  - 8 specialized agents:
+    - TriageAgent (routing)
+    - CustomerQueryAgent
+    - DestinationRecommendationAgent
+    - ItineraryPlanningAgent
+    - CodeEvaluationAgent
+    - ModelInferenceAgent
+    - WebSearchAgent
+    - EchoAgent
+  - Multi-agent workflow orchestrator
+  - /api/chat endpoint
 
-- ⏸️ **Phase 3: Workflow Orchestration**
-  - MAF workflow engine
-  - Agent coordination
-  - State management
-
-- ⏸️ **Phase 4: API Layer**
-  - Chat endpoint
-  - SSE streaming
-  - Full API compatibility
+- ⏸️ **Phase 3: Advanced Features** (Next)
+  - MCP tool integration with agents
+  - Streaming responses
+  - Advanced workflow patterns
 
 ## Documentation
 
