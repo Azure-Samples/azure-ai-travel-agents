@@ -1,0 +1,7 @@
+POST http://127.0.0.1:4000/api/chat HTTP/1.1
+content-type: application/json
+
+{
+    "message": "Plan a 7-day trip to Japan",
+    "context": {}
+}

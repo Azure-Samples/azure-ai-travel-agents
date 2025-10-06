@@ -110,11 +110,11 @@ class HTTPMCPClient(MCPClient):
         if self.access_token:
             headers["Authorization"] = f"Bearer {self.access_token}"
 
-        logger.debug(f"Listing tools from {self.base_url}/tools")
+        logger.debug(f"Listing tools from {self.base_url}")
 
         try:
             response = await self.client.get(
-                f"{self.base_url}/tools",
+                f"{self.base_url}",
                 headers=headers,
             )
             response.raise_for_status()

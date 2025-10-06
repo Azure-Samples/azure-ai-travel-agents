@@ -253,7 +253,7 @@ class HTTPMCPClient(MCPClient):
     
     async def list_tools(self) -> list:
         """List available tools."""
-        response = await self.client.get(f"{self.base_url}/tools")
+        response = await self.client.get(f"{self.base_url}")
         response.raise_for_status()
         return response.json()
     

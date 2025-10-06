@@ -1,5 +1,6 @@
 """Triage Agent - Routes requests to appropriate specialized agents."""
 
+from typing import Any, Optional, List
 from .base_agent import BaseAgent
 
 
@@ -10,9 +11,10 @@ class TriageAgent(BaseAgent):
     should handle the user's request.
     """
 
-    def __init__(self):
+    def __init__(self, tools: Optional[List[Any]] = None):
         """Initialize the Triage Agent."""
         super().__init__(
+            tools=tools,
             name="TriageAgent",
             description="Analyzes travel requests and routes to appropriate specialized agents",
             system_prompt="""You are a triage agent for a travel planning system.

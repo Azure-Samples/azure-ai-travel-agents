@@ -1,6 +1,6 @@
 """Specialized travel planning agents."""
 
-from typing import List, Optional
+from typing import Any, List, Optional
 
 from ..tools.tool_registry import tool_registry
 from .base_agent import BaseAgent
@@ -16,6 +16,7 @@ class CustomerQueryAgent(BaseAgent):
             tools: Optional list of customer query tools
         """
         super().__init__(
+            tools=tools,
             name="CustomerQueryAgent",
             description="Analyzes customer travel preferences and requirements",
             system_prompt="""You are a customer service agent for a travel planning system.
