@@ -1,5 +1,6 @@
 """Main FastAPI application for Azure AI Travel Agents (Python)."""
 
+import asyncio
 import json
 import logging
 from contextlib import asynccontextmanager
@@ -31,16 +32,42 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     logger.info(f"Port: {settings.port}")
     logger.info(f"LLM Provider: {settings.llm_provider}")
     
-    # Initialize MAF workflow orchestrator
+    # Initialize MAF workflow orchestrator with timeout
+    # This prevents the startup from hanging if MCP servers are slow/unavailable
     logger.info("Initializing MAF workflow orchestrator...")
-    await workflow_orchestrator.initialize()
-    logger.info("MAF workflow orchestrator ready")
+    try:
+        # Set a reasonable timeout for initialization (60 seconds)
+        await asyncio.wait_for(
+            workflow_orchestrator.initialize(),
+            timeout=60.0
+        )
+        logger.info("✓ MAF workflow orchestrator ready")
+    except asyncio.TimeoutError:
+        logger.warning("⚠ Workflow initialization timed out (MCP servers may be slow/unavailable)")
+        logger.warning("⚠ Application will start with degraded functionality")
+    except asyncio.CancelledError:
+        logger.warning("⚠ Workflow initialization cancelled")
+        logger.warning("⚠ Application startup interrupted")
+        # Re-raise to let FastAPI handle it properly
+        raise
+    except Exception as e:
+        logger.error(f"❌ Error initializing workflow: {e}", exc_info=True)
+        logger.warning("⚠ Application will start with degraded functionality")
 
     yield
 
     # Shutdown
     logger.info("Shutting down Azure AI Travel Agents API (Python)")
-    await tool_registry.close_all()
+    try:
+        await asyncio.wait_for(
+            tool_registry.close_all(),
+            timeout=10.0
+        )
+        logger.info("✓ Cleanup complete")
+    except asyncio.TimeoutError:
+        logger.warning("⚠ Shutdown cleanup timed out")
+    except Exception as e:
+        logger.error(f"Error during shutdown: {e}")
 
 
 # Create FastAPI application
@@ -78,13 +105,20 @@ async def health() -> dict:
     """Health check endpoint.
 
     Returns:
-        Health status
+        Health status including MCP server availability
     """
+    # Get MCP server status
+    mcp_status = {
+        "total_servers": len(tool_registry.loaders),
+        "configured_servers": list(tool_registry.loaders.keys()),
+    }
+    
     return {
         "status": "OK",
         "service": settings.otel_service_name,
         "version": "1.0.0",
         "llm_provider": settings.llm_provider,
+        "mcp": mcp_status,
     }
 
 
@@ -93,14 +127,20 @@ async def list_tools() -> dict:
     """List all available MCP tools.
 
     Returns:
-        Dictionary of available tools from all MCP servers
+        Dictionary of available tools from all MCP servers with status information
     """
     try:
-        tools = await tool_registry.list_tools()
-        return {"tools": tools}
+        tools_info = await tool_registry.list_tools()
+        return tools_info
     except Exception as e:
-        logger.error(f"Error listing tools: {e}")
-        return {"error": str(e)}
+        logger.error(f"Error listing tools: {e}", exc_info=True)
+        return {
+            "error": str(e),
+            "servers": {},
+            "total_tools": 0,
+            "total_servers": 0,
+            "available_servers": 0,
+        }
 
 
 @app.post("/api/chat")

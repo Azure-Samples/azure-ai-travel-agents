@@ -1,4 +1,4 @@
-"""MAF Workflow Orchestrator for travel planning agents with MCP integration."""
+"""MAF Workflow Orchestrator for travel planning agents with simplified MCP integration."""
 
 import logging
 from typing import Any, AsyncGenerator, Dict, List, Optional
@@ -15,7 +15,7 @@ from .agents.specialized_agents import (
     WebSearchAgent,
     EchoAgent,
 )
-from .tools import MCP_TOOLS_CONFIG, MCPToolWrapper
+from .tools import MCP_TOOLS_CONFIG, tool_registry
 
 logger = logging.getLogger(__name__)
 
@@ -24,17 +24,14 @@ class TravelWorkflowOrchestrator:
     """Orchestrates multi-agent workflow for travel planning using MAF.
     
     This class manages the initialization and coordination of all agents
-    in the travel planning system using Microsoft Agent Framework.
-    
-    Integrates MCP tools following the TypeScript implementation pattern
-    from src/api/src/orchestrator/llamaindex/index.ts
+    in the travel planning system using Microsoft Agent Framework with
+    simplified MCP integration using MAF's built-in MCP support.
     """
 
     def __init__(self):
         """Initialize the workflow orchestrator."""
-        self.llm_client: Optional[Any] = None
-        self.mcp_wrappers: Dict[str, MCPToolWrapper] = {}
-        self.all_tools: List[Tool] = []
+        self.chat_client: Optional[Any] = None
+        self.all_tools: List[Any] = []
         
         # Initialize agents (will be configured with tools during initialize())
         self.triage_agent: Optional[TriageAgent] = None
@@ -51,14 +48,16 @@ class TravelWorkflowOrchestrator:
     async def initialize(self, enabled_tools: Optional[List[str]] = None) -> None:
         """Initialize the workflow with LLM client, MCP tools, and all agents.
         
+        Uses Microsoft Agent Framework's built-in MCP support via MCPStreamableHTTPTool.
+        
         Args:
             enabled_tools: List of enabled tool IDs. If None, all tools are enabled.
         """
-        logger.info("Initializing MAF workflow with MCP tools...")
+        logger.info("Initializing MAF workflow with simplified MCP integration...")
         
-        # Get LLM client based on configured provider
-        self.llm_client = await get_llm_client()
-        logger.info(f"LLM client initialized for provider: {settings.llm_provider}")
+        # Get the chat client from Microsoft Agent Framework
+        self.chat_client = await get_llm_client()
+        logger.info(f"Chat client initialized for provider: {settings.llm_provider}")
         
         # Determine which tools to enable (default: all except echo-ping for production)
         if enabled_tools is None:
@@ -71,33 +70,155 @@ class TravelWorkflowOrchestrator:
                 "destination-recommendation",
             ]
         
-        # Initialize MCP tool wrappers and collect tools
-        # Following TypeScript pattern from setupAgents()
-        tools_by_server: Dict[str, List[Tool]] = {}
+        # Load MCP tools using the tool registry (which uses MAF's built-in MCP support)
+        # This will continue even if some servers are unavailable
+        self.all_tools = await tool_registry.get_all_tools(servers=enabled_tools)
         
-        for tool_id in enabled_tools:
-            if tool_id in MCP_TOOLS_CONFIG:
-                try:
-                    server_def = MCP_TOOLS_CONFIG[tool_id]
-                    wrapper = MCPToolWrapper(
-                        server_config=server_def["config"],
-                        server_name=server_def["name"]
-                    )
-                    self.mcp_wrappers[tool_id] = wrapper
-                    
-                    # Get tools from this MCP server
-                    tools = await wrapper.get_tools()
-                    tools_by_server[tool_id] = tools
-                    self.all_tools.extend(tools)
-                    
-                    logger.info(
-                        f"Loaded {len(tools)} tools from {server_def['name']}"
-                    )
-                    
-                except Exception as e:
-                    logger.error(
-                        f"Failed to initialize MCP tools for {tool_id}: {e}"
-                    )
+        if self.all_tools:
+            logger.info(
+                f"✓ Loaded {len(self.all_tools)} tools - agents will have MCP capabilities"
+            )
+        else:
+            logger.warning(
+                f"⚠ No MCP tools loaded - agents will run without MCP capabilities"
+            )
+            logger.warning(
+                f"⚠ Check if MCP servers are running and accessible"
+            )
+        
+        # Initialize specialized agents with their specific tools
+        # Each agent gets the full tool list - the agent's system prompt determines usage
+        
+        # Triage Agent (orchestrator)
+        self.triage_agent = TriageAgent(tools=self.all_tools)
+        await self.triage_agent.initialize(self.chat_client)
+        logger.info("TriageAgent initialized")
+        
+        # Customer Query Agent
+        self.customer_query_agent = CustomerQueryAgent(tools=self.all_tools)
+        await self.customer_query_agent.initialize(self.chat_client)
+        logger.info("CustomerQueryAgent initialized")
+        
+        # Destination Recommendation Agent
+        self.destination_agent = DestinationRecommendationAgent(tools=self.all_tools)
+        await self.destination_agent.initialize(self.chat_client)
+        logger.info("DestinationRecommendationAgent initialized")
+        
+        # Itinerary Planning Agent
+        self.itinerary_agent = ItineraryPlanningAgent(tools=self.all_tools)
+        await self.itinerary_agent.initialize(self.chat_client)
+        logger.info("ItineraryPlanningAgent initialized")
+        
+        # Code Evaluation Agent
+        self.code_eval_agent = CodeEvaluationAgent(tools=self.all_tools)
+        await self.code_eval_agent.initialize(self.chat_client)
+        logger.info("CodeEvaluationAgent initialized")
+        
+        # Model Inference Agent
+        self.model_inference_agent = ModelInferenceAgent(tools=self.all_tools)
+        await self.model_inference_agent.initialize(self.chat_client)
+        logger.info("ModelInferenceAgent initialized")
+        
+        # Web Search Agent
+        self.web_search_agent = WebSearchAgent(tools=self.all_tools)
+        await self.web_search_agent.initialize(self.chat_client)
+        logger.info("WebSearchAgent initialized")
+        
+        # Echo Agent (for testing)
+        self.echo_agent = EchoAgent(tools=self.all_tools)
+        await self.echo_agent.initialize(self.chat_client)
+        logger.info("EchoAgent initialized")
+        
+        logger.info(
+            f"MAF workflow fully initialized with {len(self.all_tools)} total tools"
+        )
+
+    @property
+    def agents(self) -> List[Any]:
+        """Get list of all initialized agents."""
+        return [
+            agent for agent in [
+                self.triage_agent,
+                self.customer_query_agent,
+                self.destination_agent,
+                self.itinerary_agent,
+                self.code_eval_agent,
+                self.model_inference_agent,
+                self.web_search_agent,
+                self.echo_agent,
+            ]
+            if agent is not None
+        ]
+
+    async def process(
+        self,
+        message: str,
+        context: Optional[Dict[str, Any]] = None
+    ) -> str:
+        """Process a message through the multi-agent workflow.
+        
+        Args:
+            message: User message to process
+            context: Optional context information
+            
+        Returns:
+            Response from the triage agent
+        """
+        if not self.triage_agent:
+            raise RuntimeError("Workflow not initialized. Call initialize() first.")
+        
+        logger.info(f"Processing message through MAF workflow: {message[:100]}...")
+        
+        # Use the triage agent to process the message
+        # It will coordinate with other agents as needed through its tools
+        response = await self.triage_agent.process(message, context)
+        
+        logger.info("Message processing complete")
+        return response
+
+    async def process_stream(
+        self,
+        message: str,
+        context: Optional[Dict[str, Any]] = None
+    ) -> AsyncGenerator[Dict[str, Any], None]:
+        """Process a message with streaming response.
+        
+        Args:
+            message: User message to process
+            context: Optional context information
+            
+        Yields:
+            Streaming response chunks
+        """
+        if not self.triage_agent:
+            raise RuntimeError("Workflow not initialized. Call initialize() first.")
+        
+        logger.info(f"Processing message with streaming: {message[:100]}...")
+        
+        # For now, use non-streaming and yield as single chunk
+        # TODO: Implement true streaming with MAF's streaming capabilities
+        response = await self.triage_agent.process(message, context)
+        
+        yield {
+            "type": "response",
+            "agent": self.triage_agent.name,
+            "data": {"message": response}
+        }
+        
+        logger.info("Streaming message processing complete")
+
+    async def cleanup(self) -> None:
+        """Clean up workflow resources."""
+        logger.info("Cleaning up workflow resources...")
+        
+        try:
+            # Close all MCP tool connections
+            await tool_registry.close_all()
+            logger.info("MCP tool connections closed")
+        except Exception as e:
+            logger.error(f"Error closing MCP connections: {e}")
+        
+        logger.info("Workflow cleanup complete")
         
         # Initialize agents with their specific tools
         # Following TypeScript pattern: each agent gets tools from its MCP server
@@ -371,7 +492,7 @@ class TravelWorkflowOrchestrator:
     
     async def close(self) -> None:
         """Clean up MCP client resources."""
-        for wrapper in self.mcp_wrappers.values():
+        for loader in self.mcp_loaders.values():
             await wrapper.close()
         logger.info("Closed all MCP client connections")
 

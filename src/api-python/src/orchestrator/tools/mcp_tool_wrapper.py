@@ -1,134 +1,124 @@
-"""MCP Tool Wrapper for Microsoft Agent Framework integration."""
+"""MCP Tool wrapper for Microsoft Agent Framework.
 
-import json
+This module provides MCP tool integration using the Microsoft Agent Framework's
+built-in MCP support (MCPStreamableHTTPTool).
+
+Reference: https://learn.microsoft.com/en-us/agent-framework/user-guide/model-context-protocol/using-mcp-tools
+"""
+
+import asyncio
 import logging
-from typing import Any, Dict
-from pydantic import BaseModel, create_model
+from typing import Any, Dict, List, Optional
 
-from agent_framework import AIFunction
+try:
+    from agent_framework import MCPStreamableHTTPTool
+except ImportError:
+    raise ImportError(
+        "Microsoft Agent Framework SDK is required. "
+        "Install with: pip install agent-framework>=1.0.0b251001"
+    )
 
-from .mcp_client import HTTPMCPClient
 from .tool_config import MCPServerConfig
 
 logger = logging.getLogger(__name__)
 
 
-class MCPToolWrapper:
-    """
-    Wrapper to convert MCP tools into MAF-compatible tools.
+class MCPToolLoader:
+    """MCP Tool Loader for Microsoft Agent Framework.
     
-    This class bridges MCP server tools with Microsoft Agent Framework's
-    AIFunction interface, following MAF best practices for tool calling.
+    Uses the built-in MCPStreamableHTTPTool from Microsoft Agent Framework
+    to load and manage MCP tools. The tool is used as an async context manager
+    to ensure proper connection lifecycle.
     """
 
     def __init__(self, server_config: MCPServerConfig, server_name: str):
-        """
-        Initialize MCP tool wrapper.
+        """Initialize MCP tool loader.
         
         Args:
-            server_config: MCP server configuration
-            server_name: Name of the MCP server
+            server_config: MCP server configuration containing URL
+            server_name: Human-readable name of the MCP server
         """
         self.server_config = server_config
         self.server_name = server_name
-        self.client = HTTPMCPClient(
-            base_url=server_config["url"],
-            access_token=server_config.get("accessToken")
+        self.base_url = server_config["url"].rstrip("/")
+        self.access_token = server_config.get("accessToken")
+        self._mcp_tool: Optional[MCPStreamableHTTPTool] = None
+        self._tools: List[Any] = []
+        
+        # Store configuration for creating the tool
+        self.headers = {}
+        if self.access_token:
+            self.headers["Authorization"] = f"Bearer {self.access_token}"
+        
+        logger.info(
+            f"Initialized MCP tool loader for '{self.server_name}' at {self.base_url}"
         )
-        logger.info(f"Initialized MCP tool wrapper for {server_name}")
 
-    async def get_tools(self) -> list[AIFunction]:
-        """
-        Get MAF-compatible AI functions from MCP server.
+    async def get_tools(self) -> List[Any]:
+        """Get tools from MCP server using MAF's built-in MCP support.
+        
+        Uses the MCPStreamableHTTPTool as an async context manager to ensure
+        proper connection lifecycle management.
+        
+        If the remote server doesn't respond or is unavailable, logs a warning
+        and returns an empty list instead of throwing an exception.
         
         Returns:
-            List of MAF AIFunction objects
+            List of AIFunction instances from the MCP tool, or empty list if server unavailable
         """
         try:
-            # List tools from MCP server
-            mcp_tools = await self.client.list_tools()
+            # Use MCPStreamableHTTPTool as async context manager
+            # Wrap the entire context manager in try/except to catch connection errors
+            async with MCPStreamableHTTPTool(
+                name=self.server_name,
+                url=self.base_url,
+                headers=self.headers if self.headers else None,
+                load_tools=True,
+                load_prompts=False,
+                request_timeout=30,
+            ) as mcp_tool:
+                # The MCPStreamableHTTPTool automatically loads tools on connect
+                self._tools = list(mcp_tool.functions)
+                
+                logger.info(
+                    f"✓ Retrieved {len(self._tools)} tools from MCP server '{self.server_name}'"
+                )
+                
+                return self._tools
             
-            logger.info(
-                f"Retrieved {len(mcp_tools)} tools from {self.server_name}"
+        except asyncio.CancelledError:
+            # CancelledError from connection timeout or cancellation
+            logger.warning(
+                f"⚠ MCP server '{self.server_name}' at {self.base_url} connection cancelled or timed out"
             )
-            
-            # Convert each MCP tool to MAF AIFunction
-            maf_tools = []
-            for mcp_tool in mcp_tools:
-                maf_tool = self._create_maf_function(mcp_tool)
-                maf_tools.append(maf_tool)
-            
-            return maf_tools
-            
+            logger.warning(
+                f"⚠ Continuing without tools from '{self.server_name}'"
+            )
+            return []
+        except (ConnectionError, OSError, TimeoutError) as e:
+            # Network/connection errors
+            logger.warning(
+                f"⚠ MCP server '{self.server_name}' at {self.base_url} is unavailable or not responding: {str(e)}"
+            )
+            logger.warning(
+                f"⚠ Continuing without tools from '{self.server_name}'"
+            )
+            return []
         except Exception as e:
-            logger.error(
-                f"Error getting tools from {self.server_name}: {str(e)}"
+            # Any other errors - log warning and continue
+            logger.warning(
+                f"⚠ Error connecting to MCP server '{self.server_name}' at {self.base_url}: {type(e).__name__}: {str(e)}"
+            )
+            logger.warning(
+                f"⚠ Continuing without tools from '{self.server_name}'"
             )
             return []
 
-    def _create_maf_function(self, mcp_tool: dict[str, Any]) -> AIFunction:
-        """
-        Create a MAF AIFunction from an MCP tool definition.
-        
-        Args:
-            mcp_tool: MCP tool definition with name, description, inputSchema
-            
-        Returns:
-            MAF AIFunction object
-        """
-        tool_name = mcp_tool.get("name", "unknown")
-        tool_description = mcp_tool.get("description", "")
-        input_schema = mcp_tool.get("inputSchema", {})
-        
-        # Create a dynamic Pydantic model for the input parameters
-        # Using a simple Dict[str, Any] model for flexibility with MCP tools
-        InputModel = create_model(
-            f"{tool_name}_Input",
-            __base__=BaseModel,
-            **{prop: (Any, ...) for prop in input_schema.get("properties", {}).keys()}
-        )
-        
-        # Create tool function that calls MCP server
-        async def tool_function(**kwargs: Any) -> str:
-            """
-            Execute the MCP tool with given arguments.
-            
-            Following MAF best practices:
-            - Async execution
-            - Proper error handling
-            - String return value
-            """
-            try:
-                logger.info(
-                    f"Calling MCP tool {tool_name} with args: {kwargs}"
-                )
-                
-                # Call MCP server
-                result = await self.client.call_tool(tool_name, kwargs)
-                
-                logger.info(f"MCP tool {tool_name} returned successfully")
-                
-                # Return result as string (MAF handles this)
-                return json.dumps(result) if isinstance(result, dict) else str(result)
-                
-            except Exception as e:
-                logger.error(
-                    f"Error calling MCP tool {tool_name}: {str(e)}"
-                )
-                return f"Error calling {tool_name}: {str(e)}"
-        
-        # Create MAF AIFunction
-        # Following MAF SDK patterns for tool creation
-        maf_function = AIFunction(
-            name=tool_name,
-            description=tool_description or f"MCP tool: {tool_name}",
-            func=tool_function,
-            input_model=InputModel
-        )
-        
-        return maf_function
-
     async def close(self) -> None:
-        """Clean up MCP client resources."""
-        await self.client.close()
-        logger.info(f"Closed MCP client for {self.server_name}")
+        """Clean up MCP tool resources.
+        
+        Note: When using async context manager, cleanup is automatic.
+        This method is kept for API compatibility.
+        """
+        # When using async context manager, cleanup is automatic
+        logger.debug(f"MCP tool for '{self.server_name}' cleanup handled by context manager")
