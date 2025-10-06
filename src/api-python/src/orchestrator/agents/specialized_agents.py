@@ -16,7 +16,6 @@ class CustomerQueryAgent(BaseAgent):
             tools: Optional list of customer query tools
         """
         super().__init__(
-            tools=tools,
             name="CustomerQueryAgent",
             description="Analyzes customer travel preferences and requirements",
             system_prompt="""You are a customer service agent for a travel planning system.
