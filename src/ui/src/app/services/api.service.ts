@@ -116,7 +116,7 @@ export class ApiService {
 
         for (const jsonValue of jsonValues) {
           try {
-            const parsedData = JSON.parse(jsonValue);
+            const parsedData = JSON.parse(jsonValue.replace(/data:\s+/, '').trim());
             this.chatStreamState.next({
               type: 'MESSAGE',
               event: parsedData,

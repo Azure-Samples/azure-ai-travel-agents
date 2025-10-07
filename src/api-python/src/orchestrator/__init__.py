@@ -1,8 +1,7 @@
-"""Orchestration layer for MAF agents and workflows."""
+"""Orchestration layer for Microsoft Agent Framework workflows."""
 
-from .workflow import TravelWorkflowOrchestrator, workflow_orchestrator
+from .magentic_workflow import magentic_orchestrator
 
 __all__ = [
-    "TravelWorkflowOrchestrator",
-    "workflow_orchestrator",
+    "magentic_orchestrator",
 ]

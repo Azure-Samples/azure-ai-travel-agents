@@ -22,13 +22,16 @@ export class ChatService {
 
   isLoading = signal(false);
   tools = signal<Tools[]>([]);
-  currentAgentName = signal<string | null>(null);
+  agent = signal<string | null>(null);
   assistantMessageInProgress = signal(false);
   agentMessageBuffer: string = '';
 
   constructor(private apiService: ApiService) {
     this.apiService.chatStreamState.subscribe(
       (state: Partial<ChatStreamState>) => {
+
+        console.log('Chat stream state update:', {state});
+
         switch (state.type) {
           case 'START':
             this.agentEventsBuffer = [];
@@ -97,7 +100,7 @@ export class ChatService {
     // this.agentEventStream.next(null);
     // this.agentEventsBuffer = [];
     // this.messagesStream.next(this.messagesBuffer);
-    // this.currentAgentName.set(null);
+    // this.agent.set(null);
 
     await this.apiService.streamChatMessage(
       messageText,
@@ -118,13 +121,19 @@ export class ChatService {
 
   private processAgentEvents(event?: ChatEvent) {
     if (event && event.type === 'metadata') {
-      this.currentAgentName.set(event.data?.agentName || null);
+      this.agent.set(event.data?.agent || null);
       this.agentEventsBuffer.push(event);
 
       const delta: string = event.data?.delta || '';
 
       switch (event.event) {
+
+        // LlamaIndex events
         case 'StartEvent':
+        // Microsoft Agent Framework (MAF) events
+        case 'WorkflowStarted':
+        case 'OrchestratorUserTask':
+        case 'OrchestratorInstruction':
           this.updateAndNotifyAgentChatMessageState(delta, {
             metadata: {
               events: this.agentEventsBuffer,
@@ -215,6 +224,6 @@ export class ChatService {
     this.agentEventsBuffer = [];
     this.isLoading.set(false);
     this.assistantMessageInProgress.set(false);
-    this.currentAgentName.set(null);
+    this.agent.set(null);
   }
 }

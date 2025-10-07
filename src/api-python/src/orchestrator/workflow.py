@@ -226,81 +226,81 @@ class TravelWorkflowOrchestrator:
         # Echo Agent (for testing)
         if "echo-ping" in tools_by_server:
             self.echo_agent = EchoAgent(tools=tools_by_server.get("echo-ping", []))
-            await self.echo_agent.initialize(self.llm_client)
+            await self.echo_agent.initialize(self.chat_client)
             logger.info("EchoAgent initialized with tools")
         else:
             self.echo_agent = EchoAgent()
-            await self.echo_agent.initialize(self.llm_client)
+            await self.echo_agent.initialize(self.chat_client)
         
         # Customer Query Agent
         if "customer-query" in tools_by_server:
             self.customer_query_agent = CustomerQueryAgent(
                 tools=tools_by_server.get("customer-query", [])
             )
-            await self.customer_query_agent.initialize(self.llm_client)
+            await self.customer_query_agent.initialize(self.chat_client)
             logger.info("CustomerQueryAgent initialized with tools")
         else:
             self.customer_query_agent = CustomerQueryAgent()
-            await self.customer_query_agent.initialize(self.llm_client)
+            await self.customer_query_agent.initialize(self.chat_client)
         
         # Web Search Agent
         if "web-search" in tools_by_server:
             self.web_search_agent = WebSearchAgent(
                 tools=tools_by_server.get("web-search", [])
             )
-            await self.web_search_agent.initialize(self.llm_client)
+            await self.web_search_agent.initialize(self.chat_client)
             logger.info("WebSearchAgent initialized with tools")
         else:
             self.web_search_agent = WebSearchAgent()
-            await self.web_search_agent.initialize(self.llm_client)
+            await self.web_search_agent.initialize(self.chat_client)
         
         # Itinerary Planning Agent
         if "itinerary-planning" in tools_by_server:
             self.itinerary_agent = ItineraryPlanningAgent(
                 tools=tools_by_server.get("itinerary-planning", [])
             )
-            await self.itinerary_agent.initialize(self.llm_client)
+            await self.itinerary_agent.initialize(self.chat_client)
             logger.info("ItineraryPlanningAgent initialized with tools")
         else:
             self.itinerary_agent = ItineraryPlanningAgent()
-            await self.itinerary_agent.initialize(self.llm_client)
+            await self.itinerary_agent.initialize(self.chat_client)
         
         # Model Inference Agent
         if "model-inference" in tools_by_server:
             self.model_inference_agent = ModelInferenceAgent(
                 tools=tools_by_server.get("model-inference", [])
             )
-            await self.model_inference_agent.initialize(self.llm_client)
+            await self.model_inference_agent.initialize(self.chat_client)
             logger.info("ModelInferenceAgent initialized with tools")
         else:
             self.model_inference_agent = ModelInferenceAgent()
-            await self.model_inference_agent.initialize(self.llm_client)
+            await self.model_inference_agent.initialize(self.chat_client)
         
         # Code Evaluation Agent
         if "code-evaluation" in tools_by_server:
             self.code_eval_agent = CodeEvaluationAgent(
                 tools=tools_by_server.get("code-evaluation", [])
             )
-            await self.code_eval_agent.initialize(self.llm_client)
+            await self.code_eval_agent.initialize(self.chat_client)
             logger.info("CodeEvaluationAgent initialized with tools")
         else:
             self.code_eval_agent = CodeEvaluationAgent()
-            await self.code_eval_agent.initialize(self.llm_client)
+            await self.code_eval_agent.initialize(self.chat_client)
         
         # Destination Recommendation Agent
         if "destination-recommendation" in tools_by_server:
             self.destination_agent = DestinationRecommendationAgent(
                 tools=tools_by_server.get("destination-recommendation", [])
             )
-            await self.destination_agent.initialize(self.llm_client)
+            await self.destination_agent.initialize(self.chat_client)
             logger.info("DestinationRecommendationAgent initialized with tools")
         else:
             self.destination_agent = DestinationRecommendationAgent()
-            await self.destination_agent.initialize(self.llm_client)
+            await self.destination_agent.initialize(self.chat_client)
         
         # Triage Agent gets all tools (like TypeScript TravelAgent)
         self.triage_agent = TriageAgent(tools=self.all_tools)
-        await self.triage_agent.initialize(self.llm_client)
+        await self.triage_agent.initialize(self.chat_client)
         logger.info("TriageAgent initialized with all tools")
         
         logger.info(
@@ -341,7 +341,7 @@ class TravelWorkflowOrchestrator:
         Raises:
             RuntimeError: If workflow not initialized
         """
-        if not self.llm_client or not self.triage_agent:
+        if not self.chat_client or not self.triage_agent:
             raise RuntimeError("Workflow not initialized. Call initialize() first.")
 
         logger.info(f"Processing request: {message[:100]}...")
@@ -380,7 +380,7 @@ class TravelWorkflowOrchestrator:
         Raises:
             RuntimeError: If workflow not initialized
         """
-        if not self.llm_client or not self.triage_agent:
+        if not self.chat_client or not self.triage_agent:
             raise RuntimeError("Workflow not initialized. Call initialize() first.")
 
         logger.info(f"Processing streaming request: {message[:100]}...")

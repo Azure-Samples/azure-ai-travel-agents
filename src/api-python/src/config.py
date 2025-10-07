@@ -30,7 +30,7 @@ class Settings(BaseSettings):
     # Azure OpenAI Configuration
     azure_openai_endpoint: Optional[str] = None
     azure_openai_api_key: Optional[str] = None
-    azure_openai_deployment: Optional[str] = None
+    azure_openai_deployment_name: Optional[str] = None
     azure_openai_api_version: str = "2024-02-15-preview"
     azure_client_id: Optional[str] = None
     is_local_docker_env: bool = False

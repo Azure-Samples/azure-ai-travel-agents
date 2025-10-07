@@ -7,7 +7,7 @@ from agent_framework.openai import OpenAIChatClient
 from azure.identity import DefaultAzureCredential, ManagedIdentityCredential
 from openai import AsyncAzureOpenAI
 
-from ...config import settings
+from config import settings
 from .base import LLMProvider
 
 logger = logging.getLogger(__name__)
@@ -32,8 +32,8 @@ class AzureOpenAIProvider(LLMProvider):
         if not settings.azure_openai_endpoint:
             raise ValueError("AZURE_OPENAI_ENDPOINT is required for azure-openai provider")
 
-        if not settings.azure_openai_deployment:
-            raise ValueError("AZURE_OPENAI_DEPLOYMENT is required for azure-openai provider")
+        if not settings.azure_openai_deployment_name:
+            raise ValueError("AZURE_OPENAI_DEPLOYMENT_NAME is required for azure-openai provider")
 
         # Create the underlying Azure OpenAI async client
         async_client: AsyncAzureOpenAI
@@ -67,9 +67,9 @@ class AzureOpenAIProvider(LLMProvider):
         # Wrap the Azure OpenAI client with MAF's OpenAIChatClient
         # This provides the ChatClientProtocol interface that ChatAgent expects
         maf_client = OpenAIChatClient(
-            model_id=settings.azure_openai_deployment,
+            model_id=settings.azure_openai_deployment_name,
             async_client=async_client,
         )
         
-        logger.info(f"Created MAF OpenAIChatClient with model: {settings.azure_openai_deployment}")
+        logger.info(f"Created MAF OpenAIChatClient with model: {settings.azure_openai_deployment_name}")
         return maf_client

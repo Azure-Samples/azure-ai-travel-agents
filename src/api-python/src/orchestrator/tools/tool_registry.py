@@ -1,205 +1,240 @@
 """Tool registry for managing MCP server connections.
 
 This module provides a centralized registry for MCP tool servers,
-loading tools using Microsoft Agent Framework's built-in MCP support.
+using Microsoft Agent Framework's built-in MCPStreamableHTTPTool.
 
 Reference: https://learn.microsoft.com/en-us/agent-framework/user-guide/model-context-protocol/using-mcp-tools
 """
 
+import asyncio
 import logging
-from typing import List, Optional, Any
+from typing import Optional, Any, Dict
 
-from .mcp_tool_wrapper import MCPToolLoader
+try:
+    from agent_framework import MCPStreamableHTTPTool
+except ImportError:
+    raise ImportError(
+        "Microsoft Agent Framework SDK is required. "
+        "Install with: pip install agent-framework>=1.0.0b251001"
+    )
+
 from .tool_config import MCP_TOOLS_CONFIG, McpServerName
 
 logger = logging.getLogger(__name__)
 
 
 class ToolRegistry:
-    """Registry for managing MCP tool server connections.
+    """Registry for managing MCP tool server metadata.
     
-    Uses Microsoft Agent Framework's built-in MCP support to load and manage tools.
+    Simplified implementation that only stores metadata about MCP servers.
+    Each agent creates its own MCPStreamableHTTPTool instances and manages
+    their lifecycle using async context managers, following Microsoft Agent
+    Framework best practices.
+    
+    This avoids issues with:
+    - Shared async context managers across different tasks
+    - Cancel scope violations
+    - Persistent connection management
+    
+    Reference: https://github.com/microsoft/agent-framework/blob/main/python/samples/getting_started/agents/openai/openai_chat_client_with_local_mcp.py
     """
 
     def __init__(self) -> None:
-        """Initialize the tool registry."""
-        self.loaders: dict[str, MCPToolLoader] = {}
-        self._initialize_loaders()
-        logger.info("MCP tool registry initialized")
+        """Initialize the tool registry with server metadata."""
+        self._server_metadata: Dict[str, Dict[str, Any]] = {}
+        self._initialize_metadata()
+        logger.info("MCP tool registry initialized (metadata only)")
 
-    def _initialize_loaders(self) -> None:
-        """Initialize MCP tool loaders for all configured servers."""
+    def _initialize_metadata(self) -> None:
+        """Initialize server metadata from configuration."""
         for server_id, server_def in MCP_TOOLS_CONFIG.items():
-            try:
-                config = server_def["config"]
-                name = server_def["name"]
-                
-                # Create loader using MAF's built-in MCP support
-                loader = MCPToolLoader(config, name)
-                self.loaders[server_id] = loader
-                
-                logger.info(
-                    f"Initialized MCP server '{name}' ({server_id}) at {config['url']}"
-                )
-                
-            except Exception as e:
-                logger.error(
-                    f"Failed to initialize MCP server '{server_id}': {e}"
-                )
+            config = server_def["config"]
+            name = server_def["name"]
+            
+            # Store only metadata - no actual connections
+            self._server_metadata[server_id] = {
+                "id": server_id,
+                "name": name,
+                "url": config["url"],
+                "type": config.get("type", "http"),
+                "selected": server_id != "echo-ping",
+                "access_token": config.get("accessToken"),
+            }
+            
+            logger.info(f"Registered MCP server '{name}' ({server_id}) at {config['url']}")
 
-        logger.info(
-            f"Tool registry ready with {len(self.loaders)} MCP servers"
-        )
+        logger.info(f"Tool registry ready with {len(self._server_metadata)} MCP servers")
 
-    async def get_all_tools(
-        self,
-        servers: Optional[List[McpServerName]] = None
-    ) -> List[Any]:
-        """Get all MCP tools from specified servers.
+    def create_mcp_tool(self, server_id: McpServerName) -> Optional[MCPStreamableHTTPTool]:
+        """Create a new MCP tool instance for a server.
         
-        This is the primary method for loading MCP tools into agents.
-        Tools are loaded using Microsoft Agent Framework's built-in MCP support.
-        
-        If a remote MCP server doesn't respond or is unavailable, logs a warning
-        and continues loading from other servers instead of failing.
+        Each call creates a fresh MCPStreamableHTTPTool instance that should be
+        used within an async context manager. This follows the pattern from
+        Microsoft Agent Framework samples.
         
         Args:
-            servers: Optional list of server IDs to load tools from.
-                    If None, loads from all configured servers.
-        
-        Returns:
-            List of AIFunction instances from available MCP tools
-        """
-        all_tools = []
-        successful_servers = []
-        failed_servers = []
-        
-        # Determine which servers to load tools from
-        servers_to_load = servers if servers else list(self.loaders.keys())
-        
-        logger.info(
-            f"Loading tools from {len(servers_to_load)} MCP servers: "
-            f"{', '.join(servers_to_load)}"
-        )
-        
-        # Load tools from each server - continue on failure
-        for server_id in servers_to_load:
-            if server_id not in self.loaders:
-                logger.warning(f"⚠ Unknown MCP server: {server_id}")
-                failed_servers.append(server_id)
-                continue
+            server_id: The ID of the MCP server
             
+        Returns:
+            New MCPStreamableHTTPTool instance or None if server not found
+            
+        Example:
+            ```python
+            tool = registry.create_mcp_tool("customer-query")
+            if tool:
+                async with tool:
+                    # Use tool with agent
+                    result = await agent.run(query, tools=tool)
+            ```
+        """
+        metadata = self._server_metadata.get(server_id)
+        if not metadata:
+            logger.warning(f"MCP server '{server_id}' not found in registry")
+            return None
+        
+        # Build headers if access token provided
+        headers = None
+        access_token = metadata.get("access_token")
+        if access_token:
+            headers = {"Authorization": f"Bearer {access_token}"}
+        
+        # Create a new MCPStreamableHTTPTool instance
+        # The caller is responsible for using it in an async context manager
+        return MCPStreamableHTTPTool(
+            name=metadata["name"],
+            url=metadata["url"],
+            headers=headers,
+            load_tools=True,
+            load_prompts=False,
+            request_timeout=30,
+        )
+
+    def get_server_metadata(self, server_id: McpServerName) -> Optional[Dict[str, Any]]:
+        """Get metadata for a server without creating a connection.
+        
+        Args:
+            server_id: The ID of the MCP server
+            
+        Returns:
+            Server metadata dictionary or None if not found
+        """
+        return self._server_metadata.get(server_id)
+
+    async def list_tools(self) -> Dict[str, Any]:
+        """List all available MCP tools with reachability checks.
+        
+        Ports the TypeScript mcpToolsList implementation to:
+        1. Connect to each MCP server
+        2. List the actual tools available on each server
+        3. Return detailed information including tool definitions
+        
+        Returns response in the format expected by the frontend:
+        {
+          "tools": [
+            {
+              "id": "customer-query",
+              "name": "Customer Query",
+              "url": "http://localhost:5001/mcp",
+              "type": "http",
+              "reachable": true,
+              "selected": true,
+              "tools": [...]  # Actual tool definitions from the server
+            }
+          ]
+        }
+        """
+        async def check_server_and_list_tools(server_id: str, metadata: Dict[str, Any]) -> Dict[str, Any]:
+            """Connect to MCP server and list its tools, mirroring TS mcpToolsList behavior."""
+            server_info = {
+                "id": server_id,
+                "name": metadata["name"],
+                "url": metadata["url"],
+                "type": metadata["type"],
+                "reachable": False,
+                "selected": metadata["selected"],
+                "tools": []
+            }
+            
+            # Create MCP tool instance to connect and list tools
             try:
-                loader = self.loaders[server_id]
-                tools = await loader.get_tools()
+                logger.info(f"Connecting to MCP server {metadata['name']} at {metadata['url']}")
+                mcp_tool = self.create_mcp_tool(server_id)
                 
-                if tools:
-                    all_tools.extend(tools)
-                    successful_servers.append(server_id)
-                    logger.info(
-                        f"✓ Loaded {len(tools)} tools from MCP server '{server_id}'"
-                    )
+                if not mcp_tool:
+                    logger.warning(f"Could not create MCP tool for server '{server_id}'")
+                    return server_info
+                
+                # Use the tool in async context manager to connect
+                async with mcp_tool:
+                    logger.info(f"MCP server {metadata['name']} is reachable")
+                    server_info["reachable"] = True
+                    
+                    # List tools from the server
+                    # The MCPStreamableHTTPTool loads tools on connection
+                    # Access them via the tool's internal state
+                    if hasattr(mcp_tool, '_tools') and mcp_tool._tools:
+                        tools_list = []
+                        for tool in mcp_tool._tools:
+                            # Convert tool to dict format
+                            tool_info = {
+                                "name": tool.metadata.name if hasattr(tool, 'metadata') else str(tool),
+                                "description": tool.metadata.description if hasattr(tool, 'metadata') else ""
+                            }
+                            tools_list.append(tool_info)
+                        
+                        server_info["tools"] = tools_list
+                        logger.info(f"MCP server {metadata['name']} has {len(tools_list)} tools")
+                    else:
+                        logger.info(f"MCP server {metadata['name']} has 0 tools")
+                        
+            except Exception as error:
+                logger.error(f"MCP server {metadata['name']} is not reachable: {str(error)}")
+                server_info["error"] = str(error)
+            
+            return server_info
+        
+        # Check all servers concurrently, matching TS Promise.all pattern
+        tasks = []
+        for server_id, metadata in self._server_metadata.items():
+            task = asyncio.create_task(check_server_and_list_tools(server_id, metadata))
+            tasks.append(task)
+        
+        # Wait for all checks with overall timeout
+        try:
+            results = await asyncio.wait_for(
+                asyncio.gather(*tasks, return_exceptions=True),
+                timeout=10.0  # Increased timeout for actual MCP connections
+            )
+        except asyncio.TimeoutError:
+            logger.warning("Tool list overall timeout - returning partial results")
+            results = []
+            for task in tasks:
+                if task.done():
+                    try:
+                        results.append(task.result())
+                    except Exception as e:
+                        logger.debug(f"Error getting task result: {e}")
                 else:
-                    # Server responded but had no tools or failed gracefully
-                    failed_servers.append(server_id)
-                    logger.warning(
-                        f"⚠ No tools loaded from MCP server '{server_id}'"
-                    )
-                
-            except Exception as e:
-                # Log warning and continue - don't let one server failure stop others
-                failed_servers.append(server_id)
-                logger.warning(
-                    f"⚠ Failed to load tools from MCP server '{server_id}': {e}"
-                )
-                logger.warning(
-                    f"⚠ Continuing with remaining servers..."
-                )
+                    task.cancel()
         
-        # Summary logging
-        if successful_servers:
-            logger.info(
-                f"✓ Successfully loaded {len(all_tools)} total tools from "
-                f"{len(successful_servers)} server(s): {', '.join(successful_servers)}"
-            )
+        # Build tools list from results
+        tools_list = []
+        for result in results:
+            if isinstance(result, dict):
+                tools_list.append(result)
+            elif isinstance(result, Exception):
+                logger.debug(f"Error checking server: {result}")
         
-        if failed_servers:
-            logger.warning(
-                f"⚠ {len(failed_servers)} server(s) unavailable or failed: {', '.join(failed_servers)}"
-            )
-        
-        if not all_tools:
-            logger.warning(
-                f"⚠ No tools loaded from any MCP server. Agents will run without MCP tools."
-            )
-        
-        return all_tools
+        return {"tools": tools_list}
 
     async def close_all(self) -> None:
-        """Close all MCP loaders and cleanup resources."""
-        logger.info("Closing all MCP tool loaders...")
+        """Cleanup resources.
         
-        for loader in self.loaders.values():
-            try:
-                await loader.close()
-            except Exception as e:
-                logger.error(f"Error closing loader: {e}")
-        
-        logger.info("All MCP tool loaders closed")
-
-    async def list_tools(self) -> dict[str, Any]:
-        """List all available tools from all MCP servers with metadata.
-        
-        Returns:
-            Dictionary containing tools organized by server
+        Since we don't maintain persistent connections, this just clears metadata.
         """
-        result = {
-            "servers": {},
-            "total_tools": 0,
-            "total_servers": len(self.loaders),
-            "available_servers": 0,
-        }
-        
-        for server_id, loader in self.loaders.items():
-            try:
-                tools = await loader.get_tools()
-                
-                if tools:
-                    result["servers"][server_id] = {
-                        "name": loader.server_name,
-                        "url": loader.base_url,
-                        "status": "available",
-                        "tool_count": len(tools),
-                        "tools": [
-                            {
-                                "name": tool.name,
-                                "description": tool.description,
-                            }
-                            for tool in tools
-                        ]
-                    }
-                    result["total_tools"] += len(tools)
-                    result["available_servers"] += 1
-                else:
-                    result["servers"][server_id] = {
-                        "name": loader.server_name,
-                        "url": loader.base_url,
-                        "status": "unavailable",
-                        "tool_count": 0,
-                        "tools": []
-                    }
-                    
-            except Exception as e:
-                result["servers"][server_id] = {
-                    "name": loader.server_name,
-                    "url": loader.base_url,
-                    "status": "error",
-                    "error": str(e),
-                    "tool_count": 0,
-                    "tools": []
-                }
-        
-        return result
+        logger.info("Cleaning up tool registry...")
+        self._server_metadata.clear()
+        logger.info("Tool registry cleaned up")
 
 
 # Global tool registry instance
