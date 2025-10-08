@@ -212,13 +212,13 @@ class MagenticTravelOrchestrator:
                     workflow_error = e
                     error_event = {
                         "type": "error",  # This is the ChatEvent.type
-                        "agent": None,
                         "event": "ServiceError",
-                        "message": "Request timed out or service unavailable. Please try again.",
-                        "statusCode": 504,
-                        "data": {
-                            "agent": None,
-                            "error": str(e),
+                        "error": {
+                            "message": "Request timed out or service unavailable. Please try again.",
+                            "statusCode": 504,
+                            "reason": {
+                                "message": str(e),
+                            }
                         }
                     }
                     await event_queue.put(error_event)

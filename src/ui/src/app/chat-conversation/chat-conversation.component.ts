@@ -14,6 +14,7 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideBot,
   lucideBrain,
+  lucideCheck,
   lucideRefreshCw,
   lucideSendHorizontal,
 } from '@ng-icons/lucide';
@@ -140,6 +141,7 @@ Budget: 5000 euros.`;
       lucideBot,
       lucideSendHorizontal,
       lucideRefreshCw,
+      lucideCheck,
     }),
   ],
   templateUrl: './chat-conversation.component.html',

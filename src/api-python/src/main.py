@@ -192,9 +192,12 @@ async def chat(request: ChatRequest) -> StreamingResponse:
                     error_status_code = internal_event.get("statusCode", 500)
                     
                     stream_state = {
-                        "type": "ERROR",
+                        "type": "metadata",
                         "event": internal_event,
-                        "error": error_message
+                        "error": {
+                            "message": error_message,
+                            "statusCode": error_status_code
+                        }
                     }
                 else:
                     # Regular message/metadata event
@@ -204,7 +207,7 @@ async def chat(request: ChatRequest) -> StreamingResponse:
             
             # Send END event
             end_event = {
-                "type": "END",
+                "type": "metadata",
                 "agent": "TravelPlanningWorkflow",
                 "event": "Complete",
                 "data": {
@@ -217,7 +220,7 @@ async def chat(request: ChatRequest) -> StreamingResponse:
         except Exception as e:
             logger.error(f"Error processing chat request: {e}", exc_info=True)
             error_stream_state = {
-                "type": "ERROR",
+                "type": "metadata",
                 "event": {
                     "type": "error",
                     "agent": None,
