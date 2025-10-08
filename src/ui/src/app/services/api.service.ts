@@ -28,6 +28,7 @@ export interface ChatEvent {
   message?: string;
   statusCode?: number;
   agentName?: string;
+  kind?: string;
 }
 
 export type ChatEventErrorType = 'client' | 'server' | 'general' | undefined;
@@ -50,7 +51,7 @@ export interface ChatMessage {
   };
   reasoning: {
     content: string;
-  }[]
+  }[];
 }
 
 @Injectable({
@@ -61,7 +62,7 @@ export class ApiService {
   private apiUrl = environment.apiServerUrl;
   chatStreamState = new BehaviorSubject<Partial<ChatStreamState>>({});
 
-  async fetchAvailableTools(): Promise<{tools: Tools[]} | void> {
+  async fetchAvailableTools(): Promise<{ tools: Tools[] } | void> {
     try {
       const response = await fetch(`${this.apiUrl}/api/tools`, {
         method: 'GET',
@@ -76,7 +77,7 @@ export class ApiService {
           response.status
         );
       }
-      return (await response.json());
+      return await response.json();
     } catch (error) {
       return this.handleApiError(error, 0);
     }
@@ -116,11 +117,21 @@ export class ApiService {
 
         for (const jsonValue of jsonValues) {
           try {
-            const parsedData = JSON.parse(jsonValue);
-            this.chatStreamState.next({
-              type: 'MESSAGE',
-              event: parsedData,
-            });
+            const parsedData = JSON.parse(
+              jsonValue.replace(/data:\s+/, '').trim()
+            );
+            if (parsedData.error) {
+              this.chatStreamState.next({
+                type: 'ERROR',
+                error: parsedData.event,
+              });
+            }
+            else {
+              this.chatStreamState.next({
+                type: 'MESSAGE',
+                event: parsedData,
+              });
+            }
           } catch (error) {
             console.error('Error parsing JSON chunk:', error);
           }

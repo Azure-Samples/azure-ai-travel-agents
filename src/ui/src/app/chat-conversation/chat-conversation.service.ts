@@ -22,13 +22,15 @@ export class ChatService {
 
   isLoading = signal(false);
   tools = signal<Tools[]>([]);
-  currentAgentName = signal<string | null>(null);
+  agent = signal<string | null>(null);
   assistantMessageInProgress = signal(false);
   agentMessageBuffer: string = '';
 
   constructor(private apiService: ApiService) {
     this.apiService.chatStreamState.subscribe(
       (state: Partial<ChatStreamState>) => {
+        console.log('Chat stream state update:', { state });
+
         switch (state.type) {
           case 'START':
             this.agentEventsBuffer = [];
@@ -47,7 +49,6 @@ export class ChatService {
                 events: this.agentEventsBuffer,
               },
             });
-            this.isLoading.set(false);
             break;
 
           case 'MESSAGE':
@@ -56,6 +57,7 @@ export class ChatService {
 
           case 'ERROR':
             this.showErrorMessage(state.error);
+            this.isLoading.set(false);
             break;
 
           default:
@@ -73,7 +75,6 @@ export class ChatService {
   }
 
   async sendMessage(event: Event) {
-
     if ((event as KeyboardEvent).shiftKey) {
       return;
     }
@@ -97,7 +98,7 @@ export class ChatService {
     // this.agentEventStream.next(null);
     // this.agentEventsBuffer = [];
     // this.messagesStream.next(this.messagesBuffer);
-    // this.currentAgentName.set(null);
+    // this.agent.set(null);
 
     await this.apiService.streamChatMessage(
       messageText,
@@ -106,9 +107,11 @@ export class ChatService {
   }
 
   showErrorMessage(error: unknown) {
+    const err = (error as any).error ?? error;
+
     toast.error('Oops! Something went wrong.', {
-      duration: 5000,
-      description: (error as Error).message,
+      duration: 10000,
+      description: err.message,
       action: {
         label: 'Close',
         onClick: () => console.log('Closed'),
@@ -118,13 +121,24 @@ export class ChatService {
 
   private processAgentEvents(event?: ChatEvent) {
     if (event && event.type === 'metadata') {
-      this.currentAgentName.set(event.data?.agentName || null);
+      this.agent.set(event.data?.agent || null);
       this.agentEventsBuffer.push(event);
 
-      const delta: string = event.data?.delta || '';
+      console.log(event.event);
+
+      let message: string = event.data?.message || '';
+      if (message) {
+        message +='\n';
+      }
+      const delta: string = (event.data?.delta || message) || '';
 
       switch (event.event) {
+        // LlamaIndex events
         case 'StartEvent':
+        // Microsoft Agent Framework (MAF) events
+        case 'WorkflowStarted':
+        case 'OrchestratorUserTask':
+        case 'OrchestratorInstruction':
           this.updateAndNotifyAgentChatMessageState(delta, {
             metadata: {
               events: this.agentEventsBuffer,
@@ -133,7 +147,12 @@ export class ChatService {
 
           this.assistantMessageInProgress.set(false);
           break;
+
+        // LlamaIndex events
         case 'StopEvent':
+
+        // Microsoft Agent Framework (MAF) events
+        case "Complete":
           this.updateAndNotifyAgentChatMessageState(delta, {
             metadata: {
               events: this.agentEventsBuffer,
@@ -143,6 +162,8 @@ export class ChatService {
           this.assistantMessageInProgress.set(false);
           this.isLoading.set(false);
           break;
+
+        // LlamaIndex events
         case 'AgentToolCallResult':
           let state = {};
           if (typeof event.data.raw === 'string') {
@@ -157,6 +178,7 @@ export class ChatService {
           this.updateAndNotifyAgentChatMessageState(delta, state);
           break;
 
+        // LlamaIndex events
         case 'AgentOutput':
         case 'AgentInput':
         case 'AgentSetup':
@@ -171,10 +193,15 @@ export class ChatService {
           });
           break;
 
+        // LlamaIndex events
         case 'AgentStream':
-          this.assistantMessageInProgress.set(true);
+
+        // Microsoft Agent Framework (MAF) events
+        case 'AgentDelta':
+          console.log({delta});
 
           if (delta.trim()) {
+            this.assistantMessageInProgress.set(true);
             this.agentEventsBuffer.push(event);
             this.updateAndNotifyAgentChatMessageState(delta, {
               metadata: {
@@ -215,6 +242,6 @@ export class ChatService {
     this.agentEventsBuffer = [];
     this.isLoading.set(false);
     this.assistantMessageInProgress.set(false);
-    this.currentAgentName.set(null);
+    this.agent.set(null);
   }
 }

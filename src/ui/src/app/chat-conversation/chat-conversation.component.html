@@ -83,28 +83,35 @@
 
           <section class="flex flex-col gap-2 w-full">
             <accordion-preview
+              title="Agents Reasoning..."
+              icon="lucideBrain"
               [isOpened]="false"
               class="flex flex-row rounded-3xl px-4 py-2 w-full"
             >
-              @for (evt of message.metadata?.events; track $index) {
-              @if(evt.event !== 'AgentStream') {
-              <div
-                hlmBadge
+          @for (evt of message.metadata?.events; track $index) {
+            <accordion-preview
+              [isOpened]="false"
+              icon="lucideCheck"
+              [title]="'Processing ' + evt.event + (evt.data.agent ? ' (' + evt.data.agent + ')' : '')"
+              class="flex flex-row rounded-3xl px-4 w-full"
+            >
+              @if(evt.event !== 'AgentStream' && evt.event !== 'AgentDelta') {
+              <markdown class="text-muted-foreground" [disableSanitizer]="true">
+                <span hlmBadge
                 brnHoverCardTrigger
                 variant="outline"
-                class="agent-event-{{ evt.event }}"
-              >
-                @if(evt.data.agentName) {
-                {{ evt.data.agentName + ":" + evt.event }}
-                } @else {
-                {{ evt.event }}
-                }
-              </div>
-              <pre><code>{{evt.data | json}}</code></pre>
+                class="agent-event-{{ evt.event }}">
+                @if(evt.data.agent) { {{ evt.data.agent }} }
+                @else { {{ evt.event }} }
+                </span>
+                {{ evt.data.message }}
+              </markdown>
               <brn-separator hlmSeparator />
-              } }
+              }
             </accordion-preview>
-          </section>
+          }
+        </accordion-preview>
+        </section>
 
           @if ($last && chatService.isLoading()) {
           <skeleton-preview></skeleton-preview>
@@ -170,7 +177,7 @@
             *brnPopoverContent="let ctx"
           >
             <div class="space-y-2">
-              <h4 class="font-medium leading-none">Available Agents</h4>
+              <h4 class="font-medium leading-none">Available Agents and MCP tools</h4>
               <p class="text-sm text-muted-foreground">
                 Choose which agents to use
               </p>

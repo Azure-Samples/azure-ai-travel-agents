@@ -1,0 +1,68 @@
+[project]
+name = "azure-ai-travel-agents-api-python"
+version = "1.0.0"
+description = "Azure AI Travel Agents API with Microsoft Agent Framework"
+requires-python = ">=3.11"
+dependencies = [
+    # Core web framework and server
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.34.0",
+    # Server-Sent Events for streaming
+    "sse-starlette>=2.2.1",
+    # Configuration and validation
+    "pydantic>=2.10.6",
+    "pydantic-settings>=2.7.0",
+    "python-dotenv>=1.0.1",
+    # Observability with OpenTelemetry
+    "opentelemetry-api>=1.30.0",
+    "opentelemetry-sdk>=1.30.0",
+    "opentelemetry-exporter-otlp-proto-grpc>=1.30.0",
+    "opentelemetry-instrumentation-fastapi>=0.51b0",
+    # Azure authentication and AI
+    "azure-identity>=1.20.0",
+    "openai>=1.59.5",
+    # Microsoft Agent Framework - includes built-in MCP support
+    "agent-framework>=1.0.0b251001",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3.0",
+    "pytest-asyncio>=0.24.0",
+    "pytest-cov>=6.0.0",
+    "ruff>=0.8.0",
+    "mypy>=1.13.0",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["src/tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["*"]
+namespaces = false

@@ -90,7 +90,7 @@ apiRouter.post("/chat", async (req, res) => {
             const { displayName, data } = event;
             const serializedData = JSON.stringify({
               type: "metadata",
-              agent: (data as any)?.currentAgentName || null,
+              agent: (data as any)?.agent || null,
               event: displayName,
               data: data ? JSON.parse(JSON.stringify(data)) : null,
             });
