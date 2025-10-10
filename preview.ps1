@@ -118,8 +118,8 @@ MCP_WEB_SEARCH_URL=http://localhost:5006
 MCP_ECHO_PING_URL=http://localhost:5007
 MCP_ECHO_PING_ACCESS_TOKEN=123-this-is-a-fake-token-please-use-a-token-provider
 "@
-    Set-Content -Path ./src/api/.env -Value $envContent -Encoding UTF8
-    Write-Host ("{0}{1}.env file created in src/api/.env.{2}" -f $GREEN, $BOLD, $NC)
+    Set-Content -Path ./packages/api/.env -Value $envContent -Encoding UTF8
+    Write-Host ("{0}{1}.env file created in packages/api/.env.{2}" -f $GREEN, $BOLD, $NC)
 
     # Step 2: Setup UI dependencies
     if (Test-Path ./infra/hooks/ui/setup.ps1) {
@@ -138,8 +138,8 @@ MCP_ECHO_PING_ACCESS_TOKEN=123-this-is-a-fake-token-please-use-a-token-provider
     $uiEnvContent = @"
 NG_API_URL=http://localhost:4000
 "@
-    Set-Content -Path ./src/ui/.env -Value $uiEnvContent -Encoding UTF8
-    Write-Host ("{0}{1}.env file created in src/ui/.env.{2}" -f $GREEN, $BOLD, $NC)
+    Set-Content -Path ./packages/ui/.env -Value $uiEnvContent -Encoding UTF8
+    Write-Host ("{0}{1}.env file created in packages/ui/.env.{2}" -f $GREEN, $BOLD, $NC)
 
     # Step 3: Setup MCP tools (env, dependencies, docker build)
     if (Test-Path ./infra/hooks/mcp/setup.ps1) {

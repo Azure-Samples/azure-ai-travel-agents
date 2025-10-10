@@ -7,9 +7,9 @@ $tools = @('echo-ping', 'customer-query', 'destination-recommendation', 'itinera
 Write-Host '>> Creating .env file for the MCP servers...'
 
 foreach ($tool in $tools) {
-    $envSample = "./src/tools/$tool/.env.sample"
-    $envFile = "./src/tools/$tool/.env"
-    $envDockerFile = "./src/tools/$tool/.env.docker"
+    $envSample = "./packages/tools/$tool/.env.sample"
+    $envFile = "./packages/tools/$tool/.env"
+    $envDockerFile = "./packages/tools/$tool/.env.docker"
     if (Test-Path $envSample) {
         Write-Host "Creating .env file for $tool..."
         if (-not (Test-Path $envFile)) {

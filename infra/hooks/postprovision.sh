@@ -13,43 +13,43 @@ echo "Running post-deployment script for AI Travel Agents application..."
 ##########################################################################
 
 echo ">> Creating .env file for the API service..."
-if [ ! -f ./src/api/.env ]; then
-    echo "# File automatically generated on $(date)" > ./src/api/.env
-    echo "# See .env.sample for more information" >> ./src/api/.env
+if [ ! -f ./packages/api/.env ]; then
+    echo "# File automatically generated on $(date)" > ./packages/api/.env
+    echo "# See .env.sample for more information" >> ./packages/api/.env
     echo ""
     AZURE_OPENAI_ENDPOINT=$(azd env get-value AZURE_OPENAI_ENDPOINT)
-    echo "AZURE_OPENAI_ENDPOINT=\"$AZURE_OPENAI_ENDPOINT\"" >> ./src/api/.env
+    echo "AZURE_OPENAI_ENDPOINT=\"$AZURE_OPENAI_ENDPOINT\"" >> ./packages/api/.env
     echo ""
-    echo "LLM_PROVIDER=azure-openai" >> ./src/api/.env
+    echo "LLM_PROVIDER=azure-openai" >> ./packages/api/.env
     echo ""
-    echo "AZURE_OPENAI_DEPLOYMENT=gpt-4o-mini" >> ./src/api/.env
+    echo "AZURE_OPENAI_DEPLOYMENT=gpt-4o-mini" >> ./packages/api/.env
     echo ""
-    echo "MCP_CUSTOMER_QUERY_URL=http://localhost:8080" >> ./src/api/.env
-    echo "MCP_DESTINATION_RECOMMENDATION_URL=http://localhost:5002" >> ./src/api/.env
-    echo "MCP_ITINERARY_PLANNING_URL=http://localhost:5003" >> ./src/api/.env
-    echo "MCP_CODE_EVALUATION_URL=http://localhost:5004" >> ./src/api/.env
-    echo "MCP_MODEL_INFERENCE_URL=http://localhost:5005" >> ./src/api/.env
-    echo "MCP_WEB_SEARCH_URL=http://localhost:5006" >> ./src/api/.env
-    echo "MCP_ECHO_PING_URL=http://localhost:5007" >> ./src/api/.env
-    echo "MCP_ECHO_PING_ACCESS_TOKEN=123-this-is-a-fake-token-please-use-a-token-provider" >> ./src/api/.env
+    echo "MCP_CUSTOMER_QUERY_URL=http://localhost:8080" >> ./packages/api/.env
+    echo "MCP_DESTINATION_RECOMMENDATION_URL=http://localhost:5002" >> ./packages/api/.env
+    echo "MCP_ITINERARY_PLANNING_URL=http://localhost:5003" >> ./packages/api/.env
+    echo "MCP_CODE_EVALUATION_URL=http://localhost:5004" >> ./packages/api/.env
+    echo "MCP_MODEL_INFERENCE_URL=http://localhost:5005" >> ./packages/api/.env
+    echo "MCP_WEB_SEARCH_URL=http://localhost:5006" >> ./packages/api/.env
+    echo "MCP_ECHO_PING_URL=http://localhost:5007" >> ./packages/api/.env
+    echo "MCP_ECHO_PING_ACCESS_TOKEN=123-this-is-a-fake-token-please-use-a-token-provider" >> ./packages/api/.env
     echo ""
-    echo "OTEL_SERVICE_NAME=api" >> ./src/api/.env
-    echo "OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:18889" >> ./src/api/.env
-    echo "OTEL_EXPORTER_OTLP_HEADERS=header-value" >> ./src/api/.env
+    echo "OTEL_SERVICE_NAME=api" >> ./packages/api/.env
+    echo "OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:18889" >> ./packages/api/.env
+    echo "OTEL_EXPORTER_OTLP_HEADERS=header-value" >> ./packages/api/.env
 fi
 
 # Set overrides for docker environment
-if [ ! -f ./src/api/.env.docker ]; then
-    echo "# File automatically generated on $(date)" > ./src/api/.env.docker
-    echo "# See .env.sample for more information" >> ./src/api/.env.docker
+if [ ! -f ./packages/api/.env.docker ]; then
+    echo "# File automatically generated on $(date)" > ./packages/api/.env.docker
+    echo "# See .env.sample for more information" >> ./packages/api/.env.docker
     echo ""
-    echo "MCP_CUSTOMER_QUERY_URL=http://tool-customer-query:8080" >> ./src/api/.env.docker
-    echo "MCP_DESTINATION_RECOMMENDATION_URL=http://tool-destination-recommendation:5002" >> ./src/api/.env.docker
-    echo "MCP_ITINERARY_PLANNING_URL=http://tool-itinerary-planning:5003" >> ./src/api/.env.docker
-    echo "MCP_CODE_EVALUATION_URL=http://tool-code-evaluation:5004" >> ./src/api/.env.docker
-    echo "MCP_MODEL_INFERENCE_URL=http://tool-model-inference:5005" >> ./src/api/.env.docker
-    echo "MCP_WEB_SEARCH_URL=http://tool-web-search:5006" >> ./src/api/.env.docker
-    echo "MCP_ECHO_PING_URL=http://tool-echo-ping:5007" >> ./src/api/.env.docker
+    echo "MCP_CUSTOMER_QUERY_URL=http://tool-customer-query:8080" >> ./packages/api/.env.docker
+    echo "MCP_DESTINATION_RECOMMENDATION_URL=http://tool-destination-recommendation:5002" >> ./packages/api/.env.docker
+    echo "MCP_ITINERARY_PLANNING_URL=http://tool-itinerary-planning:5003" >> ./packages/api/.env.docker
+    echo "MCP_CODE_EVALUATION_URL=http://tool-code-evaluation:5004" >> ./packages/api/.env.docker
+    echo "MCP_MODEL_INFERENCE_URL=http://tool-model-inference:5005" >> ./packages/api/.env.docker
+    echo "MCP_WEB_SEARCH_URL=http://tool-web-search:5006" >> ./packages/api/.env.docker
+    echo "MCP_ECHO_PING_URL=http://tool-echo-ping:5007" >> ./packages/api/.env.docker
 fi
 
 ##########################################################################
@@ -57,15 +57,15 @@ fi
 ##########################################################################
 
 echo ">> Creating .env file for the UI service..."
-if [ ! -f ./src/ui/.env ]; then
-    echo "# File automatically generated on $(date)" > ./src/ui/.env
-    echo "# See .env.sample for more information" >> ./src/ui/.env
+if [ ! -f ./packages/ui/.env ]; then
+    echo "# File automatically generated on $(date)" > ./packages/ui/.env
+    echo "# See .env.sample for more information" >> ./packages/ui/.env
     echo ""
     NG_API_URL=$(azd env get-value NG_API_URL)
-    echo "NG_API_URL=http://localhost:4000" >> ./src/ui/.env
+    echo "NG_API_URL=http://localhost:4000" >> ./packages/ui/.env
     echo ""
-    echo "# Uncomment the following line to use the provisioned endpoint for the API" >> ./src/ui/.env
-    echo "# NG_API_URL=\"$NG_API_URL\"" >> ./src/ui/.env
+    echo "# Uncomment the following line to use the provisioned endpoint for the API" >> ./packages/ui/.env
+    echo "# NG_API_URL=\"$NG_API_URL\"" >> ./packages/ui/.env
 fi
 
 # Execute the API and UI setup scripts

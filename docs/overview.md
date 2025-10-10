@@ -36,7 +36,7 @@ See [Technical Architecture - Agent Orchestration](./technical-architecture.md#a
 
 **IMPLEMENTED**: Working Python implementation using Microsoft Agent Framework for agent orchestration.
 
-Located in `src/api-python/`, this is a complete, production-ready alternative to the TypeScript API that uses:
+Located in `packages/api-python/`, this is a complete, production-ready alternative to the TypeScript API that uses:
 - **Microsoft Agent Framework** (`agent-framework` Python SDK)
 - **Magentic Orchestration** pattern for multi-agent workflows
 - **Built-in MCP Support** via `MCPStreamableHTTPTool`
@@ -53,10 +53,10 @@ Located in `src/api-python/`, this is a complete, production-ready alternative t
 - ✅ Proper async lifecycle management
 
 **Documentation**:
-- Implementation details: `src/api-python/README.md`
-- Architecture diagrams: `src/api-python/ARCHITECTURE_DIAGRAMS.md`
-- Developer guide: `src/api-python/DEVELOPER_GUIDE.md`
-- MCP integration: `src/api-python/MCP_QUICK_REFERENCE.md`
+- Implementation details: `packages/api-python/README.md`
+- Architecture diagrams: `packages/api-python/ARCHITECTURE_DIAGRAMS.md`
+- Developer guide: `packages/api-python/DEVELOPER_GUIDE.md`
+- MCP integration: `packages/api-python/MCP_QUICK_REFERENCE.md`
 
 **Status**: Alternative implementation available for evaluation and use alongside LlamaIndex.TS.
 
@@ -95,7 +95,7 @@ flowchart LR
 
 ### Alternative Architecture (Microsoft Agent Framework)
 
-**IMPLEMENTED** in `src/api-python/`
+**IMPLEMENTED** in `packages/api-python/`
 
 ```mermaid
 flowchart LR
@@ -177,7 +177,7 @@ The system provides two orchestration approaches, each with distinct advantages:
 ### Microsoft Agent Framework (Implemented Alternative)
 **Status**: ✅ Implemented, Available for Use
 
-**Location**: `src/api-python/`
+**Location**: `packages/api-python/`
 
 **Advantages**:
 - Native Microsoft Agent Framework SDK integration
@@ -201,7 +201,7 @@ The system provides two orchestration approaches, each with distinct advantages:
 
 **Deployment**: Can run parallel to TypeScript API for evaluation or as replacement.
 
-See implementation documentation in `src/api-python/README.md` for details.
+See implementation documentation in `packages/api-python/README.md` for details.
 
 ## Documentation Features
 

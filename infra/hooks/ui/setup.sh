@@ -2,7 +2,7 @@
 
 # Install dependencies for the UI service
 printf ">> Installing dependencies for the UI service...\n"
-if [ ! -d ./src/ui/node_modules ]; then
+if [ ! -d ./packages/ui/node_modules ]; then
     printf "Installing dependencies for the UI service...\n"
     npm ci --prefix=src/ui
     status=$?

@@ -10,7 +10,7 @@ This section provides advanced setup instructions for running the application ei
 
 ### Using Local LLM Providers
 
-If you want to use local LLM providers like [Docker models](https://docs.docker.com/ai/model-runner/) or [Llama](https://ai.meta.com/llama/), you can set the `LLM_PROVIDER` environment variable in the `./src/api/.env` file to the supported providers. This will configure the application to use the specified local LLM provider.
+If you want to use local LLM providers like [Docker models](https://docs.docker.com/ai/model-runner/) or [Llama](https://ai.meta.com/llama/), you can set the `LLM_PROVIDER` environment variable in the `./packages/api/.env` file to the supported providers. This will configure the application to use the specified local LLM provider.
 
 The application supports the following local LLM providers:
 - **Azure Foundry Local**: This provider allows you to run models locally using Azure's AI Foundry Local service.
@@ -47,7 +47,7 @@ gh repo clone YOUR-USERNAME/azure-ai-travel-agents
 </details>
 <br>
 
-To use a local LLM provider, you need to set the `LLM_PROVIDER` environment variable in the `./src/api/.env` file, and provide the necessary configuration for the provider you want to use.
+To use a local LLM provider, you need to set the `LLM_PROVIDER` environment variable in the `./packages/api/.env` file, and provide the necessary configuration for the provider you want to use.
 
 In order to run the application locally, you need to clone the repository and run the preview script. This will set up the necessary environment and start the application. 
 
@@ -59,7 +59,7 @@ Before using Azure Foundry Local, ensure you have the [Azure AI Foundry Local](h
 foundry model list
 ```
 
-Then set the following environment variables in your `./src/api/.env` file:
+Then set the following environment variables in your `./packages/api/.env` file:
 
 ```bash
 LLM_PROVIDER=foundry-local
@@ -99,13 +99,13 @@ AZURE_FOUNDRY_LOCAL_MODEL_ALIAS=phi-4-mini-reasoning
 Start the API service by running the following command in a terminal:
 
 ```bash
-npm start --prefix=src/api
+npm start --prefix=packages/api
 ```
 
 Open a new terminal and start the UI service by running the following command:
 
 ```bash
-npm start --prefix=src/ui
+npm start --prefix=packages/ui
 ```
 
 Once all services are up and running, you can access the **UI** at http://localhost:4200.
@@ -122,7 +122,7 @@ Before using Docker Models, ensure you have the [Docker Model Runner](https://do
 docker model list
 ```
 
-Then set the following environment variables in your `./src/api/.env` file:
+Then set the following environment variables in your `./packages/api/.env` file:
 
 ```bash
 LLM_PROVIDER=docker-models
@@ -140,7 +140,7 @@ Before using Ollama Models, ensure you have the [Ollama](https://ollama.com/) in
 ollama list
 ```
 
-Then set the following environment variables in your `./src/api/.env` file:
+Then set the following environment variables in your `./packages/api/.env` file:
 
 ```bash
 LLM_PROVIDER=ollama-models
@@ -193,32 +193,32 @@ Alternatively, if you're in VS Code you can use the **Run Task** command (Ctrl+S
 The application uses environment variables to configure the services. You can set them in a `.env` file in the root directory or directly in your terminal. We recommend the following approach:
 
 1. Create a `.env` file for each containerized service under `src/`, and optionally a `.env.docker` file for Docker-specific configurations:
-    - `src/ui/.env`
-    - `src/ui/.env.docker`
-    - `src/api/.env`
-    - `src/api/.env.docker`
-    - `src/tools/customer-query/.env`
-    - `src/tools/customer-query/.env.docker`
-    - `src/tools/destination-recommendation/.env`
-    - `src/tools/destination-recommendation/.env.docker`
-    - `src/tools/itinerary-planning/.env`
-    - `src/tools/itinerary-planning/.env.docker`
-    - `src/tools/code-evaluation/.env`
-    - `src/tools/code-evaluation/.env.docker`
-    - `src/tools/model-inference/.env`
-    - `src/tools/model-inference/.env.docker`
-    - `src/tools/web-search/.env`
-    - `src/tools/web-search/.env.docker`
-    - `src/tools/echo-ping/.env`
-    - `src/tools/echo-ping/.env.docker`
+    - `packages/ui/.env`
+    - `packages/ui/.env.docker`
+    - `packages/api/.env`
+    - `packages/api/.env.docker`
+    - `packages/tools/customer-query/.env`
+    - `packages/tools/customer-query/.env.docker`
+    - `packages/tools/destination-recommendation/.env`
+    - `packages/tools/destination-recommendation/.env.docker`
+    - `packages/tools/itinerary-planning/.env`
+    - `packages/tools/itinerary-planning/.env.docker`
+    - `packages/tools/code-evaluation/.env`
+    - `packages/tools/code-evaluation/.env.docker`
+    - `packages/tools/model-inference/.env`
+    - `packages/tools/model-inference/.env.docker`
+    - `packages/tools/web-search/.env`
+    - `packages/tools/web-search/.env.docker`
+    - `packages/tools/echo-ping/.env`
+    - `packages/tools/echo-ping/.env.docker`
 
 2. `.env.docker` files are used to set environment variables for Docker containers. These files should contain the same variables as `.env` files, but with values specific to the Docker environment. For example:
   
 ```bash
-# src/api/.env
+# packages/api/.env
 MCP_CUSTOMER_QUERY_URL=http://localhost:8080
 
-# src/api/.env.docker
+# packages/api/.env.docker
 MCP_CUSTOMER_QUERY_URL=http://tool-customer-query:8080
 ```
 

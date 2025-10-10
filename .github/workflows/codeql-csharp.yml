@@ -4,19 +4,19 @@ on:
   push:
     branches: [main]
     paths:
-      - 'src/tools/customer-query/**/*.cs'
-      - 'src/tools/customer-query/**/*.csproj'
-      - 'src/tools/customer-query/**/*.sln'
-      - 'src/tools/customer-query/AITravelAgent.*/**'
+      - 'packages/tools/customer-query/**/*.cs'
+      - 'packages/tools/customer-query/**/*.csproj'
+      - 'packages/tools/customer-query/**/*.sln'
+      - 'packages/tools/customer-query/AITravelAgent.*/**'
       - '.github/workflows/codeql-csharp.yml'
       - '.github/codeql/csharp-config.yml'
   pull_request:
     branches: [main]
     paths:
-      - 'src/tools/customer-query/**/*.cs'
-      - 'src/tools/customer-query/**/*.csproj'
-      - 'src/tools/customer-query/**/*.sln'
-      - 'src/tools/customer-query/AITravelAgent.*/**'
+      - 'packages/tools/customer-query/**/*.cs'
+      - 'packages/tools/customer-query/**/*.csproj'
+      - 'packages/tools/customer-query/**/*.sln'
+      - 'packages/tools/customer-query/AITravelAgent.*/**'
       - '.github/workflows/codeql-csharp.yml'
       - '.github/codeql/csharp-config.yml'
   workflow_dispatch:  # Allow manual triggering
@@ -49,9 +49,9 @@ jobs:
           
       - name: Restore and Build C#
         run: |
-          if [ -d "src/tools/customer-query" ]; then
-            dotnet restore src/tools/customer-query/AITravelAgent.sln
-            dotnet build src/tools/customer-query/AITravelAgent.sln --configuration Release --no-restore
+          if [ -d "packages/tools/customer-query" ]; then
+            dotnet restore packages/tools/customer-query/AITravelAgent.sln
+            dotnet build packages/tools/customer-query/AITravelAgent.sln --configuration Release --no-restore
           fi
 
       - name: Perform CodeQL Analysis

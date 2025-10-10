@@ -78,13 +78,13 @@ gh repo clone YOUR-USERNAME/azure-ai-travel-agents
 Start the API service by running the following command in a terminal:
 
 ```bash
-npm start --prefix=src/api
+npm start --prefix=packages/api
 ```
 
 Open a new terminal and start the UI service by running the following command:
 
 ```bash
-npm start --prefix=src/ui
+npm start --prefix=packages/ui
 ```
 
 Once all services are up and running, you can access the **UI** at http://localhost:4200.
@@ -174,13 +174,13 @@ When asked, enter a name that will be used for the resource group. **Depending o
 5. Open a new terminal and run the following command to start the API:
 
 ```bash
-npm start --prefix=src/api
+npm start --prefix=packages/api
 ```
 
 6. Open a new terminal and run the following command to start the UI:
 
 ```bash
-npm start --prefix=src/ui
+npm start --prefix=packages/ui
 ```
 
 7. Once all services are up and running, you can access the **UI** at http://localhost:4200.

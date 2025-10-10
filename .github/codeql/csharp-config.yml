@@ -1,7 +1,7 @@
 name: C# CodeQL Configuration
 
 paths:
-  - src/tools/customer-query/**
+  - packages/tools/customer-query/**
 
 paths-ignore:
   - '**/obj/**'

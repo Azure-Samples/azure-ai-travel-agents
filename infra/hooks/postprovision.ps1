@@ -11,7 +11,7 @@ Write-Host "Running post-deployment script for AI Travel Agents application..."
 ##########################################################################
 
 Write-Host ">> Creating .env file for the API service..."
-$apiEnvPath = "./src/api/.env"
+$apiEnvPath = "./packages/api/.env"
 if (-not (Test-Path $apiEnvPath)) {
     "# File automatically generated on $(Get-Date)" | Out-File $apiEnvPath
     "# See .env.sample for more information" | Add-Content $apiEnvPath
@@ -38,7 +38,7 @@ if (-not (Test-Path $apiEnvPath)) {
 }
 
 # Set overrides for docker environment
-$apiEnvDockerPath = "./src/api/.env.docker"
+$apiEnvDockerPath = "./packages/api/.env.docker"
 if (-not (Test-Path $apiEnvDockerPath)) {
     "# File automatically generated on $(Get-Date)" | Out-File $apiEnvDockerPath
     "# See .env.sample for more information" | Add-Content $apiEnvDockerPath
@@ -54,7 +54,7 @@ if (-not (Test-Path $apiEnvDockerPath)) {
 
 # Install dependencies for the API service
 Write-Host ">> Installing dependencies for the API service..."
-if (-not (Test-Path "./src/api/node_modules")) {
+if (-not (Test-Path "./packages/api/node_modules")) {
     Write-Host "Installing dependencies for the API service..."
     npm ci --prefix=src/api --legacy-peer-deps
 } else {
@@ -66,7 +66,7 @@ if (-not (Test-Path "./src/api/node_modules")) {
 ##########################################################################
 
 Write-Host ">> Creating .env file for the UI service..."
-$uiEnvPath = "./src/ui/.env"
+$uiEnvPath = "./packages/ui/.env"
 if (-not (Test-Path $uiEnvPath)) {
     "# File automatically generated on $(Get-Date)" | Out-File $uiEnvPath
     "# See .env.sample for more information" | Add-Content $uiEnvPath
@@ -80,7 +80,7 @@ if (-not (Test-Path $uiEnvPath)) {
 
 # Install dependencies for the UI service
 Write-Host ">> Installing dependencies for the UI service..."
-if (-not (Test-Path "./src/ui/node_modules")) {
+if (-not (Test-Path "./packages/ui/node_modules")) {
     Write-Host "Installing dependencies for the UI service..."
     npm ci --prefix=src/ui
 } else {
@@ -94,7 +94,7 @@ $tools = @('echo-ping', 'customer-query', 'destination-recommendation', 'itinera
 Write-Host ">> Creating .env file for the MCP servers..."
 
 foreach ($tool in $tools) {
-    $toolPath = "./src/tools/$tool"
+    $toolPath = "./packages/tools/$tool"
     $envSample = "$toolPath/.env.sample"
     $envFile = "$toolPath/.env"
     $envDockerFile = "$toolPath/.env.docker"

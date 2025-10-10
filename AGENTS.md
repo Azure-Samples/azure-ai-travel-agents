@@ -8,17 +8,16 @@ This file provides comprehensive guidelines for OpenAI Codex and other AI coding
 
 The Azure AI Travel Agents is a **modular AI multi-agent system** composed of multiple microservices ("tools") with **two orchestration implementations**:
 
-1. **LlamaIndex.TS Orchestration** (TypeScript/Node.js) - Production default in `src/api/`
-2. **Microsoft Agent Framework Orchestration** (Python) - Alternative implementation in `src/api-python/`
+1. **LlamaIndex.TS Orchestration** (TypeScript/Node.js) - Production default in `packages/api/`
+2. **Microsoft Agent Framework Orchestration** (Python) - Alternative implementation in `packages/api-python/`
 
 Both orchestrators communicate with the same MCP tool servers. Each component is containerized and communicates via HTTP APIs or Model Context Protocol (MCP).
 
 ```
-azure-ai-travel-agents/
 ├── .github/                    # GitHub workflows, templates, and copilot instructions
 ├── docs/                       # Architecture and API documentation
 ├── infra/                      # Infrastructure as Code (Bicep templates)
-├── src/                        # Source code
+├── packages/                   # Source code
 │   ├── api/                    # Express.js API + LlamaIndex.TS orchestrator (TypeScript)
 │   ├── api-python/             # FastAPI + Microsoft Agent Framework orchestrator (Python)
 │   ├── ui/                     # Angular frontend application
@@ -42,7 +41,7 @@ The system implements specialized agents coordinated by orchestration layers. Bo
 
 #### Orchestration Options
 
-**Option 1: LlamaIndex.TS Orchestration** (Default - `src/api/`)
+**Option 1: LlamaIndex.TS Orchestration** (Default - `packages/api/`)
 - **Language**: TypeScript with Node.js 22+
 - **Framework**: Express.js + LlamaIndex.TS
 - **Status**: Production-ready
@@ -56,12 +55,12 @@ The system implements specialized agents coordinated by orchestration layers. Bo
   - **Model Inference Agent**: Runs local LLMs with ONNX/vLLM (via model-inference MCP)
   - **Echo Agent**: Testing and validation (via echo-ping MCP)
 
-**Option 2: Microsoft Agent Framework Orchestration** (`src/api-python/`)
+**Option 2: Microsoft Agent Framework Orchestration** (`packages/api-python/`)
 - **Language**: Python 3.11+ with asyncio
 - **Framework**: FastAPI + Microsoft Agent Framework (`agent-framework` SDK)
 - **Status**: Fully implemented, production-ready alternative
 - **Orchestration Pattern**: Magentic multi-agent coordination
-- **Agents**: Explicitly defined in `src/api-python/src/orchestrator/agents/`
+- **Agents**: Explicitly defined in `packages/api-python/src/orchestrator/agents/`
   - **TriageAgent**: Coordinates and routes requests to specialized agents
   - **CustomerQueryAgent**: Processes customer inquiries with MCP tools
   - **DestinationRecommendationAgent**: Provides destination suggestions
@@ -86,10 +85,10 @@ Both orchestration implementations communicate with these MCP servers:
 ### Service Communication
 
 - **Orchestration Layer**: 
-  - **Option 1**: `src/api/` (Express.js + LlamaIndex.TS) - TypeScript orchestration
-  - **Option 2**: `src/api-python/` (FastAPI + Microsoft Agent Framework) - Python orchestration
+  - **Option 1**: `packages/api/` (Express.js + LlamaIndex.TS) - TypeScript orchestration
+  - **Option 2**: `packages/api-python/` (FastAPI + Microsoft Agent Framework) - Python orchestration
 - **MCP Protocol**: All tools implement Model Context Protocol for standardized communication
-- **Frontend**: Angular SPA in `src/ui/` with Tailwind CSS and Angular Material (works with either orchestration)
+- **Frontend**: Angular SPA in `packages/ui/` with Tailwind CSS and Angular Material (works with either orchestration)
 - **Infrastructure**: Azure Container Apps deployment via Bicep templates in `infra/`
 
 Both orchestration options:
@@ -100,7 +99,7 @@ Both orchestration options:
 
 ## Choosing an Orchestration Implementation
 
-### When to Use LlamaIndex.TS (`src/api/`)
+### When to Use LlamaIndex.TS (`packages/api/`)
 
 **Choose this if:**
 - ✅ Your team has strong TypeScript/Node.js expertise
@@ -116,7 +115,7 @@ Both orchestration options:
 - Proven in production
 - Active development
 
-### When to Use Microsoft Agent Framework (`src/api-python/`)
+### When to Use Microsoft Agent Framework (`packages/api-python/`)
 
 **Choose this if:**
 - ✅ Your team has strong Python expertise
@@ -168,7 +167,7 @@ For detailed comparison, see `docs/orchestration.md`.
 
 ### TypeScript/Node.js Standards
 
-**Location**: `src/api/`, `src/ui/`, `src/tools/echo-ping/`, `src/tools/web-search/`
+**Location**: `packages/api/`, `packages/ui/`, `packages/tools/echo-ping/`, `packages/tools/web-search/`
 
 **Key Conventions**:
 - Use ES modules (`"type": "module"` in package.json)
@@ -198,14 +197,14 @@ const MCP_API_HTTP_PATH = '/api/mcp'
 **File Structure**:
 ```typescript
 // MCP Server structure
-src/
+packages/
 ├── index.ts              # Main server entry point
 ├── types.ts             # Type definitions
 └── tools/               # Tool implementations
     └── my-tool.ts
 
 // API structure
-src/
+packages/
 ├── index.ts             # Express server setup
 ├── mcp/                 # MCP client implementations
 ├── orchestrator/        # Agent orchestration logic
@@ -215,8 +214,8 @@ src/
 ### Python Standards
 
 **Location**: 
-- **MCP Servers**: `src/tools/itinerary-planning/`, `src/tools/code-evaluation/`, `src/tools/model-inference/`
-- **MAF Orchestration**: `src/api-python/` (Microsoft Agent Framework implementation)
+- **MCP Servers**: `packages/tools/itinerary-planning/`, `packages/tools/code-evaluation/`, `packages/tools/model-inference/`
+- **MAF Orchestration**: `packages/api-python/` (Microsoft Agent Framework implementation)
 
 **Key Conventions**:
 - Python 3.11+ (3.12+ for MCP servers) with pyproject.toml configuration
@@ -241,7 +240,7 @@ target-version = "py313"
 
 **Project Structure (MAF Orchestration)**:
 ```python
-# pyproject.toml in src/api-python/
+# pyproject.toml in packages/api-python/
 [project]
 name = "azure-ai-travel-agents-api-python"
 requires-python = ">=3.11"
@@ -277,7 +276,7 @@ DEFAULT_PORT = 3000
 
 ### C#/.NET Standards
 
-**Location**: `src/tools/customer-query/`
+**Location**: `packages/tools/customer-query/`
 
 **Key Conventions**:
 - .NET 9.x with C# 13
@@ -305,7 +304,7 @@ public const string DefaultEndpoint = "/api/analyze";
 
 ### Java Standards
 
-**Location**: `src/tools/destination-recommendation/`
+**Location**: `packages/tools/destination-recommendation/`
 
 **Key Conventions**:
 - Java 24 with Temurin JDK
@@ -337,20 +336,20 @@ public static final String DEFAULT_API_PATH = "/api/recommend";
 
 **Frontend (Angular)**:
 - **Unit Tests**: Jasmine + Karma for component testing
-- **Location**: `src/ui/src/app/**/*.spec.ts`
-- **Command**: `npm test` in `src/ui/`
+- **Location**: `packages/ui/src/app/**/*.spec.ts`
+- **Command**: `npm test` in `packages/ui/`
 - **Coverage**: Components, services, and pipes
 
 **Backend API (Node.js - LlamaIndex.TS)**:
 - **Build Tests**: TypeScript compilation validation
-- **Location**: `src/api/`
-- **Command**: `npm run build` in `src/api/`
+- **Location**: `packages/api/`
+- **Command**: `npm run build` in `packages/api/`
 - **Integration**: MCP server connectivity testing via health endpoints
 
 **Backend API (Python - Microsoft Agent Framework)**:
 - **Unit Tests**: pytest for agent and workflow testing
-- **Location**: `src/api-python/src/tests/`
-- **Command**: `pytest` in `src/api-python/`
+- **Location**: `packages/api-python/src/tests/`
+- **Command**: `pytest` in `packages/api-python/`
 - **Coverage**: Agents, workflows, MCP integration, providers
 
 **MCP Servers**:
@@ -363,15 +362,15 @@ public static final String DEFAULT_API_PATH = "/api/recommend";
 
 ```bash
 # Frontend unit tests
-cd src/ui
+cd packages/ui
 npm test
 
 # API build validation (LlamaIndex.TS)
-cd src/api
+cd packages/api
 npm run build
 
 # API tests (Microsoft Agent Framework)
-cd src/api-python
+cd packages/api-python
 pip install -e ".[dev]"
 pytest
 
@@ -432,22 +431,22 @@ chore(deps): update dependencies
 1. **Run All Builds**: Ensure all affected services build successfully
    ```bash
    # API (LlamaIndex.TS)
-   cd src/api && npm run build
+   cd packages/api && npm run build
    
    # API (Microsoft Agent Framework)
-   cd src/api-python && pip install -e . && pytest
-   
-   # UI  
-   cd src/ui && npm run build
-   
+   cd packages/api-python && pip install -e . && pytest
+
+   # UI
+   cd packages/ui && npm run build
+
    # MCP Servers (as applicable)
-   cd src/tools/echo-ping && npm run build
-   cd src/tools/customer-query && dotnet build
-   cd src/tools/destination-recommendation && mvn clean install
-   cd src/tools/itinerary-planning && pip install .
-   cd src/tools/code-evaluation && pip install .
-   cd src/tools/model-inference && pip install .
-   cd src/tools/web-search && npm run build
+   cd packages/tools/echo-ping && npm run build
+   cd packages/tools/customer-query && dotnet build
+   cd packages/tools/destination-recommendation && mvn clean install
+   cd packages/tools/itinerary-planning && pip install .
+   cd packages/tools/code-evaluation && pip install .
+   cd packages/tools/model-inference && pip install .
+   cd packages/tools/web-search && npm run build
    ```
 
 2. **Test Coverage**: Run existing tests and add new tests for new functionality
@@ -502,27 +501,27 @@ Brief description of changes and problem solved
 
 When creating new agents/tools, follow this pattern:
 
-1. **Create Tool Structure**: `src/tools/my-new-tool/`
+1. **Create Tool Structure**: `packages/tools/my-new-tool/`
 2. **Implement MCP Server**: Use appropriate language SDK
 3. **Add Docker Configuration**: `Dockerfile` and health endpoint
 4. **Register in Docker Compose**: Add service definition
 
 **For LlamaIndex.TS Orchestration**:
-5. **Register in API**: Update `src/api/src/orchestrator/llamaindex/tools/index.ts`
-6. **Create Agent Integration**: Add to `setupAgents()` function in `src/api/src/orchestrator/llamaindex/index.ts`
-7. **Update Documentation**: Add to tool overview in `src/tools/README.md`
+5. **Register in API**: Update `packages/api/src/orchestrator/llamaindex/tools/index.ts`
+6. **Create Agent Integration**: Add to `setupAgents()` function in `packages/api/src/orchestrator/llamaindex/index.ts`
+7. **Update Documentation**: Add to tool overview in `packages/tools/README.md`
 
 **For Microsoft Agent Framework Orchestration**:
-5. **Add Tool Metadata**: Update `src/api-python/src/orchestrator/tools/tool_config.py`
-6. **Create Agent Class**: Add new agent in `src/api-python/src/orchestrator/agents/specialized_agents.py`
-7. **Register Agent**: Export in `src/api-python/src/orchestrator/agents/__init__.py`
-8. **Integrate in Workflow**: Add to workflow in `src/api-python/src/orchestrator/magentic_workflow.py` or `workflow.py`
-9. **Update Documentation**: Add to `src/api-python/README.md`
+5. **Add Tool Metadata**: Update `packages/api-python/src/orchestrator/tools/tool_config.py`
+6. **Create Agent Class**: Add new agent in `packages/api-python/src/orchestrator/agents/specialized_agents.py`
+7. **Register Agent**: Export in `packages/api-python/src/orchestrator/agents/__init__.py`
+8. **Integrate in Workflow**: Add to workflow in `packages/api-python/src/orchestrator/magentic_workflow.py` or `workflow.py`
+9. **Update Documentation**: Add to `packages/api-python/README.md`
 
 **Common Steps for Both**:
 - Implement health endpoint at `/health`
 - Add OpenTelemetry tracing
-- Document in `src/tools/README.md`
+- Document in `packages/tools/README.md`
 - Add environment variables to `.env.sample`
 - Update architecture diagrams in `docs/`
 

@@ -29,7 +29,7 @@ services:
           run: 'echo NG_API_URL=\"$NG_API_URL\" > .env.production'
 
   customer-query:
-    project: src/tools/customer-query/AITravelAgent.CustomerQueryServer/
+    project: packages/tools/customer-query/AITravelAgent.CustomerQueryServer/
     host: containerapp
     language: dotnet
     docker:
@@ -38,7 +38,7 @@ services:
       remoteBuild: true
 
   destination-recommendation:
-    project: src/tools/destination-recommendation
+    project: packages/tools/destination-recommendation
     host: containerapp
     language: java
     docker:
@@ -47,7 +47,7 @@ services:
       remoteBuild: true
 
   itinerary-planning:
-    project: src/tools/itinerary-planning
+    project: packages/tools/itinerary-planning
     host: containerapp
     language: python
     docker:
@@ -56,7 +56,7 @@ services:
       remoteBuild: true
 
   echo-ping:
-    project: src/tools/echo-ping
+    project: packages/tools/echo-ping
     language: ts
     host: containerapp
     docker:

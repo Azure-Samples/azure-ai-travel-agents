@@ -4,16 +4,16 @@ on:
   push:
     branches: [main]
     paths:
-      - 'src/api/*.ts'
-      - 'src/api/*.js'
-      - 'src/ui/*.ts'
-      - 'src/ui/*.js'
-      - 'src/tools/code-evaluation/**/*.ts'
-      - 'src/tools/code-evaluation/**/*.js'
-      - 'src/tools/web-search/**/*.ts'
-      - 'src/tools/web-search/**/*.js'
-      - 'src/tools/echo-ping/**/*.ts'
-      - 'src/tools/echo-ping/**/*.js'
+      - 'packages/api/*.ts'
+      - 'packages/api/*.js'
+      - 'packages/ui/*.ts'
+      - 'packages/ui/*.js'
+      - 'packages/tools/code-evaluation/**/*.ts'
+      - 'packages/tools/code-evaluation/**/*.js'
+      - 'packages/tools/web-search/**/*.ts'
+      - 'packages/tools/web-search/**/*.js'
+      - 'packages/tools/echo-ping/**/*.ts'
+      - 'packages/tools/echo-ping/**/*.js'
       - 'src/shared/**/*.ts'
       - 'src/shared/**/*.js'
       - '.github/workflows/codeql-typescript.yml'
@@ -21,16 +21,16 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - 'src/api/*.ts'
-      - 'src/api/*.js'
-      - 'src/ui/*.ts'
-      - 'src/ui/*.js'
-      - 'src/tools/code-evaluation/**/*.ts'
-      - 'src/tools/code-evaluation/**/*.js'
-      - 'src/tools/web-search/**/*.ts'
-      - 'src/tools/web-search/**/*.js'
-      - 'src/tools/echo-ping/**/*.ts'
-      - 'src/tools/echo-ping/**/*.js'
+      - 'packages/api/*.ts'
+      - 'packages/api/*.js'
+      - 'packages/ui/*.ts'
+      - 'packages/ui/*.js'
+      - 'packages/tools/code-evaluation/**/*.ts'
+      - 'packages/tools/code-evaluation/**/*.js'
+      - 'packages/tools/web-search/**/*.ts'
+      - 'packages/tools/web-search/**/*.js'
+      - 'packages/tools/echo-ping/**/*.ts'
+      - 'packages/tools/echo-ping/**/*.js'
       - 'src/shared/**/*.ts'
       - 'src/shared/**/*.js'
       - '.github/workflows/codeql-typescript.yml'
@@ -59,7 +59,7 @@ jobs:
           
       - name: Install dependencies
         run: |
-          for dir in src/tools/code-evaluation src/tools/web-search src/tools/echo-ping src/api src/ui; do
+          for dir in packages/tools/code-evaluation packages/tools/web-search packages/tools/echo-ping src/api src/ui; do
             if [ -f "$dir/package.json" ]; then
               cd $dir && npm install && cd -
             fi
