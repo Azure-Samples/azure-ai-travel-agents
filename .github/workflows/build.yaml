@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./src/api
+        working-directory: ./packages/api
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./src/ui
+        working-directory: ./packages/ui
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
