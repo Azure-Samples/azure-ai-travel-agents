@@ -7,10 +7,11 @@
     "doc": "docs"
   },
   "scripts": {
-    "docs:dev": "vuepress dev .",
-    "docs:build": "vuepress build .",
+    "docs:dev": "vitepress dev",
+    "docs:build": "vitepress build",
     "docs:serve": "vuepress serve .",
-    "docs:deploy": "./scripts/deploy-docs.sh"
+    "docs:deploy": "./scripts/deploy-docs.sh",
+    "docs:preview": "vitepress preview"
   },
   "keywords": [
     "azure",
@@ -25,10 +26,14 @@
     "@vuepress/bundler-vite": "next",
     "@vuepress/plugin-search": "^2.0.0-rc.108",
     "@vuepress/theme-default": "next",
-    "mermaid": "^11.6.0",
+    "mermaid": "^11.12.0",
     "sass": "^1.82.0",
+    "vitepress-plugin-mermaid": "^2.0.17",
     "vue": "^3.5.13",
     "vuepress": "next",
     "vuepress-plugin-md-enhance": "^2.0.0-rc.90"
+  },
+  "dependencies": {
+    "vitepress": "^1.6.4"
   }
 }

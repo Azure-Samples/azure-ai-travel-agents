@@ -1,5 +1,4 @@
 ---
-title: overview
 createTime: 2025/06/06 13:07:02
 permalink: /article/4qdayien/
 ---
@@ -20,53 +19,117 @@ This directory contains comprehensive technical documentation for architects, de
 ### Operations & Deployment
 - **[Deployment Architecture](./deployment-architecture.md)** - Infrastructure, deployment strategies, and production configurations
 
-### 🆕 Microsoft Agent Framework (MAF) Orchestration
-- **[MAF Documentation Hub](./MAF-README.md)** ⭐ - Central hub for MAF orchestration documentation
-- **[MAF Design](./maf-orchestration-design.md)** - Architecture design for Python-based MAF implementation
-- **[MAF Implementation Guide](./maf-implementation-guide.md)** - Step-by-step technical implementation guide
-- **[MAF Migration Plan](./maf-migration-plan.md)** - 20-week phased migration strategy
-- **[MAF Comparison](./maf-comparison.md)** - LlamaIndex.TS vs MAF analysis
-- **[MAF Quick Reference](./maf-quick-reference.md)** - Code snippets and patterns
+### Orchestration Options
 
-> **Note**: The MAF documentation provides an alternative orchestration approach using Microsoft Agent Framework in Python, complementing the current LlamaIndex.TS implementation. Status: Planning phase complete.
+The system supports two orchestration approaches for coordinating AI agents:
+
+#### Current Implementation: LlamaIndex.TS
+The production system currently uses **LlamaIndex.TS** for agent orchestration, providing:
+- TypeScript-based workflow management
+- Node.js/Express.js integration
+- Established stability and performance
+- Comprehensive tool integration via MCP
+
+See [Technical Architecture - Agent Orchestration](./technical-architecture.md#agent-orchestration) for details on the current implementation.
+
+#### Alternative: Microsoft Agent Framework (MAF) Implementation
+
+**IMPLEMENTED**: Working Python implementation using Microsoft Agent Framework for agent orchestration.
+
+Located in `src/api-python/`, this is a complete, production-ready alternative to the TypeScript API that uses:
+- **Microsoft Agent Framework** (`agent-framework` Python SDK)
+- **Magentic Orchestration** pattern for multi-agent workflows
+- **Built-in MCP Support** via `MCPStreamableHTTPTool`
+- **FastAPI** for high-performance async API
+- **Real-time SSE Streaming** with asyncio.Queue
+
+**Implementation Status**: ✅ Fully implemented and functional
+
+**Key Features**:
+- ✅ Native Azure OpenAI integration (plus GitHub Models, Ollama, Docker Models)
+- ✅ 7 specialized agents (Customer Query, Itinerary Planning, Destination, Code Eval, Model Inference, Web Search, Echo)
+- ✅ Graceful degradation when MCP servers are unavailable
+- ✅ OpenTelemetry observability ready
+- ✅ Proper async lifecycle management
+
+**Documentation**:
+- Implementation details: `src/api-python/README.md`
+- Architecture diagrams: `src/api-python/ARCHITECTURE_DIAGRAMS.md`
+- Developer guide: `src/api-python/DEVELOPER_GUIDE.md`
+- MCP integration: `src/api-python/MCP_QUICK_REFERENCE.md`
+
+**Status**: Alternative implementation available for evaluation and use alongside LlamaIndex.TS.
+
+> **Note**: Both orchestration approaches maintain compatibility with the existing MCP server architecture, ensuring no changes are needed to the specialized AI tool servers (Customer Query, Destination Recommendation, Itinerary Planning, etc.).
 
 ## System Architecture Overview
 
-The Azure AI Travel Agents system is built on a microservices architecture using:
+The Azure AI Travel Agents system is built on a microservices architecture with flexible orchestration options:
 
 - **Frontend**: Angular UI with real-time streaming
-- **API Server**: Express.js with LlamaIndex.TS orchestration
+- **API Server & Orchestration**: 
+  - **Current**: Express.js with LlamaIndex.TS orchestration (TypeScript)
+  - **Alternative**: FastAPI with Microsoft Agent Framework (Python)
 - **MCP Servers**: 7 specialized services in TypeScript, C#, Java, and Python
 - **AI Services**: Azure OpenAI and custom model inference
 - **Monitoring**: OpenTelemetry with Aspire Dashboard
 - **Deployment**: Docker containers on Azure Container Apps
 
+### Current Architecture (LlamaIndex.TS)
+
+```mermaid
+flowchart LR
+    UI[Angular UI]
+    API[Express API]
+    ORCH[LlamaIndex.TS<br/>Orchestrator]
+    CQ[Customer<br/>Query<br/>C#/.NET]
+    DR[Destination<br/>Recommendation<br/>Java]
+    IP[Itinerary<br/>Planning<br/>Python]
+    
+    UI --> API
+    API --> ORCH
+    ORCH --> CQ
+    ORCH --> DR
+    ORCH --> IP
 ```
-┌─────────────┐    ┌─────────────┐    ┌─────────────────────┐
-│ Angular UI  │───▶│ Express API │───▶│ LlamaIndex.TS       │
-│             │    │             │    │ Orchestrator        │
-└─────────────┘    └─────────────┘    └──────────┬──────────┘
-                                                  │
-                           ┌──────────────────────┼──────────────────────┐
-                           │                      │                      │
-                    ┌──────▼──────┐    ┌─────────▼────────┐    ┌────────▼────────┐
-                    │ Customer    │    │ Destination      │    │ Itinerary       │
-                    │ Query       │    │ Recommendation   │    │ Planning        │
-                    │ (C#/.NET)   │    │ (Java)           │    │ (Python)        │
-                    └─────────────┘    └──────────────────┘    └─────────────────┘
+
+### Alternative Architecture (Microsoft Agent Framework)
+
+**IMPLEMENTED** in `src/api-python/`
+
+```mermaid
+flowchart LR
+    UI[Angular UI]
+    API[FastAPI<br/>Python API]
+    ORCH[MAF Orchestrator<br/>Magentic Pattern]
+    CQ[Customer<br/>Query<br/>C#/.NET]
+    DR[Destination<br/>Recommendation<br/>Java]
+    IP[Itinerary<br/>Planning<br/>Python]
+    
+    UI --> API
+    API --> ORCH
+    ORCH --> CQ
+    ORCH --> DR
+    ORCH --> IP
 ```
+
+> **Note**: Both orchestration approaches use the same MCP server infrastructure, ensuring consistent tool functionality regardless of the orchestration choice.
 
 ## Quick Start for Different Roles
 
 ### For Architects
 1. Start with [Technical Architecture](./technical-architecture.md) for system overview
-2. Review [Deployment Architecture](./deployment-architecture.md) for infrastructure planning
-3. Examine [Flow Diagrams](./flow-diagrams.md) for interaction patterns
+2. Review orchestration options: [LlamaIndex.TS](./technical-architecture.md#agent-orchestration) vs [MAF](./maf-comparison.md)
+3. Examine [MAF Orchestration Design](./maf-orchestration-design.md) for alternative architecture
+4. Review [Deployment Architecture](./deployment-architecture.md) for infrastructure planning
+5. Examine [Flow Diagrams](./flow-diagrams.md) for interaction patterns
 
 ### For Developers
 1. Follow [Development Guide](./development-guide.md) for environment setup
 2. Study [MCP Server Implementation](./mcp-servers.md) for service development
-3. Reference [Technical Architecture](./technical-architecture.md) for system integration
+3. Reference [Technical Architecture](./technical-architecture.md) for current system integration
+4. Explore [MAF Implementation Guide](./maf-implementation-guide.md) for Python-based orchestration
+5. Use [MAF Quick Reference](./maf-quick-reference.md) for code patterns and examples
 
 ### For DevOps/Operations
 1. Review [Deployment Architecture](./deployment-architecture.md) for deployment strategies
@@ -78,7 +141,8 @@ The Azure AI Travel Agents system is built on a microservices architecture using
 | Component | Technology | Purpose |
 |-----------|------------|---------|
 | **Frontend** | Angular 19, TypeScript, Tailwind CSS | User interface and real-time chat |
-| **API Server** | Node.js, Express.js, LlamaIndex.TS | Agent orchestration and API gateway |
+| **API Server (Current)** | Node.js, Express.js, LlamaIndex.TS | Agent orchestration and API gateway |
+| **API Server (Alternative)** | Python, FastAPI, Microsoft Agent Framework | Python-based agent orchestration (implemented) |
 | **MCP Servers** | Multi-language (TS, C#, Java, Python) | Specialized AI tool implementations |
 | **AI Services** | Azure OpenAI, ONNX, vLLM | Language models and inference |
 | **Monitoring** | OpenTelemetry, Aspire Dashboard | Observability and tracing |
@@ -87,11 +151,57 @@ The Azure AI Travel Agents system is built on a microservices architecture using
 ## System Capabilities
 
 - **Multi-Agent Orchestration**: Coordinated AI agents for complex travel planning
+- **Flexible Orchestration**: Choice between LlamaIndex.TS (TypeScript) and Microsoft Agent Framework (Python)
 - **Real-time Streaming**: Server-Sent Events for live response updates
 - **Polyglot Architecture**: MCP servers in multiple programming languages
 - **Scalable Deployment**: Azure Container Apps with auto-scaling
 - **Comprehensive Monitoring**: Distributed tracing and metrics collection
 - **Extensible Design**: Easy addition of new AI tools and capabilities
+
+## Orchestration Options Comparison
+
+The system provides two orchestration approaches, each with distinct advantages:
+
+### LlamaIndex.TS (Current Production)
+**Status**: ✅ Active, Production-Ready
+
+**Advantages**:
+- Proven stability and performance in production
+- TypeScript integration with existing Node.js ecosystem
+- Comprehensive documentation and community support
+- Seamless Express.js integration
+- Well-established MCP client patterns
+
+**Best For**: Teams preferring TypeScript, existing Node.js infrastructure, minimal migration risk
+
+### Microsoft Agent Framework (Implemented Alternative)
+**Status**: ✅ Implemented, Available for Use
+
+**Location**: `src/api-python/`
+
+**Advantages**:
+- Native Microsoft Agent Framework SDK integration
+- Python AI/ML ecosystem access
+- FastAPI for high-performance async operations
+- Built-in MCP support via `MCPStreamableHTTPTool`
+- Multiple LLM provider support (Azure OpenAI, GitHub Models, Ollama, Docker Models)
+- Magentic orchestration pattern for multi-agent workflows
+- Graceful degradation when services unavailable
+
+**Implemented Agents**:
+- CustomerQueryAgent
+- DestinationRecommendationAgent
+- ItineraryPlanningAgent
+- CodeEvaluationAgent
+- ModelInferenceAgent
+- WebSearchAgent
+- EchoAgent (testing)
+
+**Best For**: Python-first teams, teams wanting native MAF SDK, projects leveraging Python's AI ecosystem
+
+**Deployment**: Can run parallel to TypeScript API for evaluation or as replacement.
+
+See implementation documentation in `src/api-python/README.md` for details.
 
 ## Documentation Features
 
@@ -141,6 +251,13 @@ Each documentation file includes:
 - Coding standards and conventions
 - Testing strategies and frameworks
 - Contributing guidelines and workflows
+
+### Orchestration Documentation
+- LlamaIndex.TS implementation details
+- Microsoft Agent Framework design and architecture
+- Migration planning and strategies
+- Comparison and decision frameworks
+- Code examples and quick references
 
 ## Use Cases
 

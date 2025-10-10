@@ -1,5 +1,4 @@
 ---
-title: technical-architecture
 createTime: 2025/06/06 13:07:02
 permalink: /article/x6imesvj/
 ---
@@ -622,21 +621,19 @@ sequenceDiagram
 
 ### Local Development Environment
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                     Local Development                           │
-├─────────────────────────────────────────────────────────────────┤
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────────┐  │
-│  │ Angular UI  │  │ Express API │  │     MCP Servers         │  │
-│  │ Port: 4200  │  │ Port: 4000  │  │ Ports: 5001-5007       │  │
-│  └─────────────┘  └─────────────┘  └─────────────────────────┘  │
-│         │                │                       │             │
-│         └────────────────┼───────────────────────┘             │
-│                          │                                     │
-│  ┌─────────────────────────────────────────────────────────────┤
-│  │            Aspire Dashboard (Port: 18888)                   │
-│  └─────────────────────────────────────────────────────────────┘
-└─────────────────────────────────────────────────────────────────┘
+```mermaid
+graph TB
+    subgraph Local["Local Development"]
+        UI[Angular UI<br/>Port: 4200]
+        API[Express API<br/>Port: 4000]
+        MCP[MCP Servers<br/>Ports: 5001-5007]
+        DASH[Aspire Dashboard<br/>Port: 18888]
+        
+        UI --> API
+        API --> MCP
+        MCP --> DASH
+        API --> DASH
+    end
 ```
 
 ### Docker Compose Environment
@@ -654,25 +651,27 @@ services:
 
 ### Azure Container Apps Deployment
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    Azure Container Apps Environment             │
-├─────────────────────────────────────────────────────────────────┤
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────────┐  │
-│  │   UI App    │  │   API App   │  │     MCP Tool Apps       │  │
-│  │             │  │             │  │   (7 separate apps)     │  │
-│  │ ┌─────────┐ │  │ ┌─────────┐ │  │ ┌─────────┬─────────┐   │  │
-│  │ │Container│ │  │ │Container│ │  │ │Container│Container│   │  │
-│  │ └─────────┘ │  │ └─────────┘ │  │ └─────────┴─────────┘   │  │
-│  └─────────────┘  └─────────────┘  └─────────────────────────┘  │
-├─────────────────────────────────────────────────────────────────┤
-│                     Azure Services                             │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────────┐  │
-│  │ OpenAI      │  │ Monitor     │  │ Container Registry      │  │
-│  │ Service     │  │ (Logs/      │  │                         │  │
-│  │             │  │ Metrics)    │  │                         │  │
-│  └─────────────┘  └─────────────┘  └─────────────────────────┘  │
-└─────────────────────────────────────────────────────────────────┘
+```mermaid
+graph TB
+    subgraph ACA["Azure Container Apps Environment"]
+        subgraph Apps["Container Apps"]
+            UI[UI App<br/>Container]
+            API[API App<br/>Container]
+            TOOLS[MCP Tool Apps<br/>7 separate containers]
+        end
+        
+        subgraph Azure["Azure Services"]
+            OAI[OpenAI<br/>Service]
+            MON[Monitor<br/>Logs/Metrics]
+            ACR[Container<br/>Registry]
+        end
+        
+        UI --> API
+        API --> TOOLS
+        API --> OAI
+        Apps --> MON
+        Apps -.pull images.-> ACR
+    end
 ```
 
 ### Environment Configuration

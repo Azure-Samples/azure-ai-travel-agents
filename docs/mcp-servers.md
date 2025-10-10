@@ -1,5 +1,4 @@
 ---
-title: mcp-servers
 createTime: 2025/06/06 13:07:02
 permalink: /article/6rbv3t1r/
 ---
@@ -33,16 +32,28 @@ Model Context Protocol is a standardized communication protocol that enables AI 
 
 ### MCP in Azure AI Travel Agents
 
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│ LlamaIndex.TS   │    │   MCP Client    │    │   MCP Server    │
-│ Agent           │    │                 │    │                 │
-├─────────────────┤    ├─────────────────┤    ├─────────────────┤
-│ - Tool calling  │    │ - Protocol      │    │ - Tool impl.    │
-│ - Response      │    │   handling      │    │ - Business      │
-│   processing    │    │ - Error mgmt    │    │   logic         │
-│ - Agent logic   │    │ - Retry logic   │    │ - External APIs │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
+```mermaid
+flowchart LR
+    subgraph Agent[LlamaIndex.TS Agent]
+        TC[Tool calling]
+        RP[Response processing]
+        AL[Agent logic]
+    end
+    
+    subgraph Client[MCP Client]
+        PH[Protocol handling]
+        EM[Error mgmt]
+        RL[Retry logic]
+    end
+    
+    subgraph Server[MCP Server]
+        TI[Tool impl.]
+        BL[Business logic]
+        EA[External APIs]
+    end
+    
+    Agent --> Client
+    Client --> Server
 ```
 
 ## Server Implementations

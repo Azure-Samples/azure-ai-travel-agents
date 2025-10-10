@@ -1,5 +1,4 @@
 ---
-title: advanced-setup
 createTime: 2025/06/05 23:48:49
 permalink: /article/vlrc2vxp/
 ---

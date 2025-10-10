@@ -1,5 +1,4 @@
 ---
-title: flow-diagrams
 createTime: 2025/06/06 13:07:02
 permalink: /article/1ee6o8cy/
 ---
@@ -11,76 +10,54 @@ This document provides detailed flow diagrams and sequence diagrams to illustrat
 
 ### 1. High-Level System Flow
 
-```
-┌─────────────┐    ┌─────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   User      │    │ Angular UI  │    │  Express API    │    │ LlamaIndex      │
-│             │    │             │    │                 │    │ Orchestrator    │
-└─────┬───────┘    └──────┬──────┘    └────────┬────────┘    └────────┬────────┘
-      │                   │                    │                      │
-      │ 1. Travel Query   │                    │                      │
-      ├──────────────────►│                    │                      │
-      │                   │ 2. POST /api/chat  │                      │
-      │                   ├───────────────────►│                      │
-      │                   │                    │ 3. Setup Agents     │
-      │                   │                    ├─────────────────────►│
-      │                   │                    │                      │
-      │                   │ 4. SSE Stream      │ 5. Agent Processing  │
-      │ 6. Real-time      │◄───────────────────┤◄─────────────────────┤
-      │    Updates        │                    │                      │
-      ◄───────────────────┤                    │                      │
-      │                   │                    │                      │
+```mermaid
+sequenceDiagram
+    participant User
+    participant UI as Angular UI
+    participant API as Express API
+    participant ORCH as LlamaIndex<br/>Orchestrator
+    
+    User->>UI: 1. Travel Query
+    UI->>API: 2. POST /api/chat
+    API->>ORCH: 3. Setup Agents
+    ORCH->>API: 5. Agent Processing
+    API-->>UI: 4. SSE Stream
+    UI-->>User: 6. Real-time Updates
 ```
 
 ### 2. MCP Server Integration Flow
 
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│ Specialized     │    │   MCP Client    │    │   MCP Server    │    │ External APIs/  │
-│ Agent           │    │                 │    │                 │    │ Services        │
-└────────┬────────┘    └────────┬────────┘    └────────┬────────┘    └────────┬────────┘
-         │                      │                      │                      │
-         │ 1. Tool Call Request │                      │                      │
-         ├─────────────────────►│                      │                      │
-         │                      │ 2. HTTP/SSE Request  │                      │
-         │                      ├─────────────────────►│                      │
-         │                      │                      │ 3. External API Call│
-         │                      │                      ├─────────────────────►│
-         │                      │                      │ 4. API Response      │
-         │                      │                      ◄─────────────────────┤
-         │                      │ 5. Processed Result  │                      │
-         │ 6. Tool Response     ◄─────────────────────┤                      │
-         ◄─────────────────────┤                      │                      │
-         │                      │                      │                      │
+```mermaid
+sequenceDiagram
+    participant Agent as Specialized<br/>Agent
+    participant Client as MCP Client
+    participant Server as MCP Server
+    participant External as External APIs/<br/>Services
+    
+    Agent->>Client: 1. Tool Call Request
+    Client->>Server: 2. HTTP/SSE Request
+    Server->>External: 3. External API Call
+    External->>Server: 4. API Response
+    Server->>Client: 5. Processed Result
+    Client->>Agent: 6. Tool Response
 ```
 
 ### 3. Multi-Agent Collaboration Flow
 
-```
-┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
-│   Triage    │    │ Customer    │    │Destination  │    │ Itinerary   │
-│   Agent     │    │ Query Agent │    │Recommendation│    │ Planning    │
-│             │    │             │    │   Agent     │    │   Agent     │
-└──────┬──────┘    └──────┬──────┘    └──────┬──────┘    └──────┬──────┘
-       │                  │                  │                  │
-       │ 1. Analyze Query │                  │                  │
-       │                  │                  │                  │
-       │ 2. Extract       │                  │                  │
-       │    Preferences   │                  │                  │
-       ├─────────────────►│                  │                  │
-       │ 3. Preferences   │                  │                  │
-       ◄─────────────────┤                  │                  │
-       │                  │                  │                  │
-       │ 4. Get           │                  │                  │
-       │    Recommendations                  │                  │
-       ├────────────────────────────────────►│                  │
-       │ 5. Destinations  │                  │                  │
-       ◄────────────────────────────────────┤                  │
-       │                  │                  │                  │
-       │ 6. Plan Itinerary│                  │                  │
-       ├───────────────────────────────────────────────────────►│
-       │ 7. Complete Plan │                  │                  │
-       ◄───────────────────────────────────────────────────────┤
-       │                  │                  │                  │
+```mermaid
+sequenceDiagram
+    participant Triage as Triage<br/>Agent
+    participant CQ as Customer<br/>Query Agent
+    participant DR as Destination<br/>Recommendation<br/>Agent
+    participant IP as Itinerary<br/>Planning<br/>Agent
+    
+    Triage->>Triage: 1. Analyze Query
+    Triage->>CQ: 2. Extract Preferences
+    CQ->>Triage: 3. Preferences
+    Triage->>DR: 4. Get Recommendations
+    DR->>Triage: 5. Destinations
+    Triage->>IP: 6. Plan Itinerary
+    IP->>Triage: 7. Complete Plan
 ```
 
 ## Detailed Sequence Diagrams

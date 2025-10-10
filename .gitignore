@@ -380,8 +380,8 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # VuePress build output
-docs/.vuepress/dist/
-docs/.vuepress/.cache/
+docs/.vitepress/dist/
+docs/.vitepress/cache/
 
 # VS Code files for those working on multiple tools
 .vscode/*

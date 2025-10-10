@@ -1,5 +1,4 @@
 ---
-title: deployment-architecture
 createTime: 2025/06/06 13:07:02
 permalink: /article/hrj3bxyz/
 ---
@@ -32,29 +31,35 @@ This document provides comprehensive guidance on deploying the Azure AI Travel A
 
 ### Architecture Components
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                        Azure Cloud                              │
-├─────────────────────────────────────────────────────────────────┤
-│  ┌─────────────────────────────────────────────────────────────┐│
-│  │              Container Apps Environment                     ││
-│  │ ┌─────────┐ ┌─────────┐ ┌───────────────────────────────┐   ││
-│  │ │   UI    │ │   API   │ │         MCP Servers           │   ││
-│  │ │  App    │ │  App    │ │ ┌─────┬─────┬─────┬─────────┐ │   ││
-│  │ └─────────┘ └─────────┘ │ │Echo │CustQ│Dest │Web      │ │   ││
-│  │                         │ │Ping │     │Rec  │Search...│ │   ││
-│  │                         │ └─────┴─────┴─────┴─────────┘ │   ││
-│  │                         └───────────────────────────────┘   ││
-│  └─────────────────────────────────────────────────────────────┘│
-│  ┌─────────────────────────────────────────────────────────────┐│
-│  │                    Azure Services                           ││
-│  │ ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────────────┐     ││
-│  │ │Azure    │ │Container│ │ Monitor │ │    Key Vault    │     ││
-│  │ │OpenAI   │ │Registry │ │(Logs/   │ │   (Secrets)     │     ││
-│  │ │         │ │         │ │Metrics) │ │                 │     ││
-│  │ └─────────┘ └─────────┘ └─────────┘ └─────────────────┘     ││
-│  └─────────────────────────────────────────────────────────────┘│
-└─────────────────────────────────────────────────────────────────┘
+```mermaid
+graph TB
+    subgraph Azure["Azure Cloud"]
+        subgraph ACA["Container Apps Environment"]
+            UI[UI App]
+            API[API App]
+            subgraph MCP["MCP Servers"]
+                EP[Echo Ping]
+                CQ[Cust Query]
+                DR[Dest Rec]
+                WS[Web Search]
+                OTHER[...]
+            end
+        end
+        
+        subgraph Services["Azure Services"]
+            OAI[Azure OpenAI]
+            ACR[Container Registry]
+            MON[Monitor<br/>Logs/Metrics]
+            KV[Key Vault<br/>Secrets]
+        end
+        
+        UI --> API
+        API --> MCP
+        API --> OAI
+        ACA -.pull images.-> ACR
+        ACA --> MON
+        ACA -.secrets.-> KV
+    end
 ```
 
 ## Local Development Deployment
