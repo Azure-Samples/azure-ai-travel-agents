@@ -97,7 +97,7 @@ cp .env.sample .env
 
 **Minimal configuration:**
 
-```env
+```txt
 # LLM Provider
 LLM_PROVIDER=azure-openai
 
@@ -356,25 +356,25 @@ src/api-python/
 
 Choose your LLM provider in `.env`:
 
-```env
+```txt
 LLM_PROVIDER=azure-openai  # or github-models, ollama-models, docker-models
 ```
 
 **Azure OpenAI:**
-```env
+```txt
 AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
 AZURE_OPENAI_API_KEY=your-api-key
 AZURE_OPENAI_DEPLOYMENT_NAME=gpt-4
 ```
 
 **GitHub Models:**
-```env
+```txt
 GITHUB_TOKEN=your-github-token
 GITHUB_MODEL=openai/gpt-4o
 ```
 
 **Ollama:**
-```env
+```txt
 OLLAMA_ENDPOINT=http://localhost:11434/v1
 OLLAMA_MODEL=llama3
 ```

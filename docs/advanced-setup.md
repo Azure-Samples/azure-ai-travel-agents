@@ -290,7 +290,7 @@ To describe the infrastructure and application, `azure.yaml` along with Infrastr
   - modules/        # Library modules
 ```
 
-The resources declared in [resources.bicep](../infra/resources.bicep) are provisioned when running `azd up` or `azd provision`.
+The resources declared in [resources.bicep](https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/infra/resources.bicep) are provisioned when running `azd up` or `azd provision`.
 This includes:
 
 - Azure Container App to host the 'api' service.

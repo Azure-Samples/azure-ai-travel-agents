@@ -259,7 +259,7 @@ src/
 ### Configuration
 
 **Environment Variables**:
-```env
+```txt
 # Azure OpenAI Configuration
 AZURE_OPENAI_ENDPOINT=
 AZURE_OPENAI_API_KEY=

@@ -185,20 +185,23 @@ export default withMermaid({
       provider: 'local', // Use local search index
     },
     searchMaxSuggestions: 10,
-
     plugins: [
-        "@vuepress/plugin-back-to-top",
-        "@vuepress/plugin-medium-zoom",
-        mdEnhancePlugin({
-          mermaid: true,
-        }),
-        searchPlugin({
-          locales: {
-            "/": {
-              placeholder: "Search",
-            },
+      "@vuepress/plugin-back-to-top",
+      "@vuepress/plugin-medium-zoom",
+      mdEnhancePlugin({
+        mermaid: true,
+      }),
+      searchPlugin({
+        locales: {
+          "/": {
+            placeholder: "Search",
           },
-        }),
-      ],
-  }
+        },
+      }),
+    ],
+  },
+  ignoreDeadLinks: [
+    // ignore all localhost links
+    /^https?:\/\/localhost/,
+  ],
 })

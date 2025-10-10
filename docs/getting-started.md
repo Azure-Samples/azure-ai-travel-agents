@@ -279,7 +279,7 @@ To run the application in a more advanced local setup or deploy to Azure, please
 
 ## Contributing
 
-We welcome contributions to the AI Travel Agents project! If you have suggestions, bug fixes, or new features, please feel free to submit a pull request. For more information on contributing, please refer to the [CONTRIBUTING.md](CONTRIBUTING.md) file.
+We welcome contributions to the AI Travel Agents project! If you have suggestions, bug fixes, or new features, please feel free to submit a pull request. For more information on contributing, please refer to the [CONTRIBUTING.md](https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/CONTRIBUTING.md) file.
 
 ## Join the Community
 
