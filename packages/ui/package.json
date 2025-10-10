@@ -22,7 +22,7 @@
     "@angular/platform-browser-dynamic": "^20.0.5",
     "@angular/platform-server": "^20.0.5",
     "@angular/router": "^20.0.5",
-    "@angular/ssr": "^20.0.4",
+    "@angular/ssr": "^20.3.5",
     "@ng-icons/core": "^29.10.0",
     "@ng-icons/lucide": ">=29.0.0",
     "@spartan-ng/brain": "^0.0.1-alpha.450",
