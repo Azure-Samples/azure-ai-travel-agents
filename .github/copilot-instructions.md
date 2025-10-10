@@ -3,9 +3,9 @@
 ## Big Picture Architecture
 
 - The platform is a modular AI travel agent system, composed of multiple microservices ("tools") for itinerary planning, destination recommendations, customer queries, and more.
-- The main API gateway is in `src/api/`, orchestrating requests to backend services.
-- Each tool is isolated in its own directory under `src/tools/` and communicates via HTTP APIs or message passing.
-- The frontend UI is in `src/ui/` (Angular + Tailwind CSS), talking to the API gateway.
+- The main API gateway is in `packages/api/`, orchestrating requests to backend services.
+- Each tool is isolated in its own directory under `packages/tools/` and communicates via HTTP APIs or message passing.
+- The frontend UI is in `packages/ui/` (Angular + Tailwind CSS), talking to the API gateway.
 - Infrastructure is managed with Bicep templates in `infra/` and setup scripts in `infra/hooks/`.
 
 ## Developer Workflows
@@ -13,9 +13,9 @@
 - **Build & Run All Services:**  
   Run `./run.sh` from the repo root to build and start all services locally via Docker Compose.
 - **Service-Specific Development:**  
-  Each tool under `src/tools/` can be built and run independently using its language's standard commands (e.g., `npm`, `mvnw`, `python`).
+  Each tool under `packages/tools/` can be built and run independently using its language's standard commands (e.g., `npm`, `mvnw`, `python`).
 - **UI Development:**  
-  Run `npm start` in `src/ui/` for local frontend development.
+  Run `npm start` in `packages/ui/` for local frontend development.
 - **Infrastructure Deployment:**  
   Use Bicep files in `infra/` and scripts in `infra/hooks/` for Azure deployments.
 
@@ -35,22 +35,22 @@
 - **Azure Services:**  
   Provisioned via Bicep templates; see `infra/main.bicep`.
 - **LLMs:**  
-  Model integration details are in `llms.txt` and `src/api/src/orchestrator/llamaindex/`.
+  Model integration details are in `llms.txt` and `packages/api/src/orchestrator/llamaindex/`.
 
 ## Patterns & Examples
 
 - **Adding a New Tool:**  
-  Scaffold under `src/tools/`, provide a `Dockerfile`, and register with the API gateway.
+  Scaffold under `packages/tools/`, provide a `Dockerfile`, and register with the API gateway.
 - **Extending the UI:**  
-  Add Angular components in `src/ui/src/app/`, update routing as needed.
+  Add Angular components in `packages/ui/src/app/`, update routing as needed.
 - **Service Communication:**  
-  Use HTTP clients (see `src/api/src/mcp/mcp-http-client.ts`) for inter-service calls.
+  Use HTTP clients (see `packages/api/src/mcp/mcp-http-client.ts`) for inter-service calls.
 
 ## Key Files & Directories
 
-- `src/api/` - API gateway and orchestrator logic
-- `src/tools/` - Microservices (each in its own subdirectory)
-- `src/ui/` - Angular frontend
+- `packages/api/` - API gateway and orchestrator logic
+- `packages/tools/` - Microservices (each in its own subdirectory)
+- `packages/ui/` - Angular frontend
 - `infra/` - Infrastructure as code (Bicep, setup scripts)
 - `docs/` - Architecture and API documentation
 

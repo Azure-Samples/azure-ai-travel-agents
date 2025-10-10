@@ -316,7 +316,7 @@ async for event in workflow.run_stream(message):
 ## Project Structure
 
 ```
-src/api-python/
+packages/api-python/
 ├── src/
 │   ├── main.py                         # FastAPI application & endpoints
 │   ├── config.py                       # Configuration management

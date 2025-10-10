@@ -8,7 +8,7 @@ This document outlines the migration strategy from the current LlamaIndex.TS orc
 
 ### Existing Architecture
 
-**Location**: `src/api/`
+**Location**: `packages/api/`
 
 **Technology Stack**:
 - Node.js 22.16+ with TypeScript
@@ -17,12 +17,12 @@ This document outlines the migration strategy from the current LlamaIndex.TS orc
 - @llamaindex/tools 0.1.2
 
 **Components**:
-- Main API server: `src/api/src/index.ts`
-- Orchestrator: `src/api/src/orchestrator/llamaindex/`
+- Main API server: `packages/api/src/index.ts`
+- Orchestrator: `packages/api/src/orchestrator/llamaindex/`
   - Agent setup: `index.ts`
   - Provider configuration: `providers/`
   - Tool configuration: `tools/index.ts`
-- MCP clients: `src/api/src/mcp/`
+- MCP clients: `packages/api/src/mcp/`
   - HTTP client: `mcp-http-client.ts`
   - SSE client: `mcp-sse-client.ts`
   - Tool list: `mcp-tools.ts`
@@ -44,7 +44,7 @@ This document outlines the migration strategy from the current LlamaIndex.TS orc
 
 ### Target Architecture
 
-**Location**: `src/api-python/`
+**Location**: `packages/api-python/`
 
 **Technology Stack**:
 - Python 3.12+
@@ -81,7 +81,7 @@ We will use a parallel deployment strategy to minimize risk:
 #### Tasks
 - [x] Create design documentation
 - [x] Create implementation guide
-- [ ] Create `src/api-python/` directory structure
+- [ ] Create `packages/api-python/` directory structure
 - [ ] Set up `pyproject.toml` with dependencies
 - [ ] Implement configuration management (`config.py`)
 - [ ] Create `.env.sample` for Python API

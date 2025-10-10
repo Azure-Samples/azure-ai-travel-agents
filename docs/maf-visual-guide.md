@@ -109,7 +109,7 @@ flowchart TB
 
 ```mermaid
 flowchart TB
-    subgraph APIPYTHON["src/api-python/"]
+    subgraph APIPYTHON["packages/api-python/"]
         MAIN[main.py - FastAPI App<br/>• Endpoints: /api/health, /api/chat, /api/tools<br/>• SSE Streaming<br/>• CORS Configuration]
         
         WORKFLOW[orchestrator/workflow.py<br/>• TravelWorkflow Class<br/>• Agent Initialization<br/>• Workflow Execution<br/>• Tool Filtering]

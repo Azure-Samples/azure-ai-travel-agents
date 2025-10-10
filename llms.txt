@@ -538,7 +538,7 @@ src/
 
 # Files
 
-## File: src/tools/code-evaluation/Dockerfile
+## File: packages/tools/code-evaluation/Dockerfile
 ````
 # Use an ultra-lightweight base image
 FROM alpine:latest
@@ -547,7 +547,7 @@ FROM alpine:latest
 CMD ["echo", "Hello from code-evaluation!"]
 ````
 
-## File: src/tools/customer-query/AITravelAgent.ServiceDefaults/AITravelAgent.ServiceDefaults.csproj
+## File: packages/tools/customer-query/AITravelAgent.ServiceDefaults/AITravelAgent.ServiceDefaults.csproj
 ````
 <Project Sdk="Microsoft.NET.Sdk">
 
@@ -573,7 +573,7 @@ CMD ["echo", "Hello from code-evaluation!"]
 </Project>
 ````
 
-## File: src/tools/customer-query/AITravelAgent.ServiceDefaults/Extensions.cs
+## File: packages/tools/customer-query/AITravelAgent.ServiceDefaults/Extensions.cs
 ````csharp
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -696,7 +696,7 @@ public static class Extensions
 }
 ````
 
-## File: src/tools/customer-query/AITravelAgent.sln
+## File: packages/tools/customer-query/AITravelAgent.sln
 ````
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
@@ -747,13 +747,13 @@ Global
 EndGlobal
 ````
 
-## File: src/tools/destination-recommendation/.mvn/wrapper/maven-wrapper.properties
+## File: packages/tools/destination-recommendation/.mvn/wrapper/maven-wrapper.properties
 ````
 distributionUrl=https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.9.6/apache-maven-3.9.6-bin.zip
 wrapperUrl=https://repo.maven.apache.org/maven2/io/takari/maven-wrapper/0.5.6/maven-wrapper-0.5.6.jar
 ````
 
-## File: src/tools/destination-recommendation/.mvn/wrapper/MavenWrapperDownloader.java
+## File: packages/tools/destination-recommendation/.mvn/wrapper/MavenWrapperDownloader.java
 ````java
 /*
  * Copyright 2007-present the original author or authors.
@@ -874,7 +874,7 @@ public class MavenWrapperDownloader {
 }
 ````
 
-## File: src/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/config/StartupConfig.java
+## File: packages/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/config/StartupConfig.java
 ````java
 package com.microsoft.mcp.sample.server.config;
 
@@ -919,7 +919,7 @@ public class StartupConfig {
 }
 ````
 
-## File: src/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/controller/HealthController.java
+## File: packages/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/controller/HealthController.java
 ````java
 package com.microsoft.mcp.sample.server.controller;
 
@@ -985,7 +985,7 @@ public class HealthController {
 }
 ````
 
-## File: src/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/exception/GlobalExceptionHandler.java
+## File: packages/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/exception/GlobalExceptionHandler.java
 ````java
 package com.microsoft.mcp.sample.server.exception;
 
@@ -1061,7 +1061,7 @@ public class GlobalExceptionHandler {
 }
 ````
 
-## File: src/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/model/ActivityType.java
+## File: packages/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/model/ActivityType.java
 ````java
 package com.microsoft.mcp.sample.server.model;
 
@@ -1079,7 +1079,7 @@ public enum ActivityType {
 }
 ````
 
-## File: src/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/model/BudgetCategory.java
+## File: packages/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/model/BudgetCategory.java
 ````java
 package com.microsoft.mcp.sample.server.model;
 
@@ -1093,7 +1093,7 @@ public enum BudgetCategory {
 }
 ````
 
-## File: src/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/model/PreferenceRequest.java
+## File: packages/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/model/PreferenceRequest.java
 ````java
 package com.microsoft.mcp.sample.server.model;
 
@@ -1166,7 +1166,7 @@ public class PreferenceRequest {
 }
 ````
 
-## File: src/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/model/Season.java
+## File: packages/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/model/Season.java
 ````java
 package com.microsoft.mcp.sample.server.model;
 
@@ -1182,7 +1182,7 @@ public enum Season {
 }
 ````
 
-## File: src/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/service/DestinationService.java
+## File: packages/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/service/DestinationService.java
 ````java
 package com.microsoft.mcp.sample.server.service;
 
@@ -1449,7 +1449,7 @@ public class DestinationService {
 }
 ````
 
-## File: src/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/McpServerApplication.java
+## File: packages/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/McpServerApplication.java
 ````java
 package com.microsoft.mcp.sample.server;
 
@@ -1476,7 +1476,7 @@ public class McpServerApplication {
 }
 ````
 
-## File: src/tools/destination-recommendation/src/main/resources/banner.txt
+## File: packages/tools/destination-recommendation/src/main/resources/banner.txt
 ````
 _____            _   _             _   _                 
  |  __ \          | | (_)           | | (_)                
@@ -1489,7 +1489,7 @@ _____            _   _             _   _
  Spring AI MCP-enabled Travel Assistant
 ````
 
-## File: src/tools/destination-recommendation/src/test/java/com/microsoft/mcp/sample/client/SampleClient.java
+## File: packages/tools/destination-recommendation/src/test/java/com/microsoft/mcp/sample/client/SampleClient.java
 ````java
 package com.microsoft.mcp.sample.client;
 
@@ -1529,7 +1529,7 @@ public class SampleClient {
 }
 ````
 
-## File: src/tools/destination-recommendation/.gitignore
+## File: packages/tools/destination-recommendation/.gitignore
 ````
 # Compiled class files
 *.class
@@ -1612,7 +1612,7 @@ bin/
 Thumbs.db
 ````
 
-## File: src/tools/destination-recommendation/Dockerfile
+## File: packages/tools/destination-recommendation/Dockerfile
 ````
 # Build stage
 FROM maven:3.9.9-eclipse-temurin-24-noble AS build
@@ -1640,7 +1640,7 @@ EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "/app/application.jar"]
 ````
 
-## File: src/tools/destination-recommendation/pom.xml
+## File: packages/tools/destination-recommendation/pom.xml
 ````xml
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
@@ -1748,7 +1748,7 @@ ENTRYPOINT ["java", "-jar", "/app/application.jar"]
 </project>
 ````
 
-## File: src/tools/itinerary-planning/src/app.py
+## File: packages/tools/itinerary-planning/src/app.py
 ````python
 import uvicorn
 from starlette.applications import Starlette
@@ -1770,7 +1770,7 @@ if __name__ == "__main__":
     run()
 ````
 
-## File: src/tools/itinerary-planning/Dockerfile
+## File: packages/tools/itinerary-planning/Dockerfile
 ````
 FROM python:3.13-slim-bookworm
 
@@ -1799,7 +1799,7 @@ EXPOSE 8000
 CMD ["uv", "run", "start"]
 ````
 
-## File: src/tools/model-inference/Dockerfile
+## File: packages/tools/model-inference/Dockerfile
 ````
 # Use an ultra-lightweight base image
 FROM alpine:latest
@@ -1808,7 +1808,7 @@ FROM alpine:latest
 CMD ["echo", "Hello from model-inference!"]
 ````
 
-## File: src/tools/web-search/Dockerfile
+## File: packages/tools/web-search/Dockerfile
 ````
 # Use an ultra-lightweight base image
 FROM alpine:latest
@@ -1839,48 +1839,48 @@ echo "Running post-deployment script for AI Travel Agents application..."
 ##########################################################################
 
 echo ">> Creating .env file for the API service..."
-if [ ! -f ./src/api/.env ]; then
-    echo "# File automatically generated on $(date)" > ./src/api/.env
-    echo "# See .env.sample for more information" >> ./src/api/.env
+if [ ! -f ./packages/api/.env ]; then
+    echo "# File automatically generated on $(date)" > ./packages/api/.env
+    echo "# See .env.sample for more information" >> ./packages/api/.env
     echo ""
     AZURE_OPENAI_ENDPOINT=$(azd env get-value AZURE_OPENAI_ENDPOINT)
-    echo "AZURE_OPENAI_ENDPOINT=\"$AZURE_OPENAI_ENDPOINT\"" >> ./src/api/.env
+    echo "AZURE_OPENAI_ENDPOINT=\"$AZURE_OPENAI_ENDPOINT\"" >> ./packages/api/.env
     echo ""
-    echo "LLM_PROVIDER=azure-openai" >> ./src/api/.env
+    echo "LLM_PROVIDER=azure-openai" >> ./packages/api/.env
     echo ""
-    echo "AZURE_OPENAI_DEPLOYMENT=gpt-4o-mini" >> ./src/api/.env
+    echo "AZURE_OPENAI_DEPLOYMENT=gpt-4o-mini" >> ./packages/api/.env
     echo ""
-    echo "MCP_CUSTOMER_QUERY_URL=http://localhost:8080" >> ./src/api/.env
-    echo "MCP_DESTINATION_RECOMMENDATION_URL=http://localhost:5002" >> ./src/api/.env
-    echo "MCP_ITINERARY_PLANNING_URL=http://localhost:5003" >> ./src/api/.env
-    echo "MCP_CODE_EVALUATION_URL=http://localhost:5004" >> ./src/api/.env
-    echo "MCP_MODEL_INFERENCE_URL=http://localhost:5005" >> ./src/api/.env
-    echo "MCP_WEB_SEARCH_URL=http://localhost:5006" >> ./src/api/.env
-    echo "MCP_ECHO_PING_URL=http://localhost:5007" >> ./src/api/.env
-    echo "MCP_ECHO_PING_ACCESS_TOKEN=123-this-is-a-fake-token-please-use-a-token-provider" >> ./src/api/.env
+    echo "MCP_CUSTOMER_QUERY_URL=http://localhost:8080" >> ./packages/api/.env
+    echo "MCP_DESTINATION_RECOMMENDATION_URL=http://localhost:5002" >> ./packages/api/.env
+    echo "MCP_ITINERARY_PLANNING_URL=http://localhost:5003" >> ./packages/api/.env
+    echo "MCP_CODE_EVALUATION_URL=http://localhost:5004" >> ./packages/api/.env
+    echo "MCP_MODEL_INFERENCE_URL=http://localhost:5005" >> ./packages/api/.env
+    echo "MCP_WEB_SEARCH_URL=http://localhost:5006" >> ./packages/api/.env
+    echo "MCP_ECHO_PING_URL=http://localhost:5007" >> ./packages/api/.env
+    echo "MCP_ECHO_PING_ACCESS_TOKEN=123-this-is-a-fake-token-please-use-a-token-provider" >> ./packages/api/.env
     echo ""
-    echo "OTEL_SERVICE_NAME=api" >> ./src/api/.env
-    echo "OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:18889" >> ./src/api/.env
-    echo "OTEL_EXPORTER_OTLP_HEADERS=header-value" >> ./src/api/.env
+    echo "OTEL_SERVICE_NAME=api" >> ./packages/api/.env
+    echo "OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:18889" >> ./packages/api/.env
+    echo "OTEL_EXPORTER_OTLP_HEADERS=header-value" >> ./packages/api/.env
 fi
 
 # Set overrides for docker environment
-if [ ! -f ./src/api/.env.docker ]; then
-    echo "# File automatically generated on $(date)" > ./src/api/.env.docker
-    echo "# See .env.sample for more information" >> ./src/api/.env.docker
+if [ ! -f ./packages/api/.env.docker ]; then
+    echo "# File automatically generated on $(date)" > ./packages/api/.env.docker
+    echo "# See .env.sample for more information" >> ./packages/api/.env.docker
     echo ""
-    echo "MCP_CUSTOMER_QUERY_URL=http://tool-customer-query:8080" >> ./src/api/.env.docker
-    echo "MCP_DESTINATION_RECOMMENDATION_URL=http://tool-destination-recommendation:5002" >> ./src/api/.env.docker
-    echo "MCP_ITINERARY_PLANNING_URL=http://tool-itinerary-planning:5003" >> ./src/api/.env.docker
-    echo "MCP_CODE_EVALUATION_URL=http://tool-code-evaluation:5004" >> ./src/api/.env.docker
-    echo "MCP_MODEL_INFERENCE_URL=http://tool-model-inference:5005" >> ./src/api/.env.docker
-    echo "MCP_WEB_SEARCH_URL=http://tool-web-search:5006" >> ./src/api/.env.docker
-    echo "MCP_ECHO_PING_URL=http://tool-echo-ping:5007" >> ./src/api/.env.docker
+    echo "MCP_CUSTOMER_QUERY_URL=http://tool-customer-query:8080" >> ./packages/api/.env.docker
+    echo "MCP_DESTINATION_RECOMMENDATION_URL=http://tool-destination-recommendation:5002" >> ./packages/api/.env.docker
+    echo "MCP_ITINERARY_PLANNING_URL=http://tool-itinerary-planning:5003" >> ./packages/api/.env.docker
+    echo "MCP_CODE_EVALUATION_URL=http://tool-code-evaluation:5004" >> ./packages/api/.env.docker
+    echo "MCP_MODEL_INFERENCE_URL=http://tool-model-inference:5005" >> ./packages/api/.env.docker
+    echo "MCP_WEB_SEARCH_URL=http://tool-web-search:5006" >> ./packages/api/.env.docker
+    echo "MCP_ECHO_PING_URL=http://tool-echo-ping:5007" >> ./packages/api/.env.docker
 fi
 
 # Install dependencies for the API service
 echo ">> Installing dependencies for the API service..."
-if [ ! -d ./src/api/node_modules ]; then
+if [ ! -d ./packages/api/node_modules ]; then
     echo "Installing dependencies for the API service..."
     npm ci --prefix=src/api --legacy-peer-deps 
 else
@@ -1892,20 +1892,20 @@ fi
 ##########################################################################
 
 echo ">> Creating .env file for the UI service..."
-if [ ! -f ./src/ui/.env ]; then
-    echo "# File automatically generated on $(date)" > ./src/ui/.env
-    echo "# See .env.sample for more information" >> ./src/ui/.env
+if [ ! -f ./packages/ui/.env ]; then
+    echo "# File automatically generated on $(date)" > ./packages/ui/.env
+    echo "# See .env.sample for more information" >> ./packages/ui/.env
     echo ""
     NG_API_URL=$(azd env get-value NG_API_URL)
-    echo "NG_API_URL=http://localhost:4000" >> ./src/ui/.env
+    echo "NG_API_URL=http://localhost:4000" >> ./packages/ui/.env
     echo ""
-    echo "# Uncomment the following line to use the provisioned endpoint for the API" >> ./src/ui/.env
-    echo "# NG_API_URL=\"$NG_API_URL\"" >> ./src/ui/.env
+    echo "# Uncomment the following line to use the provisioned endpoint for the API" >> ./packages/ui/.env
+    echo "# NG_API_URL=\"$NG_API_URL\"" >> ./packages/ui/.env
 fi
 
 # Install dependencies for the UI service
 echo ">> Installing dependencies for the UI service..."
-if [ ! -d ./src/ui/node_modules ]; then
+if [ ! -d ./packages/ui/node_modules ]; then
     echo "Installing dependencies for the UI service..."
     npm ci --prefix=src/ui
 else
@@ -1920,25 +1920,25 @@ echo ">> Creating .env file for the MCP servers..."
 
 #  for each tool copy the .env.sample (if it exists) to .env and .env.docker (dont overwrite existing .env files)
 for tool in $tools; do
-    if [ -f ./src/tools/$tool/.env.sample ]; then
+    if [ -f ./packages/tools/$tool/.env.sample ]; then
         echo "Creating .env file for $tool..."
-        if [ ! -f ./src/tools/$tool/.env ]; then
-            cp ./src/tools/$tool/.env.sample ./src/tools/$tool/.env
-            echo "# File automatically generated on $(date)" >> ./src/tools/$tool/.env
-            echo "# See .env.sample for more information" >> ./src/tools/$tool/.env
+        if [ ! -f ./packages/tools/$tool/.env ]; then
+            cp ./packages/tools/$tool/.env.sample ./packages/tools/$tool/.env
+            echo "# File automatically generated on $(date)" >> ./packages/tools/$tool/.env
+            echo "# See .env.sample for more information" >> ./packages/tools/$tool/.env
         fi
 
         # Create .env.docker file if it doesn't exist
-        if [ ! -f ./src/tools/$tool/.env.docker ]; then
-            cp ./src/tools/$tool/.env.sample ./src/tools/$tool/.env.docker
-            echo "# File automatically generated on $(date)" >> ./src/tools/$tool/.env.docker
-            echo "# See .env.sample for more information" >> ./src/tools/$tool/.env.docker
+        if [ ! -f ./packages/tools/$tool/.env.docker ]; then
+            cp ./packages/tools/$tool/.env.sample ./packages/tools/$tool/.env.docker
+            echo "# File automatically generated on $(date)" >> ./packages/tools/$tool/.env.docker
+            echo "# See .env.sample for more information" >> ./packages/tools/$tool/.env.docker
         fi
 
         # Install dependencies for the tool service
         echo ">> Installing dependencies for $tool service..."
-        if [ ! -d ./src/tools/$tool/node_modules ]; then
-            npm ci --prefix=./src/tools/$tool
+        if [ ! -d ./packages/tools/$tool/node_modules ]; then
+            npm ci --prefix=./packages/tools/$tool
         else
             echo "Dependencies for $tool service already installed."
         fi
@@ -2258,7 +2258,7 @@ output containers array = exists ? existingApp.properties.template.containers : 
 }
 ````
 
-## File: src/api/src/mcp/mcp-http-client.ts
+## File: packages/api/src/mcp/mcp-http-client.ts
 ````typescript
 import EventEmitter from 'node:events';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
@@ -2327,7 +2327,7 @@ export class MCPClient extends EventEmitter {
 }
 ````
 
-## File: src/api/src/mcp/mcp-sse-client.ts
+## File: packages/api/src/mcp/mcp-sse-client.ts
 ````typescript
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { SSEClientTransport } from "@modelcontextprotocol/sdk/client/sse.js";
@@ -2418,7 +2418,7 @@ export class MCPClient {
 }
 ````
 
-## File: src/api/src/orchestrator/llamaindex/providers/foundry-local.ts
+## File: packages/api/src/orchestrator/llamaindex/providers/foundry-local.ts
 ````typescript
 import { openai } from "llamaindex";
 import { FoundryLocalManager } from "foundry-local-sdk";
@@ -2447,7 +2447,7 @@ export const llm = async () => {
 };
 ````
 
-## File: src/api/src/orchestrator/llamaindex/providers/github-models.ts
+## File: packages/api/src/orchestrator/llamaindex/providers/github-models.ts
 ````typescript
 import { openai } from "llamaindex";
 
@@ -2461,7 +2461,7 @@ export const llm = async () => {
 };
 ````
 
-## File: src/api/src/utils/instrumentation.ts
+## File: packages/api/src/utils/instrumentation.ts
 ````typescript
 import { metrics, trace } from "@opentelemetry/api";
 import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
@@ -2544,7 +2544,7 @@ function log(
 export { log, meter, tracer };
 ````
 
-## File: src/api/Dockerfile
+## File: packages/api/Dockerfile
 ````
 FROM node:22.12-alpine AS builder
 
@@ -2575,7 +2575,7 @@ RUN npm ci --ignore-scripts --omit-dev
 CMD ["node", "dist/index.js"]
 ````
 
-## File: src/tools/customer-query/AITravelAgent.CustomerQueryServer/Models/CustomerQueryAnalysisResult.cs
+## File: packages/tools/customer-query/AITravelAgent.CustomerQueryServer/Models/CustomerQueryAnalysisResult.cs
 ````csharp
 namespace AITravelAgent.CustomerQueryServer.Models;
 
@@ -2589,7 +2589,7 @@ public class CustomerQueryAnalysisResult
 }
 ````
 
-## File: src/tools/customer-query/AITravelAgent.CustomerQueryServer/Tools/CustomerQueryTool.cs
+## File: packages/tools/customer-query/AITravelAgent.CustomerQueryServer/Tools/CustomerQueryTool.cs
 ````csharp
 using System.ComponentModel;
 
@@ -2634,7 +2634,7 @@ public class CustomerQueryTool(ILogger<CustomerQueryTool> logger)
 }
 ````
 
-## File: src/tools/customer-query/AITravelAgent.CustomerQueryServer/Tools/EchoTool.cs
+## File: packages/tools/customer-query/AITravelAgent.CustomerQueryServer/Tools/EchoTool.cs
 ````csharp
 using System.ComponentModel;
 
@@ -2651,7 +2651,7 @@ public static class EchoTool
 }
 ````
 
-## File: src/tools/customer-query/AITravelAgent.CustomerQueryServer/Program.cs
+## File: packages/tools/customer-query/AITravelAgent.CustomerQueryServer/Program.cs
 ````csharp
 var builder = WebApplication.CreateBuilder(args);
 
@@ -2671,7 +2671,7 @@ app.MapMcp();
 await app.RunAsync();
 ````
 
-## File: src/tools/customer-query/Dockerfile
+## File: packages/tools/customer-query/Dockerfile
 ````
 # Build stage
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
@@ -2696,7 +2696,7 @@ EXPOSE 8080
 ENTRYPOINT ["dotnet", "AITravelAgent.CustomerQueryServer.dll"]
 ````
 
-## File: src/tools/destination-recommendation/src/test/java/com/microsoft/mcp/sample/client/ClientSse.java
+## File: packages/tools/destination-recommendation/src/test/java/com/microsoft/mcp/sample/client/ClientSse.java
 ````java
 package com.microsoft.mcp.sample.client;
 
@@ -2714,7 +2714,7 @@ public class ClientSse {
 }
 ````
 
-## File: src/tools/echo-ping/src/instrumentation.ts
+## File: packages/tools/echo-ping/src/instrumentation.ts
 ````typescript
 import { metrics, trace } from "@opentelemetry/api";
 import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
@@ -2797,7 +2797,7 @@ function log(
 export { log, meter, tracer };
 ````
 
-## File: src/tools/echo-ping/src/server.ts
+## File: packages/tools/echo-ping/src/server.ts
 ````typescript
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
@@ -2948,7 +2948,7 @@ export class EchoMCPServer {
 }
 ````
 
-## File: src/tools/echo-ping/src/token-provider.ts
+## File: packages/tools/echo-ping/src/token-provider.ts
 ````typescript
 // This a sample token privider, in a real application this would be replaced with a more secure implementation
 
@@ -2968,7 +2968,7 @@ export function tokenProvider() {
 }
 ````
 
-## File: src/tools/echo-ping/src/tools.ts
+## File: packages/tools/echo-ping/src/tools.ts
 ````typescript
 import { log, tracer, meter } from "./instrumentation.js";
 
@@ -3015,7 +3015,7 @@ export const EchoTools = [
 ];
 ````
 
-## File: src/tools/itinerary-planning/src/app_routes.py
+## File: packages/tools/itinerary-planning/src/app_routes.py
 ````python
 from mcp.server.sse import SseServerTransport
 from starlette.responses import HTMLResponse
@@ -3049,7 +3049,7 @@ routes = [
 ]
 ````
 
-## File: src/tools/itinerary-planning/src/mcp_server.py
+## File: packages/tools/itinerary-planning/src/mcp_server.py
 ````python
 import random
 import re
@@ -3398,7 +3398,7 @@ if __name__ == "__main__":
     mcp.run(transport="sse")
 ````
 
-## File: src/tools/itinerary-planning/pyproject.toml
+## File: packages/tools/itinerary-planning/pyproject.toml
 ````toml
 [project]
 name = "itinerary-planning-mcp-server"
@@ -3430,7 +3430,7 @@ lint.select = ["E", "F", "I", "UP", "A"]
 lint.ignore = ["D203"]
 ````
 
-## File: src/ui/.vscode/extensions.json
+## File: packages/ui/.vscode/extensions.json
 ````json
 {
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=827846
@@ -3438,7 +3438,7 @@ lint.ignore = ["D203"]
 }
 ````
 
-## File: src/ui/.vscode/launch.json
+## File: packages/ui/.vscode/launch.json
 ````json
 {
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
@@ -3462,7 +3462,7 @@ lint.ignore = ["D203"]
 }
 ````
 
-## File: src/ui/.vscode/tasks.json
+## File: packages/ui/.vscode/tasks.json
 ````json
 {
   // For more information, visit: https://go.microsoft.com/fwlink/?LinkId=733558
@@ -3508,7 +3508,7 @@ lint.ignore = ["D203"]
 }
 ````
 
-## File: src/ui/libs/ui/ui-accordion-helm/src/lib/hlm-accordion-content.component.ts
+## File: packages/ui/libs/ui/ui-accordion-helm/src/lib/hlm-accordion-content.component.ts
 ````typescript
 import { ChangeDetectionStrategy, Component, ViewEncapsulation, computed, input } from '@angular/core';
 import { BrnAccordionContentComponent } from '@spartan-ng/brain/accordion';
@@ -3545,7 +3545,7 @@ export class HlmAccordionContentComponent extends BrnAccordionContentComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-accordion-helm/src/lib/hlm-accordion-icon.directive.ts
+## File: packages/ui/libs/ui/ui-accordion-helm/src/lib/hlm-accordion-icon.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { provideIcons } from '@ng-icons/core';
@@ -3570,7 +3570,7 @@ export class HlmAccordionIconDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-accordion-helm/src/lib/hlm-accordion-item.directive.ts
+## File: packages/ui/libs/ui/ui-accordion-helm/src/lib/hlm-accordion-item.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { BrnAccordionItemDirective } from '@spartan-ng/brain/accordion';
@@ -3598,7 +3598,7 @@ export class HlmAccordionItemDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-accordion-helm/src/lib/hlm-accordion-trigger.directive.ts
+## File: packages/ui/libs/ui/ui-accordion-helm/src/lib/hlm-accordion-trigger.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { BrnAccordionTriggerDirective } from '@spartan-ng/brain/accordion';
@@ -3625,7 +3625,7 @@ export class HlmAccordionTriggerDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-accordion-helm/src/lib/hlm-accordion.directive.ts
+## File: packages/ui/libs/ui/ui-accordion-helm/src/lib/hlm-accordion.directive.ts
 ````typescript
 import { Directive, computed, inject, input } from '@angular/core';
 import { BrnAccordionDirective } from '@spartan-ng/brain/accordion';
@@ -3650,7 +3650,7 @@ export class HlmAccordionDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-accordion-helm/src/index.ts
+## File: packages/ui/libs/ui/ui-accordion-helm/src/index.ts
 ````typescript
 import { NgModule } from '@angular/core';
 
@@ -3681,7 +3681,7 @@ export const HlmAccordionImports = [
 export class HlmAccordionModule {}
 ````
 
-## File: src/ui/libs/ui/ui-alert-helm/src/lib/hlm-alert-description.directive.ts
+## File: packages/ui/libs/ui/ui-alert-helm/src/lib/hlm-alert-description.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -3706,7 +3706,7 @@ export class HlmAlertDescriptionDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-alert-helm/src/lib/hlm-alert-icon.directive.ts
+## File: packages/ui/libs/ui/ui-alert-helm/src/lib/hlm-alert-icon.directive.ts
 ````typescript
 import { Directive } from '@angular/core';
 import { provideHlmIconConfig } from '@spartan-ng/ui-icon-helm';
@@ -3719,7 +3719,7 @@ import { provideHlmIconConfig } from '@spartan-ng/ui-icon-helm';
 export class HlmAlertIconDirective {}
 ````
 
-## File: src/ui/libs/ui/ui-alert-helm/src/lib/hlm-alert-title.directive.ts
+## File: packages/ui/libs/ui/ui-alert-helm/src/lib/hlm-alert-title.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -3744,7 +3744,7 @@ export class HlmAlertTitleDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-alert-helm/src/lib/hlm-alert.directive.ts
+## File: packages/ui/libs/ui/ui-alert-helm/src/lib/hlm-alert.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -3784,7 +3784,7 @@ export class HlmAlertDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-alert-helm/src/index.ts
+## File: packages/ui/libs/ui/ui-alert-helm/src/index.ts
 ````typescript
 import { NgModule } from '@angular/core';
 
@@ -3812,7 +3812,7 @@ export const HlmAlertImports = [
 export class HlmAlertModule {}
 ````
 
-## File: src/ui/libs/ui/ui-alertdialog-helm/src/lib/hlm-alert-dialog-action-button.directive.ts
+## File: packages/ui/libs/ui/ui-alertdialog-helm/src/lib/hlm-alert-dialog-action-button.directive.ts
 ````typescript
 import { Directive } from '@angular/core';
 import { HlmButtonDirective } from '@spartan-ng/ui-button-helm';
@@ -3825,7 +3825,7 @@ import { HlmButtonDirective } from '@spartan-ng/ui-button-helm';
 export class HlmAlertDialogActionButtonDirective {}
 ````
 
-## File: src/ui/libs/ui/ui-alertdialog-helm/src/lib/hlm-alert-dialog-cancel-button.directive.ts
+## File: packages/ui/libs/ui/ui-alertdialog-helm/src/lib/hlm-alert-dialog-cancel-button.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -3847,7 +3847,7 @@ export class HlmAlertDialogCancelButtonDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-alertdialog-helm/src/lib/hlm-alert-dialog-content.component.ts
+## File: packages/ui/libs/ui/ui-alertdialog-helm/src/lib/hlm-alert-dialog-content.component.ts
 ````typescript
 import { ChangeDetectionStrategy, Component, ViewEncapsulation, computed, input, signal } from '@angular/core';
 import { hlm, injectExposesStateProvider } from '@spartan-ng/brain/core';
@@ -3880,7 +3880,7 @@ export class HlmAlertDialogContentComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-alertdialog-helm/src/lib/hlm-alert-dialog-description.directive.ts
+## File: packages/ui/libs/ui/ui-alertdialog-helm/src/lib/hlm-alert-dialog-description.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { BrnAlertDialogDescriptionDirective } from '@spartan-ng/brain/alert-dialog';
@@ -3901,7 +3901,7 @@ export class HlmAlertDialogDescriptionDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-alertdialog-helm/src/lib/hlm-alert-dialog-footer.component.ts
+## File: packages/ui/libs/ui/ui-alertdialog-helm/src/lib/hlm-alert-dialog-footer.component.ts
 ````typescript
 import { ChangeDetectionStrategy, Component, ViewEncapsulation, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -3927,7 +3927,7 @@ export class HlmAlertDialogFooterComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-alertdialog-helm/src/lib/hlm-alert-dialog-header.component.ts
+## File: packages/ui/libs/ui/ui-alertdialog-helm/src/lib/hlm-alert-dialog-header.component.ts
 ````typescript
 import { ChangeDetectionStrategy, Component, ViewEncapsulation, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -3953,7 +3953,7 @@ export class HlmAlertDialogHeaderComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-alertdialog-helm/src/lib/hlm-alert-dialog-overlay.directive.ts
+## File: packages/ui/libs/ui/ui-alertdialog-helm/src/lib/hlm-alert-dialog-overlay.directive.ts
 ````typescript
 import { Directive, computed, effect, input, untracked } from '@angular/core';
 import { hlm, injectCustomClassSettable } from '@spartan-ng/brain/core';
@@ -3983,7 +3983,7 @@ export class HlmAlertDialogOverlayDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-alertdialog-helm/src/lib/hlm-alert-dialog-title.directive.ts
+## File: packages/ui/libs/ui/ui-alertdialog-helm/src/lib/hlm-alert-dialog-title.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { BrnAlertDialogTitleDirective } from '@spartan-ng/brain/alert-dialog';
@@ -4004,7 +4004,7 @@ export class HlmAlertDialogTitleDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-alertdialog-helm/src/lib/hlm-alert-dialog.component.ts
+## File: packages/ui/libs/ui/ui-alertdialog-helm/src/lib/hlm-alert-dialog.component.ts
 ````typescript
 import { ChangeDetectionStrategy, Component, forwardRef, ViewEncapsulation } from '@angular/core';
 import {
@@ -4038,7 +4038,7 @@ import { HlmAlertDialogOverlayDirective } from './hlm-alert-dialog-overlay.direc
 export class HlmAlertDialogComponent extends BrnAlertDialogComponent {}
 ````
 
-## File: src/ui/libs/ui/ui-alertdialog-helm/src/index.ts
+## File: packages/ui/libs/ui/ui-alertdialog-helm/src/index.ts
 ````typescript
 import { NgModule } from '@angular/core';
 
@@ -4081,7 +4081,7 @@ export const HlmAlertDialogImports = [
 export class HlmAlertDialogModule {}
 ````
 
-## File: src/ui/libs/ui/ui-aspectratio-helm/src/lib/helm-aspect-ratio.directive.spec.ts
+## File: packages/ui/libs/ui/ui-aspectratio-helm/src/lib/helm-aspect-ratio.directive.spec.ts
 ````typescript
 import { Component } from '@angular/core';
 import { type ComponentFixture, TestBed } from '@angular/core/testing';
@@ -4159,7 +4159,7 @@ describe('HelmAspectRatioDirective', () => {
 });
 ````
 
-## File: src/ui/libs/ui/ui-aspectratio-helm/src/lib/helm-aspect-ratio.directive.ts
+## File: packages/ui/libs/ui/ui-aspectratio-helm/src/lib/helm-aspect-ratio.directive.ts
 ````typescript
 import { type NumberInput, coerceNumberProperty } from '@angular/cdk/coercion';
 import { type AfterViewInit, Directive, ElementRef, computed, inject, input } from '@angular/core';
@@ -4207,7 +4207,7 @@ export class HlmAspectRatioDirective implements AfterViewInit {
 }
 ````
 
-## File: src/ui/libs/ui/ui-aspectratio-helm/src/index.ts
+## File: packages/ui/libs/ui/ui-aspectratio-helm/src/index.ts
 ````typescript
 import { NgModule } from '@angular/core';
 import { HlmAspectRatioDirective } from './lib/helm-aspect-ratio.directive';
@@ -4221,7 +4221,7 @@ export * from './lib/helm-aspect-ratio.directive';
 export class HlmAspectRatioModule {}
 ````
 
-## File: src/ui/libs/ui/ui-avatar-helm/src/lib/fallback/hlm-avatar-fallback.directive.spec.ts
+## File: packages/ui/libs/ui/ui-avatar-helm/src/lib/fallback/hlm-avatar-fallback.directive.spec.ts
 ````typescript
 import { Component, PLATFORM_ID } from '@angular/core';
 import { type ComponentFixture, TestBed, fakeAsync } from '@angular/core/testing';
@@ -4295,7 +4295,7 @@ describe('HlmAvatarFallbackDirective', () => {
 });
 ````
 
-## File: src/ui/libs/ui/ui-avatar-helm/src/lib/fallback/hlm-avatar-fallback.directive.ts
+## File: packages/ui/libs/ui/ui-avatar-helm/src/lib/fallback/hlm-avatar-fallback.directive.ts
 ````typescript
 import { Directive, computed, inject } from '@angular/core';
 import { BrnAvatarFallbackDirective, hexColorFor, isBright } from '@spartan-ng/brain/avatar';
@@ -4339,12 +4339,12 @@ export class HlmAvatarFallbackDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-avatar-helm/src/lib/fallback/index.ts
+## File: packages/ui/libs/ui/ui-avatar-helm/src/lib/fallback/index.ts
 ````typescript
 export * from './hlm-avatar-fallback.directive';
 ````
 
-## File: src/ui/libs/ui/ui-avatar-helm/src/lib/image/hlm-avatar-image.directive.spec.ts
+## File: packages/ui/libs/ui/ui-avatar-helm/src/lib/image/hlm-avatar-image.directive.spec.ts
 ````typescript
 import { Component } from '@angular/core';
 import { type ComponentFixture, TestBed } from '@angular/core/testing';
@@ -4392,7 +4392,7 @@ describe('HlmAvatarImageDirective', () => {
 });
 ````
 
-## File: src/ui/libs/ui/ui-avatar-helm/src/lib/image/hlm-avatar-image.directive.ts
+## File: packages/ui/libs/ui/ui-avatar-helm/src/lib/image/hlm-avatar-image.directive.ts
 ````typescript
 import { Directive, computed, inject, input } from '@angular/core';
 import { BrnAvatarImageDirective } from '@spartan-ng/brain/avatar';
@@ -4416,12 +4416,12 @@ export class HlmAvatarImageDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-avatar-helm/src/lib/image/index.ts
+## File: packages/ui/libs/ui/ui-avatar-helm/src/lib/image/index.ts
 ````typescript
 export * from './hlm-avatar-image.directive';
 ````
 
-## File: src/ui/libs/ui/ui-avatar-helm/src/lib/hlm-avatar.component.spec.ts
+## File: packages/ui/libs/ui/ui-avatar-helm/src/lib/hlm-avatar.component.spec.ts
 ````typescript
 import { Component, Input } from '@angular/core';
 import { type ComponentFixture, TestBed } from '@angular/core/testing';
@@ -4490,7 +4490,7 @@ describe('HlmAvatarComponent', () => {
 });
 ````
 
-## File: src/ui/libs/ui/ui-avatar-helm/src/index.ts
+## File: packages/ui/libs/ui/ui-avatar-helm/src/index.ts
 ````typescript
 import { NgModule } from '@angular/core';
 
@@ -4511,7 +4511,7 @@ export const HlmAvatarImports = [HlmAvatarFallbackDirective, HlmAvatarImageDirec
 export class HlmAvatarModule {}
 ````
 
-## File: src/ui/libs/ui/ui-badge-helm/src/lib/hlm-badge.directive.ts
+## File: packages/ui/libs/ui/ui-badge-helm/src/lib/hlm-badge.directive.ts
 ````typescript
 import type { BooleanInput } from '@angular/cdk/coercion';
 import { Directive, booleanAttribute, computed, input } from '@angular/core';
@@ -4580,7 +4580,7 @@ export class HlmBadgeDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-badge-helm/src/index.ts
+## File: packages/ui/libs/ui/ui-badge-helm/src/index.ts
 ````typescript
 import { NgModule } from '@angular/core';
 import { HlmBadgeDirective } from './lib/hlm-badge.directive';
@@ -4594,7 +4594,7 @@ export * from './lib/hlm-badge.directive';
 export class HlmBadgeModule {}
 ````
 
-## File: src/ui/libs/ui/ui-breadcrumb-helm/src/lib/breadcrumb-ellipsis.component.ts
+## File: packages/ui/libs/ui/ui-breadcrumb-helm/src/lib/breadcrumb-ellipsis.component.ts
 ````typescript
 import { Component, computed, input } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -4621,7 +4621,7 @@ export class HlmBreadcrumbEllipsisComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-breadcrumb-helm/src/lib/breadcrumb-item.directive.ts
+## File: packages/ui/libs/ui/ui-breadcrumb-helm/src/lib/breadcrumb-item.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -4641,7 +4641,7 @@ export class HlmBreadcrumbItemDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-breadcrumb-helm/src/lib/breadcrumb-link.directive.ts
+## File: packages/ui/libs/ui/ui-breadcrumb-helm/src/lib/breadcrumb-link.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
@@ -4681,7 +4681,7 @@ export class HlmBreadcrumbLinkDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-breadcrumb-helm/src/lib/breadcrumb-list.directive.ts
+## File: packages/ui/libs/ui/ui-breadcrumb-helm/src/lib/breadcrumb-list.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -4703,7 +4703,7 @@ export class HlmBreadcrumbListDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-breadcrumb-helm/src/lib/breadcrumb-page.directive.ts
+## File: packages/ui/libs/ui/ui-breadcrumb-helm/src/lib/breadcrumb-page.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -4726,7 +4726,7 @@ export class HlmBreadcrumbPageDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-breadcrumb-helm/src/lib/breadcrumb-separator.component.ts
+## File: packages/ui/libs/ui/ui-breadcrumb-helm/src/lib/breadcrumb-separator.component.ts
 ````typescript
 import { Component, computed, input } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -4760,7 +4760,7 @@ export class HlmBreadcrumbSeparatorComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-breadcrumb-helm/src/lib/breadcrumb.directive.ts
+## File: packages/ui/libs/ui/ui-breadcrumb-helm/src/lib/breadcrumb.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -4783,7 +4783,7 @@ export class HlmBreadcrumbDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-breadcrumb-helm/src/index.ts
+## File: packages/ui/libs/ui/ui-breadcrumb-helm/src/index.ts
 ````typescript
 import { NgModule } from '@angular/core';
 import { HlmBreadcrumbEllipsisComponent } from './lib/breadcrumb-ellipsis.component';
@@ -4819,7 +4819,7 @@ export const HlmBreadCrumbImports = [
 export class HlmBreadCrumbModule {}
 ````
 
-## File: src/ui/libs/ui/ui-button-helm/src/lib/hlm-button.directive.ts
+## File: packages/ui/libs/ui/ui-button-helm/src/lib/hlm-button.directive.ts
 ````typescript
 import { Directive, computed, input, signal } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -4883,7 +4883,7 @@ export class HlmButtonDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-button-helm/src/lib/hlm-button.token.ts
+## File: packages/ui/libs/ui/ui-button-helm/src/lib/hlm-button.token.ts
 ````typescript
 import { InjectionToken, ValueProvider, inject } from '@angular/core';
 import type { ButtonVariants } from './hlm-button.directive';
@@ -4909,7 +4909,7 @@ export function injectBrnButtonConfig(): BrnButtonConfig {
 }
 ````
 
-## File: src/ui/libs/ui/ui-button-helm/src/index.ts
+## File: packages/ui/libs/ui/ui-button-helm/src/index.ts
 ````typescript
 import { NgModule } from '@angular/core';
 import { HlmButtonDirective } from './lib/hlm-button.directive';
@@ -4924,7 +4924,7 @@ export * from './lib/hlm-button.directive';
 export class HlmButtonModule {}
 ````
 
-## File: src/ui/libs/ui/ui-calendar-helm/src/lib/hlm-calendar.component.ts
+## File: packages/ui/libs/ui/ui-calendar-helm/src/lib/hlm-calendar.component.ts
 ````typescript
 import { BooleanInput, NumberInput } from '@angular/cdk/coercion';
 import { Component, booleanAttribute, computed, input, model, numberAttribute, viewChild } from '@angular/core';
@@ -5094,7 +5094,7 @@ export class HlmCalendarComponent<T> {
 }
 ````
 
-## File: src/ui/libs/ui/ui-calendar-helm/src/index.ts
+## File: packages/ui/libs/ui/ui-calendar-helm/src/index.ts
 ````typescript
 import { NgModule } from '@angular/core';
 import { HlmCalendarComponent } from './lib/hlm-calendar.component';
@@ -5108,7 +5108,7 @@ export * from './lib/hlm-calendar.component';
 export class HlmCalendarModule {}
 ````
 
-## File: src/ui/libs/ui/ui-card-helm/src/lib/hlm-card-content.directive.ts
+## File: packages/ui/libs/ui/ui-card-helm/src/lib/hlm-card-content.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -5134,7 +5134,7 @@ export class HlmCardContentDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-card-helm/src/lib/hlm-card-description.directive.ts
+## File: packages/ui/libs/ui/ui-card-helm/src/lib/hlm-card-description.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -5160,7 +5160,7 @@ export class HlmCardDescriptionDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-card-helm/src/lib/hlm-card-footer.directive.ts
+## File: packages/ui/libs/ui/ui-card-helm/src/lib/hlm-card-footer.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -5195,7 +5195,7 @@ export class HlmCardFooterDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-card-helm/src/lib/hlm-card-header.directive.ts
+## File: packages/ui/libs/ui/ui-card-helm/src/lib/hlm-card-header.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -5230,7 +5230,7 @@ export class HlmCardHeaderDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-card-helm/src/lib/hlm-card-title.directive.ts
+## File: packages/ui/libs/ui/ui-card-helm/src/lib/hlm-card-title.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -5256,7 +5256,7 @@ export class HlmCardTitleDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-card-helm/src/lib/hlm-card.directive.ts
+## File: packages/ui/libs/ui/ui-card-helm/src/lib/hlm-card.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -5285,7 +5285,7 @@ export class HlmCardDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-card-helm/src/index.ts
+## File: packages/ui/libs/ui/ui-card-helm/src/index.ts
 ````typescript
 import { NgModule } from '@angular/core';
 
@@ -5319,7 +5319,7 @@ export const HlmCardImports = [
 export class HlmCardModule {}
 ````
 
-## File: src/ui/libs/ui/ui-carousel-helm/src/lib/hlm-carousel-content.component.ts
+## File: packages/ui/libs/ui/ui-carousel-helm/src/lib/hlm-carousel-content.component.ts
 ````typescript
 import { ChangeDetectionStrategy, Component, ViewEncapsulation, computed, inject, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -5348,7 +5348,7 @@ export class HlmCarouselContentComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-carousel-helm/src/lib/hlm-carousel-item.component.ts
+## File: packages/ui/libs/ui/ui-carousel-helm/src/lib/hlm-carousel-item.component.ts
 ````typescript
 import { ChangeDetectionStrategy, Component, ViewEncapsulation, computed, inject, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -5382,7 +5382,7 @@ export class HlmCarouselItemComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-carousel-helm/src/lib/hlm-carousel-next.component.ts
+## File: packages/ui/libs/ui/ui-carousel-helm/src/lib/hlm-carousel-next.component.ts
 ````typescript
 import {
 	ChangeDetectionStrategy,
@@ -5443,7 +5443,7 @@ export class HlmCarouselNextComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-carousel-helm/src/lib/hlm-carousel-previous.component.ts
+## File: packages/ui/libs/ui/ui-carousel-helm/src/lib/hlm-carousel-previous.component.ts
 ````typescript
 import {
 	ChangeDetectionStrategy,
@@ -5507,7 +5507,7 @@ export class HlmCarouselPreviousComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-carousel-helm/src/lib/hlm-carousel.component.ts
+## File: packages/ui/libs/ui/ui-carousel-helm/src/lib/hlm-carousel.component.ts
 ````typescript
 import {
 	ChangeDetectionStrategy,
@@ -5608,7 +5608,7 @@ export class HlmCarouselComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-carousel-helm/src/index.ts
+## File: packages/ui/libs/ui/ui-carousel-helm/src/index.ts
 ````typescript
 import { NgModule } from '@angular/core';
 import { HlmCarouselContentComponent } from './lib/hlm-carousel-content.component';
@@ -5638,7 +5638,7 @@ export const HlmCarouselImports = [
 export class HlmCarouselModule {}
 ````
 
-## File: src/ui/libs/ui/ui-checkbox-helm/src/lib/hlm-checkbox.component.ts
+## File: packages/ui/libs/ui/ui-checkbox-helm/src/lib/hlm-checkbox.component.ts
 ````typescript
 import { Component, booleanAttribute, computed, forwardRef, input, model, output, signal } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -5765,7 +5765,7 @@ export class HlmCheckboxComponent {
 type CheckboxValue = boolean | 'indeterminate';
 ````
 
-## File: src/ui/libs/ui/ui-checkbox-helm/src/index.ts
+## File: packages/ui/libs/ui/ui-checkbox-helm/src/index.ts
 ````typescript
 import { NgModule } from '@angular/core';
 
@@ -5781,7 +5781,7 @@ export const HlmCheckboxImports = [HlmCheckboxComponent] as const;
 export class HlmCheckboxModule {}
 ````
 
-## File: src/ui/libs/ui/ui-command-helm/src/lib/hlm-command-dialog-close-button.directive.ts
+## File: packages/ui/libs/ui/ui-command-helm/src/lib/hlm-command-dialog-close-button.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -5810,7 +5810,7 @@ export class HlmCommandDialogCloseButtonDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-command-helm/src/lib/hlm-command-dialog.directive.ts
+## File: packages/ui/libs/ui/ui-command-helm/src/lib/hlm-command-dialog.directive.ts
 ````typescript
 import { Directive, ElementRef, Renderer2, computed, contentChild, effect, inject, input, signal } from '@angular/core';
 import { BrnCommandSearchInputToken } from '@spartan-ng/brain/command';
@@ -5855,7 +5855,7 @@ export class HlmCommandDialogDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-command-helm/src/lib/hlm-command-empty.directive.ts
+## File: packages/ui/libs/ui/ui-command-helm/src/lib/hlm-command-empty.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -5874,7 +5874,7 @@ export class HlmCommandEmptyDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-command-helm/src/lib/hlm-command-group-label.component.ts
+## File: packages/ui/libs/ui/ui-command-helm/src/lib/hlm-command-group-label.component.ts
 ````typescript
 import { Component, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -5899,7 +5899,7 @@ export class HlmCommandGroupLabelComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-command-helm/src/lib/hlm-command-group.component.ts
+## File: packages/ui/libs/ui/ui-command-helm/src/lib/hlm-command-group.component.ts
 ````typescript
 import { Component, computed, input } from '@angular/core';
 import { BrnCommandGroupDirective } from '@spartan-ng/brain/command';
@@ -5930,7 +5930,7 @@ export class HlmCommandGroupComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-command-helm/src/lib/hlm-command-icon.directive.ts
+## File: packages/ui/libs/ui/ui-command-helm/src/lib/hlm-command-icon.directive.ts
 ````typescript
 import { Directive } from '@angular/core';
 import { provideHlmIconConfig } from '@spartan-ng/ui-icon-helm';
@@ -5946,7 +5946,7 @@ import { provideHlmIconConfig } from '@spartan-ng/ui-icon-helm';
 export class HlmCommandIconDirective {}
 ````
 
-## File: src/ui/libs/ui/ui-command-helm/src/lib/hlm-command-item.component.ts
+## File: packages/ui/libs/ui/ui-command-helm/src/lib/hlm-command-item.component.ts
 ````typescript
 import { BooleanInput } from '@angular/cdk/coercion';
 import { booleanAttribute, Component, computed, input, output } from '@angular/core';
@@ -5995,7 +5995,7 @@ export class HlmCommandItemComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-command-helm/src/lib/hlm-command-list.component.ts
+## File: packages/ui/libs/ui/ui-command-helm/src/lib/hlm-command-list.component.ts
 ````typescript
 import { Component, computed, input } from '@angular/core';
 import { BrnCommandListDirective } from '@spartan-ng/brain/command';
@@ -6026,7 +6026,7 @@ export class HlmCommandListComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-command-helm/src/lib/hlm-command-search-input.component.ts
+## File: packages/ui/libs/ui/ui-command-helm/src/lib/hlm-command-search-input.component.ts
 ````typescript
 import { Component, computed, input } from '@angular/core';
 import { BrnCommandSearchInputDirective } from '@spartan-ng/brain/command';
@@ -6055,7 +6055,7 @@ export class HlmCommandSearchInputComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-command-helm/src/lib/hlm-command-search.component.ts
+## File: packages/ui/libs/ui/ui-command-helm/src/lib/hlm-command-search.component.ts
 ````typescript
 import { Component, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -6083,7 +6083,7 @@ export class HlmCommandSearchComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-command-helm/src/lib/hlm-command-separator.component.ts
+## File: packages/ui/libs/ui/ui-command-helm/src/lib/hlm-command-separator.component.ts
 ````typescript
 import { Component, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -6106,7 +6106,7 @@ export class HlmCommandSeparatorComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-command-helm/src/lib/hlm-command-shortcut.component.ts
+## File: packages/ui/libs/ui/ui-command-helm/src/lib/hlm-command-shortcut.component.ts
 ````typescript
 import { Component } from '@angular/core';
 
@@ -6121,7 +6121,7 @@ import { Component } from '@angular/core';
 export class HlmCommandShortcutComponent {}
 ````
 
-## File: src/ui/libs/ui/ui-command-helm/src/lib/hlm-command.component.ts
+## File: packages/ui/libs/ui/ui-command-helm/src/lib/hlm-command.component.ts
 ````typescript
 import { Component, computed, input } from '@angular/core';
 import { BrnCommandDirective } from '@spartan-ng/brain/command';
@@ -6158,7 +6158,7 @@ export class HlmCommandComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-command-helm/src/index.ts
+## File: packages/ui/libs/ui/ui-command-helm/src/index.ts
 ````typescript
 import { NgModule } from '@angular/core';
 
@@ -6213,7 +6213,7 @@ export const HlmCommandImports = [
 export class HlmCommandModule {}
 ````
 
-## File: src/ui/libs/ui/ui-datepicker-helm/src/lib/hlm-date-picker.component.ts
+## File: packages/ui/libs/ui/ui-datepicker-helm/src/lib/hlm-date-picker.component.ts
 ````typescript
 import { BooleanInput } from '@angular/cdk/coercion';
 import { booleanAttribute, Component, computed, forwardRef, input, model, output, signal } from '@angular/core';
@@ -6375,7 +6375,7 @@ export class HlmDatePickerComponent<T> {
 }
 ````
 
-## File: src/ui/libs/ui/ui-datepicker-helm/src/lib/hlm-date-picker.token.ts
+## File: packages/ui/libs/ui/ui-datepicker-helm/src/lib/hlm-date-picker.token.ts
 ````typescript
 import { inject, InjectionToken, ValueProvider } from '@angular/core';
 
@@ -6422,7 +6422,7 @@ export function injectHlmDatePickerConfig<T>(): HlmDatePickerConfig<T> {
 }
 ````
 
-## File: src/ui/libs/ui/ui-datepicker-helm/src/index.ts
+## File: packages/ui/libs/ui/ui-datepicker-helm/src/index.ts
 ````typescript
 import { NgModule } from '@angular/core';
 import { HlmDatePickerComponent } from './lib/hlm-date-picker.component';
@@ -6438,7 +6438,7 @@ export * from './lib/hlm-date-picker.component';
 export class HlmDatePickerModule {}
 ````
 
-## File: src/ui/libs/ui/ui-dialog-helm/src/lib/hlm-dialog-close.directive.ts
+## File: packages/ui/libs/ui/ui-dialog-helm/src/lib/hlm-dialog-close.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -6463,7 +6463,7 @@ export class HlmDialogCloseDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-dialog-helm/src/lib/hlm-dialog-content.component.ts
+## File: packages/ui/libs/ui/ui-dialog-helm/src/lib/hlm-dialog-content.component.ts
 ````typescript
 import { NgComponentOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, ViewEncapsulation, computed, inject, input } from '@angular/core';
@@ -6518,7 +6518,7 @@ export class HlmDialogContentComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-dialog-helm/src/lib/hlm-dialog-description.directive.ts
+## File: packages/ui/libs/ui/ui-dialog-helm/src/lib/hlm-dialog-description.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -6539,7 +6539,7 @@ export class HlmDialogDescriptionDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-dialog-helm/src/lib/hlm-dialog-footer.component.ts
+## File: packages/ui/libs/ui/ui-dialog-helm/src/lib/hlm-dialog-footer.component.ts
 ````typescript
 import { Component, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -6563,7 +6563,7 @@ export class HlmDialogFooterComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-dialog-helm/src/lib/hlm-dialog-header.component.ts
+## File: packages/ui/libs/ui/ui-dialog-helm/src/lib/hlm-dialog-header.component.ts
 ````typescript
 import { Component, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -6587,7 +6587,7 @@ export class HlmDialogHeaderComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-dialog-helm/src/lib/hlm-dialog-overlay.directive.ts
+## File: packages/ui/libs/ui/ui-dialog-helm/src/lib/hlm-dialog-overlay.directive.ts
 ````typescript
 import { Directive, computed, effect, input, untracked } from '@angular/core';
 import { hlm, injectCustomClassSettable } from '@spartan-ng/brain/core';
@@ -6615,7 +6615,7 @@ export class HlmDialogOverlayDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-dialog-helm/src/lib/hlm-dialog-title.directive.ts
+## File: packages/ui/libs/ui/ui-dialog-helm/src/lib/hlm-dialog-title.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -6636,7 +6636,7 @@ export class HlmDialogTitleDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-dialog-helm/src/lib/hlm-dialog.component.ts
+## File: packages/ui/libs/ui/ui-dialog-helm/src/lib/hlm-dialog.component.ts
 ````typescript
 import { ChangeDetectionStrategy, Component, forwardRef, ViewEncapsulation } from '@angular/core';
 import {
@@ -6669,7 +6669,7 @@ import { HlmDialogOverlayDirective } from './hlm-dialog-overlay.directive';
 export class HlmDialogComponent extends BrnDialogComponent {}
 ````
 
-## File: src/ui/libs/ui/ui-dialog-helm/src/lib/hlm-dialog.service.ts
+## File: packages/ui/libs/ui/ui-dialog-helm/src/lib/hlm-dialog.service.ts
 ````typescript
 import type { ComponentType } from '@angular/cdk/portal';
 import { Injectable, type TemplateRef, inject } from '@angular/core';
@@ -6707,7 +6707,7 @@ export class HlmDialogService {
 }
 ````
 
-## File: src/ui/libs/ui/ui-dialog-helm/src/index.ts
+## File: packages/ui/libs/ui/ui-dialog-helm/src/index.ts
 ````typescript
 import { NgModule } from '@angular/core';
 
@@ -6748,7 +6748,7 @@ export const HlmDialogImports = [
 export class HlmDialogModule {}
 ````
 
-## File: src/ui/libs/ui/ui-formfield-helm/src/lib/form-field.spec.ts
+## File: packages/ui/libs/ui/ui-formfield-helm/src/lib/form-field.spec.ts
 ````typescript
 /* eslint-disable @angular-eslint/component-class-suffix */
 /* eslint-disable @angular-eslint/component-selector */
@@ -6888,7 +6888,7 @@ describe('Hlm Form Field Component', () => {
 });
 ````
 
-## File: src/ui/libs/ui/ui-formfield-helm/src/lib/hlm-error.directive.ts
+## File: packages/ui/libs/ui/ui-formfield-helm/src/lib/hlm-error.directive.ts
 ````typescript
 import { Directive } from '@angular/core';
 
@@ -6903,7 +6903,7 @@ import { Directive } from '@angular/core';
 export class HlmErrorDirective {}
 ````
 
-## File: src/ui/libs/ui/ui-formfield-helm/src/lib/hlm-form-field.component.ts
+## File: packages/ui/libs/ui/ui-formfield-helm/src/lib/hlm-form-field.component.ts
 ````typescript
 import { Component, computed, contentChild, contentChildren, effect } from '@angular/core';
 import { BrnFormFieldControl } from '@spartan-ng/brain/form-field';
@@ -6947,7 +6947,7 @@ export class HlmFormFieldComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-formfield-helm/src/lib/hlm-hint.directive.ts
+## File: packages/ui/libs/ui/ui-formfield-helm/src/lib/hlm-hint.directive.ts
 ````typescript
 import { Directive } from '@angular/core';
 
@@ -6962,7 +6962,7 @@ import { Directive } from '@angular/core';
 export class HlmHintDirective {}
 ````
 
-## File: src/ui/libs/ui/ui-formfield-helm/src/index.ts
+## File: packages/ui/libs/ui/ui-formfield-helm/src/index.ts
 ````typescript
 import { NgModule } from '@angular/core';
 import { HlmErrorDirective } from './lib/hlm-error.directive';
@@ -6980,7 +6980,7 @@ export * from './lib/hlm-hint.directive';
 export class HlmFormFieldModule {}
 ````
 
-## File: src/ui/libs/ui/ui-hovercard-helm/src/lib/hlm-hover-card-content.component.ts
+## File: packages/ui/libs/ui/ui-hovercard-helm/src/lib/hlm-hover-card-content.component.ts
 ````typescript
 import { Component, ElementRef, Renderer2, computed, effect, inject, input, signal } from '@angular/core';
 import { hlm, injectExposedSideProvider, injectExposesStateProvider } from '@spartan-ng/brain/core';
@@ -7021,7 +7021,7 @@ export class HlmHoverCardContentComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-hovercard-helm/src/index.ts
+## File: packages/ui/libs/ui/ui-hovercard-helm/src/index.ts
 ````typescript
 import { NgModule } from '@angular/core';
 import { HlmHoverCardContentComponent } from './lib/hlm-hover-card-content.component';
@@ -7037,7 +7037,7 @@ export const HlmHoverCardImports = [HlmHoverCardContentComponent] as const;
 export class HlmHoverCardModule {}
 ````
 
-## File: src/ui/libs/ui/ui-icon-helm/src/lib/hlm-icon.directive.spec.ts
+## File: packages/ui/libs/ui/ui-icon-helm/src/lib/hlm-icon.directive.spec.ts
 ````typescript
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { By } from '@angular/platform-browser';
@@ -7107,7 +7107,7 @@ describe('HlmIconDirective', () => {
 });
 ````
 
-## File: src/ui/libs/ui/ui-icon-helm/src/lib/hlm-icon.directive.ts
+## File: packages/ui/libs/ui/ui-icon-helm/src/lib/hlm-icon.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { injectHlmIconConfig } from './hlm-icon.token';
@@ -7147,7 +7147,7 @@ export class HlmIconDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-icon-helm/src/lib/hlm-icon.token.ts
+## File: packages/ui/libs/ui/ui-icon-helm/src/lib/hlm-icon.token.ts
 ````typescript
 import { InjectionToken, ValueProvider, inject } from '@angular/core';
 import type { IconSize } from './hlm-icon.directive';
@@ -7171,7 +7171,7 @@ export function injectHlmIconConfig(): HlmIconConfig {
 }
 ````
 
-## File: src/ui/libs/ui/ui-icon-helm/src/index.ts
+## File: packages/ui/libs/ui/ui-icon-helm/src/index.ts
 ````typescript
 import { NgModule } from '@angular/core';
 import { HlmIconDirective } from './lib/hlm-icon.directive';
@@ -7186,7 +7186,7 @@ export * from './lib/hlm-icon.token';
 export class HlmIconModule {}
 ````
 
-## File: src/ui/libs/ui/ui-input-helm/src/lib/hlm-input-error.directive.ts
+## File: packages/ui/libs/ui/ui-input-helm/src/lib/hlm-input-error.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -7212,7 +7212,7 @@ export class HlmInputErrorDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-input-helm/src/lib/hlm-input.directive.ts
+## File: packages/ui/libs/ui/ui-input-helm/src/lib/hlm-input.directive.ts
 ````typescript
 import { Directive, type DoCheck, Injector, computed, effect, inject, input, signal, untracked } from '@angular/core';
 import { FormGroupDirective, NgControl, NgForm } from '@angular/forms';
@@ -7312,7 +7312,7 @@ export class HlmInputDirective implements BrnFormFieldControl, DoCheck {
 }
 ````
 
-## File: src/ui/libs/ui/ui-input-helm/src/index.ts
+## File: packages/ui/libs/ui/ui-input-helm/src/index.ts
 ````typescript
 import { NgModule } from '@angular/core';
 import { HlmInputErrorDirective } from './lib/hlm-input-error.directive';
@@ -7328,7 +7328,7 @@ export * from './lib/hlm-input.directive';
 export class HlmInputModule {}
 ````
 
-## File: src/ui/libs/ui/ui-label-helm/src/lib/hlm-label.directive.ts
+## File: packages/ui/libs/ui/ui-label-helm/src/lib/hlm-label.directive.ts
 ````typescript
 import { Directive, computed, inject, input, signal } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -7405,7 +7405,7 @@ export class HlmLabelDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-label-helm/src/index.ts
+## File: packages/ui/libs/ui/ui-label-helm/src/index.ts
 ````typescript
 import { NgModule } from '@angular/core';
 import { HlmLabelDirective } from './lib/hlm-label.directive';
@@ -7419,7 +7419,7 @@ export * from './lib/hlm-label.directive';
 export class HlmLabelModule {}
 ````
 
-## File: src/ui/libs/ui/ui-menu-helm/src/lib/hlm-menu-bar-item.directive.ts
+## File: packages/ui/libs/ui/ui-menu-helm/src/lib/hlm-menu-bar-item.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -7445,7 +7445,7 @@ export class HlmMenuBarItemDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-menu-helm/src/lib/hlm-menu-bar.component.ts
+## File: packages/ui/libs/ui/ui-menu-helm/src/lib/hlm-menu-bar.component.ts
 ````typescript
 import { Component, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -7469,7 +7469,7 @@ export class HlmMenuBarComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-menu-helm/src/lib/hlm-menu-group.component.ts
+## File: packages/ui/libs/ui/ui-menu-helm/src/lib/hlm-menu-group.component.ts
 ````typescript
 import { Component } from '@angular/core';
 import { BrnMenuGroupDirective } from '@spartan-ng/brain/menu';
@@ -7488,7 +7488,7 @@ import { BrnMenuGroupDirective } from '@spartan-ng/brain/menu';
 export class HlmMenuGroupComponent {}
 ````
 
-## File: src/ui/libs/ui/ui-menu-helm/src/lib/hlm-menu-item-check.component.ts
+## File: packages/ui/libs/ui/ui-menu-helm/src/lib/hlm-menu-item-check.component.ts
 ````typescript
 import { Component, computed, input } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -7520,7 +7520,7 @@ export class HlmMenuItemCheckComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-menu-helm/src/lib/hlm-menu-item-checkbox.directive.ts
+## File: packages/ui/libs/ui/ui-menu-helm/src/lib/hlm-menu-item-checkbox.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -7552,7 +7552,7 @@ export class HlmMenuItemCheckboxDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-menu-helm/src/lib/hlm-menu-item-icon.directive.ts
+## File: packages/ui/libs/ui/ui-menu-helm/src/lib/hlm-menu-item-icon.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -7573,7 +7573,7 @@ export class HlmMenuItemIconDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-menu-helm/src/lib/hlm-menu-item-radio.component.ts
+## File: packages/ui/libs/ui/ui-menu-helm/src/lib/hlm-menu-item-radio.component.ts
 ````typescript
 import { Component, computed, input } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -7605,7 +7605,7 @@ export class HlmMenuItemRadioComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-menu-helm/src/lib/hlm-menu-item-radio.directive.ts
+## File: packages/ui/libs/ui/ui-menu-helm/src/lib/hlm-menu-item-radio.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -7637,7 +7637,7 @@ export class HlmMenuItemRadioDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-menu-helm/src/lib/hlm-menu-item-sub-indicator.component.ts
+## File: packages/ui/libs/ui/ui-menu-helm/src/lib/hlm-menu-item-sub-indicator.component.ts
 ````typescript
 import { Component, computed, input } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -7663,7 +7663,7 @@ export class HlmMenuItemSubIndicatorComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-menu-helm/src/lib/hlm-menu-item.directive.ts
+## File: packages/ui/libs/ui/ui-menu-helm/src/lib/hlm-menu-item.directive.ts
 ````typescript
 import { Directive, Input, booleanAttribute, computed, input, signal } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -7707,7 +7707,7 @@ export class HlmMenuItemDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-menu-helm/src/lib/hlm-menu-label.component.ts
+## File: packages/ui/libs/ui/ui-menu-helm/src/lib/hlm-menu-label.component.ts
 ````typescript
 import { Component, Input, booleanAttribute, computed, input, signal } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -7737,7 +7737,7 @@ export class HlmMenuLabelComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-menu-helm/src/lib/hlm-menu-separator.component.ts
+## File: packages/ui/libs/ui/ui-menu-helm/src/lib/hlm-menu-separator.component.ts
 ````typescript
 import { Component, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -7757,7 +7757,7 @@ export class HlmMenuSeparatorComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-menu-helm/src/lib/hlm-menu-shortcut.component.ts
+## File: packages/ui/libs/ui/ui-menu-helm/src/lib/hlm-menu-shortcut.component.ts
 ````typescript
 import { Component, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -7781,7 +7781,7 @@ export class HlmMenuShortcutComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-menu-helm/src/lib/hlm-menu.component.ts
+## File: packages/ui/libs/ui/ui-menu-helm/src/lib/hlm-menu.component.ts
 ````typescript
 import { Component, Input, computed, input, signal } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -7828,7 +7828,7 @@ export class HlmMenuComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-menu-helm/src/lib/hlm-sub-menu.component.ts
+## File: packages/ui/libs/ui/ui-menu-helm/src/lib/hlm-sub-menu.component.ts
 ````typescript
 import { Component, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -7857,7 +7857,7 @@ export class HlmSubMenuComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-menu-helm/src/index.ts
+## File: packages/ui/libs/ui/ui-menu-helm/src/index.ts
 ````typescript
 import { NgModule } from '@angular/core';
 
@@ -7932,7 +7932,7 @@ export class HlmMenuModule {}
 export class HlmMenuBarModule {}
 ````
 
-## File: src/ui/libs/ui/ui-pagination-helm/src/lib/hlm-numbered-pagination.component.ts
+## File: packages/ui/libs/ui/ui-pagination-helm/src/lib/hlm-numbered-pagination.component.ts
 ````typescript
 import { BooleanInput, NumberInput } from '@angular/cdk/coercion';
 import {
@@ -8204,7 +8204,7 @@ function calculatePageNumber(i: number, currentPage: number, paginationRange: nu
 }
 ````
 
-## File: src/ui/libs/ui/ui-pagination-helm/src/lib/hlm-pagination-content.directive.ts
+## File: packages/ui/libs/ui/ui-pagination-helm/src/lib/hlm-pagination-content.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -8230,7 +8230,7 @@ export class HlmPaginationContentDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-pagination-helm/src/lib/hlm-pagination-ellipsis.component.ts
+## File: packages/ui/libs/ui/ui-pagination-helm/src/lib/hlm-pagination-ellipsis.component.ts
 ````typescript
 import { Component, computed, input } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -8257,7 +8257,7 @@ export class HlmPaginationEllipsisComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-pagination-helm/src/lib/hlm-pagination-item.directive.ts
+## File: packages/ui/libs/ui/ui-pagination-helm/src/lib/hlm-pagination-item.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -8285,7 +8285,7 @@ export class HlmPaginationItemDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-pagination-helm/src/lib/hlm-pagination-link.directive.ts
+## File: packages/ui/libs/ui/ui-pagination-helm/src/lib/hlm-pagination-link.directive.ts
 ````typescript
 import { BooleanInput } from '@angular/cdk/coercion';
 import { Directive, booleanAttribute, computed, input } from '@angular/core';
@@ -8347,7 +8347,7 @@ export class HlmPaginationLinkDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-pagination-helm/src/lib/hlm-pagination-next.component.ts
+## File: packages/ui/libs/ui/ui-pagination-helm/src/lib/hlm-pagination-next.component.ts
 ````typescript
 import { BooleanInput } from '@angular/cdk/coercion';
 import { booleanAttribute, Component, computed, input } from '@angular/core';
@@ -8397,7 +8397,7 @@ export class HlmPaginationNextComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-pagination-helm/src/lib/hlm-pagination-previous.component.ts
+## File: packages/ui/libs/ui/ui-pagination-helm/src/lib/hlm-pagination-previous.component.ts
 ````typescript
 import { BooleanInput } from '@angular/cdk/coercion';
 import { booleanAttribute, Component, computed, input } from '@angular/core';
@@ -8447,7 +8447,7 @@ export class HlmPaginationPreviousComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-pagination-helm/src/lib/hlm-pagination.directive.ts
+## File: packages/ui/libs/ui/ui-pagination-helm/src/lib/hlm-pagination.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -8478,7 +8478,7 @@ export class HlmPaginationDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-pagination-helm/src/index.ts
+## File: packages/ui/libs/ui/ui-pagination-helm/src/index.ts
 ````typescript
 import { NgModule } from '@angular/core';
 
@@ -8518,7 +8518,7 @@ export const HlmPaginationImports = [
 export class HlmPaginationModule {}
 ````
 
-## File: src/ui/libs/ui/ui-popover-helm/src/lib/hlm-popover-close.directive.ts
+## File: packages/ui/libs/ui/ui-popover-helm/src/lib/hlm-popover-close.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -8542,7 +8542,7 @@ export class HlmPopoverCloseDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-popover-helm/src/lib/hlm-popover-content.directive.ts
+## File: packages/ui/libs/ui/ui-popover-helm/src/lib/hlm-popover-content.directive.ts
 ````typescript
 import { Directive, ElementRef, Renderer2, computed, effect, inject, input, signal } from '@angular/core';
 import { hlm, injectExposesStateProvider } from '@spartan-ng/brain/core';
@@ -8577,7 +8577,7 @@ export class HlmPopoverContentDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-popover-helm/src/index.ts
+## File: packages/ui/libs/ui/ui-popover-helm/src/index.ts
 ````typescript
 import { NgModule } from '@angular/core';
 
@@ -8596,7 +8596,7 @@ export const HlmPopoverImports = [HlmPopoverContentDirective, HlmPopoverCloseDir
 export class HlmPopoverModule {}
 ````
 
-## File: src/ui/libs/ui/ui-progress-helm/src/lib/hlm-progress-indicator.directive.ts
+## File: packages/ui/libs/ui/ui-progress-helm/src/lib/hlm-progress-indicator.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -8628,7 +8628,7 @@ export class HlmProgressIndicatorDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-progress-helm/src/lib/hlm-progress.directive.ts
+## File: packages/ui/libs/ui/ui-progress-helm/src/lib/hlm-progress.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -8649,7 +8649,7 @@ export class HlmProgressDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-progress-helm/src/index.ts
+## File: packages/ui/libs/ui/ui-progress-helm/src/index.ts
 ````typescript
 import { NgModule } from '@angular/core';
 
@@ -8668,7 +8668,7 @@ export const HlmProgressImports = [HlmProgressDirective, HlmProgressIndicatorDir
 export class HlmProgressModule {}
 ````
 
-## File: src/ui/libs/ui/ui-radiogroup-helm/src/lib/hlm-radio-group.component.ts
+## File: packages/ui/libs/ui/ui-radiogroup-helm/src/lib/hlm-radio-group.component.ts
 ````typescript
 import { Component, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -8695,7 +8695,7 @@ export class HlmRadioGroupComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-radiogroup-helm/src/lib/hlm-radio-indicator.component.ts
+## File: packages/ui/libs/ui/ui-radiogroup-helm/src/lib/hlm-radio-indicator.component.ts
 ````typescript
 import { Component, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -8723,7 +8723,7 @@ export class HlmRadioIndicatorComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-radiogroup-helm/src/lib/hlm-radio.component.ts
+## File: packages/ui/libs/ui/ui-radiogroup-helm/src/lib/hlm-radio.component.ts
 ````typescript
 import { booleanAttribute, Component, computed, input, output } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -8789,7 +8789,7 @@ export class HlmRadioComponent<T = unknown> {
 }
 ````
 
-## File: src/ui/libs/ui/ui-radiogroup-helm/src/index.ts
+## File: packages/ui/libs/ui/ui-radiogroup-helm/src/index.ts
 ````typescript
 import { NgModule } from '@angular/core';
 
@@ -8810,7 +8810,7 @@ export const HlmRadioGroupImports = [HlmRadioGroupComponent, HlmRadioComponent, 
 export class HlmRadioGroupModule {}
 ````
 
-## File: src/ui/libs/ui/ui-scrollarea-helm/src/lib/hlm-scroll-area.directive.ts
+## File: packages/ui/libs/ui/ui-scrollarea-helm/src/lib/hlm-scroll-area.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -8834,7 +8834,7 @@ export class HlmScrollAreaDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-scrollarea-helm/src/index.ts
+## File: packages/ui/libs/ui/ui-scrollarea-helm/src/index.ts
 ````typescript
 import { NgModule } from '@angular/core';
 import { HlmScrollAreaDirective } from './lib/hlm-scroll-area.directive';
@@ -8848,7 +8848,7 @@ export * from './lib/hlm-scroll-area.directive';
 export class HlmScrollAreaModule {}
 ````
 
-## File: src/ui/libs/ui/ui-select-helm/src/lib/hlm-select-content.directive.ts
+## File: packages/ui/libs/ui/ui-select-helm/src/lib/hlm-select-content.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm, injectExposedSideProvider, injectExposesStateProvider } from '@spartan-ng/brain/core';
@@ -8878,7 +8878,7 @@ export class HlmSelectContentDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-select-helm/src/lib/hlm-select-group.directive.ts
+## File: packages/ui/libs/ui/ui-select-helm/src/lib/hlm-select-group.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -8899,7 +8899,7 @@ export class HlmSelectGroupDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-select-helm/src/lib/hlm-select-label.directive.ts
+## File: packages/ui/libs/ui/ui-select-helm/src/lib/hlm-select-label.directive.ts
 ````typescript
 import { Directive, computed, inject, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -8929,7 +8929,7 @@ export class HlmSelectLabelDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-select-helm/src/lib/hlm-select-option.component.ts
+## File: packages/ui/libs/ui/ui-select-helm/src/lib/hlm-select-option.component.ts
 ````typescript
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -8973,7 +8973,7 @@ export class HlmSelectOptionComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-select-helm/src/lib/hlm-select-scroll-down.component.ts
+## File: packages/ui/libs/ui/ui-select-helm/src/lib/hlm-select-scroll-down.component.ts
 ````typescript
 import { Component } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -8994,7 +8994,7 @@ import { HlmIconDirective } from '@spartan-ng/ui-icon-helm';
 export class HlmSelectScrollDownComponent {}
 ````
 
-## File: src/ui/libs/ui/ui-select-helm/src/lib/hlm-select-scroll-up.component.ts
+## File: packages/ui/libs/ui/ui-select-helm/src/lib/hlm-select-scroll-up.component.ts
 ````typescript
 import { Component } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -9015,7 +9015,7 @@ import { HlmIconDirective } from '@spartan-ng/ui-icon-helm';
 export class HlmSelectScrollUpComponent {}
 ````
 
-## File: src/ui/libs/ui/ui-select-helm/src/lib/hlm-select-trigger.component.ts
+## File: packages/ui/libs/ui/ui-select-helm/src/lib/hlm-select-trigger.component.ts
 ````typescript
 import { Component, computed, contentChild, inject, input } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -9077,7 +9077,7 @@ export class HlmSelectTriggerComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-select-helm/src/lib/hlm-select-value.directive.ts
+## File: packages/ui/libs/ui/ui-select-helm/src/lib/hlm-select-value.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -9101,7 +9101,7 @@ export class HlmSelectValueDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-select-helm/src/lib/hlm-select.directive.ts
+## File: packages/ui/libs/ui/ui-select-helm/src/lib/hlm-select.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -9120,7 +9120,7 @@ export class HlmSelectDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-select-helm/src/index.ts
+## File: packages/ui/libs/ui/ui-select-helm/src/index.ts
 ````typescript
 import { NgModule } from '@angular/core';
 import { HlmSelectContentDirective } from './lib/hlm-select-content.directive';
@@ -9162,7 +9162,7 @@ export const HlmSelectImports = [
 export class HlmSelectModule {}
 ````
 
-## File: src/ui/libs/ui/ui-separator-helm/src/lib/hlm-separator.directive.ts
+## File: packages/ui/libs/ui/ui-separator-helm/src/lib/hlm-separator.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -9189,7 +9189,7 @@ export class HlmSeparatorDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-separator-helm/src/index.ts
+## File: packages/ui/libs/ui/ui-separator-helm/src/index.ts
 ````typescript
 import { NgModule } from '@angular/core';
 import { HlmSeparatorDirective } from './lib/hlm-separator.directive';
@@ -9203,7 +9203,7 @@ export * from './lib/hlm-separator.directive';
 export class HlmSeparatorModule {}
 ````
 
-## File: src/ui/libs/ui/ui-sheet-helm/src/lib/hlm-sheet-close.directive.ts
+## File: packages/ui/libs/ui/ui-sheet-helm/src/lib/hlm-sheet-close.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -9227,7 +9227,7 @@ export class HlmSheetCloseDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-sheet-helm/src/lib/hlm-sheet-content.component.ts
+## File: packages/ui/libs/ui/ui-sheet-helm/src/lib/hlm-sheet-content.component.ts
 ````typescript
 import { Component, ElementRef, Renderer2, computed, effect, inject, input, signal } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -9292,7 +9292,7 @@ export class HlmSheetContentComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-sheet-helm/src/lib/hlm-sheet-description.directive.ts
+## File: packages/ui/libs/ui/ui-sheet-helm/src/lib/hlm-sheet-description.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -9313,7 +9313,7 @@ export class HlmSheetDescriptionDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-sheet-helm/src/lib/hlm-sheet-footer.component.ts
+## File: packages/ui/libs/ui/ui-sheet-helm/src/lib/hlm-sheet-footer.component.ts
 ````typescript
 import { Component, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -9337,7 +9337,7 @@ export class HlmSheetFooterComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-sheet-helm/src/lib/hlm-sheet-header.component.ts
+## File: packages/ui/libs/ui/ui-sheet-helm/src/lib/hlm-sheet-header.component.ts
 ````typescript
 import { Component, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -9359,7 +9359,7 @@ export class HlmSheetHeaderComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-sheet-helm/src/lib/hlm-sheet-overlay.directive.ts
+## File: packages/ui/libs/ui/ui-sheet-helm/src/lib/hlm-sheet-overlay.directive.ts
 ````typescript
 import { Directive, computed, effect, input, untracked } from '@angular/core';
 import { hlm, injectCustomClassSettable } from '@spartan-ng/brain/core';
@@ -9391,7 +9391,7 @@ export class HlmSheetOverlayDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-sheet-helm/src/lib/hlm-sheet-title.directive.ts
+## File: packages/ui/libs/ui/ui-sheet-helm/src/lib/hlm-sheet-title.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -9412,7 +9412,7 @@ export class HlmSheetTitleDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-sheet-helm/src/lib/hlm-sheet.component.ts
+## File: packages/ui/libs/ui/ui-sheet-helm/src/lib/hlm-sheet.component.ts
 ````typescript
 import { ChangeDetectionStrategy, Component, forwardRef, ViewEncapsulation } from '@angular/core';
 import { BrnDialogComponent, provideBrnDialogDefaultOptions } from '@spartan-ng/brain/dialog';
@@ -9446,7 +9446,7 @@ import { HlmSheetOverlayDirective } from './hlm-sheet-overlay.directive';
 export class HlmSheetComponent extends BrnSheetComponent {}
 ````
 
-## File: src/ui/libs/ui/ui-sheet-helm/src/index.ts
+## File: packages/ui/libs/ui/ui-sheet-helm/src/index.ts
 ````typescript
 import { NgModule } from '@angular/core';
 
@@ -9486,7 +9486,7 @@ export const HlmSheetImports = [
 export class HlmSheetModule {}
 ````
 
-## File: src/ui/libs/ui/ui-skeleton-helm/src/lib/hlm-skeleton.component.ts
+## File: packages/ui/libs/ui/ui-skeleton-helm/src/lib/hlm-skeleton.component.ts
 ````typescript
 import { Component, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -9506,7 +9506,7 @@ export class HlmSkeletonComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-skeleton-helm/src/index.ts
+## File: packages/ui/libs/ui/ui-skeleton-helm/src/index.ts
 ````typescript
 import { NgModule } from '@angular/core';
 import { HlmSkeletonComponent } from './lib/hlm-skeleton.component';
@@ -9520,7 +9520,7 @@ export * from './lib/hlm-skeleton.component';
 export class HlmSkeletonModule {}
 ````
 
-## File: src/ui/libs/ui/ui-slider-helm/src/lib/hlm-slider-input.directive.ts
+## File: packages/ui/libs/ui/ui-slider-helm/src/lib/hlm-slider-input.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -9543,7 +9543,7 @@ export class HlmSliderInputDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-slider-helm/src/lib/hlm-slider-thumb.directive.ts
+## File: packages/ui/libs/ui/ui-slider-helm/src/lib/hlm-slider-thumb.directive.ts
 ````typescript
 import { Directive, computed, inject, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -9574,7 +9574,7 @@ export class HlmSliderThumbDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-slider-helm/src/lib/hlm-slider-tick-mark.directive.ts
+## File: packages/ui/libs/ui/ui-slider-helm/src/lib/hlm-slider-tick-mark.directive.ts
 ````typescript
 import { Directive, computed, inject, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -9607,7 +9607,7 @@ export class HlmSliderTickMarkDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-slider-helm/src/lib/hlm-slider-tick-marks.directive.ts
+## File: packages/ui/libs/ui/ui-slider-helm/src/lib/hlm-slider-tick-marks.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -9628,7 +9628,7 @@ export class HlmSliderTickMarksDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-slider-helm/src/lib/hlm-slider-track-active-fill.directive.ts
+## File: packages/ui/libs/ui/ui-slider-helm/src/lib/hlm-slider-track-active-fill.directive.ts
 ````typescript
 import { Directive, computed, inject, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -9658,7 +9658,7 @@ export class HlmSliderTrackActiveFillDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-slider-helm/src/lib/hlm-slider-track-active.directive.ts
+## File: packages/ui/libs/ui/ui-slider-helm/src/lib/hlm-slider-track-active.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -9682,7 +9682,7 @@ export class HlmSliderTrackActiveDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-slider-helm/src/lib/hlm-slider-track-inactive.directive.ts
+## File: packages/ui/libs/ui/ui-slider-helm/src/lib/hlm-slider-track-inactive.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -9703,7 +9703,7 @@ export class HlmSliderTrackInactiveDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-slider-helm/src/lib/hlm-slider-track.component.ts
+## File: packages/ui/libs/ui/ui-slider-helm/src/lib/hlm-slider-track.component.ts
 ````typescript
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -9761,7 +9761,7 @@ export class HlmSliderTrackComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-slider-helm/src/lib/hlm-slider.component.ts
+## File: packages/ui/libs/ui/ui-slider-helm/src/lib/hlm-slider.component.ts
 ````typescript
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -9793,7 +9793,7 @@ export class HlmSliderComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-slider-helm/src/index.ts
+## File: packages/ui/libs/ui/ui-slider-helm/src/index.ts
 ````typescript
 import { HlmSliderInputDirective } from './lib/hlm-slider-input.directive';
 import { HlmSliderThumbDirective } from './lib/hlm-slider-thumb.directive';
@@ -9808,7 +9808,7 @@ export const HlmSliderImports = [
 ] as const;
 ````
 
-## File: src/ui/libs/ui/ui-sonner-helm/src/lib/hlm-toaster.component.ts
+## File: packages/ui/libs/ui/ui-sonner-helm/src/lib/hlm-toaster.component.ts
 ````typescript
 import { ChangeDetectionStrategy, Component, booleanAttribute, computed, input, numberAttribute } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -9878,12 +9878,12 @@ export class HlmToasterComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-sonner-helm/src/index.ts
+## File: packages/ui/libs/ui/ui-sonner-helm/src/index.ts
 ````typescript
 export * from './lib/hlm-toaster.component';
 ````
 
-## File: src/ui/libs/ui/ui-spinner-helm/src/lib/hlm-spinner.component.ts
+## File: packages/ui/libs/ui/ui-spinner-helm/src/lib/hlm-spinner.component.ts
 ````typescript
 import { Component, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -9938,7 +9938,7 @@ export class HlmSpinnerComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-spinner-helm/src/index.ts
+## File: packages/ui/libs/ui/ui-spinner-helm/src/index.ts
 ````typescript
 import { NgModule } from '@angular/core';
 import { HlmSpinnerComponent } from './lib/hlm-spinner.component';
@@ -9952,7 +9952,7 @@ export * from './lib/hlm-spinner.component';
 export class HlmSpinnerModule {}
 ````
 
-## File: src/ui/libs/ui/ui-switch-helm/src/lib/hlm-switch-ng-model.component.ignore.spec.ts
+## File: packages/ui/libs/ui/ui-switch-helm/src/lib/hlm-switch-ng-model.component.ignore.spec.ts
 ````typescript
 import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -9988,7 +9988,7 @@ export class SwitchFormComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-switch-helm/src/lib/hlm-switch-thumb.directive.ts
+## File: packages/ui/libs/ui/ui-switch-helm/src/lib/hlm-switch-thumb.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -10013,7 +10013,7 @@ export class HlmSwitchThumbDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-switch-helm/src/lib/hlm-switch.component.ts
+## File: packages/ui/libs/ui/ui-switch-helm/src/lib/hlm-switch.component.ts
 ````typescript
 import { BooleanInput } from '@angular/cdk/coercion';
 import { Component, booleanAttribute, computed, forwardRef, input, model, output, signal } from '@angular/core';
@@ -10123,7 +10123,7 @@ export class HlmSwitchComponent implements ControlValueAccessor {
 }
 ````
 
-## File: src/ui/libs/ui/ui-switch-helm/src/index.ts
+## File: packages/ui/libs/ui/ui-switch-helm/src/index.ts
 ````typescript
 import { NgModule } from '@angular/core';
 
@@ -10141,7 +10141,7 @@ export const HlmSwitchImports = [HlmSwitchComponent, HlmSwitchThumbDirective] as
 export class HlmSwitchModule {}
 ````
 
-## File: src/ui/libs/ui/ui-table-helm/src/lib/hlm-caption.component.ts
+## File: packages/ui/libs/ui/ui-table-helm/src/lib/hlm-caption.component.ts
 ````typescript
 import {
 	ChangeDetectionStrategy,
@@ -10200,7 +10200,7 @@ export class HlmCaptionComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-table-helm/src/lib/hlm-table.component.ts
+## File: packages/ui/libs/ui/ui-table-helm/src/lib/hlm-table.component.ts
 ````typescript
 import {
 	ChangeDetectionStrategy,
@@ -10250,7 +10250,7 @@ export class HlmTableComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-table-helm/src/lib/hlm-table.directive.ts
+## File: packages/ui/libs/ui/ui-table-helm/src/lib/hlm-table.directive.ts
 ````typescript
 import { Directive } from '@angular/core';
 import { injectTableClassesSettable } from '@spartan-ng/brain/core';
@@ -10272,7 +10272,7 @@ export class HlmTableDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-table-helm/src/lib/hlm-td.component.ts
+## File: packages/ui/libs/ui/ui-table-helm/src/lib/hlm-td.component.ts
 ````typescript
 import { NgTemplateOutlet } from '@angular/common';
 import {
@@ -10320,7 +10320,7 @@ export class HlmTdComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-table-helm/src/lib/hlm-th.component.ts
+## File: packages/ui/libs/ui/ui-table-helm/src/lib/hlm-th.component.ts
 ````typescript
 import { NgTemplateOutlet } from '@angular/common';
 import {
@@ -10372,7 +10372,7 @@ export class HlmThComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-table-helm/src/lib/hlm-trow.component.ts
+## File: packages/ui/libs/ui/ui-table-helm/src/lib/hlm-trow.component.ts
 ````typescript
 import { ChangeDetectionStrategy, Component, ViewEncapsulation, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -10402,7 +10402,7 @@ export class HlmTrowComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-table-helm/src/index.ts
+## File: packages/ui/libs/ui/ui-table-helm/src/index.ts
 ````typescript
 import { NgModule } from '@angular/core';
 
@@ -10436,7 +10436,7 @@ export const HlmTableImports = [
 export class HlmTableModule {}
 ````
 
-## File: src/ui/libs/ui/ui-tabs-helm/src/lib/hlm-tabs-content.directive.ts
+## File: packages/ui/libs/ui/ui-tabs-helm/src/lib/hlm-tabs-content.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -10464,7 +10464,7 @@ export class HlmTabsContentDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-tabs-helm/src/lib/hlm-tabs-list.component.ts
+## File: packages/ui/libs/ui/ui-tabs-helm/src/lib/hlm-tabs-list.component.ts
 ````typescript
 import { Component, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -10505,7 +10505,7 @@ export class HlmTabsListComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-tabs-helm/src/lib/hlm-tabs-paginated-list.component.ts
+## File: packages/ui/libs/ui/ui-tabs-helm/src/lib/hlm-tabs-paginated-list.component.ts
 ````typescript
 import { CdkObserveContent } from '@angular/cdk/observers';
 import { Component, type ElementRef, computed, contentChildren, input, viewChild } from '@angular/core';
@@ -10603,7 +10603,7 @@ export class HlmTabsPaginatedListComponent extends BrnTabsPaginatedListDirective
 }
 ````
 
-## File: src/ui/libs/ui/ui-tabs-helm/src/lib/hlm-tabs-trigger.directive.ts
+## File: packages/ui/libs/ui/ui-tabs-helm/src/lib/hlm-tabs-trigger.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -10631,7 +10631,7 @@ export class HlmTabsTriggerDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-tabs-helm/src/lib/hlm-tabs.component.ts
+## File: packages/ui/libs/ui/ui-tabs-helm/src/lib/hlm-tabs.component.ts
 ````typescript
 import { Component, input } from '@angular/core';
 import { BrnTabsDirective } from '@spartan-ng/brain/tabs';
@@ -10653,7 +10653,7 @@ export class HlmTabsComponent {
 }
 ````
 
-## File: src/ui/libs/ui/ui-tabs-helm/src/index.ts
+## File: packages/ui/libs/ui/ui-tabs-helm/src/index.ts
 ````typescript
 import { NgModule } from '@angular/core';
 
@@ -10684,7 +10684,7 @@ export const HlmTabsImports = [
 export class HlmTabsModule {}
 ````
 
-## File: src/ui/libs/ui/ui-toggle-helm/src/lib/hlm-toggle-group.directive.ts
+## File: packages/ui/libs/ui/ui-toggle-helm/src/lib/hlm-toggle-group.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -10708,7 +10708,7 @@ export class HlmToggleGroupDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-toggle-helm/src/lib/hlm-toggle.directive.ts
+## File: packages/ui/libs/ui/ui-toggle-helm/src/lib/hlm-toggle.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -10754,7 +10754,7 @@ export class HlmToggleDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-toggle-helm/src/index.ts
+## File: packages/ui/libs/ui/ui-toggle-helm/src/index.ts
 ````typescript
 import { NgModule } from '@angular/core';
 import { HlmToggleGroupDirective } from './lib/hlm-toggle-group.directive';
@@ -10775,7 +10775,7 @@ export class HlmToggleModule {}
 export class HlmToggleGroupModule {}
 ````
 
-## File: src/ui/libs/ui/ui-tooltip-helm/src/lib/hlm-tooltip-trigger.directive.ts
+## File: packages/ui/libs/ui/ui-tooltip-helm/src/lib/hlm-tooltip-trigger.directive.ts
 ````typescript
 import { Directive } from '@angular/core';
 import { BrnTooltipTriggerDirective, provideBrnTooltipDefaultOptions } from '@spartan-ng/brain/tooltip';
@@ -10818,7 +10818,7 @@ const DEFAULT_TOOLTIP_CONTENT_CLASSES =
 export class HlmTooltipTriggerDirective {}
 ````
 
-## File: src/ui/libs/ui/ui-tooltip-helm/src/lib/hlm-tooltip.component.ts
+## File: packages/ui/libs/ui/ui-tooltip-helm/src/lib/hlm-tooltip.component.ts
 ````typescript
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 import { BrnTooltipDirective } from '@spartan-ng/brain/tooltip';
@@ -10840,7 +10840,7 @@ import { BrnTooltipDirective } from '@spartan-ng/brain/tooltip';
 export class HlmTooltipComponent {}
 ````
 
-## File: src/ui/libs/ui/ui-tooltip-helm/src/index.ts
+## File: packages/ui/libs/ui/ui-tooltip-helm/src/index.ts
 ````typescript
 import { NgModule } from '@angular/core';
 import { HlmTooltipTriggerDirective } from './lib/hlm-tooltip-trigger.directive';
@@ -10858,7 +10858,7 @@ export const HlmTooltipImports = [HlmTooltipComponent, HlmTooltipTriggerDirectiv
 export class HlmTooltipModule {}
 ````
 
-## File: src/ui/libs/ui/ui-typography-helm/src/lib/hlm-blockquote.directive.ts
+## File: packages/ui/libs/ui/ui-typography-helm/src/lib/hlm-blockquote.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -10879,7 +10879,7 @@ export class HlmBlockquoteDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-typography-helm/src/lib/hlm-code.directive.ts
+## File: packages/ui/libs/ui/ui-typography-helm/src/lib/hlm-code.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -10900,7 +10900,7 @@ export class HlmCodeDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-typography-helm/src/lib/hlm-h1.directive.ts
+## File: packages/ui/libs/ui/ui-typography-helm/src/lib/hlm-h1.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -10921,7 +10921,7 @@ export class HlmH1Directive {
 }
 ````
 
-## File: src/ui/libs/ui/ui-typography-helm/src/lib/hlm-h2.directive.ts
+## File: packages/ui/libs/ui/ui-typography-helm/src/lib/hlm-h2.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -10943,7 +10943,7 @@ export class HlmH2Directive {
 }
 ````
 
-## File: src/ui/libs/ui/ui-typography-helm/src/lib/hlm-h3.directive.ts
+## File: packages/ui/libs/ui/ui-typography-helm/src/lib/hlm-h3.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -10964,7 +10964,7 @@ export class HlmH3Directive {
 }
 ````
 
-## File: src/ui/libs/ui/ui-typography-helm/src/lib/hlm-h4.directive.ts
+## File: packages/ui/libs/ui/ui-typography-helm/src/lib/hlm-h4.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -10985,7 +10985,7 @@ export class HlmH4Directive {
 }
 ````
 
-## File: src/ui/libs/ui/ui-typography-helm/src/lib/hlm-large.directive.ts
+## File: packages/ui/libs/ui/ui-typography-helm/src/lib/hlm-large.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -11006,7 +11006,7 @@ export class HlmLargeDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-typography-helm/src/lib/hlm-lead.directive.ts
+## File: packages/ui/libs/ui/ui-typography-helm/src/lib/hlm-lead.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -11027,7 +11027,7 @@ export class HlmLeadDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-typography-helm/src/lib/hlm-muted.directive.ts
+## File: packages/ui/libs/ui/ui-typography-helm/src/lib/hlm-muted.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -11048,7 +11048,7 @@ export class HlmMutedDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-typography-helm/src/lib/hlm-p.directive.ts
+## File: packages/ui/libs/ui/ui-typography-helm/src/lib/hlm-p.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -11069,7 +11069,7 @@ export class HlmPDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-typography-helm/src/lib/hlm-small.directive.ts
+## File: packages/ui/libs/ui/ui-typography-helm/src/lib/hlm-small.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -11090,7 +11090,7 @@ export class HlmSmallDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-typography-helm/src/lib/hlm-ul.directive.ts
+## File: packages/ui/libs/ui/ui-typography-helm/src/lib/hlm-ul.directive.ts
 ````typescript
 import { Directive, computed, input } from '@angular/core';
 import { hlm } from '@spartan-ng/brain/core';
@@ -11111,7 +11111,7 @@ export class HlmUlDirective {
 }
 ````
 
-## File: src/ui/libs/ui/ui-typography-helm/src/index.ts
+## File: packages/ui/libs/ui/ui-typography-helm/src/index.ts
 ````typescript
 export * from './lib/hlm-blockquote.directive';
 export * from './lib/hlm-code.directive';
@@ -11127,7 +11127,7 @@ export * from './lib/hlm-small.directive';
 export * from './lib/hlm-ul.directive';
 ````
 
-## File: src/ui/src/app/chat-conversation/chat-conversation.component.spec.ts
+## File: packages/ui/src/app/chat-conversation/chat-conversation.component.spec.ts
 ````typescript
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
@@ -11154,7 +11154,7 @@ describe('ChatConversationComponent', () => {
 });
 ````
 
-## File: src/ui/src/app/components/alert/alert.component.ts
+## File: packages/ui/src/app/components/alert/alert.component.ts
 ````typescript
 import { Component } from '@angular/core';
 import {
@@ -11192,7 +11192,7 @@ import { lucideBox } from '@ng-icons/lucide';
 export class AlertComponent {}
 ````
 
-## File: src/ui/src/app/components/skeleton-preview/skeleton-preview.component.ts
+## File: packages/ui/src/app/components/skeleton-preview/skeleton-preview.component.ts
 ````typescript
 import { Component } from '@angular/core';
 import { HlmSkeletonComponent } from '@spartan-ng/ui-skeleton-helm';
@@ -11214,7 +11214,7 @@ import { HlmSkeletonComponent } from '@spartan-ng/ui-skeleton-helm';
 export class SkeletonPreviewComponent {}
 ````
 
-## File: src/ui/src/app/components/theme-toggle/theme-toggle.component.ts
+## File: packages/ui/src/app/components/theme-toggle/theme-toggle.component.ts
 ````typescript
 import { Component } from '@angular/core';
 import { ThemeService } from '../../services/theme.service';
@@ -11290,7 +11290,7 @@ export class ThemeToggleComponent {
 }
 ````
 
-## File: src/ui/src/app/app.component.spec.ts
+## File: packages/ui/src/app/app.component.spec.ts
 ````typescript
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
@@ -11323,7 +11323,7 @@ describe('AppComponent', () => {
 });
 ````
 
-## File: src/ui/src/app/app.component.ts
+## File: packages/ui/src/app/app.component.ts
 ````typescript
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
@@ -11342,7 +11342,7 @@ export class AppComponent {
 }
 ````
 
-## File: src/ui/src/app/app.config.server.ts
+## File: packages/ui/src/app/app.config.server.ts
 ````typescript
 import { mergeApplicationConfig, ApplicationConfig } from '@angular/core';
 import { provideServerRendering } from '@angular/platform-server';
@@ -11360,7 +11360,7 @@ const serverConfig: ApplicationConfig = {
 export const config = mergeApplicationConfig(appConfig, serverConfig);
 ````
 
-## File: src/ui/src/app/app.routes.server.ts
+## File: packages/ui/src/app/app.routes.server.ts
 ````typescript
 import { RenderMode, ServerRoute } from '@angular/ssr';
 
@@ -11372,14 +11372,14 @@ export const serverRoutes: ServerRoute[] = [
 ];
 ````
 
-## File: src/ui/src/app/app.routes.ts
+## File: packages/ui/src/app/app.routes.ts
 ````typescript
 import { Routes } from '@angular/router';
 
 export const routes: Routes = [];
 ````
 
-## File: src/ui/src/environments/environment.development.ts
+## File: packages/ui/src/environments/environment.development.ts
 ````typescript
 export const environment = {
   production: false,
@@ -11387,7 +11387,7 @@ export const environment = {
 };
 ````
 
-## File: src/ui/src/env.d.ts
+## File: packages/ui/src/env.d.ts
 ````typescript
 declare interface Env {
   readonly NODE_ENV: string;
@@ -11399,7 +11399,7 @@ declare interface ImportMeta {
 }
 ````
 
-## File: src/ui/src/main.server.ts
+## File: packages/ui/src/main.server.ts
 ````typescript
 import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
@@ -11410,7 +11410,7 @@ const bootstrap = () => bootstrapApplication(AppComponent, config);
 export default bootstrap;
 ````
 
-## File: src/ui/src/main.ts
+## File: packages/ui/src/main.ts
 ````typescript
 import { bootstrapApplication } from '@angular/platform-browser';
 import { appConfig } from './app/app.config';
@@ -11420,7 +11420,7 @@ bootstrapApplication(AppComponent, appConfig)
   .catch((err) => console.error(err));
 ````
 
-## File: src/ui/src/server.ts
+## File: packages/ui/src/server.ts
 ````typescript
 import {
   AngularNodeAppEngine,
@@ -11490,7 +11490,7 @@ if (isMainModule(import.meta.url)) {
 export const reqHandler = createNodeRequestHandler(app);
 ````
 
-## File: src/ui/.editorconfig
+## File: packages/ui/.editorconfig
 ````
 # Editor configuration, see https://editorconfig.org
 root = true
@@ -11511,7 +11511,7 @@ max_line_length = off
 trim_trailing_whitespace = false
 ````
 
-## File: src/ui/.gitignore
+## File: packages/ui/.gitignore
 ````
 # See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
@@ -11557,14 +11557,14 @@ testem.log
 Thumbs.db
 ````
 
-## File: src/ui/components.json
+## File: packages/ui/components.json
 ````json
 {
   "componentsPath": "libs/ui"
 }
 ````
 
-## File: src/ui/Dockerfile
+## File: packages/ui/Dockerfile
 ````
 FROM node:22-alpine
 
@@ -11579,7 +11579,7 @@ RUN npm install
 CMD ["ng", "serve", "--host", "0.0.0.0"]
 ````
 
-## File: src/ui/tsconfig.app.json
+## File: packages/ui/tsconfig.app.json
 ````json
 /* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
 /* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
@@ -11602,7 +11602,7 @@ CMD ["ng", "serve", "--host", "0.0.0.0"]
 }
 ````
 
-## File: src/ui/tsconfig.spec.json
+## File: packages/ui/tsconfig.spec.json
 ````json
 /* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
 /* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
@@ -11621,13 +11621,13 @@ CMD ["ng", "serve", "--host", "0.0.0.0"]
 }
 ````
 
-## File: src/api/src/mcp/index.ts
+## File: packages/api/src/mcp/index.ts
 ````typescript
 export { MCPClient as MCPSSEClient } from "./mcp-sse-client.js";
 export { MCPClient as MCPHTTPClient } from "./mcp-http-client.js";
 ````
 
-## File: src/tools/customer-query/AITravelAgent.CustomerQueryServer/AITravelAgent.CustomerQueryServer.csproj
+## File: packages/tools/customer-query/AITravelAgent.CustomerQueryServer/AITravelAgent.CustomerQueryServer.csproj
 ````
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
@@ -11650,7 +11650,7 @@ export { MCPClient as MCPHTTPClient } from "./mcp-http-client.js";
 </Project>
 ````
 
-## File: src/tools/echo-ping/Dockerfile
+## File: packages/tools/echo-ping/Dockerfile
 ````
 # Build stage
 FROM node:23-slim AS builder
@@ -11675,7 +11675,7 @@ EXPOSE 3000
 CMD ["node", "./dist/index.js"]
 ````
 
-## File: src/tools/echo-ping/package.json
+## File: packages/tools/echo-ping/package.json
 ````json
 {
   "name": "tool-echo-ping",
@@ -11730,7 +11730,7 @@ CMD ["node", "./dist/index.js"]
 }
 ````
 
-## File: src/ui/libs/ui/ui-avatar-helm/src/lib/hlm-avatar.component.ts
+## File: packages/ui/libs/ui/ui-avatar-helm/src/lib/hlm-avatar.component.ts
 ````typescript
 import { ChangeDetectionStrategy, Component, ViewEncapsulation, computed, input } from '@angular/core';
 import { BrnAvatarComponent } from '@spartan-ng/brain/avatar';
@@ -11779,7 +11779,7 @@ export class HlmAvatarComponent extends BrnAvatarComponent {
 }
 ````
 
-## File: src/ui/src/app/services/theme.service.ts
+## File: packages/ui/src/app/services/theme.service.ts
 ````typescript
 import { Injectable, signal, WritableSignal, effect, PLATFORM_ID, Inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
@@ -11858,7 +11858,7 @@ export class ThemeService {
 }
 ````
 
-## File: src/ui/src/app/app.component.html
+## File: packages/ui/src/app/app.component.html
 ````html
 <main class="flex items-center justify-center min-h-screen bg-background p-4">
   <div class="fixed top-4 right-4">
@@ -11869,7 +11869,7 @@ export class ThemeService {
 <router-outlet />
 ````
 
-## File: src/ui/src/app/app.config.ts
+## File: packages/ui/src/app/app.config.ts
 ````typescript
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
@@ -11886,7 +11886,7 @@ export const appConfig: ApplicationConfig = {
 };
 ````
 
-## File: src/ui/src/environments/environment.ts
+## File: packages/ui/src/environments/environment.ts
 ````typescript
 export const environment = {
   production: true,
@@ -11894,7 +11894,7 @@ export const environment = {
 };
 ````
 
-## File: src/ui/src/index.html
+## File: packages/ui/src/index.html
 ````html
 <!doctype html>
 <html lang="en">
@@ -11911,7 +11911,7 @@ export const environment = {
 </html>
 ````
 
-## File: src/ui/Dockerfile.production
+## File: packages/ui/Dockerfile.production
 ````
 FROM node:22.16-alpine AS build
 
@@ -11934,7 +11934,7 @@ EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 ````
 
-## File: src/ui/tailwind.config.js
+## File: packages/ui/tailwind.config.js
 ````javascript
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -12112,7 +12112,7 @@ output AZURE_TENANT_ID string = tenant().tenantId
 output MCP_ECHO_PING_ACCESS_TOKEN string = llamaIndexConfig.sampleAccessTokens.echo
 ````
 
-## File: src/api/src/orchestrator/llamaindex/providers/azure-openai.ts
+## File: packages/api/src/orchestrator/llamaindex/providers/azure-openai.ts
 ````typescript
 import { openai } from "llamaindex";
 import {
@@ -12169,7 +12169,7 @@ export const llm = async () => {
 };
 ````
 
-## File: src/api/src/orchestrator/llamaindex/providers/index.ts
+## File: packages/api/src/orchestrator/llamaindex/providers/index.ts
 ````typescript
 import dotenv from "dotenv";
 dotenv.config();
@@ -12198,7 +12198,7 @@ export const llm = async () => {
 };
 ````
 
-## File: src/ui/src/styles.css
+## File: packages/ui/src/styles.css
 ````css
 /* You can add global styles to this file, and also import other style files */
 @import "@angular/cdk/overlay-prebuilt.css";
@@ -13019,7 +13019,7 @@ output NG_API_URL string = 'https://api.${containerAppsEnvironment.outputs.defau
 output AZURE_CLIENT_ID string = apiIdentity.outputs.clientId
 ````
 
-## File: src/api/package.json
+## File: packages/api/package.json
 ````json
 {
   "name": "azure-ai-travel-agents-api",
@@ -13069,7 +13069,7 @@ output AZURE_CLIENT_ID string = apiIdentity.outputs.clientId
 }
 ````
 
-## File: src/tools/echo-ping/src/index.ts
+## File: packages/tools/echo-ping/src/index.ts
 ````typescript
 import dotenv from "dotenv";
 dotenv.config();
@@ -13168,7 +13168,7 @@ process.on('SIGINT', async () => {
 });
 ````
 
-## File: src/ui/src/app/chat-conversation/chat-conversation.component.css
+## File: packages/ui/src/app/chat-conversation/chat-conversation.component.css
 ````css
 :host {
   display: flex;
@@ -13197,7 +13197,7 @@ process.on('SIGINT', async () => {
 }
 ````
 
-## File: src/api/src/orchestrator/llamaindex/tools/index.ts
+## File: packages/api/src/orchestrator/llamaindex/tools/index.ts
 ````typescript
 import { McpServerDefinition } from "../../../mcp/mcp-tools.js";
 
@@ -13283,7 +13283,7 @@ export const McpToolsConfig = (): {
 });
 ````
 
-## File: src/ui/src/app/components/accordion/accordion.component.ts
+## File: packages/ui/src/app/components/accordion/accordion.component.ts
 ````typescript
 import { Component, input } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -13339,7 +13339,7 @@ export class AccordionPreviewComponent {
 }
 ````
 
-## File: src/api/src/mcp/mcp-tools.ts
+## File: packages/api/src/mcp/mcp-tools.ts
 ````typescript
 import type { SSEClientTransportOptions } from "@modelcontextprotocol/sdk/client/sse.js";
 import { MCPClient as MCPHTTPClient } from "./mcp-http-client.js";
@@ -13511,7 +13511,7 @@ services:
       - DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS=true
 ````
 
-## File: src/api/src/orchestrator/llamaindex/index.ts
+## File: packages/api/src/orchestrator/llamaindex/index.ts
 ````typescript
 import dotenv from "dotenv";
 dotenv.config();
@@ -13667,7 +13667,7 @@ export async function setupAgents(filteredTools: McpServerDefinition[] = []) {
 }
 ````
 
-## File: src/api/src/index.ts
+## File: packages/api/src/index.ts
 ````typescript
 import dotenv from "dotenv";
 dotenv.config();
@@ -13824,7 +13824,7 @@ app.listen(PORT, () => {
 });
 ````
 
-## File: src/ui/src/app/services/api.service.ts
+## File: packages/ui/src/app/services/api.service.ts
 ````typescript
 import { inject, Injectable, NgZone } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
@@ -13976,7 +13976,7 @@ export class ApiService {
 }
 ````
 
-## File: src/ui/package.json
+## File: packages/ui/package.json
 ````json
 {
   "name": "azure-ai-travel-agents-ui",
@@ -14045,7 +14045,7 @@ export class ApiService {
 }
 ````
 
-## File: src/ui/src/app/chat-conversation/chat-conversation.service.ts
+## File: packages/ui/src/app/chat-conversation/chat-conversation.service.ts
 ````typescript
 import { Injectable, signal } from '@angular/core';
 import { toast } from 'ngx-sonner';
@@ -14269,7 +14269,7 @@ export class ChatService {
 }
 ````
 
-## File: src/ui/src/app/chat-conversation/chat-conversation.component.html
+## File: packages/ui/src/app/chat-conversation/chat-conversation.component.html
 ````html
 <hlm-toaster />
 <div hlmCard class="w-[1200px] h-full max-h-[1000px] flex flex-col">
@@ -14518,7 +14518,7 @@ export class ChatService {
 </style>
 ````
 
-## File: src/ui/src/app/chat-conversation/chat-conversation.component.ts
+## File: packages/ui/src/app/chat-conversation/chat-conversation.component.ts
 ````typescript
 import { AsyncPipe, CommonModule, JsonPipe } from '@angular/common';
 import {

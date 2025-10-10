@@ -4,19 +4,19 @@ on:
   push:
     branches: [main]
     paths:
-      - 'src/tools/destination-recommendation/src/main/java/**/*.java'
-      - 'src/tools/destination-recommendation/src/test/java/**/*.java'
-      - 'src/tools/destination-recommendation/pom.xml'
-      - 'src/tools/destination-recommendation/*.gradle'
+      - 'packages/tools/destination-recommendation/src/main/java/**/*.java'
+      - 'packages/tools/destination-recommendation/src/test/java/**/*.java'
+      - 'packages/tools/destination-recommendation/pom.xml'
+      - 'packages/tools/destination-recommendation/*.gradle'
       - '.github/workflows/codeql-java.yml'
       - '.github/codeql/java-config.yml'
   pull_request:
     branches: [main]
     paths:
-      - 'src/tools/destination-recommendation/src/main/java/**/*.java'
-      - 'src/tools/destination-recommendation/src/test/java/**/*.java'
-      - 'src/tools/destination-recommendation/pom.xml'
-      - 'src/tools/destination-recommendation/*.gradle'
+      - 'packages/tools/destination-recommendation/src/main/java/**/*.java'
+      - 'packages/tools/destination-recommendation/src/test/java/**/*.java'
+      - 'packages/tools/destination-recommendation/pom.xml'
+      - 'packages/tools/destination-recommendation/*.gradle'
       - '.github/workflows/codeql-java.yml'
       - '.github/codeql/java-config.yml'
   workflow_dispatch:  # Allow manual triggering
@@ -57,7 +57,7 @@ jobs:
           
       - name: Build Java with Maven
         run: |
-          cd src/tools/destination-recommendation
+          cd packages/tools/destination-recommendation
           mvn clean compile -B
 
       - name: Perform CodeQL Analysis

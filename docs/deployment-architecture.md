@@ -122,11 +122,11 @@ azd provision
 #### 4. Environment Configuration
 ```bash
 # Create local environment files
-cp src/api/.env.sample src/api/.env
-cp src/ui/.env.sample src/ui/.env
+cp packages/api/.env.sample packages/api/.env
+cp packages/ui/.env.sample packages/ui/.env
 
 # Edit configuration (auto-populated by azd provision)
-cat src/api/.env
+cat packages/api/.env
 ```
 
 Example `.env` configuration:
@@ -157,13 +157,13 @@ OTEL_SERVICE_NAME=api-local
 #### 5. Local Service Startup
 ```bash
 # Terminal 1: Start API server
-cd src/api
+cd packages/api
 npm install
 npm start
 # API available at http://localhost:4000
 
 # Terminal 2: Start UI
-cd src/ui
+cd packages/ui
 npm install
 npm start
 # UI available at http://localhost:4200
@@ -183,11 +183,11 @@ docker run -d \
 #### Hot Reload Development
 ```bash
 # API with hot reload
-cd src/api
+cd packages/api
 npm run start  # Uses tsx --watch
 
 # UI with hot reload
-cd src/ui
+cd packages/ui
 npm run start  # Uses ng serve with watch
 ```
 
@@ -432,14 +432,14 @@ az acr create \
 az acr build \
   --registry acrTravelAgents \
   --image travel-agents-ui:latest \
-  --file src/ui/Dockerfile \
-  src/ui
+  --file packages/ui/Dockerfile \
+  packages/ui
 
 az acr build \
   --registry acrTravelAgents \
   --image travel-agents-api:latest \
-  --file src/api/Dockerfile \
-  src/api
+  --file packages/api/Dockerfile \
+  packages/api
 
 # Step 5: Deploy container apps
 az containerapp create \
@@ -931,15 +931,15 @@ echo "Building and pushing container images..."
 az acr build \
   --registry $ACR_NAME \
   --image travel-agents-ui:latest \
-  --file src/ui/Dockerfile \
-  src/ui
+  --file packages/ui/Dockerfile \
+  packages/ui
 
 # API Image
 az acr build \
   --registry $ACR_NAME \
   --image travel-agents-api:latest \
-  --file src/api/Dockerfile \
-  src/api
+  --file packages/api/Dockerfile \
+  packages/api
 
 # MCP Server Images
 for server in echo-ping customer-query destination-recommendation itinerary-planning code-evaluation model-inference web-search; do
@@ -947,8 +947,8 @@ for server in echo-ping customer-query destination-recommendation itinerary-plan
   az acr build \
     --registry $ACR_NAME \
     --image travel-agents-mcp-${server}:latest \
-    --file src/tools/${server}/Dockerfile \
-    src/tools/${server}
+    --file packages/tools/${server}/Dockerfile \
+    packages/tools/${server}
 done
 
 # Update container app revisions

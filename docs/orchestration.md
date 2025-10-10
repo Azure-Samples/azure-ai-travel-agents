@@ -61,8 +61,8 @@ flowchart TB
 - ✅ Seamless SSE streaming
 
 **Implementation Details**:
-- Location: `src/api/src/orchestrator/llamaindex/`
-- Entry Point: `src/api/src/index.ts`
+- Location: `packages/api/src/orchestrator/llamaindex/`
+- Entry Point: `packages/api/src/index.ts`
 - Documentation: [Technical Architecture](./technical-architecture.md#agent-orchestration)
 
 **Best For**:
@@ -75,7 +75,7 @@ flowchart TB
 
 ### Architecture
 
-The Microsoft Agent Framework (MAF) implementation is **fully implemented** in `src/api-python/`:
+The Microsoft Agent Framework (MAF) implementation is **fully implemented** in `packages/api-python/`:
 - **Language**: Python 3.11+
 - **Runtime**: Python with asyncio
 - **Web Framework**: FastAPI
@@ -124,10 +124,10 @@ flowchart TB
 
 **Implementation Details**:
 - Status: ✅ Fully implemented and functional
-- Location: `src/api-python/`
-- Documentation: See `src/api-python/README.md`
-- Architecture: `src/api-python/ARCHITECTURE_DIAGRAMS.md`
-- Developer Guide: `src/api-python/DEVELOPER_GUIDE.md`
+- Location: `packages/api-python/`
+- Documentation: See `packages/api-python/README.md`
+- Architecture: `packages/api-python/ARCHITECTURE_DIAGRAMS.md`
+- Developer Guide: `packages/api-python/DEVELOPER_GUIDE.md`
 
 **Best For**:
 - Teams with Python expertise
@@ -156,7 +156,7 @@ flowchart TB
 | **Streaming** | SSE via Express | SSE via FastAPI |
 | **Observability** | OpenTelemetry | OpenTelemetry |
 | **Deployment** | Container Apps | Container Apps |
-| **Implementation Location** | `src/api/` | `src/api-python/` |
+| **Implementation Location** | `packages/api/` | `packages/api-python/` |
 
 ## Common Elements
 
@@ -215,7 +215,7 @@ flowchart TB
 ### Migration Phases
 
 1. **Phase 1: Evaluate** (Current State)
-   - MAF implementation already available in `src/api-python/`
+   - MAF implementation already available in `packages/api-python/`
    - Review implementation and test locally
    - Compare functionality with LlamaIndex.TS
    - Assess team Python expertise
@@ -283,7 +283,7 @@ flowchart TB
 Already active in the repository. See:
 - [Technical Architecture](./technical-architecture.md#agent-orchestration)
 - [Development Guide](./development-guide.md)
-- Source: `src/api/`
+- Source: `packages/api/`
 
 ### Implementing Microsoft Agent Framework
 
@@ -291,7 +291,7 @@ The MAF implementation is **already complete** and available for use:
 
 **Quick Start**:
 ```bash
-cd src/api-python
+cd packages/api-python
 
 # Install dependencies
 pip install -e .
@@ -304,19 +304,19 @@ uvicorn main:app --reload
 ```
 
 **Documentation**:
-- **README**: `src/api-python/README.md` - Getting started and overview
-- **Architecture**: `src/api-python/ARCHITECTURE_DIAGRAMS.md` - System design and flow diagrams
-- **Developer Guide**: `src/api-python/DEVELOPER_GUIDE.md` - Development setup and workflows
-- **MCP Integration**: `src/api-python/MCP_QUICK_REFERENCE.md` - MCP tool usage patterns
-- **Implementation**: `src/api-python/IMPLEMENTATION_GUIDE.md` - Technical implementation details
-- **Event Streaming**: `src/api-python/EVENT_STREAMING.md` - SSE streaming architecture
+- **README**: `packages/api-python/README.md` - Getting started and overview
+- **Architecture**: `packages/api-python/ARCHITECTURE_DIAGRAMS.md` - System design and flow diagrams
+- **Developer Guide**: `packages/api-python/DEVELOPER_GUIDE.md` - Development setup and workflows
+- **MCP Integration**: `packages/api-python/MCP_QUICK_REFERENCE.md` - MCP tool usage patterns
+- **Implementation**: `packages/api-python/IMPLEMENTATION_GUIDE.md` - Technical implementation details
+- **Event Streaming**: `packages/api-python/EVENT_STREAMING.md` - SSE streaming architecture
 
 **Key Implementation Files**:
-- `src/api-python/src/main.py` - FastAPI application entry point
-- `src/api-python/src/orchestrator/magentic_workflow.py` - Magentic orchestration
-- `src/api-python/src/orchestrator/workflow.py` - Alternative workflow implementation
-- `src/api-python/src/orchestrator/agents/` - All agent implementations
-- `src/api-python/src/orchestrator/tools/` - MCP tool registry and wrappers
+- `packages/api-python/src/main.py` - FastAPI application entry point
+- `packages/api-python/src/orchestrator/magentic_workflow.py` - Magentic orchestration
+- `packages/api-python/src/orchestrator/workflow.py` - Alternative workflow implementation
+- `packages/api-python/src/orchestrator/agents/` - All agent implementations
+- `packages/api-python/src/orchestrator/tools/` - MCP tool registry and wrappers
 
 ### Parallel Deployment
 
@@ -384,10 +384,10 @@ Monitoring includes:
 Both LlamaIndex.TS and Microsoft Agent Framework provide robust orchestration capabilities for the Azure AI Travel Agents system. The choice depends on your team's expertise, technology preferences, and specific requirements.
 
 **Current State**: 
-- **LlamaIndex.TS** (in `src/api/`) is the production-ready, battle-tested implementation
-- **Microsoft Agent Framework** (in `src/api-python/`) is a fully implemented alternative ready for evaluation
+- **LlamaIndex.TS** (in `packages/api/`) is the production-ready, battle-tested implementation
+- **Microsoft Agent Framework** (in `packages/api-python/`) is a fully implemented alternative ready for evaluation
 
-**Recommendation**: Evaluate the MAF implementation in `src/api-python/` to determine if it better fits your team's needs. Both implementations are production-ready and can run in parallel if desired.
+**Recommendation**: Evaluate the MAF implementation in `packages/api-python/` to determine if it better fits your team's needs. Both implementations are production-ready and can run in parallel if desired.
 
 The parallel deployment option ensures you can evaluate both approaches in your environment, making an informed decision based on real-world performance and team experience.
 

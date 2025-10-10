@@ -782,10 +782,10 @@ OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:18889
 4. **Start Services**
    ```bash
    # Terminal 1: Start API
-   npm start --prefix=src/api
+   npm start --prefix=packages/api
    
    # Terminal 2: Start UI  
-   npm start --prefix=src/ui
+   npm start --prefix=packages/ui
    ```
 
 5. **Access Applications**
@@ -818,11 +818,11 @@ OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:18889
 #### Unit Testing
 ```bash
 # API tests
-cd src/api
+cd packages/api
 npm test
 
 # UI tests  
-cd src/ui
+cd packages/ui
 npm test
 ```
 
@@ -849,7 +849,7 @@ curl -X POST http://localhost:4000/api/chat \
 #### API Server Debugging
 ```bash
 # Enable debug logging
-DEBUG=true npm start --prefix=src/api
+DEBUG=true npm start --prefix=packages/api
 
 # VS Code debugging
 # Use launch.json configuration for step debugging
@@ -862,7 +862,7 @@ docker-compose logs tool-echo-ping
 
 # Test MCP connectivity directly
 node -e "
-const { MCPHTTPClient } = require('./src/api/src/mcp/mcp-http-client.js');
+const { MCPHTTPClient } = require('./packages/api/src/mcp/mcp-http-client.js');
 const client = new MCPHTTPClient('test', 'http://localhost:5007/mcp');
 client.connect().then(() => console.log('Connected'));
 "
@@ -871,7 +871,7 @@ client.connect().then(() => console.log('Connected'));
 #### UI Debugging
 ```bash
 # Development server with source maps
-npm start --prefix=src/ui
+npm start --prefix=packages/ui
 
 # Browser DevTools
 # Use Angular DevTools extension for component inspection
@@ -882,12 +882,12 @@ npm start --prefix=src/ui
 #### Linting and Formatting
 ```bash
 # API
-cd src/api
+cd packages/api
 npm run lint
 npm run format
 
 # UI
-cd src/ui  
+cd packages/ui  
 npm run lint
 npm run format
 ```
@@ -895,11 +895,11 @@ npm run format
 #### Type Checking
 ```bash
 # API
-cd src/api
+cd packages/api
 npx tsc --noEmit
 
 # UI
-cd src/ui
+cd packages/ui
 npx ng build --configuration development
 ```
 
@@ -909,8 +909,8 @@ npx ng build --configuration development
 
 1. **Create Server Directory**
    ```bash
-   mkdir src/tools/my-new-tool
-   cd src/tools/my-new-tool
+   mkdir packages/tools/my-new-tool
+   cd packages/tools/my-new-tool
    ```
 
 2. **Implement MCP Server**
@@ -963,7 +963,7 @@ npx ng build --configuration development
 
 5. **Register in API**
    ```typescript
-   // src/api/src/orchestrator/llamaindex/tools/index.ts
+   // packages/api/src/orchestrator/llamaindex/tools/index.ts
    export type McpServerName = 
      | "echo-ping"
      | "my-new-tool";  // Add new tool
@@ -984,7 +984,7 @@ npx ng build --configuration development
 
 6. **Create Agent Integration**
    ```typescript
-   // src/api/src/orchestrator/llamaindex/index.ts
+   // packages/api/src/orchestrator/llamaindex/index.ts
    if (tools["my-new-tool"]) {
      const mcpServerConfig = mcpToolsConfig["my-new-tool"];
      const tools = await mcp(mcpServerConfig.config).tools();
@@ -1052,7 +1052,7 @@ const agentWithCustomTool = agent({
 
 #### Adding New Tool Selection
 ```typescript
-// src/ui/src/app/services/api.service.ts
+// packages/ui/src/app/services/api.service.ts
 export type ServerID =
   | 'echo-ping'
   | 'customer-query' 
@@ -1163,8 +1163,8 @@ services:
     language: typescript
     host: containerapp
     docker:
-      path: ./src/tools/my-new-tool/Dockerfile
-      context: ./src/tools/my-new-tool
+      path: ./packages/tools/my-new-tool/Dockerfile
+      context: ./packages/tools/my-new-tool
 ```
 
 This comprehensive documentation provides architects and developers with the detailed technical understanding needed to work with, extend, and deploy the Azure AI Travel Agents system effectively.

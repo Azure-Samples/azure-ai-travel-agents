@@ -2,7 +2,7 @@
 
 # Install dependencies for the API service
 printf ">> Installing dependencies for the API service...\n"
-if [ ! -d ./src/api/node_modules ]; then
+if [ ! -d ./packages/api/node_modules ]; then
     printf "Installing dependencies for the API service...\n"
     npm ci --prefix=src/api --legacy-peer-deps
     status=$?

@@ -11,13 +11,13 @@
 2. Install the the MCP server packages:
 
     ```bash
-    uv pip install -e src/tools/itinerary-planning
+    uv pip install -e packages/tools/itinerary-planning
     ```
 
 3. Run the MCP server:
 
     ```shell
-    uv run src/tools/itinerary-planning/src/app.py
+    uv run packages/tools/itinerary-planning/src/app.py
     ```
 
 ## Debug with MCP Inspector
@@ -25,7 +25,7 @@
 For testing and debugging MCP functionality, use the MCP Inspector:
 
 ```cmd
-uv run mcp dev src/tools/itinerary-planning/src/mcp_server.py
+uv run mcp dev packages/tools/itinerary-planning/src/mcp_server.py
 ```
 
 ## Start local server
@@ -33,7 +33,7 @@ uv run mcp dev src/tools/itinerary-planning/src/mcp_server.py
 Navigate to the source directory and run the server:
 
 ```bash
-cd src/tools/itinerary-planning/src
+cd packages/tools/itinerary-planning/src
 ```
 
 ```bash
@@ -65,5 +65,5 @@ This server is designed to be deployed with the rest of the servers in this AI T
 4. Deploy the Container App:
 
     ```bash
-    az containerapp up --name pf-travelagent-app --source src/tools/itinerary-planning --ingress external --target-port 8000
+    az containerapp up --name pf-travelagent-app --source packages/tools/itinerary-planning --ingress external --target-port 8000
     ```

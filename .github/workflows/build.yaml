@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./src/tools/customer-query
+        working-directory: ./packages/tools/customer-query
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
@@ -55,7 +55,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./src/tools/destination-recommendation
+        working-directory: ./packages/tools/destination-recommendation
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK 24
@@ -70,7 +70,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./src/tools/echo-ping
+        working-directory: ./packages/tools/echo-ping
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -84,7 +84,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./src/tools/itinerary-planning
+        working-directory: ./packages/tools/itinerary-planning
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

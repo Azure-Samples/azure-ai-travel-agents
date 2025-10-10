@@ -102,7 +102,7 @@ else
 fi
 
 # Step 1.5: Create .env file for the user
-cat > ./src/api/.env <<EOM
+cat > ./packages/api/.env <<EOM
 LLM_PROVIDER=docker-models
 DOCKER_MODEL_ENDPOINT=http://localhost:12434/engines/llama.cpp/v1
 DOCKER_MODEL=ai/phi4:14B-Q4_0
@@ -116,7 +116,7 @@ MCP_WEB_SEARCH_URL=http://localhost:5006
 MCP_ECHO_PING_URL=http://localhost:5007
 MCP_ECHO_PING_ACCESS_TOKEN=123-this-is-a-fake-token-please-use-a-token-provider
 EOM
-printf "${GREEN}${BOLD}.env file created in src/api/.env.${NC}"
+printf "${GREEN}${BOLD}.env file created in packages/api/.env.${NC}"
 
 # Step 2: Setup UI dependencies
 if [ -f ./infra/hooks/ui/setup.sh ]; then
@@ -132,10 +132,10 @@ else
 fi
 
 # Step 2.5: Create .env file for the UI
-cat > ./src/ui/.env <<EOM
+cat > ./packages/ui/.env <<EOM
 NG_API_URL=http://localhost:4000
 EOM
-printf "${GREEN}${BOLD}.env file created in src/ui/.env.${NC}\n"
+printf "${GREEN}${BOLD}.env file created in packages/ui/.env.${NC}\n"
 
 # Step 3: Setup MCP tools (env, dependencies, docker build)
 if [ -f ./infra/hooks/mcp/setup.sh ]; then
