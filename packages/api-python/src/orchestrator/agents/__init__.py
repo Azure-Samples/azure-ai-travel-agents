@@ -1,16 +1,11 @@
-"""Agent implementations for the travel planning system."""
+"""Agent implementations for the travel planning system.
 
-from .base_agent import BaseAgent
-from .triage_agent import TriageAgent
-from .specialized_agents import (
-    CustomerQueryAgent,
-    DestinationRecommendationAgent,
-    ItineraryPlanningAgent,
-    CodeEvaluationAgent,
-    ModelInferenceAgent,
-    WebSearchAgent,
-    EchoAgent,
-)
+This module provides agents discoverable by DevUI.
+Each agent is in its own directory with an __init__.py that exports 'agent'.
+
+For legacy compatibility, the old agent classes are still available from
+the _legacy modules.
+"""
 
 __all__ = [
     "BaseAgent",

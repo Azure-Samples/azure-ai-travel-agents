@@ -1,23 +1,15 @@
-"""Triage Agent - Routes requests to appropriate specialized agents."""
+"""TriageAgent - Analyzes travel requests and routes to appropriate specialized agents"""
 
-from typing import Any, Optional, List
-from .base_agent import BaseAgent
+import os
+from agent_framework import ChatAgent
+from agent_framework.azure import AzureOpenAIChatClient
+from src.orchestrator.tools.tool_registry import create_mcp_tool
 
-
-class TriageAgent(BaseAgent):
-    """Triage agent that analyzes requests and routes to specialized agents.
-    
-    This is the entry point agent that determines which specialized agent(s)
-    should handle the user's request.
-    """
-
-    def __init__(self, tools: Optional[List[Any]] = None):
-        """Initialize the Triage Agent."""
-        super().__init__(
-            tools=tools,
-            name="TriageAgent",
-            description="Analyzes travel requests and routes to appropriate specialized agents",
-            system_prompt="""You are a triage agent for a travel planning system.
+# Agent instance following Agent Framework conventions
+agent = ChatAgent(
+    name="TriageAgent",
+    description="Analyzes travel requests and routes to appropriate specialized agents",
+    instructions="""You are a triage agent for a travel planning system.
 Your role is to analyze user requests and determine which specialized agents should handle them.
 
 Available specialized agents:
@@ -36,4 +28,8 @@ Your task:
 4. Provide clear, helpful responses
 
 Always be friendly, professional, and focused on helping users plan amazing trips.""",
-        )
+    chat_client=AzureOpenAIChatClient(
+        api_key=os.environ.get("AZURE_OPENAI_API_KEY", ""),
+    ),
+    tools=[create_mcp_tool(["TriageAgent"])],
+)
