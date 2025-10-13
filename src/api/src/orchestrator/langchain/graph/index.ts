@@ -81,45 +81,57 @@ export class TravelAgentsWorkflow {
     console.log("Selected agent:", selectedAgentName);
 
     try {
-      // Create initial state
-      const initialState: WorkflowState = {
-        messages: [new HumanMessage(input)],
-        currentAgent: selectedAgentName,
-      };
+      // Create initial state with HumanMessage
+      const messages = [new HumanMessage(input)];
 
-      // Stream events from the agent execution
-      yield {
-        displayName: "agent_start",
-        data: {
-          currentAgentName: selectedAgentName,
-          messages: initialState.messages,
-        },
-      };
+      // Stream events from the agent execution using streamEvents
+      const eventStream = selectedAgent.streamEvents(
+        { messages },
+        { version: "v2" }
+      );
 
-      // Run the selected agent
-      const agentResponse = await selectedAgent.invoke({
-        messages: initialState.messages,
-      });
-
-      // Yield the response
-      yield {
-        displayName: "agent_response",
-        data: {
-          currentAgentName: selectedAgentName,
-          messages: [agentResponse],
-          response: agentResponse,
-        },
-      };
-
-      // Final completion event
-      yield {
-        displayName: "workflow_complete",
-        data: {
-          currentAgentName: selectedAgentName,
-          messages: [agentResponse],
-          completed: true,
-        },
-      };
+      for await (const event of eventStream) {
+        // Filter and yield relevant events
+        if (event.event === "on_chat_model_stream") {
+          // Stream LLM tokens
+          yield {
+            displayName: "llm_token",
+            data: {
+              currentAgentName: selectedAgentName,
+              chunk: event.data?.chunk,
+            },
+          };
+        } else if (event.event === "on_tool_start") {
+          // Tool execution started
+          yield {
+            displayName: "tool_start",
+            data: {
+              currentAgentName: selectedAgentName,
+              tool: event.name,
+              input: event.data?.input,
+            },
+          };
+        } else if (event.event === "on_tool_end") {
+          // Tool execution completed
+          yield {
+            displayName: "tool_end",
+            data: {
+              currentAgentName: selectedAgentName,
+              tool: event.name,
+              output: event.data?.output,
+            },
+          };
+        } else if (event.event === "on_chain_end" && event.name === "LangGraph") {
+          // Agent completed - yield final response
+          yield {
+            displayName: "agent_complete",
+            data: {
+              currentAgentName: selectedAgentName,
+              messages: event.data?.output?.messages || [],
+            },
+          };
+        }
+      }
 
     } catch (error) {
       console.error("Error in workflow execution:", error);
