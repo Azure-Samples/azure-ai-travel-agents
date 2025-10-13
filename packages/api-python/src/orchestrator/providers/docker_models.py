@@ -6,7 +6,7 @@ from typing import Any
 from agent_framework.openai import OpenAIChatClient
 from openai import AsyncOpenAI
 
-from config import settings
+from src.config import settings
 from .base import LLMProvider
 
 logger = logging.getLogger(__name__)

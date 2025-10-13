@@ -2,16 +2,13 @@
 
 from typing import Literal, TypedDict
 
-from config import Settings
+from src.config import Settings
 
 # MCP Server Names matching TypeScript implementation
 McpServerName = Literal[
     "echo-ping",
     "customer-query",
-    "web-search",
     "itinerary-planning",
-    "model-inference",
-    "code-evaluation",
     "destination-recommendation",
 ]
 
@@ -48,15 +45,6 @@ def get_mcp_tools_config() -> dict[McpServerName, MCPServerDefinition]:
     settings = Settings()
     
     return {
-        # "ms-learn": {
-        #     "config": {
-        #         "url": "https://learn.microsoft.com/api/mcp",
-        #         "type": "http",
-        #         "verbose": True,
-        #     },
-        #     "id": "ms-learn",
-        #     "name": "MS Learn",
-        # },
         "echo-ping": {
             "config": {
                 "url": f"{settings.mcp_echo_ping_url}{MCP_API_HTTP_PATH}",
@@ -75,15 +63,6 @@ def get_mcp_tools_config() -> dict[McpServerName, MCPServerDefinition]:
             "id": "customer-query",
             "name": "Customer Query",
         },
-        # "web-search": {
-        #     "config": {
-        #         "url": f"{settings.mcp_web_search_url}{MCP_API_SSE_PATH}",
-        #         "type": "sse",
-        #         "verbose": True,
-        #     },
-        #     "id": "web-search",
-        #     "name": "Web Search",
-        # },
         "itinerary-planning": {
             "config": {
                 "url": f"{settings.mcp_itinerary_planning_url}{MCP_API_HTTP_PATH}",
@@ -93,33 +72,15 @@ def get_mcp_tools_config() -> dict[McpServerName, MCPServerDefinition]:
             "id": "itinerary-planning",
             "name": "Itinerary Planning",
         },
-        # "model-inference": {
-        #     "config": {
-        #         "url": f"{settings.mcp_model_inference_url}{MCP_API_SSE_PATH}",
-        #         "type": "sse",
-        #         "verbose": True,
-        #     },
-        #     "id": "model-inference",
-        #     "name": "Model Inference",
-        # },
-        # "code-evaluation": {
-        #     "config": {
-        #         "url": f"{settings.mcp_code_evaluation_url}{MCP_API_SSE_PATH}",
-        #         "type": "sse",
-        #         "verbose": True,
-        #     },
-        #     "id": "code-evaluation",
-        #     "name": "Code Evaluation",
-        # },
-        # "destination-recommendation": {
-        #     "config": {
-        #         "url": f"{settings.mcp_destination_recommendation_url}{MCP_API_HTTP_PATH}",
-        #         "type": "http",
-        #         "verbose": True,
-        #     },
-        #     "id": "destination-recommendation",
-        #     "name": "Destination Recommendation",
-        # },
+        "destination-recommendation": {
+            "config": {
+                "url": f"{settings.mcp_destination_recommendation_url}{MCP_API_HTTP_PATH}",
+                "type": "http",
+                "verbose": True,
+            },
+            "id": "destination-recommendation",
+            "name": "Destination Recommendation",
+        },
     }
 
 

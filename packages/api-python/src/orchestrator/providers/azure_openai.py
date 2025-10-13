@@ -7,7 +7,7 @@ from agent_framework.openai import OpenAIChatClient
 from azure.identity import DefaultAzureCredential, ManagedIdentityCredential
 from openai import AsyncAzureOpenAI
 
-from config import settings
+from src.config import settings
 from .base import LLMProvider
 
 logger = logging.getLogger(__name__)

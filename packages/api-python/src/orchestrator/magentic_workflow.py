@@ -26,9 +26,9 @@ from agent_framework import (
 )
 from agent_framework.exceptions import ServiceResponseException
 
-from config import settings
-from orchestrator.providers import get_llm_client
-from orchestrator.tools import tool_registry
+from src.orchestrator.providers import get_llm_client
+from src.orchestrator.tools.tool_registry import tool_registry
+from src.config import settings
 
 logger = logging.getLogger(__name__)
 

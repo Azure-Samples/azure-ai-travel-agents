@@ -11,12 +11,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
-from config import settings
-from orchestrator.magentic_workflow import magentic_orchestrator
-from orchestrator.tools.tool_registry import tool_registry
+from .config import settings
+from .orchestrator.magentic_workflow import magentic_orchestrator
+from .orchestrator.tools.tool_registry import tool_registry
 
-# from agent_framework.observability import setup_observability
-# setup_observability(enable_sensitive_data=False)
+from agent_framework.observability import setup_observability
+setup_observability(enable_sensitive_data=True)
 
 # Configure logging
 logging.basicConfig(

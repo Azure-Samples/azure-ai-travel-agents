@@ -8,7 +8,7 @@ strategy pattern as the TypeScript implementation.
 import logging
 from typing import Any
 
-from config import settings
+from src.config import settings
 from .azure_openai import AzureOpenAIProvider
 from .docker_models import DockerModelsProvider
 from .foundry_local import FoundryLocalProvider
