@@ -27,6 +27,7 @@ export const llm = async () => {
     });
   }
   
+  // Set up Azure AD authentication for production
   let credential: any = new DefaultAzureCredential();
   const clientId = process.env.AZURE_CLIENT_ID;
   if (clientId) {
@@ -37,18 +38,16 @@ export const llm = async () => {
     });
   }
 
+  // Create the token provider function that will be called on every request
   const azureADTokenProvider = getBearerTokenProvider(
     credential,
     AZURE_COGNITIVE_SERVICES_SCOPE
   );
 
-  // Get token for authentication
-  const token = await azureADTokenProvider();
-
   return new AzureChatOpenAI({
     azureOpenAIEndpoint: process.env.AZURE_OPENAI_ENDPOINT,
     azureOpenAIApiDeploymentName: process.env.AZURE_OPENAI_DEPLOYMENT,
-    azureOpenAIApiKey: token,
+    azureADTokenProvider,
     temperature: 0,
   });
 };
