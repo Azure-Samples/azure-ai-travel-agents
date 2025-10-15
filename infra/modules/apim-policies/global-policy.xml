@@ -1,0 +1,159 @@
+<!--
+    Global APIM policy for Azure AI Travel Agents
+    This policy includes GenAI capabilities, rate limiting, and monitoring
+-->
+<policies>
+    <inbound>
+        <!-- Add correlation ID for tracing -->
+        <set-variable name="correlationId" value="@(context.RequestId)" />
+        
+        <!-- Add CORS support for UI -->
+        <cors allow-credentials="false">
+            <allowed-origins>
+                <origin>*</origin>
+            </allowed-origins>
+            <allowed-methods>
+                <method>GET</method>
+                <method>POST</method>
+                <method>PUT</method>
+                <method>DELETE</method>
+                <method>HEAD</method>
+                <method>OPTIONS</method>
+            </allowed-methods>
+            <allowed-headers>
+                <header>*</header>
+            </allowed-headers>
+        </cors>
+        
+        <!-- GenAI-specific rate limiting and throttling -->
+        <rate-limit calls="1000" renewal-period="60" />
+        <quota calls="10000" renewal-period="3600" />
+        
+        <!-- Token-based authentication for GenAI services -->
+        <choose>
+            <when condition="@(context.Request.Url.Path.StartsWith("/mcp/"))">
+                <!-- Validate access token for MCP services -->
+                <validate-jwt header-name="Authorization" failed-validation-httpcode="401" failed-validation-error-message="Unauthorized" require-expiration-time="true" require-scheme="Bearer" require-signed-tokens="false">
+                    <issuer-signing-keys>
+                        <key>{{mcp-access-token-key}}</key>
+                    </issuer-signing-keys>
+                    <audiences>
+                        <audience>azure-ai-travel-agents-mcp</audience>
+                    </audiences>
+                </validate-jwt>
+                
+                <!-- Add GenAI monitoring headers -->
+                <set-header name="X-GenAI-Session-ID" exists-action="override">
+                    <value>@(context.RequestId)</value>
+                </set-header>
+                <set-header name="X-GenAI-Timestamp" exists-action="override">
+                    <value>@(DateTime.UtcNow.ToString("O"))</value>
+                </set-header>
+            </when>
+        </choose>
+        
+        <!-- Content filtering for GenAI safety -->
+        <choose>
+            <when condition="@(context.Request.Body != null && context.Request.Body.As<string>().Contains("harmful"))">
+                <return-response>
+                    <set-status code="400" reason="Content Filtered" />
+                    <set-body>{"error": "Content filtered for safety", "correlationId": "@(context.RequestId)"}</set-body>
+                </return-response>
+            </when>
+        </choose>
+        
+        <!-- Add security headers -->
+        <set-header name="X-Content-Type-Options" exists-action="override">
+            <value>nosniff</value>
+        </set-header>
+        <set-header name="X-Frame-Options" exists-action="override">
+            <value>DENY</value>
+        </set-header>
+        <set-header name="X-XSS-Protection" exists-action="override">
+            <value>1; mode=block</value>
+        </set-header>
+        <set-header name="Strict-Transport-Security" exists-action="override">
+            <value>max-age=31536000; includeSubDomains</value>
+        </set-header>
+        
+        <!-- Add correlation ID to backend requests -->
+        <set-header name="X-Correlation-ID" exists-action="override">
+            <value>@((string)context.Variables["correlationId"])</value>
+        </set-header>
+        
+        <!-- GenAI usage tracking -->
+        <set-variable name="requestStartTime" value="@(DateTime.UtcNow)" />
+        <set-variable name="requestSize" value="@(context.Request.Body?.Length ?? 0)" />
+    </inbound>
+    <backend>
+        <forward-request />
+    </backend>
+    <outbound>
+        <!-- Add correlation ID to response -->
+        <set-header name="X-Correlation-ID" exists-action="override">
+            <value>@((string)context.Variables["correlationId"])</value>
+        </set-header>
+        
+        <!-- GenAI response metadata -->
+        <choose>
+            <when condition="@(context.Request.Url.Path.StartsWith("/mcp/"))">
+                <set-header name="X-GenAI-Response-Time" exists-action="override">
+                    <value>@(DateTime.UtcNow.Subtract((DateTime)context.Variables["requestStartTime"]).TotalMilliseconds.ToString())</value>
+                </set-header>
+                <set-header name="X-GenAI-Provider" exists-action="override">
+                    <value>Azure AI Travel Agents</value>
+                </set-header>
+            </when>
+        </choose>
+        
+        <!-- Remove internal headers from response -->
+        <set-header name="Server" exists-action="delete" />
+        <set-header name="X-Powered-By" exists-action="delete" />
+        <set-header name="X-AspNet-Version" exists-action="delete" />
+        
+        <!-- Log GenAI usage metrics -->
+        <log-to-eventhub logger-id="genai-usage-logger" partition-id="0">
+            @{
+                var responseTime = DateTime.UtcNow.Subtract((DateTime)context.Variables["requestStartTime"]).TotalMilliseconds;
+                var requestSize = (int)context.Variables["requestSize"];
+                var responseSize = context.Response.Body?.Length ?? 0;
+                
+                return new JObject(
+                    new JProperty("timestamp", DateTime.UtcNow.ToString("O")),
+                    new JProperty("correlationId", context.RequestId),
+                    new JProperty("apiPath", context.Request.Url.Path),
+                    new JProperty("method", context.Request.Method),
+                    new JProperty("statusCode", context.Response.StatusCode),
+                    new JProperty("responseTime", responseTime),
+                    new JProperty("requestSize", requestSize),
+                    new JProperty("responseSize", responseSize),
+                    new JProperty("userAgent", context.Request.Headers.GetValueOrDefault("User-Agent", "")),
+                    new JProperty("clientIp", context.Request.IpAddress),
+                    new JProperty("isGenAI", context.Request.Url.Path.StartsWith("/mcp/"))
+                ).ToString();
+            }
+        </log-to-eventhub>
+    </outbound>
+    <on-error>
+        <!-- Error handling and logging -->
+        <set-header name="X-Correlation-ID" exists-action="override">
+            <value>@((string)context.Variables["correlationId"])</value>
+        </set-header>
+        
+        <!-- GenAI error logging -->
+        <log-to-eventhub logger-id="genai-error-logger" partition-id="1">
+            @{
+                return new JObject(
+                    new JProperty("timestamp", DateTime.UtcNow.ToString("O")),
+                    new JProperty("correlationId", context.RequestId),
+                    new JProperty("apiPath", context.Request.Url.Path),
+                    new JProperty("method", context.Request.Method),
+                    new JProperty("error", context.LastError?.Message ?? "Unknown error"),
+                    new JProperty("statusCode", context.Response.StatusCode),
+                    new JProperty("clientIp", context.Request.IpAddress),
+                    new JProperty("isGenAI", context.Request.Url.Path.StartsWith("/mcp/"))
+                ).ToString();
+            }
+        </log-to-eventhub>
+    </on-error>
+</policies>
