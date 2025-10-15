@@ -48,7 +48,7 @@
     class="flex-1 h-[800px] p-10 overflow-y-auto mb-10"
   >
     <div class="flex flex-col gap-4">
-      @if ((chatService.messagesStream | async)?.length === 0) {
+      @if (messages.length === 0) {
       <div class="flex flex-row gap-4">
         @for(prompt of samplePrompts; track prompt) {
         <div
@@ -66,8 +66,7 @@
       </div>
       }
       <!-- loop over all messages -->
-      @for (message of (chatService.messagesStream | async); track message) {
-
+      @for (message of messages; track message) {
       <ng-container>
         <div
           class="flex gap-3"
@@ -89,45 +88,62 @@
               class="flex flex-row rounded-3xl px-4 py-2 w-full"
             >
           @for (evt of message.metadata?.events; track $index) {
+            @if(evt.event !== 'AgentStream' && evt.event !== 'AgentDelta' && evt.event !== 'llm_token' && evt.event !== 'agent_complete') {
             <accordion-preview
               [isOpened]="false"
               icon="lucideCheck"
               [title]="'Processing ' + evt.event + (evt.data.agent ? ' (' + evt.data.agent + ')' : '')"
               class="flex flex-row rounded-3xl px-4 w-full"
             >
-              @if(evt.event !== 'AgentStream' && evt.event !== 'AgentDelta') {
-              <markdown class="text-muted-foreground" [disableSanitizer]="true">
-                <span hlmBadge
-                brnHoverCardTrigger
-                variant="outline"
-                class="agent-event-{{ evt.event }}">
-                @if(evt.data.agent) { {{ evt.data.agent }} }
-                @else { {{ evt.event }} }
-                </span>
-                {{ evt.data.message }}
-              </markdown>
+              <div class="text-muted-foreground">
+                @if(evt.agent) {
+                  <span hlmBadge brnHoverCardTrigger variant="outline">Agent</span>
+                  {{ evt.agent }}
+                  <br>
+                  <span hlmBadge brnHoverCardTrigger variant="outline">Event</span>
+                  {{ evt.event }}
+                  <br>
+                }
+                @if(evt.data.tool) {
+                  <span hlmBadge brnHoverCardTrigger variant="outline">Tools</span>
+                  {{ evt.data.tool }}
+                  <br>
+                  <span hlmBadge brnHoverCardTrigger variant="outline">Args</span>
+                  {{ (evt.data.input || "{}") | json }}
+                }
+                <br>
+                @if(evt.data.output && printAgentsGraph(evt)) {
+                  <span hlmBadge brnHoverCardTrigger variant="outline">Agents</span>
+                  <span>{{ (evt.data.output.goto || "") + printAgentsGraph(evt) || '-' }}</span>
+                }
+                <br>
+
+                <span>{{ evt.data.input?.messages?.at(-1)?.kwargs?.content || "" }}</span>
+                <span>{{ evt.data.output?.update?.messages?.at(-1)?.kwargs?.content || "" }}</span>
+              </div>
               <brn-separator hlmSeparator />
-              }
             </accordion-preview>
           }
+        }
         </accordion-preview>
         </section>
 
           @if ($last && chatService.isLoading()) {
-          <skeleton-preview></skeleton-preview>
-          } @else { @for(reason of message.reasoning; track reason) {
-          <div hlmAlert class="gap-10">
-            <p hlmAlertDesc>
-              <markdown class="italic">{{ reason.content }}</markdown>
-            </p>
-          </div>
+            <skeleton-preview></skeleton-preview>
+          } @else {
+            @for(reason of message.reasoning; track reason) {
+              <div hlmAlert class="gap-10">
+                <p hlmAlertDesc>
+                  <span class="italic">{{ reason.content }}</span>
+                </p>
+              </div>
+            }
+            <div hlmAlert class="bg-muted gap-10">
+              <p hlmAlertDesc [innerHTML]="chatService.lastMessageContent$ | async">
+              </p>
+            </div>
           }
-          <div hlmAlert class="bg-muted gap-10">
-            <p hlmAlertDesc>
-              <markdown>{{ message.content }}</markdown>
-            </p>
-          </div>
-          } }
+        }
         </div>
         <div
           class="text-[10px] opacity-60"
@@ -138,6 +154,7 @@
       </ng-container>
       }
     </div>
+
     <span #eot class="font-mono text-xs"></span>
   </ng-scrollbar>
 
@@ -155,6 +172,8 @@
             (keyup.enter)="chatService.sendMessage($event)"
           ></textarea>
           <hlm-hint class="mr-1 mt-10">AI-generated content may be incorrect</hlm-hint>
+
+
         </hlm-form-field>
         <button
           hlmBtn
@@ -203,50 +222,3 @@
     </div>
   </div>
 </div>
-
-<style>
-  .agent-event-StartEvent {
-    background-color: #ffff00; /* Bright Yellow */
-    color: #000000; /* Black */
-  }
-  .agent-event-StopEvent {
-    background-color: #ff0000; /* Bright Red */
-    color: #ffffff; /* White */
-  }
-  .agent-event-AgentInput {
-    background-color: #0000ff; /* Bright Blue */
-    color: #ffffff; /* White */
-  }
-  .agent-event-AgentOutput {
-    background-color: #00ff00; /* Bright Green */
-    color: #000000; /* Black */
-  }
-  .agent-event-AgentSetup {
-    background-color: #ff4500; /* Bright Orange-Red */
-    color: #ffffff; /* White */
-  }
-  .agent-event-AgentStepEvent {
-    background-color: #ffd700; /* Bright Gold */
-    color: #000000; /* Black */
-  }
-  .agent-event-AgentToolCallResult {
-    background-color: #20b2aa; /* Bright Light Sea Green */
-    color: #000000; /* Black */
-  }
-  .agent-event-AgentToolCall {
-    background-color: #ffa07a; /* Bright Light Salmon */
-    color: #000000; /* Black */
-  }
-  .agent-event-ToolResultsEvent {
-    background-color: #4682b4; /* Bright Steel Blue */
-    color: #ffffff; /* White */
-  }
-  .agent-event-ToolCallsEvent {
-    background-color: #ff69b4; /* Bright Hot Pink */
-    color: #000000; /* Black */
-  }
-  .agent-event-AgentStream {
-    background-color: #8a2be2; /* Bright Blue Violet */
-    color: #ffffff; /* White */
-  }
-</style>
