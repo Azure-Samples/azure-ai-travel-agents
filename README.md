@@ -2,7 +2,7 @@
 
 <img src="./docs/ai-travel-agents-logo.png" alt="" align="center" height="128" />
 
-# Azure AI Travel Agents with Llamaindex.TS and MCP
+<h1>Agents and MCP Orchestration <br>with LlamaIndex.TS, Langchain.js <br>and Microsoft Agent Framework!</h1>
 
 [![Join Azure AI Foundry Community Discord](https://img.shields.io/badge/Discord-Azure_AI_Foundry_Community_Discord-blue?style=flat-square&logo=discord&color=5865f2&logoColor=fff)](https://discord.gg/NcwHpz6bRW)
 [![Join Azure AI Foundry Developer Forum](https://img.shields.io/badge/GitHub-Azure_AI_Foundry_Developer_Forum-blue?style=flat-square&logo=github&color=000000&logoColor=fff)](https://aka.ms/foundry/forum)
@@ -40,9 +40,6 @@ The AI Travel Agents is a robust **enterprise application** that leverages multi
 | **Customer Query Understanding** | Extracts key **preferences** from customer inquiries.                                                                         |
 | **Destination Recommendation**   | Suggests **destinations** based on customer preferences.                                                                          |
 | **Itinerary Planning**           | Creates a detailed **itinerary** and travel plan.                                                                                 |
-| **Code Evaluation**              | Executes custom logic and scripts when needed.                                                                                  |
-| **Model Inference**              | Runs a custom **LLM** using **ONNX** and **vLLM** on **Azure Container Apps' serverless GPU** for high-performance inference. |
-| **Web Search**                   | Uses Grounding with Bing Search to fetch live travel data.                                                                    |
 | **Echo Ping**                    | Echoes back any received input (used as an MCP server example).                                                               |
 
 ## High-Level Architecture
@@ -64,11 +61,14 @@ The architecture of the AI Travel Agents application is designed to be modular a
 
 ## Features
 - Multiple AI agents (each with its own specialty)
-- Orchestrated by [LlamaIndex.TS](https://ts.llamaindex.ai/)
+- Orchestrated by [LlamaIndex.TS](https://ts.llamaindex.ai/), [Langchain.js](https://js.langchain.com/) and the [Microsoft Agent Framework](https://github.com/microsoft/agent-framework/)
 - Supercharged by [MCP](https://modelcontextprotocol.io/introduction)
 - Deployed serverlessly via [Azure Container Apps](https://learn.microsoft.com/azure/container-apps/)
 - Includes an [llms.txt](./llms.txt) file to provide information to help LLMs use this project at inference time ([learn more](https://llmstxt.org/))
-
+- OpenTelemetry instrumentation for monitoring with [Aspire Dashboard](https://www.aspiredashboard.com/)
+- Sample code for MCP servers in multiple languages: Python, Node.js, Java, .NET
+- Easy to extend with new agents and tools
+- Comprehensive documentation using VitePress
 
 <!-- Note: this is a placeholder for HackerNoon links which point from the article to an old section in this readme -->
 <a id="prerequisites"/>
