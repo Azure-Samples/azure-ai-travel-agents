@@ -1,12 +1,11 @@
+import { BaseChatModel } from "@langchain/core/language_models/chat_models";
 import { BaseMessage } from "@langchain/core/messages";
 import { DynamicStructuredTool } from "@langchain/core/tools";
-import { BaseChatModel } from "@langchain/core/language_models/chat_models";
+import { createSupervisor } from "@langchain/langgraph-supervisor";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { McpServerDefinition } from "../../../mcp/mcp-tools.js";
 import { McpToolsConfig } from "../tools/index.js";
 import { createMcpToolsFromDefinition } from "../tools/mcp-bridge.js";
-import { createSupervisor } from "@langchain/langgraph-supervisor";
-import { CompiledStateGraph } from "@langchain/langgraph";
 
 // Define the state for our graph
 export interface AgentState {

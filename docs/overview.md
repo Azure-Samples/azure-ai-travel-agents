@@ -21,16 +21,28 @@ This directory contains comprehensive technical documentation for architects, de
 
 ### Orchestration Options
 
-The system supports two orchestration approaches for coordinating AI agents:
+The system supports three orchestration approaches for coordinating AI agents:
 
-#### Current Implementation: LlamaIndex.TS
-The production system currently uses **LlamaIndex.TS** for agent orchestration, providing:
+#### Current Implementation: LangChain.js
+The production system currently uses **LangChain.js** for agent orchestration, providing:
+- TypeScript-based workflow management with LangGraph supervisor pattern
+- Official `@langchain/mcp-adapters` for MCP integration
+- Node.js/Express.js integration
+- Advanced streaming with `streamEvents` pattern
+- Multiple LLM provider support (Azure OpenAI, Docker Models, GitHub Models, Ollama, Foundry Local)
+- Comprehensive tool integration via MCP
+
+See [Orchestration Options](./orchestration.md) for detailed comparison.
+
+#### Alternative: LlamaIndex.TS
+Available as an alternative TypeScript implementation in `packages/api/src/orchestrator/llamaindex/`:
 - TypeScript-based workflow management
 - Node.js/Express.js integration
 - Established stability and performance
 - Comprehensive tool integration via MCP
+- Excellent for RAG (Retrieval-Augmented Generation) use cases
 
-See [Technical Architecture - Agent Orchestration](./technical-architecture.md#agent-orchestration) for details on the current implementation.
+See [Technical Architecture - Agent Orchestration](./technical-architecture.md#agent-orchestration) for implementation details.
 
 #### Alternative: Microsoft Agent Framework (MAF) Implementation
 
@@ -58,9 +70,9 @@ Located in `packages/api-python/`, this is a complete, production-ready alternat
 - Developer guide: `packages/api-python/DEVELOPER_GUIDE.md`
 - MCP integration: `packages/api-python/MCP_QUICK_REFERENCE.md`
 
-**Status**: Alternative implementation available for evaluation and use alongside LlamaIndex.TS.
+**Status**: Alternative implementation available for evaluation and use alongside LangChain.js and LlamaIndex.TS.
 
-> **Note**: Both orchestration approaches maintain compatibility with the existing MCP server architecture, ensuring no changes are needed to the specialized AI tool servers (Customer Query, Destination Recommendation, Itinerary Planning, etc.).
+> **Note**: All three orchestration approaches maintain compatibility with the existing MCP server architecture, ensuring no changes are needed to the specialized AI tool servers (Customer Query, Destination Recommendation, Itinerary Planning, etc.).
 
 ## System Architecture Overview
 
@@ -68,14 +80,15 @@ The Azure AI Travel Agents system is built on a microservices architecture with 
 
 - **Frontend**: Angular UI with real-time streaming
 - **API Server & Orchestration**: 
-  - **Current**: Express.js with LlamaIndex.TS orchestration (TypeScript)
-  - **Alternative**: FastAPI with Microsoft Agent Framework (Python)
+  - **Current**: Express.js with LangChain.js orchestration (TypeScript)
+  - **Alternative 1**: Express.js with LlamaIndex.TS orchestration (TypeScript)
+  - **Alternative 2**: FastAPI with Microsoft Agent Framework (Python)
 - **MCP Servers**: 7 specialized services in TypeScript, C#, Java, and Python
 - **AI Services**: Azure OpenAI and custom model inference
 - **Monitoring**: OpenTelemetry with Aspire Dashboard
 - **Deployment**: Docker containers on Azure Container Apps
 
-### Current Architecture (LlamaIndex.TS)
+### Current Architecture (LangChain.js)
 
 ```mermaid
 flowchart LR

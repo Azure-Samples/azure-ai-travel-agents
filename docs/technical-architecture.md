@@ -65,7 +65,8 @@ The Azure AI Travel Agents is a sophisticated microservices-based AI application
 **Technology Stack:**
 - Node.js 22.16+ with TypeScript
 - Express.js 5.0 for HTTP server
-- LlamaIndex.TS for agent orchestration
+- **Current**: LangChain.js + LangGraph for agent orchestration
+- **Alternative**: LlamaIndex.TS for agent orchestration
 - OpenTelemetry for observability
 
 **Key Responsibilities:**
@@ -78,6 +79,8 @@ The Azure AI Travel Agents is a sophisticated microservices-based AI application
 **Core Modules:**
 - `index.ts`: Main server setup and endpoint definitions
 - `orchestrator/`: Agent workflow management
+  - `langchain/`: LangChain.js orchestration (current default)
+  - `llamaindex/`: LlamaIndex.TS orchestration (available alternative)
 - `mcp/`: MCP client implementations
 - `utils/`: Shared utilities and helpers
 
@@ -145,7 +148,7 @@ The system includes seven specialized MCP servers, each serving a specific domai
 ### High-Level Request Flow
 
 ```
-User Input → Angular UI → API Server → LlamaIndex Orchestrator → Triage Agent → Specialized Agents → MCP Servers → External Services → Response Chain
+User Input → Angular UI → API Server → LangChain.js Orchestrator → Supervisor Agent → Specialized Agents → MCP Servers → External Services → Response Chain
 ```
 
 ### Detailed Request Processing
@@ -161,12 +164,14 @@ User Input → Angular UI → API Server → LlamaIndex Orchestrator → Triage 
    - Tool configuration loaded based on selection
 
 3. **Agent Orchestration Setup**
-   - LlamaIndex `setupAgents()` function called
+   - **LangChain.js**: `setupAgents()` function initializes LangGraph workflow
+   - **LlamaIndex.TS**: `setupAgents()` function creates multi-agent hierarchy
    - Filtered tools used to configure available agents
-   - Multi-agent workflow created with triage agent as root
+   - Workflow created with supervisor/triage agent
 
-4. **Triage Agent Processing**
-   - Initial query analysis by root triage agent
+4. **Agent Processing**
+   - **LangChain.js**: Supervisor agent routes tasks via LangGraph
+   - **LlamaIndex.TS**: Triage agent analyzes query and delegates
    - Decision on which specialized agents to engage
    - Handoff coordination to appropriate agents
 
@@ -392,9 +397,55 @@ MCP servers implement consistent error handling:
 
 ## Agent Orchestration
 
-### LlamaIndex.TS Multi-Agent Framework
+The system provides three orchestration implementations. The current production default is **LangChain.js**, with **LlamaIndex.TS** and **Microsoft Agent Framework** available as alternatives.
 
-The system uses LlamaIndex.TS's multi-agent framework to coordinate between specialized agents:
+### Current Implementation: LangChain.js
+
+The production system uses **LangChain.js** with the LangGraph supervisor pattern for agent orchestration:
+
+```typescript
+// packages/api/src/orchestrator/langchain/graph/index.ts
+import { createReactAgent } from "@langchain/langgraph/prebuilt";
+import { MemorySaver } from "@langchain/langgraph";
+
+export class TravelAgentsWorkflow {
+  async initialize(filteredTools: McpServerDefinition[]) {
+    // Convert MCP tools to LangChain tools
+    const tools = await this.convertMcpToLangChainTools(filteredTools);
+    
+    // Create supervisor agent with LangGraph
+    this.agent = createReactAgent({
+      llm: this.llm,
+      tools,
+      checkpointSaver: new MemorySaver(),
+      messageModifier: this.systemPrompt
+    });
+  }
+  
+  async *streamResponse(userMessage: string) {
+    // Stream events using LangChain's streamEvents pattern
+    for await (const event of this.agent.streamEvents(
+      { messages: [userMessage] },
+      { version: "v2", streamMode: "values" }
+    )) {
+      yield event;
+    }
+  }
+}
+```
+
+**Key Features**:
+- Official `@langchain/mcp-adapters` for MCP integration
+- LangGraph supervisor pattern for workflow control
+- `streamEvents` pattern for real-time responses
+- Multiple LLM providers (Azure OpenAI, Docker Models, GitHub Models, Ollama, Foundry Local)
+- State management with `MemorySaver`
+
+**Location**: `packages/api/src/orchestrator/langchain/`
+
+### Alternative Implementation: LlamaIndex.TS
+
+Available as an alternative in the same codebase:
 
 ```typescript
 // Agent creation
@@ -414,6 +465,18 @@ return multiAgent({
   verbose
 });
 ```
+
+**Location**: `packages/api/src/orchestrator/llamaindex/`
+
+**To Switch**: Change import in `packages/api/src/index.ts` from `./orchestrator/langchain/` to `./orchestrator/llamaindex/`
+
+### Alternative Implementation: Microsoft Agent Framework (Python)
+
+Fully implemented Python alternative using Magentic orchestration pattern.
+
+**Location**: `packages/api-python/`
+
+See [Orchestration Options](./orchestration.md) for detailed comparison and migration guidance.
 
 ### Agent Specialization
 
@@ -508,8 +571,8 @@ sequenceDiagram
     participant User
     participant UI as Angular UI
     participant API as Express API
-    participant Orchestrator as LlamaIndex
-    participant TriageAgent as Triage Agent
+    participant Orchestrator as Agent Orchestrator
+    participant TriageAgent as Triage/Supervisor Agent
     participant DestAgent as Destination Agent
     participant WebAgent as Web Search Agent
     participant ItinAgent as Itinerary Agent
@@ -577,10 +640,10 @@ sequenceDiagram
     participant TriageAgent
     participant SpecializedAgent
     participant MCPServer
-    participant LlamaIndex as LlamaIndex Orchestrator
+    participant Orchestrator as Agent Orchestrator
 
-    TriageAgent->>LlamaIndex: requestHandoff(agentName, context)
-    LlamaIndex->>SpecializedAgent: activate(context)
+    TriageAgent->>Orchestrator: requestHandoff(agentName, context)
+    Orchestrator->>SpecializedAgent: activate(context)
     SpecializedAgent->>SpecializedAgent: processTask(context)
     
     loop Tool Execution
@@ -588,8 +651,8 @@ sequenceDiagram
         MCPServer-->>SpecializedAgent: tool result
     end
     
-    SpecializedAgent->>LlamaIndex: taskComplete(result)
-    LlamaIndex-->>TriageAgent: handoffResult(result)
+    SpecializedAgent->>Orchestrator: taskComplete(result)
+    Orchestrator-->>TriageAgent: handoffResult(result)
 ```
 
 ### Real-time Streaming Response

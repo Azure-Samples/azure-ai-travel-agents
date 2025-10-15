@@ -1,7 +1,7 @@
 """LLM provider implementations using strategy pattern.
 
 This module implements the same strategy pattern as the TypeScript implementation
-in packages/api/src/orchestrator/llamaindex/providers, allowing selection between
+in packages/api/src/orchestrator/*/providers, allowing selection between
 different LLM providers based on the LLM_PROVIDER environment variable.
 """
 

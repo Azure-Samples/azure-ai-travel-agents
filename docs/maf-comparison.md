@@ -28,7 +28,7 @@ This document provides a side-by-side comparison of the current LlamaIndex.TS or
 
 ### Agent Definition
 
-**LlamaIndex.TS (Current)**:
+**Using LlamaIndex.TS**:
 ```typescript
 import { agent, multiAgent } from "llamaindex";
 import { mcp } from "@llamaindex/tools";
@@ -43,7 +43,7 @@ const customerQueryAgent = agent({
 });
 ```
 
-**Microsoft Agent Framework (Proposed)**:
+**Using Microsoft Agent Framework**:
 ```python
 from agent_framework import Agent
 from azure.ai.inference import ChatCompletionsClient
@@ -93,7 +93,7 @@ async for event in workflow.run(message):
 
 ### Tool Integration
 
-**LlamaIndex.TS (Current)**:
+**With LlamaIndex.TS**:
 ```typescript
 import { mcp } from "@llamaindex/tools";
 
@@ -109,7 +109,7 @@ const mcpServerConfig = {
 const tools = await mcp(mcpServerConfig).tools();
 ```
 
-**Microsoft Agent Framework (Proposed)**:
+**With Microsoft Agent Framework**:
 ```python
 from agent_framework import Tool
 import httpx
