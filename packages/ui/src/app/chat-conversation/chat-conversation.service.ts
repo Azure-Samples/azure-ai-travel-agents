@@ -1,12 +1,12 @@
 import { Injectable, signal } from '@angular/core';
+import { marked } from 'marked';
 import { toast } from 'ngx-sonner';
 import { BehaviorSubject } from 'rxjs';
 import {
   ApiService,
   ChatEvent,
   ChatMessage,
-  ChatStreamState,
-  Tools,
+  Tools
 } from '../services/api.service';
 
 @Injectable({
@@ -14,8 +14,9 @@ import {
 })
 export class ChatService {
   userMessage = signal('');
-  // agentMessageStream = new BehaviorSubject<string>('');
-  // agentEventStream = new BehaviorSubject<ChatEvent | null>(null);
+  private _lastMessageContent$ = new BehaviorSubject<string>('');
+  lastMessageContent$ = this._lastMessageContent$.asObservable();
+
   messagesStream = new BehaviorSubject<ChatMessage[]>([]);
   private messagesBuffer: ChatMessage[] = [];
   private agentEventsBuffer: ChatEvent[] = [];
@@ -26,46 +27,7 @@ export class ChatService {
   assistantMessageInProgress = signal(false);
   agentMessageBuffer: string = '';
 
-  constructor(private apiService: ApiService) {
-    this.apiService.chatStreamState.subscribe(
-      (state: Partial<ChatStreamState>) => {
-        console.log('Chat stream state update:', { state });
-
-        switch (state.type) {
-          case 'START':
-            this.agentEventsBuffer = [];
-            this.messagesBuffer.push({
-              role: 'assistant',
-              content: '',
-              reasoning: [],
-              timestamp: new Date(),
-            });
-            this.messagesStream.next(this.messagesBuffer);
-            break;
-
-          case 'END':
-            this.updateAndNotifyAgentChatMessageState('', {
-              metadata: {
-                events: this.agentEventsBuffer,
-              },
-            });
-            break;
-
-          case 'MESSAGE':
-            this.processAgentEvents(state.event);
-            break;
-
-          case 'ERROR':
-            this.showErrorMessage(state.error);
-            this.isLoading.set(false);
-            break;
-
-          default:
-            break;
-        }
-      }
-    );
-  }
+  constructor(private apiService: ApiService) {}
 
   async fetchAvailableTools() {
     const toolsResult = await this.apiService.fetchAvailableTools();
@@ -93,17 +55,53 @@ export class ChatService {
     this.isLoading.set(true);
     this.assistantMessageInProgress.set(false);
 
-    // // clear all buffers
-    // this.agentMessageStream.next('');
-    // this.agentEventStream.next(null);
-    // this.agentEventsBuffer = [];
-    // this.messagesStream.next(this.messagesBuffer);
-    // this.agent.set(null);
+    this.apiService
+      .stream(
+        messageText,
+        this.tools().filter((tool) => tool.selected)
+      )
+      .subscribe({
+        next: (state) => {
+          switch (state.type) {
+            case 'START':
+              this.agentEventsBuffer = [];
+              const message: ChatMessage = {
+                role: 'assistant',
+                content: '',
+                reasoning: [],
+                timestamp: new Date(),
+              };
+              this.messagesBuffer.push(message);
+              this.messagesStream.next(this.messagesBuffer);
+              this._lastMessageContent$.next('');
+              break;
 
-    await this.apiService.streamChatMessage(
-      messageText,
-      this.tools().filter((tool) => tool.selected)
-    );
+              case 'END':
+                this.updateAndNotifyAgentChatMessageState('', {
+                  metadata: {
+                    events: this.agentEventsBuffer,
+                  },
+                });
+                break;
+
+            case 'MESSAGE':
+              this.processAgentEvents(state.event);
+              break;
+
+            case 'ERROR':
+              this.showErrorMessage(state.error);
+              this.isLoading.set(false);
+              break;
+
+            default:
+              break;
+          }
+        },
+        error: (error) => {
+          this.showErrorMessage(error);
+          this.isLoading.set(false);
+        },
+      });
   }
 
   showErrorMessage(error: unknown) {
@@ -120,17 +118,21 @@ export class ChatService {
   }
 
   private processAgentEvents(event?: ChatEvent) {
+
     if (event && event.type === 'metadata') {
       this.agent.set(event.data?.agent || null);
       this.agentEventsBuffer.push(event);
 
-      console.log(event.event);
-
+      // MAF events
       let message: string = event.data?.message || '';
       if (message) {
-        message +='\n';
+        message += '\n';
       }
-      const delta: string = (event.data?.delta || message) || '';
+
+      let delta: string =
+        event.data?.delta || // Llamaindex.TS event
+        message || // Microsoft Agent Framework (MAF) event
+        '';
 
       switch (event.event) {
         // LlamaIndex events
@@ -146,13 +148,17 @@ export class ChatService {
           });
 
           this.assistantMessageInProgress.set(false);
+          this.isLoading.set(false);
           break;
 
         // LlamaIndex events
         case 'StopEvent':
 
         // Microsoft Agent Framework (MAF) events
-        case "Complete":
+        case 'Complete':
+
+        // LangChain events
+        case 'agent_complete':
           this.updateAndNotifyAgentChatMessageState(delta, {
             metadata: {
               events: this.agentEventsBuffer,
@@ -160,7 +166,7 @@ export class ChatService {
           });
 
           this.assistantMessageInProgress.set(false);
-          this.isLoading.set(false);
+          this.apiService.chatStreamState.next({ type: 'END' });
           break;
 
         // LlamaIndex events
@@ -193,15 +199,28 @@ export class ChatService {
           });
           break;
 
+        // Note: the following events are sent very frequently (per token)
+
         // LlamaIndex events
         case 'AgentStream':
 
         // Microsoft Agent Framework (MAF) events
         case 'AgentDelta':
-          console.log({delta});
+
+        // LangChain events
+        case 'llm_token':
+          if (event.event === 'llm_token') {
+            const chunk = event.data?.chunk;
+            const content = chunk?.kwargs?.content || [];
+            if (Array.isArray(content)) {
+              delta = content.map((c) => c.text).join('');
+            }
+          }
 
           if (delta.trim()) {
-            this.assistantMessageInProgress.set(true);
+            this.isLoading.set(false);
+            // this.assistantMessageInProgress.set(true);
+            // this.agentMessageStream.next(this.agentMessageBuffer);
             this.agentEventsBuffer.push(event);
             this.updateAndNotifyAgentChatMessageState(delta, {
               metadata: {
@@ -214,7 +233,7 @@ export class ChatService {
     }
   }
 
-  updateAndNotifyAgentChatMessageState(
+  async updateAndNotifyAgentChatMessageState(
     delta: string,
     state?: Partial<ChatMessage>
   ) {
@@ -231,12 +250,18 @@ export class ChatService {
         ...(state?.reasoning || []),
       ];
       lastMessage.timestamp = new Date();
-      this.messagesStream.next([...this.messagesBuffer]);
+
+      this.messagesStream.next(this.messagesBuffer);
+
+      const md = marked.setOptions({});
+      const htmlContent = md.parse(lastMessage.content);
+      this._lastMessageContent$.next(await htmlContent);
     }
   }
 
   resetChat() {
     this.userMessage.set('');
+    this._lastMessageContent$.next('');
     this.messagesBuffer = [];
     this.messagesStream.next(this.messagesBuffer);
     this.agentEventsBuffer = [];

@@ -1,4 +1,4 @@
-import { AsyncPipe, CommonModule, JsonPipe } from '@angular/common';
+import { CommonModule, JsonPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -60,9 +60,9 @@ import { HlmPopoverContentDirective } from '@spartan-ng/ui-popover-helm';
 import { HlmScrollAreaDirective } from '@spartan-ng/ui-scrollarea-helm';
 import { HlmSeparatorDirective } from '@spartan-ng/ui-separator-helm';
 import { HlmSwitchComponent } from '@spartan-ng/ui-switch-helm';
-import { MarkdownComponent, provideMarkdown } from 'ngx-markdown';
 import { AccordionPreviewComponent } from '../components/accordion/accordion.component';
 import { SkeletonPreviewComponent } from '../components/skeleton-preview/skeleton-preview.component';
+import { ChatEvent, ChatMessage } from '../services/api.service';
 import { ChatService } from './chat-conversation.service';
 
 const SAMPLE_PROMPT_1 = `Hello! I'm planning a trip to Iceland and would like your expertise to create a custom itinerary. Please use your destination planning tools and internal resources to suggest a day-by-day plan based on:
@@ -98,7 +98,6 @@ Budget: 5000 euros.`;
     FormsModule,
     NgIcon,
     JsonPipe,
-    AsyncPipe,
     HlmButtonDirective,
     HlmInputDirective,
     HlmFormFieldModule,
@@ -132,10 +131,8 @@ Budget: 5000 euros.`;
     HlmSwitchComponent,
     AccordionPreviewComponent,
     SkeletonPreviewComponent,
-    MarkdownComponent,
   ],
   providers: [
-    provideMarkdown(),
     provideIcons({
       lucideBrain,
       lucideBot,
@@ -154,8 +151,11 @@ export class ChatConversationComponent implements OnInit {
   agentMessages = viewChildren<ElementRef<HTMLElement>>('agentMessages');
   samplePrompts = [SAMPLE_PROMPT_1, SAMPLE_PROMPT_2, SAMPLE_PROMPT_3];
 
+  messages: ChatMessage[] = [];
+
   constructor(public chatService: ChatService) {
     this.chatService.messagesStream.subscribe((messages) => {
+      this.messages = messages;
       if (messages.length === 0) return;
       setTimeout(() => {
         this.scrollToBottom();
@@ -174,9 +174,18 @@ export class ChatConversationComponent implements OnInit {
     this.chatService.sendMessage(event);
   }
 
+  printAgentsGraph(evt: ChatEvent) {
+    const tools =
+      evt.data.output?.update?.messages.at(1)?.kwargs?.response_metadata?.tools;
+    if (tools) {
+      return ' → ' + tools.map((t: any) => t.name).join(' → ');
+    }
+    return '';
+  }
+
   scrollToBottom() {
     this.eot()?.nativeElement.scrollIntoView({
-      behavior: 'smooth',
+      behavior: 'auto',
     });
   }
 
