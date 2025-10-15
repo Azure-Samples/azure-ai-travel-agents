@@ -1,0 +1,164 @@
+/**
+ * Theme toggle button styles
+ * Works with all theme variants (space, mythical, ancient, developer)
+ */
+
+.theme-toggle-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 50px;
+  height: 26px;
+  background: var(--toggle-bg, rgba(255, 255, 255, 0.2));
+  border: 2px solid var(--toggle-border, rgba(255, 255, 255, 0.3));
+  border-radius: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-left: 12px;
+  flex-shrink: 0;
+}
+
+.theme-toggle-btn:hover {
+  background: var(--toggle-bg-hover, rgba(255, 255, 255, 0.3));
+  border-color: var(--toggle-border-hover, rgba(255, 255, 255, 0.4));
+}
+
+/* Toggle slider */
+.theme-toggle-slider {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  background: var(--toggle-slider, #ffffff);
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+  transform: translateX(-3px); /* Light mode - position sun icon further left */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Dark mode position */
+.theme-toggle-btn.dark-mode .theme-toggle-slider {
+  transform: translateX(18px); /* Dark mode - keep moon icon within toggle bounds (46px - 18px) */
+}
+
+/* Icons */
+.toggle-icon {
+  width: 12px;
+  height: 12px;
+  fill: var(--toggle-icon-color, #fbbf24);
+}
+
+/* Sun icon (light mode) */
+.sun-icon {
+  display: block;
+}
+
+.theme-toggle-btn.dark-mode .sun-icon {
+  display: none;
+}
+
+/* Moon icon (dark mode) */
+.moon-icon {
+  display: none;
+  fill: var(--toggle-icon-color, #1f2937);
+}
+
+.theme-toggle-btn.dark-mode .moon-icon {
+  display: block;
+}
+
+/* Accessibility */
+.theme-toggle-btn:focus {
+  outline: 2px solid var(--toggle-focus, rgba(255, 255, 255, 0.5));
+  outline-offset: 2px;
+}
+
+/* Theme-specific toggle colors */
+
+/* Space theme toggle colors */
+.theme-space .theme-toggle-btn {
+  --toggle-bg: rgba(59, 130, 246, 0.3);
+  --toggle-bg-hover: rgba(59, 130, 246, 0.4);
+  --toggle-border: rgba(147, 197, 253, 0.5);
+  --toggle-border-hover: rgba(147, 197, 253, 0.6);
+  --toggle-slider: #ffffff;
+  --toggle-focus: #60a5fa;
+}
+
+/* Mythical theme toggle colors */
+.theme-mythical .theme-toggle-btn {
+  --toggle-bg: rgba(139, 92, 246, 0.3);
+  --toggle-bg-hover: rgba(139, 92, 246, 0.4);
+  --toggle-border: rgba(196, 181, 253, 0.5);
+  --toggle-border-hover: rgba(196, 181, 253, 0.6);
+  --toggle-slider: #ffffff;
+  --toggle-focus: #a78bfa;
+}
+
+/* Ancient theme toggle colors */
+.theme-ancient .theme-toggle-btn {
+  --toggle-bg: rgba(217, 119, 6, 0.3);
+  --toggle-bg-hover: rgba(217, 119, 6, 0.4);
+  --toggle-border: rgba(252, 211, 77, 0.5);
+  --toggle-border-hover: rgba(252, 211, 77, 0.6);
+  --toggle-slider: #ffffff;
+  --toggle-focus: #fbbf24;
+}
+
+/* Developer theme toggle colors */
+.theme-developer .theme-toggle-btn {
+  --toggle-bg: rgba(34, 197, 94, 0.3);
+  --toggle-bg-hover: rgba(34, 197, 94, 0.4);
+  --toggle-border: rgba(134, 239, 172, 0.5);
+  --toggle-border-hover: rgba(134, 239, 172, 0.6);
+  --toggle-slider: #ffffff;
+  --toggle-focus: #4ade80;
+}
+
+/* ===== GITHUB ICON THEME SWITCHING ===== */
+/* Light mode - use dark GitHub icon for better visibility on light backgrounds */
+.github-link img {
+  content: url('shared/github-mark.svg');
+  transition: all 0.2s ease;
+}
+
+/* Dark mode - use white GitHub icon for better visibility on dark backgrounds */
+[data-theme="dark"] .github-link img {
+  content: url('shared/github-mark-white.svg');
+}
+
+/* Developer theme overrides - has specific light/dark background needs */
+.theme-developer .github-link img {
+  content: url('shared/github-mark.svg'); /* Dark icon for light developer theme */
+}
+
+[data-theme="dark"].theme-developer .github-link img,
+[data-theme="dark"] .theme-developer .github-link img {
+  content: url('shared/github-mark-white.svg'); /* White icon for dark developer theme */
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .theme-toggle-btn {
+    width: 44px;
+    height: 22px;
+    margin-left: 8px;
+  }
+  
+  .theme-toggle-slider {
+    width: 16px;
+    height: 16px;
+    transform: translateX(-1px); /* Light mode - mobile positioning, sun icon further left */
+  }
+  
+  .theme-toggle-btn.dark-mode .theme-toggle-slider {
+    transform: translateX(24px); /* Dark mode - mobile positioning, keep moon icon within bounds (40px - 16px) */
+  }
+  
+  .toggle-icon {
+    width: 10px;
+    height: 10px;
+  }
+}

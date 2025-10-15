@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Agent Orchestration with Azure AI Travel Agents - Repo Adventure</title>
+    <link rel="stylesheet" href="assets/theme.css">
+    <link rel="stylesheet" href="../assets/shared/quest-navigator.css">
+    <link rel="stylesheet" href="../assets/theme-toggle.css">
+    <!-- Prism.js for syntax highlighting -->
+    <!-- Using minimal theme since we override all styles with our custom theme -->
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script>
+        // Configure Prism autoloader for syntax highlighting
+        if (window.Prism && window.Prism.plugins && window.Prism.plugins.autoloader) {
+            window.Prism.plugins.autoloader.languages_path = 'https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/';
+        }
+
+        // Trigger Prism highlighting after page load
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.Prism) {
+                window.Prism.highlightAll();
+            }
+        });
+    </script>
+</head>
+<body class="theme-developer">
+
+    <nav class="navbar">
+        <div class="nav-content">
+            <div class="nav-left">
+                <a href="https://github.com/Azure-Samples/azure-ai-travel-agents" target="_blank" rel="noopener noreferrer" class="github-link">
+                    <img src="../assets/shared/github-mark.svg" alt="GitHub" width="24" height="24">
+                </a>
+                <a href="index.html">Multi-Agent Orchestration with Azure AI Travel Agents</a>
+            </div>
+            <div class="nav-middle">
+            </div>
+            <div class="nav-right">
+                <a href="../index.html" class="nav-link">Change Adventure</a>
+                <a href="#" class="nav-link quest-map-trigger">Quests</a>
+                <button class="theme-toggle-btn" aria-label="Switch to light mode" type="button">
+                    <div class="theme-toggle-slider">
+                        <svg class="toggle-icon sun-icon" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="4" fill="currentColor"/>
+                            <path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        <svg class="toggle-icon moon-icon" viewBox="0 0 24 24">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                        </svg>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="story-content">
+    <h1>Multi-Agent Orchestration with Azure AI Travel Agents</h1>
+    <p>The Azure AI Travel Agents project is a modular, multi-agent system designed to streamline travel agency operations using cutting-edge AI technologies. At its core, LlamaIndex orchestrates specialized MCP services across diverse languages—TypeScript, Python, Java, and .NET—allowing agents to dynamically collaborate. From extracting customer preferences to recommending destinations and planning itineraries, this architecture demonstrates how AI workflows can be efficiently managed and scaled using MCP protocols and containerized microservices.</p>
+<p><strong>Adventure Awaits</strong> – Choose your quest wisely, brave developer!</p>
+
+</div>
+
+<div class="quests-section">
+    <h2>Choose a Quest</h2>
+    <a href="quest-1.html" class="quest-link">
+  <h3>Agent Workflow Orchestration</h3>
+  <p>Explore how <strong>index.ts</strong>, <strong>llamaindex/tools/index.ts</strong>, and <strong>llamaindex/index.ts</strong> coordinate multi-agent workflows using LlamaIndex's orchestration patterns.</p>
+</a>
+<a href="quest-2.html" class="quest-link">
+  <h3>LLM Provider Strategy</h3>
+  <p>Investigate <strong>providers/index.ts</strong>, <strong>azure-openai.ts</strong>, and <strong>github-models.ts</strong> to understand how the system dynamically selects and configures LLMs for diverse use cases.</p>
+</a>
+<a href="quest-3.html" class="quest-link">
+  <h3>MCP Protocol Integration</h3>
+  <p>Examine <strong>mcp-tools.ts</strong>, <strong>mcp-http-client.ts</strong>, and <strong>mcp-sse-client.ts</strong> to uncover how MCP clients connect, discover tools, and execute dynamic requests.</p>
+</a>
+<a href="quest-4.html" class="quest-link">
+  <h3>Polyglot MCP Services</h3>
+  <p>Dive into <strong>mcp_server.py</strong>, <strong>McpServerApplication.java</strong>, and <strong>server.ts</strong> to see how specialized MCP services are implemented in Python, Java, and TypeScript.</p>
+</a>
+<a href="quest-5.html" class="quest-link">
+  <h3>Streaming Chat Interface</h3>
+  <p>Analyze <strong>chat-conversation.component.ts</strong>, <strong>chat-conversation.service.ts</strong>, and <strong>api.service.ts</strong> to learn how Angular powers the interactive chat interface with real-time streaming capabilities.</p>
+</a>
+</div>
+    </div>
+    
+    <footer class="footer">
+        <div class="footer-content">
+            <span>Created using <a href="https://github.com/DanWahlin/ai-repo-adventures" target="_blank" rel="noopener noreferrer" class="repo-link">AI Repo Adventures</a></span>
+        </div>
+    </footer>
+    
+    <!-- Quest Navigator Script (for navbar Quests button functionality) -->
+    <script src="../assets/shared/quest-navigator.js"></script>
+    <!-- Theme Toggle Script (for light/dark mode toggle) -->
+    <script src="../assets/theme-toggle.js"></script>
+</body>
+</html>
