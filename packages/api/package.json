@@ -11,12 +11,13 @@
     "dist"
   ],
   "dependencies": {
-    "@azure/ai-projects": "^1.0.0-beta.5",
+    "@azure/ai-projects": "^1.0.0",
+    "@azure/core-rest-pipeline": "^1.22.1",
     "@azure/identity": "^4.9.1",
-    "@langchain/azure-openai": "^0.0.11",
     "@langchain/community": "^0.3.56",
-    "@langchain/core": "^0.3.77",
+    "@langchain/core": "^0.3.78",
     "@langchain/langgraph": "^0.4.9",
+    "@langchain/langgraph-supervisor": "^0.0.20",
     "@langchain/mcp-adapters": "^0.6.0",
     "@langchain/openai": "^0.6.13",
     "@llamaindex/tools": "0.1.2",

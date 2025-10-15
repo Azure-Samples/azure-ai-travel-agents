@@ -87,11 +87,11 @@ apiRouter.post("/chat", async (req, res) => {
       async read() {
         try {
           for await (const event of context) {
-            const { displayName, data } = event;
+            const { eventName, data } = event;
             const serializedData = JSON.stringify({
               type: "metadata",
               agent: (data as any)?.agent || null,
-              event: displayName,
+              event: eventName,
               data: data ? JSON.parse(JSON.stringify(data)) : null,
             });
             this.push(serializedData + CHUNK_END);
@@ -100,13 +100,6 @@ apiRouter.post("/chat", async (req, res) => {
           this.push(null); // Close the stream
         } catch (error: any) {
           console.error("Error during streaming:", error?.message);
-          // this.push(
-          //   JSON.stringify({
-          //     type: "error",
-          //     message: "Serialization error",
-          //     error,
-          //   }) + CHUNK_END
-          // );
         }
       },
     });
