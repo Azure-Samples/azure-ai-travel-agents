@@ -39,7 +39,8 @@ services:
       - "4000:4000"
     depends_on:
       - tool-customer-query
-      - tool-destination-recommendation
+      # TODO: enable back when the build issue is resolved
+      # - tool-destination-recommendation
       - tool-itinerary-planning
       - tool-echo-ping
     env_file:
@@ -53,10 +54,11 @@ services:
     container_name: api-python
     build: ./packages/api-python
     ports:
-      - "4000:4000"
+      - "4010:4000"
     depends_on:
       - tool-customer-query
-      - tool-destination-recommendation
+      # TODO: enable back when the build issue is resolved
+      # - tool-destination-recommendation
       - tool-itinerary-planning
       - tool-echo-ping
     env_file: 
