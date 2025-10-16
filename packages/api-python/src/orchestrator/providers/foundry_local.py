@@ -26,10 +26,7 @@ class FoundryLocalProvider(LLMProvider):
             NotImplementedError: Foundry Local Python SDK not yet available
         """
         logger.info("Using Azure Foundry Local")
-        logger.warning(
-            "Foundry Local Python SDK is not yet available. "
-            "This is a placeholder implementation."
-        )
+        logger.warning("Foundry Local Python SDK is not yet available. This is a placeholder implementation.")
 
         # Placeholder implementation
         # TODO: Update when Foundry Local Python SDK becomes available

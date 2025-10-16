@@ -104,7 +104,7 @@ LLM_PROVIDER=azure-openai
 # Azure OpenAI
 AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
 AZURE_OPENAI_API_KEY=your-api-key
-AZURE_OPENAI_DEPLOYMENT_NAME=gpt-4
+AZURE_OPENAI_DEPLOYMENT_NAME=gpt-5
 
 # MCP Servers (Docker containers)
 MCP_CUSTOMER_QUERY_URL=http://localhost:5001
@@ -115,11 +115,8 @@ MCP_ECHO_PING_URL=http://localhost:5003
 ### Run
 
 ```bash
-# Start MCP servers (from repo root)
-./run.sh
-
 # Start API server (from src/api-python)
-python -m src.main
+uvicorn src.main:app --reload --port 4000 --log-level=debug
 ```
 
 Server starts at `http://localhost:8000`
@@ -140,7 +137,7 @@ Health check with MCP server status.
   "llm_provider": "azure-openai",
   "mcp": {
     "total_servers": 3,
-    "configured_servers": ["echo-ping", "customer-query", "itinerary-planning"]
+    "configured_servers": ["echo-ping", "customer-query", "itinerary-planning", "destination-recommendation"],
   }
 }
 ```
@@ -252,6 +249,7 @@ workflow = (
         CustomerQueryAgent=customer_agent,
         ItineraryAgent=itinerary_agent,
         DestinationAgent=destination_agent,
+        EchoAgent=echo_agent,
     )
     .on_event(event_handler, mode=MagenticCallbackMode.STREAMING)
     .with_standard_manager(
@@ -312,37 +310,6 @@ async for event in workflow.run_stream(message):
 └─────────────────────────────────┘
 ```
 
-
-## Project Structure
-
-```
-packages/api-python/
-├── src/
-│   ├── main.py                         # FastAPI application & endpoints
-│   ├── config.py                       # Configuration management
-│   ├── orchestrator/
-│   │   ├── magentic_workflow.py       # Magentic orchestration (MAF)
-│   │   ├── providers/                 # LLM provider adapters
-│   │   │   └── __init__.py            # get_llm_client()
-│   │   └── tools/
-│   │       ├── tool_config.py         # MCP server configuration
-│   │       └── tool_registry.py       # Tool metadata registry
-│   ├── utils/                         # Utility modules
-│   └── tests/                         # Test files
-├── MCP_SIMPLIFIED_ARCHITECTURE.md     # Architecture documentation
-├── MCP_QUICK_REFERENCE.md             # Quick reference guide
-├── pyproject.toml                     # Project configuration
-├── .env.sample                        # Environment template
-└── README.md                          # This file
-```
-
-## Documentation
-
-### Main Documentation
-
-- **[MCP Simplified Architecture](./MCP_SIMPLIFIED_ARCHITECTURE.md)** - Complete architecture overview
-- **[MCP Quick Reference](./MCP_QUICK_REFERENCE.md)** - Developer quick reference
-
 ### Additional Resources
 
 - [Microsoft Agent Framework Docs](https://learn.microsoft.com/en-us/agent-framework/)
@@ -364,13 +331,13 @@ LLM_PROVIDER=azure-openai  # or github-models, ollama-models, docker-models
 ```txt
 AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
 AZURE_OPENAI_API_KEY=your-api-key
-AZURE_OPENAI_DEPLOYMENT_NAME=gpt-4
+AZURE_OPENAI_DEPLOYMENT_NAME=gpt-5
 ```
 
 **GitHub Models:**
 ```txt
 GITHUB_TOKEN=your-github-token
-GITHUB_MODEL=openai/gpt-4o
+GITHUB_MODEL=openai/gpt-5o
 ```
 
 **Ollama:**
@@ -383,16 +350,16 @@ OLLAMA_MODEL=llama3
 
 ```bash
 # Linting
-ruff check src/
+uvx ruff check src/
 
 # Auto-fix
-ruff check --fix src/
+uvx ruff check --fix src/
 
 # Format
-ruff format src/
+uvx ruff format src/
 
 # Type checking
-mypy src/
+uvx mypy src/
 ```
 
 ### Testing

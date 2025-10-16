@@ -13,6 +13,4 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-logger.warning(
-    "mcp_tool_wrapper is deprecated. Use tool_registry.create_mcp_tool() instead."
-)
+logger.warning("mcp_tool_wrapper is deprecated. Use tool_registry.create_mcp_tool() instead.")

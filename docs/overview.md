@@ -59,7 +59,7 @@ Located in `packages/api-python/`, this is a complete, production-ready alternat
 
 **Key Features**:
 - ✅ Native Azure OpenAI integration (plus GitHub Models, Ollama, Docker Models)
-- ✅ 7 specialized agents (Customer Query, Itinerary Planning, Destination, Echo)
+- ✅ 4 specialized agents (Customer Query, Itinerary Planning, Destination, Echo)
 - ✅ Graceful degradation when MCP servers are unavailable
 - ✅ OpenTelemetry observability ready
 - ✅ Proper async lifecycle management
@@ -83,7 +83,7 @@ The Azure AI Travel Agents system is built on a microservices architecture with 
   - **Current**: Express.js with LangChain.js orchestration (TypeScript)
   - **Alternative 1**: Express.js with LlamaIndex.TS orchestration (TypeScript)
   - **Alternative 2**: FastAPI with Microsoft Agent Framework (Python)
-- **MCP Servers**: 7 specialized services in TypeScript, C#, Java, and Python
+- **MCP Servers**: 4 specialized services in TypeScript, C#, Java, and Python
 - **AI Services**: Azure OpenAI and custom model inference
 - **Monitoring**: OpenTelemetry with Aspire Dashboard
 - **Deployment**: Docker containers on Azure Container Apps
