@@ -161,6 +161,46 @@ To clean up all the Azure resources created by this sample:
 
 The resource group and all the resources will be deleted.
 
+## 🚀 LlamaIndex.TS + GitHub Models Deployment Guide
+
+**NEW**: This deployment now uses **LlamaIndex.TS orchestration** with **GitHub Models API** (gpt-4o-mini) as the LLM provider. This makes it even easier to get started without Azure OpenAI.
+
+### Quick Start with GitHub Models
+
+```bash
+# 1. Get GitHub Personal Access Token (Classic)
+# Go to https://github.com/settings/tokens
+# Create token with: repo, read:packages, write:packages scopes
+
+# 2. Update environment
+cd packages/api
+cp .env.sample .env.docker
+# Edit .env.docker and add your GitHub token:
+# LLM_PROVIDER=github-models
+# GITHUB_TOKEN=ghp_your_token_here
+# GITHUB_MODEL=gpt-4o-mini
+
+# 3. Deploy
+cd ..
+docker-compose up -d
+
+# 4. Access
+# Frontend: http://localhost:4200
+# API: http://localhost:4000
+```
+
+**For complete documentation**, see: **[DEPLOYMENT_GUIDE_LLAMAINDEX_GITHUB_MODELS.md](docs/DEPLOYMENT_GUIDE_LLAMAINDEX_GITHUB_MODELS.md)**
+
+### What Changed in This Version
+
+- ✅ **Orchestrator**: Switched from LangChain to **LlamaIndex.TS** (simpler agent routing)
+- ✅ **LLM Provider**: Integrated **GitHub Models API** (free, no Azure subscription needed)
+- ✅ **Response Handling**: Fixed LlamaIndex response format extraction
+- ✅ **Core Services**: 3 operational MCP services (customer-query, destination-recommendation, itinerary-planning)
+- ✅ **Frontend**: Updated with improved event streaming and debug logging
+
+See **[IMPLEMENTATION_SUMMARY.md](IMPLEMENTATION_SUMMARY.md)** for detailed changes.
+
 ## Advanced Setup
 
 To run the application in a more advanced local setup or deploy to Azure, please refer to the troubleshooting guide in the [Advanced Setup](docs/advanced-setup.md) documentation. This includes setting up the Azure Container Apps environment, using local LLM providers, configuring the services, and deploying the application to Azure.
