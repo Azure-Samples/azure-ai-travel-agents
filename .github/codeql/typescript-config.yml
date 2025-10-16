@@ -1,8 +1,6 @@
 name: TypeScript CodeQL Configuration
 
 paths:
-  - packages/tools/code-evaluation/**
-  - packages/tools/web-search/**
   - packages/api/**
   - packages/ui/**
 

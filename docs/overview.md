@@ -59,7 +59,7 @@ Located in `packages/api-python/`, this is a complete, production-ready alternat
 
 **Key Features**:
 - ✅ Native Azure OpenAI integration (plus GitHub Models, Ollama, Docker Models)
-- ✅ 7 specialized agents (Customer Query, Itinerary Planning, Destination, Code Eval, Model Inference, Web Search, Echo)
+- ✅ 7 specialized agents (Customer Query, Itinerary Planning, Destination, Echo)
 - ✅ Graceful degradation when MCP servers are unavailable
 - ✅ OpenTelemetry observability ready
 - ✅ Proper async lifecycle management
@@ -205,9 +205,6 @@ The system provides two orchestration approaches, each with distinct advantages:
 - CustomerQueryAgent
 - DestinationRecommendationAgent
 - ItineraryPlanningAgent
-- CodeEvaluationAgent
-- ModelInferenceAgent
-- WebSearchAgent
 - EchoAgent (testing)
 
 **Best For**: Python-first teams, teams wanting native MAF SDK, projects leveraging Python's AI ecosystem

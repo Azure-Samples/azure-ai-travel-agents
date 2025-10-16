@@ -26,9 +26,6 @@ flowchart TB
                 CQA[CustomerQueryAgent]
                 DRA[DestinationRecommendationAgent]
                 IPA[ItineraryPlanningAgent]
-                CEA[CodeEvaluationAgent]
-                MIA[ModelInferenceAgent]
-                WSA[WebSearchAgent]
                 EA[EchoAgent]
             end
             subgraph MCP_CLIENT["MCP Client Integration"]
@@ -42,9 +39,6 @@ flowchart TB
         CQ[Customer Query<br/>C#/.NET<br/>Port 5001]
         DR[Destination Recommend<br/>Java<br/>Port 5002]
         IP[Itinerary Planning<br/>Python<br/>Port 5003]
-        CE[Code Eval<br/>Python<br/>Port 5004]
-        MI[Model Inference<br/>Python<br/>Port 5005]
-        WS[Web Search<br/>TypeScript<br/>Port 5006]
     end
     
     UI -->|HTTP/SSE| API
@@ -72,9 +66,6 @@ flowchart TB
                 CQA[CustomerQueryAgent]
                 DRA[DestinationRecommendationAgent]
                 IPA[ItineraryPlanningAgent]
-                CEA[CodeEvaluationAgent]
-                MIA[ModelInferenceAgent]
-                WSA[WebSearchAgent]
                 EA[EchoAgent]
             end
             subgraph MCP_CLIENT["MCP Client Integration - Python"]
@@ -89,9 +80,6 @@ flowchart TB
         CQ[Customer Query<br/>C#/.NET<br/>Port 5001]
         DR[Destination Recommend<br/>Java<br/>Port 5002]
         IP[Itinerary Planning<br/>Python<br/>Port 5003]
-        CE[Code Eval<br/>Python<br/>Port 5004]
-        MI[Model Inference<br/>Python<br/>Port 5005]
-        WS[Web Search<br/>TypeScript<br/>Port 5006]
     end
     
     UI -->|HTTP/SSE<br/>Same API contract| API
@@ -120,9 +108,6 @@ flowchart TB
             CQ_A[customer_query_agent.py]
             DEST_A[destination_agent.py]
             ITIN_A[itinerary_agent.py]
-            CODE_A[code_eval_agent.py]
-            MODEL_A[model_inference_agent.py]
-            WEB_A[web_search_agent.py]
             ECHO_A[echo_agent.py]
         end
         
@@ -181,10 +166,6 @@ flowchart TD
     
     DRA[Destination Recommendation Agent<br/>Returns:<br/>• Santorini<br/>• Amalfi Coast<br/>• Algarve]
     
-    WSA[Web Search Agent<br/>Search for:<br/>• Current weather<br/>• Travel deals<br/>• Events]
-    
-    CEA[Code Evaluation Agent<br/>Calculate:<br/>• Best time<br/>• Price ranges]
-    
     COMBINE[Combine Results<br/>• Destinations<br/>• Current info<br/>• Price analysis]
     
     FR[Final Response]
@@ -194,8 +175,6 @@ flowchart TD
     TA --> WSA
     TA --> CEA
     DRA --> COMBINE
-    WSA --> COMBINE
-    CEA --> COMBINE
     COMBINE --> FR
 ```
 
@@ -292,9 +271,6 @@ src/
 │   ├── customer-query/          # C#/.NET
 │   ├── destination-recommendation/ # Java
 │   ├── itinerary-planning/      # Python
-│   ├── code-evaluation/         # Python
-│   ├── model-inference/         # Python
-│   ├── web-search/              # TypeScript
 │   └── echo-ping/               # TypeScript
 └── ui/                          # Angular frontend
 ```

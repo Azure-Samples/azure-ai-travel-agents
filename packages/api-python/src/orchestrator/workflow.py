@@ -10,9 +10,6 @@ from .agents.specialized_agents import (
     CustomerQueryAgent,
     DestinationRecommendationAgent,
     ItineraryPlanningAgent,
-    CodeEvaluationAgent,
-    ModelInferenceAgent,
-    WebSearchAgent,
     EchoAgent,
 )
 from .tools import MCP_TOOLS_CONFIG, tool_registry
@@ -38,9 +35,6 @@ class TravelWorkflowOrchestrator:
         self.customer_query_agent: Optional[CustomerQueryAgent] = None
         self.destination_agent: Optional[DestinationRecommendationAgent] = None
         self.itinerary_agent: Optional[ItineraryPlanningAgent] = None
-        self.code_eval_agent: Optional[CodeEvaluationAgent] = None
-        self.model_inference_agent: Optional[ModelInferenceAgent] = None
-        self.web_search_agent: Optional[WebSearchAgent] = None
         self.echo_agent: Optional[EchoAgent] = None
         
         logger.info("Workflow orchestrator initialized")
@@ -63,10 +57,7 @@ class TravelWorkflowOrchestrator:
         if enabled_tools is None:
             enabled_tools = [
                 "customer-query",
-                "web-search",
                 "itinerary-planning",
-                "model-inference",
-                "code-evaluation",
                 "destination-recommendation",
             ]
         
@@ -109,21 +100,6 @@ class TravelWorkflowOrchestrator:
         await self.itinerary_agent.initialize(self.chat_client)
         logger.info("ItineraryPlanningAgent initialized")
         
-        # Code Evaluation Agent
-        self.code_eval_agent = CodeEvaluationAgent(tools=self.all_tools)
-        await self.code_eval_agent.initialize(self.chat_client)
-        logger.info("CodeEvaluationAgent initialized")
-        
-        # Model Inference Agent
-        self.model_inference_agent = ModelInferenceAgent(tools=self.all_tools)
-        await self.model_inference_agent.initialize(self.chat_client)
-        logger.info("ModelInferenceAgent initialized")
-        
-        # Web Search Agent
-        self.web_search_agent = WebSearchAgent(tools=self.all_tools)
-        await self.web_search_agent.initialize(self.chat_client)
-        logger.info("WebSearchAgent initialized")
-        
         # Echo Agent (for testing)
         self.echo_agent = EchoAgent(tools=self.all_tools)
         await self.echo_agent.initialize(self.chat_client)
@@ -142,9 +118,6 @@ class TravelWorkflowOrchestrator:
                 self.customer_query_agent,
                 self.destination_agent,
                 self.itinerary_agent,
-                self.code_eval_agent,
-                self.model_inference_agent,
-                self.web_search_agent,
                 self.echo_agent,
             ]
             if agent is not None
@@ -243,17 +216,6 @@ class TravelWorkflowOrchestrator:
             self.customer_query_agent = CustomerQueryAgent()
             await self.customer_query_agent.initialize(self.chat_client)
         
-        # Web Search Agent
-        if "web-search" in tools_by_server:
-            self.web_search_agent = WebSearchAgent(
-                tools=tools_by_server.get("web-search", [])
-            )
-            await self.web_search_agent.initialize(self.chat_client)
-            logger.info("WebSearchAgent initialized with tools")
-        else:
-            self.web_search_agent = WebSearchAgent()
-            await self.web_search_agent.initialize(self.chat_client)
-        
         # Itinerary Planning Agent
         if "itinerary-planning" in tools_by_server:
             self.itinerary_agent = ItineraryPlanningAgent(
@@ -264,28 +226,6 @@ class TravelWorkflowOrchestrator:
         else:
             self.itinerary_agent = ItineraryPlanningAgent()
             await self.itinerary_agent.initialize(self.chat_client)
-        
-        # Model Inference Agent
-        if "model-inference" in tools_by_server:
-            self.model_inference_agent = ModelInferenceAgent(
-                tools=tools_by_server.get("model-inference", [])
-            )
-            await self.model_inference_agent.initialize(self.chat_client)
-            logger.info("ModelInferenceAgent initialized with tools")
-        else:
-            self.model_inference_agent = ModelInferenceAgent()
-            await self.model_inference_agent.initialize(self.chat_client)
-        
-        # Code Evaluation Agent
-        if "code-evaluation" in tools_by_server:
-            self.code_eval_agent = CodeEvaluationAgent(
-                tools=tools_by_server.get("code-evaluation", [])
-            )
-            await self.code_eval_agent.initialize(self.chat_client)
-            logger.info("CodeEvaluationAgent initialized with tools")
-        else:
-            self.code_eval_agent = CodeEvaluationAgent()
-            await self.code_eval_agent.initialize(self.chat_client)
         
         # Destination Recommendation Agent
         if "destination-recommendation" in tools_by_server:
@@ -316,9 +256,6 @@ class TravelWorkflowOrchestrator:
                 self.customer_query_agent,
                 self.destination_agent,
                 self.itinerary_agent,
-                self.code_eval_agent,
-                self.model_inference_agent,
-                self.web_search_agent,
                 self.echo_agent,
             ]
             if agent is not None

@@ -59,23 +59,6 @@ export async function setupAgents(filteredTools: McpServerDefinition[] = []) {
     toolsList.push(...tools);
   }
 
-  if (tools["web-search"]) {
-    const mcpServerConfig = mcpToolsConfig["web-search"];
-    const tools = await mcp(mcpServerConfig.config).tools();
-    console.log("Including Web Search Agent in the workflow");
-    const webSearchAgent = agent({
-      name: "WebSearchAgent",
-      systemPrompt:
-        "Searches the web for up-to-date travel information using Bing Search.",
-      tools,
-      llm,
-      verbose,
-    });
-    agentsList.push(webSearchAgent);
-    handoffTargets.push(webSearchAgent);
-    toolsList.push(...tools);
-  }
-
   if (tools["itinerary-planning"]) {
     const mcpServerConfig = mcpToolsConfig["itinerary-planning"];
     const tools = await mcp(mcpServerConfig.config).tools();
@@ -89,38 +72,6 @@ export async function setupAgents(filteredTools: McpServerDefinition[] = []) {
     });
     agentsList.push(itineraryPlanningAgent);
     handoffTargets.push(itineraryPlanningAgent);
-    toolsList.push(...tools);
-  }
-
-  if (tools["model-inference"]) {
-    const mcpServerConfig = mcpToolsConfig["model-inference"];
-    const tools = await mcp(mcpServerConfig.config).tools();
-    const modelInferenceAgent = agent({
-      name: "ModelInferenceAgent",
-      systemPrompt:
-        "Performs model inference tasks based on user input and requirements.",
-      tools,
-      llm,
-      verbose,
-    });
-    agentsList.push(modelInferenceAgent);
-    handoffTargets.push(modelInferenceAgent);
-    toolsList.push(...tools);
-  }
-
-  if (tools["code-evaluation"]) {
-    const mcpServerConfig = mcpToolsConfig["code-evaluation"];
-    const tools = await mcp(mcpServerConfig.config).tools();
-    const codeEvaluationAgent = agent({
-      name: "CodeEvaluationAgent",
-      systemPrompt:
-        "Evaluates code snippets and provides feedback or suggestions.",
-      tools,
-      llm,
-      verbose,
-    });
-    agentsList.push(codeEvaluationAgent);
-    handoffTargets.push(codeEvaluationAgent);
     toolsList.push(...tools);
   }
 

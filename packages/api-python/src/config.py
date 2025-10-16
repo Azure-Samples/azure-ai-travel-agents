@@ -54,9 +54,6 @@ class Settings(BaseSettings):
     mcp_customer_query_url: str = "http://tool-customer-query:8080"
     mcp_destination_recommendation_url: str = "http://tool-destination-recommendation:5002"
     mcp_itinerary_planning_url: str = "http://tool-itinerary-planning:5003"
-    mcp_code_evaluation_url: str = "http://tool-code-evaluation:5004"
-    mcp_model_inference_url: str = "http://tool-model-inference:5005"
-    mcp_web_search_url: str = "http://tool-web-search:5006"
     mcp_echo_ping_url: str = "http://tool-echo-ping:5000"
     mcp_echo_ping_access_token: Optional[str] = "123-this-is-a-fake-token-please-use-a-token-provider"
 

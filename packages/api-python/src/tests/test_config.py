@@ -15,9 +15,6 @@ def test_settings_defaults():
         mcp_customer_query_url="http://localhost:5001",
         mcp_destination_recommendation_url="http://localhost:5002",
         mcp_itinerary_planning_url="http://localhost:5003",
-        mcp_code_evaluation_url="http://localhost:5004",
-        mcp_model_inference_url="http://localhost:5005",
-        mcp_web_search_url="http://localhost:5006",
         mcp_echo_ping_url="http://localhost:5007",
     )
 
@@ -36,9 +33,6 @@ def test_settings_custom_port():
         mcp_customer_query_url="http://localhost:5001",
         mcp_destination_recommendation_url="http://localhost:5002",
         mcp_itinerary_planning_url="http://localhost:5003",
-        mcp_code_evaluation_url="http://localhost:5004",
-        mcp_model_inference_url="http://localhost:5005",
-        mcp_web_search_url="http://localhost:5006",
         mcp_echo_ping_url="http://localhost:5007",
         port=5000,
     )

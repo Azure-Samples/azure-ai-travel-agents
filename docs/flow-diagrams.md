@@ -69,17 +69,14 @@ sequenceDiagram
     participant U as User
     participant UI as Angular UI
     participant API as Express API
-    participant LI as LlamaIndex
+    participant LI as (LlamaIndex, Lanchain.js, or MS Agent Framework)
     participant TA as Triage Agent
     participant CQA as Customer Query Agent
     participant DRA as Destination Rec Agent
     participant IPA as Itinerary Planning Agent
-    participant WSA as Web Search Agent
     participant MCPCQ as MCP Customer Query
     participant MCPDR as MCP Destination Rec
     participant MCPIP as MCP Itinerary Plan
-    participant MCPWS as MCP Web Search
-    participant BING as Bing Search API
     participant AOAI as Azure OpenAI
 
     U->>UI: Enter travel query "Plan 7-day Japan trip"
@@ -93,7 +90,6 @@ sequenceDiagram
     LI->>CQA: Initialize Customer Query Agent  
     LI->>DRA: Initialize Destination Rec Agent
     LI->>IPA: Initialize Itinerary Planning Agent
-    LI->>WSA: Initialize Web Search Agent
     
     API->>TA: process("Plan 7-day Japan trip")
     API-->>UI: SSE: AgentSetup event
@@ -116,14 +112,6 @@ sequenceDiagram
     MCPDR-->>DRA: [Tokyo, Kyoto, Osaka] with details
     DRA-->>TA: return recommendations
     API-->>UI: SSE: AgentStream event (partial results)
-    
-    TA->>WSA: handoff(search current travel info)
-    WSA->>MCPWS: callTool("search", "Japan travel 2024")
-    MCPWS->>BING: Search API request
-    BING-->>MCPWS: Current travel information
-    MCPWS-->>WSA: Processed search results
-    WSA-->>TA: return current info
-    API-->>UI: SSE: AgentStream event
     
     TA->>IPA: handoff(create itinerary, destinations + preferences)
     IPA->>MCPIP: callTool("plan_itinerary", full_context)
@@ -313,21 +301,12 @@ graph TD
     
     C -->|Destination| D[Destination Recommendation]
     C -->|Planning| E[Itinerary Planning]  
-    C -->|Information| F[Web Search]
-    C -->|Complex Logic| G[Code Evaluation]
-    C -->|Custom Model| H[Model Inference]
     
     D --> I[MCP Destination Server]
     E --> J[MCP Itinerary Server]
-    F --> K[MCP Web Search Server]
-    G --> L[MCP Code Eval Server]
-    H --> M[MCP Model Server]
     
     I --> N[Response Synthesis]
     J --> N
-    K --> N
-    L --> N
-    M --> N
     
     N --> O[Final Response]
 ```

@@ -273,10 +273,7 @@ packages/tools/
 │   ├── AITravelAgent.sln       # Solution file
 │   └── Dockerfile
 ├── destination-recommendation/ # Java/Spring Boot
-├── itinerary-planning/         # Python/FastAPI
-├── code-evaluation/            # Python
-├── model-inference/            # Python with ONNX/vLLM
-└── web-search/                 # TypeScript/Node.js
+└── itinerary-planning/         # Python/FastAPI
 ```
 
 ## Development Workflow
@@ -568,9 +565,6 @@ tool-my-new-server:
 export type McpServerName =
   | "echo-ping"
   | "customer-query"
-  | "web-search"
-  | "itinerary-planning"
-  | "model-inference"
   | "code-evaluation"
   | "destination-recommendation"
   | "my-new-server";  // Add new server
@@ -997,7 +991,6 @@ test.describe('Travel Planning User Journey', () => {
 
     // Select tools
     await page.check('[data-testid="tool-echo-ping"]');
-    await page.check('[data-testid="tool-web-search"]');
 
     // Verify selection
     const newSelectedTools = await page.$$('[data-testid^="tool-"]:checked');

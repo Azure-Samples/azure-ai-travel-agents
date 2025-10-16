@@ -237,9 +237,6 @@ All three orchestration approaches share:
 - Customer Query Server (C#/.NET)
 - Destination Recommendation (Java)
 - Itinerary Planning (Python)
-- Travel Restrictions (TypeScript)
-- Web Search (TypeScript)
-- Code Interpreter (Python)
 - Echo Ping (TypeScript)
 
 ### Same Core Capabilities

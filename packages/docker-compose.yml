@@ -21,24 +21,6 @@ services:
     ports:
       - "5003:8000"
 
-  tool-code-evaluation:
-    container_name: tool-code-evaluation
-    build: ./tools/code-evaluation
-    ports:
-      - "5004:5000"
-
-  tool-model-inference:
-    container_name: tool-model-inference
-    build: ./tools/model-inference
-    ports:
-      - "5005:5000"
-  
-  tool-web-search:
-    container_name: tool-web-search
-    build: ./tools/web-search
-    ports:
-      - "5006:5000"
-      
   tool-echo-ping:
     container_name: tool-echo-ping
     build: ./tools/echo-ping
@@ -59,9 +41,6 @@ services:
       - tool-customer-query
       - tool-destination-recommendation
       - tool-itinerary-planning
-      - tool-code-evaluation
-      - tool-model-inference
-      - tool-web-search
       - tool-echo-ping
     env_file: 
       - "./api/.env"
@@ -79,9 +58,6 @@ services:
       - tool-customer-query
       - tool-destination-recommendation
       - tool-itinerary-planning
-      - tool-code-evaluation
-      - tool-model-inference
-      - tool-web-search
       - tool-echo-ping
     env_file: 
       - "./api-python/.env"

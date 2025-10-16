@@ -41,7 +41,6 @@ graph TB
                 EP[Echo Ping]
                 CQ[Cust Query]
                 DR[Dest Rec]
-                WS[Web Search]
                 OTHER[...]
             end
         end
@@ -136,18 +135,11 @@ AZURE_OPENAI_ENDPOINT=https://your-openai.openai.azure.com/
 AZURE_OPENAI_API_KEY=your-api-key
 AZURE_OPENAI_DEPLOYMENT_NAME=gpt-4o-mini
 
-# Bing Search
-BING_SEARCH_API_KEY=your-bing-key
-BING_SEARCH_ENDPOINT=https://api.bing.microsoft.com/
-
 # MCP Server URLs (local development)
 MCP_ECHO_PING_URL=http://localhost:5007
 MCP_CUSTOMER_QUERY_URL=http://localhost:5001
 MCP_DESTINATION_RECOMMENDATION_URL=http://localhost:5002
 MCP_ITINERARY_PLANNING_URL=http://localhost:5003
-MCP_CODE_EVALUATION_URL=http://localhost:5004
-MCP_MODEL_INFERENCE_URL=http://localhost:5005
-MCP_WEB_SEARCH_URL=http://localhost:5006
 
 # Monitoring
 OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:18889
@@ -219,9 +211,6 @@ services:
   tool-customer-query:
   tool-destination-recommendation:
   tool-itinerary-planning:
-  tool-code-evaluation:
-  tool-model-inference:
-  tool-web-search:
   web-api:            # Express API server
   web-ui:             # Angular UI
 ```
@@ -243,14 +232,10 @@ MCP_ECHO_PING_URL=http://tool-echo-ping:3000
 MCP_CUSTOMER_QUERY_URL=http://tool-customer-query:8080
 MCP_DESTINATION_RECOMMENDATION_URL=http://tool-destination-recommendation:8080
 MCP_ITINERARY_PLANNING_URL=http://tool-itinerary-planning:8000
-MCP_CODE_EVALUATION_URL=http://tool-code-evaluation:5000
-MCP_MODEL_INFERENCE_URL=http://tool-model-inference:5000
-MCP_WEB_SEARCH_URL=http://tool-web-search:5000
 
 # External services (from azd provision)
 AZURE_OPENAI_ENDPOINT=https://your-openai.openai.azure.com/
 AZURE_OPENAI_API_KEY=your-api-key
-BING_SEARCH_API_KEY=your-bing-key
 
 # Docker-specific settings
 IS_LOCAL_DOCKER_ENV=true
@@ -545,11 +530,6 @@ resource apiApp 'Microsoft.App/containerApps@2023-05-01' = {
           keyVaultUrl: '${keyVault.properties.vaultUri}secrets/azure-openai-key'
           identity: managedIdentity.id
         }
-        {
-          name: 'bing-search-key'
-          keyVaultUrl: '${keyVault.properties.vaultUri}secrets/bing-search-key'
-          identity: managedIdentity.id
-        }
       ]
     }
     template: {
@@ -569,10 +549,6 @@ resource apiApp 'Microsoft.App/containerApps@2023-05-01' = {
             {
               name: 'AZURE_OPENAI_API_KEY'
               secretRef: 'azure-openai-key'
-            }
-            {
-              name: 'BING_SEARCH_API_KEY'
-              secretRef: 'bing-search-key'
             }
             // MCP server URLs
             {
@@ -942,7 +918,7 @@ az acr build \
   packages/api
 
 # MCP Server Images
-for server in echo-ping customer-query destination-recommendation itinerary-planning code-evaluation model-inference web-search; do
+for server in echo-ping customer-query destination-recommendation itinerary-planning; do
   echo "Building MCP server: $server"
   az acr build \
     --registry $ACR_NAME \
