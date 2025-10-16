@@ -21,12 +21,12 @@ if (-not (Test-Path $apiEnvPath)) {
     "" | Add-Content $apiEnvPath
     "LLM_PROVIDER=azure-openai" | Add-Content $apiEnvPath
     "" | Add-Content $apiEnvPath
-    "AZURE_OPENAI_DEPLOYMENT=gpt-4o-mini" | Add-Content $apiEnvPath
+    "AZURE_OPENAI_DEPLOYMENT=gpt-5" | Add-Content $apiEnvPath
     "" | Add-Content $apiEnvPath
     "MCP_CUSTOMER_QUERY_URL=http://localhost:8080" | Add-Content $apiEnvPath
     "MCP_DESTINATION_RECOMMENDATION_URL=http://localhost:5002" | Add-Content $apiEnvPath
     "MCP_ITINERARY_PLANNING_URL=http://localhost:5003" | Add-Content $apiEnvPath
-    "MCP_ECHO_PING_URL=http://localhost:5007" | Add-Content $apiEnvPath
+    "MCP_ECHO_PING_URL=http://localhost:5004" | Add-Content $apiEnvPath
     "MCP_ECHO_PING_ACCESS_TOKEN=123-this-is-a-fake-token-please-use-a-token-provider" | Add-Content $apiEnvPath
     "" | Add-Content $apiEnvPath
     "OTEL_SERVICE_NAME=api" | Add-Content $apiEnvPath
@@ -43,7 +43,7 @@ if (-not (Test-Path $apiEnvDockerPath)) {
     "MCP_CUSTOMER_QUERY_URL=http://tool-customer-query:8080" | Add-Content $apiEnvDockerPath
     "MCP_DESTINATION_RECOMMENDATION_URL=http://tool-destination-recommendation:5002" | Add-Content $apiEnvDockerPath
     "MCP_ITINERARY_PLANNING_URL=http://tool-itinerary-planning:5003" | Add-Content $apiEnvDockerPath
-    "MCP_ECHO_PING_URL=http://tool-echo-ping:5007" | Add-Content $apiEnvDockerPath
+    "MCP_ECHO_PING_URL=http://tool-echo-ping:5004" | Add-Content $apiEnvDockerPath
 }
 
 # Install dependencies for the API service

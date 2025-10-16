@@ -25,7 +25,7 @@ services:
     container_name: tool-echo-ping
     build: ./tools/echo-ping
     ports:
-      - "5007:3000"
+      - "5004:3000"
     depends_on:
       - aspire-dashboard
     env_file:

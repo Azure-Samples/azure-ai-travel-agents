@@ -51,7 +51,7 @@ resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 
 var llamaIndexConfig = {
   chat: {
-    model: 'gpt-4o-mini'
+    model: 'gpt-5'
     version: '2024-07-18'
     capacity: 50
   }

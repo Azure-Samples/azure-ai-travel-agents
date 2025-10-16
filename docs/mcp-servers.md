@@ -61,7 +61,7 @@ flowchart LR
 ### 1. Echo Ping Server (TypeScript/Node.js)
 
 **Purpose**: Testing and validation of MCP communication patterns
-**Port**: 5007 (3000 internal)
+**Port**: 5004 (3000 internal)
 **Technology**: TypeScript, Express.js, MCP SDK
 
 #### Architecture

@@ -133,10 +133,10 @@ Example `.env` configuration:
 # Azure Services
 AZURE_OPENAI_ENDPOINT=https://your-openai.openai.azure.com/
 AZURE_OPENAI_API_KEY=your-api-key
-AZURE_OPENAI_DEPLOYMENT_NAME=gpt-4o-mini
+AZURE_OPENAI_DEPLOYMENT_NAME=gpt-5
 
 # MCP Server URLs (local development)
-MCP_ECHO_PING_URL=http://localhost:5007
+MCP_ECHO_PING_URL=http://localhost:5004
 MCP_CUSTOMER_QUERY_URL=http://localhost:5001
 MCP_DESTINATION_RECOMMENDATION_URL=http://localhost:5002
 MCP_ITINERARY_PLANNING_URL=http://localhost:5003
@@ -267,7 +267,7 @@ echo "API: http://localhost:4000"
 echo "Monitoring: http://localhost:18888"
 
 # MCP server endpoints
-echo "Echo Ping: http://localhost:5007"
+echo "Echo Ping: http://localhost:5004"
 echo "Customer Query: http://localhost:5001"
 echo "Destination Rec: http://localhost:5002"
 # ... etc

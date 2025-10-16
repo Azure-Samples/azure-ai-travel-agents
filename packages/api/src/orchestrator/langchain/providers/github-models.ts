@@ -4,7 +4,7 @@ export const llm = async () => {
   console.log("Using GitHub Models");
   return new ChatOpenAI({
     openAIApiKey: process.env.GITHUB_TOKEN,
-    modelName: process.env.GITHUB_MODEL || "gpt-4o-mini",
+    modelName: process.env.GITHUB_MODEL || "gpt-5",
     configuration: {
       baseURL: "https://models.inference.ai.azure.com",
     },

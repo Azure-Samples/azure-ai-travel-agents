@@ -11,7 +11,7 @@
         "Authorization": "Bearer ${input:toolEchoPingAccessToken}",
       },
       "type": "http",
-      "url": "http://localhost:5007/mcp"
+      "url": "http://localhost:5004/mcp"
     },
     "tool-itinerary-planning": {
       "type": "http",

@@ -15,7 +15,7 @@ def test_settings_defaults():
         mcp_customer_query_url="http://localhost:5001",
         mcp_destination_recommendation_url="http://localhost:5002",
         mcp_itinerary_planning_url="http://localhost:5003",
-        mcp_echo_ping_url="http://localhost:5007",
+        mcp_echo_ping_url="http://localhost:5004",
     )
 
     assert settings.port == 4000
@@ -33,7 +33,7 @@ def test_settings_custom_port():
         mcp_customer_query_url="http://localhost:5001",
         mcp_destination_recommendation_url="http://localhost:5002",
         mcp_itinerary_planning_url="http://localhost:5003",
-        mcp_echo_ping_url="http://localhost:5007",
+        mcp_echo_ping_url="http://localhost:5004",
         port=5000,
     )
 

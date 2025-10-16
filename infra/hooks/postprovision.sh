@@ -22,12 +22,12 @@ if [ ! -f ./packages/api/.env ]; then
     echo ""
     echo "LLM_PROVIDER=azure-openai" >> ./packages/api/.env
     echo ""
-    echo "AZURE_OPENAI_DEPLOYMENT=gpt-4o-mini" >> ./packages/api/.env
+    echo "AZURE_OPENAI_DEPLOYMENT=gpt-5" >> ./packages/api/.env
     echo ""
     echo "MCP_CUSTOMER_QUERY_URL=http://localhost:8080" >> ./packages/api/.env
     echo "MCP_DESTINATION_RECOMMENDATION_URL=http://localhost:5002" >> ./packages/api/.env
     echo "MCP_ITINERARY_PLANNING_URL=http://localhost:5003" >> ./packages/api/.env
-    echo "MCP_ECHO_PING_URL=http://localhost:5007" >> ./packages/api/.env
+    echo "MCP_ECHO_PING_URL=http://localhost:5004" >> ./packages/api/.env
     echo "MCP_ECHO_PING_ACCESS_TOKEN=123-this-is-a-fake-token-please-use-a-token-provider" >> ./packages/api/.env
     echo ""
     echo "OTEL_SERVICE_NAME=api" >> ./packages/api/.env
@@ -43,7 +43,7 @@ if [ ! -f ./packages/api/.env.docker ]; then
     echo "MCP_CUSTOMER_QUERY_URL=http://tool-customer-query:8080" >> ./packages/api/.env.docker
     echo "MCP_DESTINATION_RECOMMENDATION_URL=http://tool-destination-recommendation:5002" >> ./packages/api/.env.docker
     echo "MCP_ITINERARY_PLANNING_URL=http://tool-itinerary-planning:5003" >> ./packages/api/.env.docker
-    echo "MCP_ECHO_PING_URL=http://tool-echo-ping:5007" >> ./packages/api/.env.docker
+    echo "MCP_ECHO_PING_URL=http://tool-echo-ping:5004" >> ./packages/api/.env.docker
 fi
 
 ##########################################################################

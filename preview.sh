@@ -110,7 +110,7 @@ DOCKER_MODEL=ai/phi4:14B-Q4_0
 MCP_CUSTOMER_QUERY_URL=http://localhost:8080
 MCP_DESTINATION_RECOMMENDATION_URL=http://localhost:5002
 MCP_ITINERARY_PLANNING_URL=http://localhost:5003
-MCP_ECHO_PING_URL=http://localhost:5007
+MCP_ECHO_PING_URL=http://localhost:5004
 MCP_ECHO_PING_ACCESS_TOKEN=123-this-is-a-fake-token-please-use-a-token-provider
 EOM
 printf "${GREEN}${BOLD}.env file created in packages/api/.env.${NC}"

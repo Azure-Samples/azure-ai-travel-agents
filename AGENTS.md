@@ -90,7 +90,7 @@ All three orchestration implementations communicate with these MCP servers:
 - **customer-query** (.NET/C#) - Port 5001 - Customer inquiry processing
 - **destination-recommendation** (Java) - Port 5002 - Travel destination suggestions
 - **itinerary-planning** (Python) - Port 5003 - Detailed itinerary creation
-- **echo-ping** (TypeScript) - Port 5007 - Testing and validation
+- **echo-ping** (TypeScript) - Port 5004 - Testing and validation
 
 ### Service Communication
 
@@ -444,7 +444,7 @@ pip install -e ".[dev]"
 pytest
 
 # MCP server health checks
-curl http://localhost:5007/health  # echo-ping
+curl http://localhost:5004/health  # echo-ping
 curl http://localhost:5001/health  # customer-query
 curl http://localhost:5002/health  # destination-recommendation
 

@@ -87,7 +87,7 @@ The system includes seven specialized MCP servers, each serving a specific domai
 
 #### 3.1 Echo Ping Server (TypeScript/Node.js)
 - **Purpose**: Testing and validation of MCP communication
-- **Port**: 5007 (3000 internal)
+- **Port**: 5004 (3000 internal)
 - **Technology**: TypeScript, Express.js
 - **Features**: OpenTelemetry integration, simple echo functionality
 
@@ -640,7 +640,7 @@ graph TB
     subgraph Local["Local Development"]
         UI[Angular UI<br/>Port: 4200]
         API[Express API<br/>Port: 4000]
-        MCP[MCP Servers<br/>Ports: 5001-5007]
+        MCP[MCP Servers<br/>Ports: 5001-5004]
         DASH[Aspire Dashboard<br/>Port: 18888]
         
         UI --> API
@@ -656,7 +656,7 @@ graph TB
 # High-level service dependencies
 services:
   aspire-dashboard:     # Monitoring foundation
-  tool-*:              # 7 MCP servers (ports 5001-5007)
+  tool-*:              # 7 MCP servers (ports 5001-5004)
   web-api:             # Express API (port 4000)
     depends_on: tool-*
   web-ui:              # Angular UI (port 4200) 
@@ -697,7 +697,7 @@ PORT=4000
 NODE_ENV=development
 
 # MCP Server URLs (local)
-MCP_ECHO_PING_URL=http://localhost:5007
+MCP_ECHO_PING_URL=http://localhost:5004
 MCP_CUSTOMER_QUERY_URL=http://localhost:5001
 MCP_ITINERARY_PLANNING_URL=http://localhost:5003
 MCP_DESTINATION_RECOMMENDATION_URL=http://localhost:5002
@@ -833,7 +833,7 @@ npm test
 #### Integration Testing
 ```bash
 # Test MCP server connectivity
-curl http://localhost:5007/health
+curl http://localhost:5004/health
 
 # Test API endpoints
 curl http://localhost:4000/api/health
@@ -867,7 +867,7 @@ docker-compose logs tool-echo-ping
 # Test MCP connectivity directly
 node -e "
 const { MCPHTTPClient } = require('./packages/api/src/mcp/mcp-http-client.js');
-const client = new MCPHTTPClient('test', 'http://localhost:5007/mcp');
+const client = new MCPHTTPClient('test', 'http://localhost:5004/mcp');
 client.connect().then(() => console.log('Connected'));
 "
 ```

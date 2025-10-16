@@ -27,8 +27,9 @@ The implementation uses MAF's `MCPStreamableHTTPTool` exclusively - no custom tr
 ┌─────────────────────────────────────────────────────────────┐
 │                    MCP Servers                               │
 │  • customer-query         (Java/Spring, port 5001)           │
+│  • destination-recommendation (Python, port 5002)            │
 │  • itinerary-planning     (Node.js, port 5003)               │
-│  • echo-ping              (Test server, port 5007)           │
+│  • echo-ping              (Test server, port 5004)           │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -283,7 +284,7 @@ Environment variables (`.env`):
 ```bash
 MCP_CUSTOMER_QUERY_URL=http://localhost:5001
 MCP_ITINERARY_PLANNING_URL=http://localhost:5003
-MCP_ECHO_PING_URL=http://localhost:5007
+MCP_ECHO_PING_URL=http://localhost:5004
 # ...
 ```
 
