@@ -118,8 +118,10 @@ export class ChatService {
   }
 
   private processAgentEvents(event?: ChatEvent) {
+    console.log('[ChatService] processAgentEvents called with event:', event);
 
     if (event && event.type === 'metadata') {
+      console.log('[ChatService] Processing metadata event');
       this.agent.set(event.data?.agent || null);
       this.agentEventsBuffer.push(event);
 
@@ -130,9 +132,16 @@ export class ChatService {
       }
 
       let delta: string =
+        event.data?.content || // LangChain event
         event.data?.delta || // Llamaindex.TS event
         message || // Microsoft Agent Framework (MAF) event
         '';
+
+      console.log('[ChatService] Event received:', {
+        eventType: event.event,
+        delta: delta,
+        fullData: event.data
+      });
 
       switch (event.event) {
         // LlamaIndex events
@@ -166,6 +175,7 @@ export class ChatService {
           });
 
           this.assistantMessageInProgress.set(false);
+          this.isLoading.set(false);
           this.apiService.chatStreamState.next({ type: 'END' });
           break;
 

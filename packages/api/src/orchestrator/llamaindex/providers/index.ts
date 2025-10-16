@@ -6,13 +6,15 @@ import { llm as foundryLocal } from "./foundry-local.js";
 import { llm as githubModels } from "./github-models.js";
 import { llm as dockerModels } from "./docker-models.js";
 import { llm as ollamaModels } from "./ollama-models.js";
+import { llm as gemini } from "./gemini.js";
 
 type LLMProvider =
   | "azure-openai"
   | "github-models"
   | "foundry-local"
   | "docker-models"
-  | "ollama-models";
+  | "ollama-models"
+  | "gemini";
 
 const provider = (process.env.LLM_PROVIDER || "") as LLMProvider;
 
@@ -28,9 +30,11 @@ export const llm = async () => {
       return ollamaModels();
     case "foundry-local":
       return foundryLocal();
+    case "gemini":
+      return gemini();
     default:
       throw new Error(
-        `Unknown LLM_PROVIDER "${provider}". Valid options are: azure-openai, github-models, foundry-local, docker-models, ollama-models.`
+        `Unknown LLM_PROVIDER "${provider}". Valid options are: azure-openai, github-models, foundry-local, docker-models, ollama-models, gemini.`
       );
   }
 };

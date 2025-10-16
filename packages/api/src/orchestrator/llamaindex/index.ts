@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import { mcp, MCPClientOptions} from "@llamaindex/tools";
-import { agent, multiAgent, ToolCallLLM } from "llamaindex";
+import { agent, multiAgent, ToolCallLLM, SimpleChatEngine } from "llamaindex";
 import { McpServerDefinition } from "../../mcp/mcp-tools.js";
 import { llm as llmProvider } from "./providers/index.js";
 import { McpToolsConfig } from "./tools/index.js";
@@ -27,7 +27,14 @@ export async function setupAgents(filteredTools: McpServerDefinition[] = []) {
     throw new Error(error instanceof Error ? error.message : String(error));
   }
 
-  if (tools["echo-ping"]) {
+  // Check if LLM supports tool calls
+  const supportsTools = (llm as any).metadata?.functionCalling || 
+                        (llm as any).getNodeClass?.() !== undefined ||
+                        llm.constructor.name.includes("OpenAI");
+  
+  console.log(`LLM supports tool calls: ${supportsTools}`);
+
+  if (tools["echo-ping"] && supportsTools) {
     const mcpServerConfig = mcpToolsConfig["echo-ping"].config;
     const tools = await mcp(mcpServerConfig).tools();
     const echoAgent = agent({
@@ -43,7 +50,7 @@ export async function setupAgents(filteredTools: McpServerDefinition[] = []) {
     toolsList.push(...tools);
   }
 
-  if (tools["customer-query"]) {
+  if (tools["customer-query"] && supportsTools) {
     const mcpServerConfig = mcpToolsConfig["customer-query"];
     const tools = await mcp(mcpServerConfig.config).tools();
     const customerQuery = agent({
@@ -59,7 +66,7 @@ export async function setupAgents(filteredTools: McpServerDefinition[] = []) {
     toolsList.push(...tools);
   }
 
-  if (tools["web-search"]) {
+  if (tools["web-search"] && supportsTools) {
     const mcpServerConfig = mcpToolsConfig["web-search"];
     const tools = await mcp(mcpServerConfig.config).tools();
     console.log("Including Web Search Agent in the workflow");
@@ -76,7 +83,7 @@ export async function setupAgents(filteredTools: McpServerDefinition[] = []) {
     toolsList.push(...tools);
   }
 
-  if (tools["itinerary-planning"]) {
+  if (tools["itinerary-planning"] && supportsTools) {
     const mcpServerConfig = mcpToolsConfig["itinerary-planning"];
     const tools = await mcp(mcpServerConfig.config).tools();
     const itineraryPlanningAgent = agent({
@@ -92,7 +99,7 @@ export async function setupAgents(filteredTools: McpServerDefinition[] = []) {
     toolsList.push(...tools);
   }
 
-  if (tools["model-inference"]) {
+  if (tools["model-inference"] && supportsTools) {
     const mcpServerConfig = mcpToolsConfig["model-inference"];
     const tools = await mcp(mcpServerConfig.config).tools();
     const modelInferenceAgent = agent({
@@ -108,7 +115,7 @@ export async function setupAgents(filteredTools: McpServerDefinition[] = []) {
     toolsList.push(...tools);
   }
 
-  if (tools["code-evaluation"]) {
+  if (tools["code-evaluation"] && supportsTools) {
     const mcpServerConfig = mcpToolsConfig["code-evaluation"];
     const tools = await mcp(mcpServerConfig.config).tools();
     const codeEvaluationAgent = agent({
@@ -124,7 +131,7 @@ export async function setupAgents(filteredTools: McpServerDefinition[] = []) {
     toolsList.push(...tools);
   }
 
-  if (tools["destination-recommendation"]) {
+  if (tools["destination-recommendation"] && supportsTools) {
     const mcpServerConfig = mcpToolsConfig["destination-recommendation"];
     const tools = await mcp(mcpServerConfig.config).tools();
     const destinationRecommendationAgent = agent({
@@ -140,23 +147,36 @@ export async function setupAgents(filteredTools: McpServerDefinition[] = []) {
     toolsList.push(...tools);
   }
 
-  // Define the triage agent taht will determine the best course of action
+  // If no agents could be created (LLM doesn't support tools), use simple chat
+  if (agentsList.length === 0) {
+    console.log("No agents created - LLM doesn't support tool calls. Using simple chat engine.");
+    const chatEngine = new SimpleChatEngine({ llm });
+    return chatEngine;
+  }
 
+  // Build list of agent names for handoff (excluding the triage agent itself)
+  const agentNames = agentsList
+    .map((a) => (a as any).name || '')
+    .filter((name) => name && name !== "TravelAgent");
+
+  // Define the triage agent that will determine the best course of action
   const travelAgent = agent({
     name: "TravelAgent",
     systemPrompt:
       "Acts as a triage agent to determine the best course of action for the user's query. If you cannot handle the query, please pass it to the next agent. If you can handle the query, please do so.",
     tools: [...toolsList],
-    canHandoffTo: handoffTargets
-      .map((target) => target.getAgents().map((agent) => agent.name))
-      .flat(),
+    canHandoffTo: agentNames,
     llm,
     verbose,
   });
-  agentsList.push(travelAgent);
 
-  console.log("Agents list:", agentsList);
-  console.log("Handoff targets:", handoffTargets);
+  // Add triage agent to the list if it's not already there
+  if (!agentsList.find((a) => (a as any).name === "TravelAgent")) {
+    agentsList.push(travelAgent);
+  }
+
+  console.log("Agents list:", agentsList.map((a) => (a as any).name));
+  console.log("Handoff targets:", agentNames);
   console.log("Tools list:", JSON.stringify(toolsList, null, 2));
 
   // Create the multi-agent workflow
@@ -166,3 +186,4 @@ export async function setupAgents(filteredTools: McpServerDefinition[] = []) {
     verbose,
   });
 }
+

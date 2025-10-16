@@ -6,8 +6,8 @@ import express from "express";
 import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import { mcpToolsList } from "./mcp/mcp-tools.js";
-import { setupAgents } from "./orchestrator/langchain/index.js";
-import { McpToolsConfig } from "./orchestrator/langchain/tools/index.js";
+import { setupAgents } from "./orchestrator/llamaindex/index.js";
+import { McpToolsConfig } from "./orchestrator/llamaindex/tools/index.js";
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -68,7 +68,7 @@ apiRouter.post("/chat", async (req, res) => {
   }
 
   const message = req.body.message;
-  const tools = req.body.tools;
+  let tools = req.body.tools;
   console.log("Tools to use:", JSON.stringify(tools, null, 2));
 
   if (!message) {
@@ -80,8 +80,97 @@ apiRouter.post("/chat", async (req, res) => {
   res.setHeader("Connection", "keep-alive");
 
   try {
-    const agents = await setupAgents(tools);
-    const context = agents.run(message);
+    // If no tools specified, fetch all available tools from MCP servers
+    if (!tools || tools.length === 0) {
+      console.log("No tools specified, fetching all available MCP tools...");
+      const allMcpTools = await mcpToolsList(Object.values(McpToolsConfig()));
+      tools = allMcpTools
+        .filter((tool: any) => tool.reachable && tool.selected && tool.id !== "echo-ping")
+        .map((tool: any) => tool.id);
+      console.log("Auto-selected tools:", tools);
+    }
+
+    // Convert tool IDs to tool definitions
+    const mcpToolsConfig = McpToolsConfig();
+    const filteredTools = (tools || [])
+      .map((toolId: string) => mcpToolsConfig[toolId as keyof typeof mcpToolsConfig])
+      .filter((tool: any) => tool !== undefined);
+    
+    console.log("Filtered tools for agents:", filteredTools.map((t: any) => t.id));
+    
+    const workflow = await setupAgents(filteredTools);
+    
+    // Create an async generator that handles both SimpleChatEngine and MultiAgent
+    async function* generateEvents() {
+      try {
+        let response;
+        
+        // Check if it's a SimpleChatEngine (has chat method) or MultiAgent (has run method)
+        if (typeof (workflow as any).chat === "function") {
+          console.log("Using SimpleChatEngine");
+          response = await (workflow as any).chat(message);
+        } else if (typeof (workflow as any).run === "function") {
+          console.log("Using MultiAgent workflow");
+          response = await (workflow as any).run(message);
+        } else {
+          throw new Error("Unknown workflow type");
+        }
+        
+        console.log("Workflow response type:", typeof response);
+        console.log("Workflow response:", JSON.stringify(response, null, 2));
+        
+        // Extract the message content from various response formats
+        let content = "";
+        if (typeof response === "string") {
+          content = response;
+        } else if (response && typeof response === "object") {
+          // LlamaIndex StopEvent format: { data: { result: "..." }, displayName: "StopEvent" }
+          if ("data" in response && typeof response.data === "object" && "result" in response.data) {
+            content = (response.data as any).result;
+          }
+          // Alternative formats
+          else if ("message" in response) {
+            content = (response as any).message;
+          } else if ("text" in response) {
+            content = (response as any).text;
+          } else if ("content" in response) {
+            content = (response as any).content;
+          } else if ("response" in response) {
+            content = (response as any).response;
+          } else {
+            // Try to find any string property
+            for (const key in response) {
+              if (typeof (response as any)[key] === "string") {
+                content = (response as any)[key];
+                break;
+              }
+            }
+          }
+        } else {
+          content = String(response);
+        }
+        
+        // Emit agent_complete event with the response
+        yield {
+          eventName: "agent_complete",
+          data: {
+            agent: "TravelAgent",
+            content: content || "Response received",
+          },
+        };
+      } catch (error: any) {
+        console.error("Error in generateEvents:", error?.message);
+        yield {
+          eventName: "error",
+          data: {
+            agent: "TravelAgent",
+            error: error?.message || "Unknown error",
+          },
+        };
+      }
+    }
+
+    const context = generateEvents();
 
     const readableStream = new Readable({
       async read() {

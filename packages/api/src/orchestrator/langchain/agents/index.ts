@@ -49,7 +49,7 @@ export const setupAgents = async (
     
     const agent = createReactAgent({
       llm,
-      name: "EchoAgent",
+      name: "echo-ping",
       tools: echoTools,
       prompt: "Echo back the received input. Do not respond with anything else. Always call the tools.",
     });
@@ -64,7 +64,7 @@ export const setupAgents = async (
 
     const agent = createReactAgent({
       llm,
-      name: "CustomerQueryAgent",
+      name: "customer-query",
       tools: customerTools,
       prompt: "Assists employees in better understanding customer needs, facilitating more accurate and personalized service. This agent is particularly useful for handling nuanced queries, such as specific travel preferences or budget constraints, which are common in travel agency interactions.",
     });
@@ -79,7 +79,7 @@ export const setupAgents = async (
     
     const agent = createReactAgent({
       llm,
-      name: "ItineraryPlanningAgent",
+      name: "itinerary-planning",
       tools: itineraryTools,
       prompt: "Creates a travel itinerary based on user preferences and requirements.",
     });
@@ -94,7 +94,7 @@ export const setupAgents = async (
     
     const agent = createReactAgent({
       llm,
-      name: "DestinationRecommendationAgent",
+      name: "destination-recommendation",
       tools: destinationTools,
       prompt: "Suggests destinations based on customer preferences and requirements.",
     });
@@ -110,7 +110,7 @@ export const setupAgents = async (
     outputMode: "full_history"
   });
 
-  console.log("Agents created:", Object.keys(agents));
+  console.log("Agents created:", agents.map((a) => a.name || "unnamed"));
   console.log("All tools count:", mcpTools.length);
 
   return { supervisor, agents, mcpTools };

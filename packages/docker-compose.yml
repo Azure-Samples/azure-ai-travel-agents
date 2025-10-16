@@ -23,19 +23,22 @@ services:
 
   tool-code-evaluation:
     container_name: tool-code-evaluation
-    build: ./tools/code-evaluation
+    image: alpine:latest
+    command: echo "Code evaluation service disabled"
     ports:
       - "5004:5000"
 
   tool-model-inference:
     container_name: tool-model-inference
-    build: ./tools/model-inference
+    image: alpine:latest
+    command: echo "Model inference service disabled - using Gemini API instead"
     ports:
       - "5005:5000"
   
   tool-web-search:
     container_name: tool-web-search
-    build: ./tools/web-search
+    image: alpine:latest
+    command: echo "Web search service disabled"
     ports:
       - "5006:5000"
       
@@ -74,7 +77,7 @@ services:
     container_name: api-python
     build: ./api-python
     ports:
-      - "4000:4000"
+      - "8000:4000"
     depends_on:
       - tool-customer-query
       - tool-destination-recommendation
@@ -110,9 +113,3 @@ services:
       - 4317:18889
     environment:
       - DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS=true
-
-  llm:
-    provider:
-      type: model
-      options:
-        model: ${DOCKER_MODEL:-ai/phi4:14B-Q4_0}

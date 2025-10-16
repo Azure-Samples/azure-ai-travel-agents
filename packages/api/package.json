@@ -16,6 +16,7 @@
     "@azure/identity": "^4.9.1",
     "@langchain/community": "^0.3.56",
     "@langchain/core": "^0.3.78",
+    "@langchain/google-genai": "^0.1.12",
     "@langchain/langgraph": "^0.4.9",
     "@langchain/langgraph-supervisor": "^0.0.20",
     "@langchain/mcp-adapters": "^0.6.0",

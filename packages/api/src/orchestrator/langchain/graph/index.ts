@@ -32,7 +32,7 @@ export class TravelAgentsWorkflow {
   }
 
   async *run(input: string) {
-    if (Object.keys(this.agents).length === 0) {
+    if (!this.supervisor || this.agents.length === 0) {
       throw new Error("Workflow not initialized. Call initialize() first.");
     }
 
@@ -52,10 +52,18 @@ export class TravelAgentsWorkflow {
         { version: "v2" }
       );
 
+      let lastLlmResponse = ""; // Capture the most recent LLM response
+      
       for await (const event of eventStream) {
         // Filter and yield relevant events
+        console.log(`[EVENT] name=${event.name}, event=${event.event}`);
+        
         if (event.event === "on_chat_model_stream") {
           // Stream LLM tokens
+          const content = event.data?.chunk?.content || "";
+          lastLlmResponse += content; // Accumulate response
+          console.log(`[LLM_TOKEN] content="${content}", accumulated="${lastLlmResponse}"`);
+          
           yield {
             eventName: "llm_token",
             data: {
@@ -63,6 +71,24 @@ export class TravelAgentsWorkflow {
               chunk: event.data?.chunk,
             },
           };
+        } else if (event.event === "on_chat_model_end") {
+          // LLM finished generating - capture final response
+          console.log(`[on_chat_model_end] Full event data:`, JSON.stringify(event.data, null, 2));
+          const output = event.data?.output;
+          console.log(`[on_chat_model_end] output:`, JSON.stringify(output, null, 2));
+          
+          if (output) {
+            if (typeof output.content === "string") {
+              lastLlmResponse = output.content;
+              console.log(`[LLM_END] Set lastLlmResponse from output.content: "${lastLlmResponse}"`);
+            } else if (Array.isArray(output.messages) && output.messages.length > 0) {
+              const lastMsg = output.messages[output.messages.length - 1];
+              if (lastMsg.content && typeof lastMsg.content === "string") {
+                lastLlmResponse = lastMsg.content;
+                console.log(`[LLM_END] Set lastLlmResponse from messages: "${lastLlmResponse}"`);
+              }
+            }
+          }
         } else if (event.event === "on_tool_start") {
           // Tool execution started
           yield {
@@ -84,12 +110,14 @@ export class TravelAgentsWorkflow {
             },
           };
         } else if (event.event === "on_chain_end" && event.name === "LangGraph") {
-          // Agent completed - yield final response
+          // Final workflow completion
+          console.log(`[WORKFLOW_END] Using lastLlmResponse: "${lastLlmResponse}"`);
+          
           yield {
             eventName: "agent_complete",
             data: {
               agent,
-              messages: event.data?.output?.messages || [],
+              content: lastLlmResponse || "Request received and being processed...",
             },
           };
         }
