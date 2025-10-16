@@ -37,12 +37,12 @@ class DockerModelsProvider(LLMProvider):
             base_url=settings.docker_model_endpoint,
             api_key="DOCKER_API_KEY",  # Placeholder API key for Docker models
         )
-        
+
         # Wrap with MAF's OpenAIChatClient
         maf_client = OpenAIChatClient(
             model_id=settings.docker_model,
             async_client=async_client,
         )
-        
+
         logger.info(f"Created MAF OpenAIChatClient with model: {settings.docker_model}")
         return maf_client

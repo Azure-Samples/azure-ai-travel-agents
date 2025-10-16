@@ -26,9 +26,6 @@ if (-not (Test-Path $apiEnvPath)) {
     "MCP_CUSTOMER_QUERY_URL=http://localhost:8080" | Add-Content $apiEnvPath
     "MCP_DESTINATION_RECOMMENDATION_URL=http://localhost:5002" | Add-Content $apiEnvPath
     "MCP_ITINERARY_PLANNING_URL=http://localhost:5003" | Add-Content $apiEnvPath
-    "MCP_CODE_EVALUATION_URL=http://localhost:5004" | Add-Content $apiEnvPath
-    "MCP_MODEL_INFERENCE_URL=http://localhost:5005" | Add-Content $apiEnvPath
-    "MCP_WEB_SEARCH_URL=http://localhost:5006" | Add-Content $apiEnvPath
     "MCP_ECHO_PING_URL=http://localhost:5007" | Add-Content $apiEnvPath
     "MCP_ECHO_PING_ACCESS_TOKEN=123-this-is-a-fake-token-please-use-a-token-provider" | Add-Content $apiEnvPath
     "" | Add-Content $apiEnvPath
@@ -46,9 +43,6 @@ if (-not (Test-Path $apiEnvDockerPath)) {
     "MCP_CUSTOMER_QUERY_URL=http://tool-customer-query:8080" | Add-Content $apiEnvDockerPath
     "MCP_DESTINATION_RECOMMENDATION_URL=http://tool-destination-recommendation:5002" | Add-Content $apiEnvDockerPath
     "MCP_ITINERARY_PLANNING_URL=http://tool-itinerary-planning:5003" | Add-Content $apiEnvDockerPath
-    "MCP_CODE_EVALUATION_URL=http://tool-code-evaluation:5004" | Add-Content $apiEnvDockerPath
-    "MCP_MODEL_INFERENCE_URL=http://tool-model-inference:5005" | Add-Content $apiEnvDockerPath
-    "MCP_WEB_SEARCH_URL=http://tool-web-search:5006" | Add-Content $apiEnvDockerPath
     "MCP_ECHO_PING_URL=http://tool-echo-ping:5007" | Add-Content $apiEnvDockerPath
 }
 
@@ -90,7 +84,7 @@ if (-not (Test-Path "./packages/ui/node_modules")) {
 ##########################################################################
 # MCP Tools
 ##########################################################################
-$tools = @('echo-ping', 'customer-query', 'destination-recommendation', 'itinerary-planning', 'code-evaluation', 'model-inference', 'web-search')
+$tools = @('echo-ping', 'customer-query', 'destination-recommendation', 'itinerary-planning')
 Write-Host ">> Creating .env file for the MCP servers..."
 
 foreach ($tool in $tools) {

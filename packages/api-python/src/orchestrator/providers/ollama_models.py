@@ -37,12 +37,12 @@ class OllamaModelsProvider(LLMProvider):
             base_url=settings.ollama_model_endpoint,
             api_key="OLLAMA_API_KEY",  # Placeholder API key for Ollama models
         )
-        
+
         # Wrap with MAF's OpenAIChatClient
         maf_client = OpenAIChatClient(
             model_id=settings.ollama_model,
             async_client=async_client,
         )
-        
+
         logger.info(f"Created MAF OpenAIChatClient with model: {settings.ollama_model}")
         return maf_client

@@ -5,7 +5,7 @@
 ##########################################################################
 # MCP Tools
 ##########################################################################
-tools="echo-ping customer-query destination-recommendation itinerary-planning code-evaluation model-inference web-search"
+tools="echo-ping customer-query destination-recommendation itinerary-planning"
 printf ">> Creating .env file for the MCP servers...\n"
 
 #  for each tool copy the .env.sample (if it exists) to .env and .env.docker (dont overwrite existing .env files)

@@ -188,9 +188,6 @@ class Settings(BaseSettings):
     mcp_customer_query_url: str
     mcp_destination_recommendation_url: str
     mcp_itinerary_planning_url: str
-    mcp_code_evaluation_url: str
-    mcp_model_inference_url: str
-    mcp_web_search_url: str
     mcp_echo_ping_url: str
     mcp_echo_ping_access_token: Optional[str] = None
     
@@ -294,21 +291,6 @@ class ToolRegistry:
             settings.mcp_itinerary_planning_url
         )
         
-        # Code Evaluation
-        self.clients["code-evaluation"] = HTTPMCPClient(
-            settings.mcp_code_evaluation_url
-        )
-        
-        # Model Inference
-        self.clients["model-inference"] = HTTPMCPClient(
-            settings.mcp_model_inference_url
-        )
-        
-        # Web Search
-        self.clients["web-search"] = HTTPMCPClient(
-            settings.mcp_web_search_url
-        )
-        
         # Echo Ping
         self.clients["echo-ping"] = HTTPMCPClient(
             settings.mcp_echo_ping_url,
@@ -385,9 +367,6 @@ class TriageAgent(BaseAgent):
         - CustomerQueryAgent: For understanding customer preferences
         - DestinationRecommendationAgent: For suggesting destinations
         - ItineraryPlanningAgent: For creating travel itineraries
-        - WebSearchAgent: For finding current travel information
-        - CodeEvaluationAgent: For calculations and data processing
-        - ModelInferenceAgent: For specialized AI tasks
         
         Always choose the most appropriate agent(s) for the query.
         You may coordinate multiple agents for complex queries.

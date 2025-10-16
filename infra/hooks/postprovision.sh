@@ -27,9 +27,6 @@ if [ ! -f ./packages/api/.env ]; then
     echo "MCP_CUSTOMER_QUERY_URL=http://localhost:8080" >> ./packages/api/.env
     echo "MCP_DESTINATION_RECOMMENDATION_URL=http://localhost:5002" >> ./packages/api/.env
     echo "MCP_ITINERARY_PLANNING_URL=http://localhost:5003" >> ./packages/api/.env
-    echo "MCP_CODE_EVALUATION_URL=http://localhost:5004" >> ./packages/api/.env
-    echo "MCP_MODEL_INFERENCE_URL=http://localhost:5005" >> ./packages/api/.env
-    echo "MCP_WEB_SEARCH_URL=http://localhost:5006" >> ./packages/api/.env
     echo "MCP_ECHO_PING_URL=http://localhost:5007" >> ./packages/api/.env
     echo "MCP_ECHO_PING_ACCESS_TOKEN=123-this-is-a-fake-token-please-use-a-token-provider" >> ./packages/api/.env
     echo ""
@@ -46,9 +43,6 @@ if [ ! -f ./packages/api/.env.docker ]; then
     echo "MCP_CUSTOMER_QUERY_URL=http://tool-customer-query:8080" >> ./packages/api/.env.docker
     echo "MCP_DESTINATION_RECOMMENDATION_URL=http://tool-destination-recommendation:5002" >> ./packages/api/.env.docker
     echo "MCP_ITINERARY_PLANNING_URL=http://tool-itinerary-planning:5003" >> ./packages/api/.env.docker
-    echo "MCP_CODE_EVALUATION_URL=http://tool-code-evaluation:5004" >> ./packages/api/.env.docker
-    echo "MCP_MODEL_INFERENCE_URL=http://tool-model-inference:5005" >> ./packages/api/.env.docker
-    echo "MCP_WEB_SEARCH_URL=http://tool-web-search:5006" >> ./packages/api/.env.docker
     echo "MCP_ECHO_PING_URL=http://tool-echo-ping:5007" >> ./packages/api/.env.docker
 fi
 

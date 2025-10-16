@@ -202,18 +202,6 @@ module api 'br/public:avm/res/app/container-app:0.8.0' = {
             value: 'https://echo-ping.internal.${containerAppsEnvironment.outputs.defaultDomain}'
           }
           {
-            name: 'MCP_WEB_SEARCH_URL'
-            value: 'https://web-search.internal.${containerAppsEnvironment.outputs.defaultDomain}'
-          }
-          {
-            name: 'MCP_MODEL_INFERENCE_URL'
-            value: 'https://model-inference.internal.${containerAppsEnvironment.outputs.defaultDomain}'
-          }
-          {
-            name: 'MCP_CODE_EVALUATION_URL'
-            value: 'https://code-evaluation.internal.${containerAppsEnvironment.outputs.defaultDomain}'
-          }
-          {
             name: 'MCP_ECHO_PING_ACCESS_TOKEN'
             value: llamaIndexConfig.sampleAccessTokens.echo
           }

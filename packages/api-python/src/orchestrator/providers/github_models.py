@@ -37,12 +37,12 @@ class GitHubModelsProvider(LLMProvider):
             base_url="https://models.inference.ai.azure.com",
             api_key=settings.github_token,
         )
-        
+
         # Wrap with MAF's OpenAIChatClient
         maf_client = OpenAIChatClient(
             model_id=settings.github_model,
             async_client=async_client,
         )
-        
+
         logger.info(f"Created MAF OpenAIChatClient with model: {settings.github_model}")
         return maf_client

@@ -34,9 +34,6 @@ The Azure AI Travel Agents is a sophisticated microservices-based AI application
 
 - **Natural Language Processing**: Understanding and extracting user preferences from conversational input
 - **Intelligent Routing**: Triage agent determines which specialized agents to engage
-- **Real-time Data Access**: Live web search integration for up-to-date travel information
-- **Code Execution**: Dynamic code evaluation for complex logic and calculations
-- **Local AI Inference**: On-demand model inference using ONNX and vLLM
 - **Comprehensive Planning**: End-to-end itinerary creation and destination recommendations
 
 ## Architecture Components
@@ -112,24 +109,6 @@ The system includes seven specialized MCP servers, each serving a specific domai
 - **Technology**: Python, FastAPI
 - **Features**: Multi-day planning, activity scheduling
 
-#### 3.5 Code Evaluation Server (Python)
-- **Purpose**: Dynamic code execution and evaluation
-- **Port**: 5004 (5000 internal)
-- **Technology**: Python
-- **Features**: Secure code execution, result processing
-
-#### 3.6 Model Inference Server (Python)
-- **Purpose**: Local LLM inference using ONNX/vLLM
-- **Port**: 5005 (5000 internal)
-- **Technology**: Python, ONNX Runtime, vLLM
-- **Features**: GPU acceleration, model optimization
-
-#### 3.7 Web Search Server (TypeScript)
-- **Purpose**: Real-time web search for travel information
-- **Port**: 5006 (5000 internal)
-- **Technology**: TypeScript, Bing Search API
-- **Features**: Grounding with Bing Search, travel data aggregation
-
 ### 4. Monitoring Layer (Aspire Dashboard)
 
 **Technology Stack:**
@@ -183,7 +162,7 @@ User Input → Angular UI → API Server → LangChain.js Orchestrator → Super
 6. **MCP Server Communication**
    - HTTP/SSE connections to relevant MCP servers
    - Tool-specific processing (search, recommendation, planning, etc.)
-   - External API calls as needed (Bing Search, Azure OpenAI, etc.)
+   - External API calls as needed (Azure OpenAI, etc.)
 
 7. **Response Aggregation**
    - Results collected from all engaged agents
@@ -340,13 +319,13 @@ const result = await mcpClient.callTool("echo", { input: "Hello" });
 // Client configuration  
 const mcpClient = new MCPSSEClient(
   "llamaindex-sse-client",
-  "http://tool-web-search:5000/sse",
+  "http://tool-customer-query:8080/mcp",
   accessToken
 );
 
 // Streaming tool invocation
 const tools = await mcpClient.listTools();
-const result = await mcpClient.callTool("search", { query: "hotels in Tokyo" });
+const result = await mcpClient.callTool("extract_preferences", { query: "I want to visit Japan" });
 ```
 
 ### Tool Discovery and Registration
@@ -512,30 +491,6 @@ See [Orchestration Options](./orchestration.md) for detailed comparison and migr
   - Handle logistics and scheduling
 - **Tools**: Itinerary algorithms, scheduling optimization
 
-#### Web Search Agent
-- **Role**: Real-time information gatherer
-- **Responsibilities**:
-  - Search for current travel information
-  - Validate recommendations with live data
-  - Provide up-to-date pricing and availability
-- **Tools**: Bing Search API, data aggregation
-
-#### Code Evaluation Agent
-- **Role**: Dynamic computation specialist
-- **Responsibilities**:
-  - Execute custom logic and calculations
-  - Handle complex data processing
-  - Provide algorithmic solutions
-- **Tools**: Python code execution, mathematical computation
-
-#### Model Inference Agent
-- **Role**: Local AI processing
-- **Responsibilities**:
-  - Provide specialized model inference
-  - Handle GPU-accelerated computations
-  - Support custom model deployments
-- **Tools**: ONNX runtime, vLLM, GPU acceleration
-
 ### Agent Handoff Patterns
 
 ```typescript
@@ -550,7 +505,7 @@ if (needsDestinationRecommendation) {
 // Parallel execution
 const [recommendations, currentData] = await Promise.all([
   callAgent("DestinationRecommendationAgent", preferences),
-  callAgent("WebSearchAgent", { query: "current travel conditions" })
+  callAgent("CustomerQueryAgent", userInput)
 ]);
 
 // Sequential handoff chain
@@ -574,12 +529,10 @@ sequenceDiagram
     participant Orchestrator as Agent Orchestrator
     participant TriageAgent as Triage/Supervisor Agent
     participant DestAgent as Destination Agent
-    participant WebAgent as Web Search Agent
     participant ItinAgent as Itinerary Agent
     participant MCPDest as MCP Destination Server
     participant MCPWeb as MCP Web Server
     participant MCPItin as MCP Itinerary Server
-    participant BingAPI as Bing Search API
 
     User->>UI: Submit travel query
     UI->>API: POST /api/chat
@@ -596,8 +549,6 @@ sequenceDiagram
     
     TriageAgent->>WebAgent: handoff(destinationQuery)
     WebAgent->>MCPWeb: callTool("search", query)
-    MCPWeb->>BingAPI: search request
-    BingAPI-->>MCPWeb: search results
     MCPWeb-->>WebAgent: processed results
     WebAgent-->>TriageAgent: current travel data
     
@@ -748,16 +699,12 @@ NODE_ENV=development
 # MCP Server URLs (local)
 MCP_ECHO_PING_URL=http://localhost:5007
 MCP_CUSTOMER_QUERY_URL=http://localhost:5001
-MCP_WEB_SEARCH_URL=http://localhost:5006
 MCP_ITINERARY_PLANNING_URL=http://localhost:5003
-MCP_MODEL_INFERENCE_URL=http://localhost:5005
-MCP_CODE_EVALUATION_URL=http://localhost:5004
 MCP_DESTINATION_RECOMMENDATION_URL=http://localhost:5002
 
 # Azure Services
 AZURE_OPENAI_ENDPOINT=...
 AZURE_OPENAI_API_KEY=...
-BING_SEARCH_API_KEY=...
 
 # Monitoring
 OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:18889
@@ -768,10 +715,7 @@ OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:18889
 # MCP Server URLs (Docker internal)
 MCP_ECHO_PING_URL=http://tool-echo-ping:3000
 MCP_CUSTOMER_QUERY_URL=http://tool-customer-query:8080
-MCP_WEB_SEARCH_URL=http://tool-web-search:5000
 MCP_ITINERARY_PLANNING_URL=http://tool-itinerary-planning:8000
-MCP_MODEL_INFERENCE_URL=http://tool-model-inference:5000
-MCP_CODE_EVALUATION_URL=http://tool-code-evaluation:5000
 MCP_DESTINATION_RECOMMENDATION_URL=http://tool-destination-recommendation:8080
 
 # Docker-specific settings
@@ -797,9 +741,6 @@ OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:18889
 - **UI**: Minimal resources (static serving)
 - **API**: CPU-intensive for agent orchestration
 - **MCP Servers**: Varies by function
-  - Code evaluation: High CPU/memory
-  - Model inference: GPU requirements
-  - Web search: Network-intensive
   - Others: Moderate resource usage
 
 #### Performance Optimization

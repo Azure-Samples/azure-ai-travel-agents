@@ -4,15 +4,12 @@ This directory contains various AI agent tools that serve different purposes wit
 
 ## Overview of Tools
 
-| Tool Name                                                  | Technology | Containerized ? | OpenTelemetry ? | Code Interpreter | GPU ? | AI Foundry Access |
-| ---------------------------------------------------------- | ---------- | --------------- | --------------- | ---------------- | ----- | ----------------- |
-| [echo-ping](./echo-ping) (for testing)                     | TypeScript | ✅              | ✅              |                  |       |                   |
-| [code-evaluation](./code-evaluation)                       | Python     | ✅              | ✅              | ✅               |       |                   |
-| [web-search](./web-search)                                 | TypeScript | ✅              | ✅              |                  |       | ✅                |
-| [customer-query](./customer-query)                         | C#         | ✅              | ✅              |                  |       | ✅                |
-| [destination-recommendation](./destination-recommendation) | Java       | ✅              | ✅              |                  |       | ✅                |
-| [itinerary-planning](./itinerary-planning)                 | Python     | ✅              | ✅              |                  |       |                   |
-| [model-inference](./model-inference)                       | Python     | ✅              | ✅              |                  | ✅    |                   |
+| Tool Name                                                  | Technology | Containerized ? | OpenTelemetry ? |  AI Foundry Access |
+| ---------------------------------------------------------- | ---------- | --------------- | --------------- |  ----------------- |
+| [echo-ping](./echo-ping) (for testing)                     | TypeScript | ✅              | ✅              |                    |
+| [customer-query](./customer-query)                         | C#         | ✅              | ✅              |  ✅                |
+| [destination-recommendation](./destination-recommendation) | Java       | ✅              | ✅              |  ✅                |
+| [itinerary-planning](./itinerary-planning)                 | Python     | ✅              | ✅              |                    |
 
 ## Tool Descriptions
 
@@ -35,14 +32,6 @@ A Node.js MCP server that provides echo functionality for testing purposes. Feat
 ### itinerary-planning
 
 A tool for planning detailed travel itineraries.
-
-### model-inference
-
-A tool for performing AI model inference locally with GPU support.
-
-### web-search
-
-A tool for searching the web for travel-related information, using Bing Grounding API.
 
 ## Setting Up
 

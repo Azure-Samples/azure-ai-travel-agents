@@ -219,7 +219,7 @@ async def parallel_agent_execution(agents: list, query: str):
 
 # Usage
 results = await parallel_agent_execution(
-    [destination_agent, web_search_agent],
+    [destination_agent, itinerary_agent],
     "Find destinations in Europe"
 )
 ```

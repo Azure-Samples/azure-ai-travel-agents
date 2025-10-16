@@ -37,7 +37,7 @@ class AzureOpenAIProvider(LLMProvider):
 
         # Create the underlying Azure OpenAI async client
         async_client: AsyncAzureOpenAI
-        
+
         # If API key is provided, use it (local development or explicit configuration)
         if settings.azure_openai_api_key:
             logger.info("Using API key authentication")
@@ -70,6 +70,6 @@ class AzureOpenAIProvider(LLMProvider):
             model_id=settings.azure_openai_deployment_name,
             async_client=async_client,
         )
-        
+
         logger.info(f"Created MAF OpenAIChatClient with model: {settings.azure_openai_deployment_name}")
         return maf_client

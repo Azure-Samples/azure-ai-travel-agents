@@ -6,15 +6,10 @@ from typing import Any, AsyncGenerator, Dict, List, Optional
 from ..config import settings
 from .providers import get_llm_client
 from .agents.triage_agent import TriageAgent
-from .agents.specialized_agents import (
-    CustomerQueryAgent,
-    DestinationRecommendationAgent,
-    ItineraryPlanningAgent,
-    CodeEvaluationAgent,
-    ModelInferenceAgent,
-    WebSearchAgent,
-    EchoAgent,
-)
+from .agents.customer_query_agent import CustomerQueryAgent
+from .agents.destination_recommendation_agent import DestinationRecommendationAgent
+from .agents.itinerary_planning_agent import ItineraryPlanningAgent
+from .agents.echo_agent import EchoAgent
 from .tools import MCP_TOOLS_CONFIG, tool_registry
 
 logger = logging.getLogger(__name__)
@@ -22,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 class TravelWorkflowOrchestrator:
     """Orchestrates multi-agent workflow for travel planning using MAF.
-    
+
     This class manages the initialization and coordination of all agents
     in the travel planning system using Microsoft Agent Framework with
     simplified MCP integration using MAF's built-in MCP support.
@@ -32,303 +27,175 @@ class TravelWorkflowOrchestrator:
         """Initialize the workflow orchestrator."""
         self.chat_client: Optional[Any] = None
         self.all_tools: List[Any] = []
-        
+
         # Initialize agents (will be configured with tools during initialize())
         self.triage_agent: Optional[TriageAgent] = None
         self.customer_query_agent: Optional[CustomerQueryAgent] = None
         self.destination_agent: Optional[DestinationRecommendationAgent] = None
         self.itinerary_agent: Optional[ItineraryPlanningAgent] = None
-        self.code_eval_agent: Optional[CodeEvaluationAgent] = None
-        self.model_inference_agent: Optional[ModelInferenceAgent] = None
-        self.web_search_agent: Optional[WebSearchAgent] = None
         self.echo_agent: Optional[EchoAgent] = None
-        
+
         logger.info("Workflow orchestrator initialized")
 
     async def initialize(self, enabled_tools: Optional[List[str]] = None) -> None:
         """Initialize the workflow with LLM client, MCP tools, and all agents.
-        
+
         Uses Microsoft Agent Framework's built-in MCP support via MCPStreamableHTTPTool.
-        
+
         Args:
             enabled_tools: List of enabled tool IDs. If None, all tools are enabled.
         """
         logger.info("Initializing MAF workflow with simplified MCP integration...")
-        
+
         # Get the chat client from Microsoft Agent Framework
         self.chat_client = await get_llm_client()
         logger.info(f"Chat client initialized for provider: {settings.llm_provider}")
-        
+
         # Determine which tools to enable (default: all except echo-ping for production)
         if enabled_tools is None:
             enabled_tools = [
                 "customer-query",
-                "web-search",
                 "itinerary-planning",
-                "model-inference",
-                "code-evaluation",
                 "destination-recommendation",
+                "echo-ping",
             ]
-        
+
         # Load MCP tools using the tool registry (which uses MAF's built-in MCP support)
         # This will continue even if some servers are unavailable
         self.all_tools = await tool_registry.get_all_tools(servers=enabled_tools)
-        
+
         if self.all_tools:
-            logger.info(
-                f"✓ Loaded {len(self.all_tools)} tools - agents will have MCP capabilities"
-            )
+            logger.info(f"✓ Loaded {len(self.all_tools)} tools - agents will have MCP capabilities")
         else:
-            logger.warning(
-                f"⚠ No MCP tools loaded - agents will run without MCP capabilities"
-            )
-            logger.warning(
-                f"⚠ Check if MCP servers are running and accessible"
-            )
-        
+            logger.warning(f"⚠ No MCP tools loaded - agents will run without MCP capabilities")
+            logger.warning(f"⚠ Check if MCP servers are running and accessible")
+
         # Initialize specialized agents with their specific tools
         # Each agent gets the full tool list - the agent's system prompt determines usage
-        
+
         # Triage Agent (orchestrator)
         self.triage_agent = TriageAgent(tools=self.all_tools)
         await self.triage_agent.initialize(self.chat_client)
         logger.info("TriageAgent initialized")
-        
+
         # Customer Query Agent
         self.customer_query_agent = CustomerQueryAgent(tools=self.all_tools)
         await self.customer_query_agent.initialize(self.chat_client)
         logger.info("CustomerQueryAgent initialized")
-        
+
         # Destination Recommendation Agent
         self.destination_agent = DestinationRecommendationAgent(tools=self.all_tools)
         await self.destination_agent.initialize(self.chat_client)
         logger.info("DestinationRecommendationAgent initialized")
-        
+
         # Itinerary Planning Agent
         self.itinerary_agent = ItineraryPlanningAgent(tools=self.all_tools)
         await self.itinerary_agent.initialize(self.chat_client)
         logger.info("ItineraryPlanningAgent initialized")
-        
-        # Code Evaluation Agent
-        self.code_eval_agent = CodeEvaluationAgent(tools=self.all_tools)
-        await self.code_eval_agent.initialize(self.chat_client)
-        logger.info("CodeEvaluationAgent initialized")
-        
-        # Model Inference Agent
-        self.model_inference_agent = ModelInferenceAgent(tools=self.all_tools)
-        await self.model_inference_agent.initialize(self.chat_client)
-        logger.info("ModelInferenceAgent initialized")
-        
-        # Web Search Agent
-        self.web_search_agent = WebSearchAgent(tools=self.all_tools)
-        await self.web_search_agent.initialize(self.chat_client)
-        logger.info("WebSearchAgent initialized")
-        
+
         # Echo Agent (for testing)
         self.echo_agent = EchoAgent(tools=self.all_tools)
         await self.echo_agent.initialize(self.chat_client)
         logger.info("EchoAgent initialized")
-        
-        logger.info(
-            f"MAF workflow fully initialized with {len(self.all_tools)} total tools"
-        )
+
+        logger.info(f"MAF workflow fully initialized with {len(self.all_tools)} total tools")
 
     @property
     def agents(self) -> List[Any]:
         """Get list of all initialized agents."""
         return [
-            agent for agent in [
+            agent
+            for agent in [
                 self.triage_agent,
                 self.customer_query_agent,
                 self.destination_agent,
                 self.itinerary_agent,
-                self.code_eval_agent,
-                self.model_inference_agent,
-                self.web_search_agent,
                 self.echo_agent,
             ]
             if agent is not None
         ]
 
-    async def process(
-        self,
-        message: str,
-        context: Optional[Dict[str, Any]] = None
-    ) -> str:
+    async def process(self, message: str, context: Optional[Dict[str, Any]] = None) -> str:
         """Process a message through the multi-agent workflow.
-        
+
         Args:
             message: User message to process
             context: Optional context information
-            
+
         Returns:
             Response from the triage agent
         """
         if not self.triage_agent:
             raise RuntimeError("Workflow not initialized. Call initialize() first.")
-        
+
         logger.info(f"Processing message through MAF workflow: {message[:100]}...")
-        
+
         # Use the triage agent to process the message
         # It will coordinate with other agents as needed through its tools
         response = await self.triage_agent.process(message, context)
-        
+
         logger.info("Message processing complete")
         return response
 
     async def process_stream(
-        self,
-        message: str,
-        context: Optional[Dict[str, Any]] = None
+        self, message: str, context: Optional[Dict[str, Any]] = None
     ) -> AsyncGenerator[Dict[str, Any], None]:
         """Process a message with streaming response.
-        
+
         Args:
             message: User message to process
             context: Optional context information
-            
+
         Yields:
             Streaming response chunks
         """
         if not self.triage_agent:
             raise RuntimeError("Workflow not initialized. Call initialize() first.")
-        
+
         logger.info(f"Processing message with streaming: {message[:100]}...")
-        
+
         # For now, use non-streaming and yield as single chunk
         # TODO: Implement true streaming with MAF's streaming capabilities
         response = await self.triage_agent.process(message, context)
-        
-        yield {
-            "type": "response",
-            "agent": self.triage_agent.name,
-            "data": {"message": response}
-        }
-        
+
+        yield {"type": "response", "agent": self.triage_agent.name, "data": {"message": response}}
+
         logger.info("Streaming message processing complete")
 
     async def cleanup(self) -> None:
         """Clean up workflow resources."""
         logger.info("Cleaning up workflow resources...")
-        
+
         try:
             # Close all MCP tool connections
             await tool_registry.close_all()
             logger.info("MCP tool connections closed")
         except Exception as e:
             logger.error(f"Error closing MCP connections: {e}")
-        
+
         logger.info("Workflow cleanup complete")
-        
-        # Initialize agents with their specific tools
-        # Following TypeScript pattern: each agent gets tools from its MCP server
-        
-        # Echo Agent (for testing)
-        if "echo-ping" in tools_by_server:
-            self.echo_agent = EchoAgent(tools=tools_by_server.get("echo-ping", []))
-            await self.echo_agent.initialize(self.chat_client)
-            logger.info("EchoAgent initialized with tools")
-        else:
-            self.echo_agent = EchoAgent()
-            await self.echo_agent.initialize(self.chat_client)
-        
-        # Customer Query Agent
-        if "customer-query" in tools_by_server:
-            self.customer_query_agent = CustomerQueryAgent(
-                tools=tools_by_server.get("customer-query", [])
-            )
-            await self.customer_query_agent.initialize(self.chat_client)
-            logger.info("CustomerQueryAgent initialized with tools")
-        else:
-            self.customer_query_agent = CustomerQueryAgent()
-            await self.customer_query_agent.initialize(self.chat_client)
-        
-        # Web Search Agent
-        if "web-search" in tools_by_server:
-            self.web_search_agent = WebSearchAgent(
-                tools=tools_by_server.get("web-search", [])
-            )
-            await self.web_search_agent.initialize(self.chat_client)
-            logger.info("WebSearchAgent initialized with tools")
-        else:
-            self.web_search_agent = WebSearchAgent()
-            await self.web_search_agent.initialize(self.chat_client)
-        
-        # Itinerary Planning Agent
-        if "itinerary-planning" in tools_by_server:
-            self.itinerary_agent = ItineraryPlanningAgent(
-                tools=tools_by_server.get("itinerary-planning", [])
-            )
-            await self.itinerary_agent.initialize(self.chat_client)
-            logger.info("ItineraryPlanningAgent initialized with tools")
-        else:
-            self.itinerary_agent = ItineraryPlanningAgent()
-            await self.itinerary_agent.initialize(self.chat_client)
-        
-        # Model Inference Agent
-        if "model-inference" in tools_by_server:
-            self.model_inference_agent = ModelInferenceAgent(
-                tools=tools_by_server.get("model-inference", [])
-            )
-            await self.model_inference_agent.initialize(self.chat_client)
-            logger.info("ModelInferenceAgent initialized with tools")
-        else:
-            self.model_inference_agent = ModelInferenceAgent()
-            await self.model_inference_agent.initialize(self.chat_client)
-        
-        # Code Evaluation Agent
-        if "code-evaluation" in tools_by_server:
-            self.code_eval_agent = CodeEvaluationAgent(
-                tools=tools_by_server.get("code-evaluation", [])
-            )
-            await self.code_eval_agent.initialize(self.chat_client)
-            logger.info("CodeEvaluationAgent initialized with tools")
-        else:
-            self.code_eval_agent = CodeEvaluationAgent()
-            await self.code_eval_agent.initialize(self.chat_client)
-        
-        # Destination Recommendation Agent
-        if "destination-recommendation" in tools_by_server:
-            self.destination_agent = DestinationRecommendationAgent(
-                tools=tools_by_server.get("destination-recommendation", [])
-            )
-            await self.destination_agent.initialize(self.chat_client)
-            logger.info("DestinationRecommendationAgent initialized with tools")
-        else:
-            self.destination_agent = DestinationRecommendationAgent()
-            await self.destination_agent.initialize(self.chat_client)
-        
-        # Triage Agent gets all tools (like TypeScript TravelAgent)
-        self.triage_agent = TriageAgent(tools=self.all_tools)
-        await self.triage_agent.initialize(self.chat_client)
-        logger.info("TriageAgent initialized with all tools")
-        
-        logger.info(
-            f"MAF workflow fully initialized with {len(self.all_tools)} total tools"
-        )
+        self.triage_agent = None
+        self.customer_query_agent = None
+        self.destination_agent = None
+        self.itinerary_agent = None
+        self.echo_agent = None
 
     @property
     def agents(self) -> List[Any]:
         """Get list of all initialized agents."""
         return [
-            agent for agent in [
+            agent
+            for agent in [
                 self.triage_agent,
                 self.customer_query_agent,
                 self.destination_agent,
                 self.itinerary_agent,
-                self.code_eval_agent,
-                self.model_inference_agent,
-                self.web_search_agent,
                 self.echo_agent,
             ]
             if agent is not None
         ]
 
-    async def process_request(
-        self, 
-        message: str, 
-        context: Optional[Dict[str, Any]] = None
-    ) -> str:
+    async def process_request(self, message: str, context: Optional[Dict[str, Any]] = None) -> str:
         """Process a travel planning request through the workflow.
 
         Args:
@@ -345,23 +212,21 @@ class TravelWorkflowOrchestrator:
             raise RuntimeError("Workflow not initialized. Call initialize() first.")
 
         logger.info(f"Processing request: {message[:100]}...")
-        
+
         try:
             # Use the triage agent to process the request
             # The triage agent will coordinate with other agents as needed
             result = await self.triage_agent.process(message, context)
-            
+
             logger.info("Request processed successfully")
             return result
-            
+
         except Exception as e:
             logger.error(f"Error processing request: {e}", exc_info=True)
             raise
 
     async def process_request_stream(
-        self,
-        message: str,
-        context: Optional[Dict[str, Any]] = None
+        self, message: str, context: Optional[Dict[str, Any]] = None
     ) -> AsyncGenerator[Dict[str, Any], None]:
         """Process a travel planning request through the workflow with streaming.
 
@@ -384,7 +249,7 @@ class TravelWorkflowOrchestrator:
             raise RuntimeError("Workflow not initialized. Call initialize() first.")
 
         logger.info(f"Processing streaming request: {message[:100]}...")
-        
+
         try:
             # Send agent setup event
             yield {
@@ -393,10 +258,10 @@ class TravelWorkflowOrchestrator:
                 "data": {
                     "message": "Initializing travel planning workflow with MCP tools",
                     "tool_count": len(self.all_tools),
-                    "timestamp": None
-                }
+                    "timestamp": None,
+                },
             }
-            
+
             # Send agent tool call event
             yield {
                 "agent": "TriageAgent",
@@ -404,50 +269,32 @@ class TravelWorkflowOrchestrator:
                 "data": {
                     "message": "Processing travel request with specialized agents",
                     "toolName": "triage_agent_process",
-                    "timestamp": None
-                }
+                    "timestamp": None,
+                },
             }
-            
+
             # Process through triage agent
             result = await self.triage_agent.process(message, context)
-            
+
             # Send streaming chunks of the response
             # Split the response into chunks for streaming effect
             chunk_size = 50
             for i in range(0, len(result), chunk_size):
-                chunk = result[i:i + chunk_size]
-                yield {
-                    "agent": "TriageAgent",
-                    "event": "AgentStream",
-                    "data": {
-                        "delta": chunk,
-                        "timestamp": None
-                    }
-                }
-            
+                chunk = result[i : i + chunk_size]
+                yield {"agent": "TriageAgent", "event": "AgentStream", "data": {"delta": chunk, "timestamp": None}}
+
             # Send completion event
             yield {
                 "agent": "TriageAgent",
                 "event": "AgentComplete",
-                "data": {
-                    "message": "Request processed successfully",
-                    "result": result,
-                    "timestamp": None
-                }
+                "data": {"message": "Request processed successfully", "result": result, "timestamp": None},
             }
-            
+
             logger.info("Streaming request processed successfully")
-            
+
         except Exception as e:
             logger.error(f"Error processing streaming request: {e}", exc_info=True)
-            yield {
-                "agent": None,
-                "event": "Error",
-                "data": {
-                    "error": str(e),
-                    "timestamp": None
-                }
-            }
+            yield {"agent": None, "event": "Error", "data": {"error": str(e), "timestamp": None}}
             raise
 
     async def get_agent_by_name(self, name: str) -> Optional[Any]:
@@ -464,12 +311,7 @@ class TravelWorkflowOrchestrator:
                 return agent
         return None
 
-    async def handoff_to_agent(
-        self,
-        agent_name: str,
-        message: str,
-        context: Optional[Dict[str, Any]] = None
-    ) -> str:
+    async def handoff_to_agent(self, agent_name: str, message: str, context: Optional[Dict[str, Any]] = None) -> str:
         """Handoff request to a specific agent.
 
         Args:
@@ -489,7 +331,7 @@ class TravelWorkflowOrchestrator:
 
         logger.info(f"Handing off to {agent_name}")
         return await agent.process(message, context)
-    
+
     async def close(self) -> None:
         """Clean up MCP client resources."""
         for loader in self.mcp_loaders.values():

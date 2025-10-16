@@ -29,10 +29,8 @@ All orchestrators communicate with the same MCP tool servers. Each component is 
 │   │   ├── echo-ping/          # TypeScript/Node.js (testing tool)
 │   │   ├── customer-query/     # C#/.NET (customer inquiry processing)
 │   │   ├── destination-recommendation/  # Java (travel destination suggestions)
-│   │   ├── itinerary-planning/ # Python (detailed itinerary creation)
-│   │   ├── code-evaluation/    # Python (code interpreter integration)
-│   │   ├── model-inference/    # Python (local LLM with GPU support)
-│   │   └── web-search/         # TypeScript (Bing API integration)
+│   │   └── itinerary-planning/ # Python (detailed itinerary creation)
+│   │   
 │   ├── shared/                 # Common utilities and types
 │   └── docker-compose.yml      # Local development environment
 ├── azure.yaml                  # Azure Developer CLI configuration
@@ -60,9 +58,6 @@ The system implements specialized agents coordinated by orchestration layers. Al
   - **Customer Query Agent**: Extracts preferences from customer inquiries (via customer-query MCP)
   - **Destination Recommendation Agent**: Suggests destinations (via destination-recommendation MCP)
   - **Itinerary Planning Agent**: Creates detailed travel plans (via itinerary-planning MCP)
-  - **Web Search Agent**: Fetches live travel data via Bing API (via web-search MCP)
-  - **Code Evaluation Agent**: Executes custom logic (via code-evaluation MCP)
-  - **Model Inference Agent**: Runs local LLMs with ONNX/vLLM (via model-inference MCP)
   - **Echo Agent**: Testing and validation (via echo-ping MCP)
 
 **Option 2: LlamaIndex.TS Orchestration** (`packages/api/src/orchestrator/llamaindex/`)
@@ -74,9 +69,6 @@ The system implements specialized agents coordinated by orchestration layers. Al
   - **Customer Query Agent**: Extracts preferences from customer inquiries (via customer-query MCP)
   - **Destination Recommendation Agent**: Suggests destinations (via destination-recommendation MCP)
   - **Itinerary Planning Agent**: Creates detailed travel plans (via itinerary-planning MCP)
-  - **Web Search Agent**: Fetches live travel data via Bing API (via web-search MCP)
-  - **Code Evaluation Agent**: Executes custom logic (via code-evaluation MCP)
-  - **Model Inference Agent**: Runs local LLMs with ONNX/vLLM (via model-inference MCP)
   - **Echo Agent**: Testing and validation (via echo-ping MCP)
 
 **Option 3: Microsoft Agent Framework Orchestration** (`packages/api-python/`)
@@ -89,9 +81,6 @@ The system implements specialized agents coordinated by orchestration layers. Al
   - **CustomerQueryAgent**: Processes customer inquiries with MCP tools
   - **DestinationRecommendationAgent**: Provides destination suggestions
   - **ItineraryPlanningAgent**: Creates detailed itineraries with MCP tools
-  - **CodeEvaluationAgent**: Executes code via code-evaluation MCP server
-  - **ModelInferenceAgent**: Performs local model inference via MCP
-  - **WebSearchAgent**: Searches web using Bing API via MCP
   - **EchoAgent**: Testing and validation via echo-ping MCP
 
 #### MCP Tool Servers (Shared by All Orchestrations)
@@ -101,9 +90,6 @@ All three orchestration implementations communicate with these MCP servers:
 - **customer-query** (.NET/C#) - Port 5001 - Customer inquiry processing
 - **destination-recommendation** (Java) - Port 5002 - Travel destination suggestions
 - **itinerary-planning** (Python) - Port 5003 - Detailed itinerary creation
-- **code-evaluation** (Python) - Port 5004 - Code interpreter integration
-- **model-inference** (Python) - Port 5005 - Local LLM with GPU support
-- **web-search** (TypeScript) - Port 5006 - Bing API integration
 - **echo-ping** (TypeScript) - Port 5007 - Testing and validation
 
 ### Service Communication
@@ -234,7 +220,7 @@ For detailed comparison, see `docs/orchestration.md`.
 
 ### TypeScript/Node.js Standards
 
-**Location**: `packages/api/`, `packages/ui/`, `packages/tools/echo-ping/`, `packages/tools/web-search/`
+**Location**: `packages/api/`, `packages/ui/`, `packages/tools/echo-ping/`
 
 **Key Conventions**:
 - Use ES modules (`"type": "module"` in package.json)
@@ -529,7 +515,6 @@ chore(deps): update dependencies
    cd packages/tools/itinerary-planning && pip install .
    cd packages/tools/code-evaluation && pip install .
    cd packages/tools/model-inference && pip install .
-   cd packages/tools/web-search && npm run build
    ```
 
 2. **Test Coverage**: Run existing tests and add new tests for new functionality

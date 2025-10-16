@@ -36,14 +36,14 @@ class MCPServerDefinition(TypedDict):
 def get_mcp_tools_config() -> dict[McpServerName, MCPServerDefinition]:
     """
     Get MCP tools configuration following TypeScript implementation pattern.
-    
+
     Mirrors packages/api/src/orchestrator/*/tools/index.ts
-    
+
     Returns:
         Dictionary mapping server names to their configurations
     """
     settings = Settings()
-    
+
     return {
         "echo-ping": {
             "config": {

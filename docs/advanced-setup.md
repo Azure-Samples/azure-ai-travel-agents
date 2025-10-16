@@ -203,12 +203,6 @@ The application uses environment variables to configure the services. You can se
     - `packages/tools/destination-recommendation/.env.docker`
     - `packages/tools/itinerary-planning/.env`
     - `packages/tools/itinerary-planning/.env.docker`
-    - `packages/tools/code-evaluation/.env`
-    - `packages/tools/code-evaluation/.env.docker`
-    - `packages/tools/model-inference/.env`
-    - `packages/tools/model-inference/.env.docker`
-    - `packages/tools/web-search/.env`
-    - `packages/tools/web-search/.env.docker`
     - `packages/tools/echo-ping/.env`
     - `packages/tools/echo-ping/.env.docker`
 

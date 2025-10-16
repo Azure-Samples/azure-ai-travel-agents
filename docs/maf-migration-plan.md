@@ -32,10 +32,7 @@ This document outlines the migration strategy from the current LlamaIndex.TS orc
 2. CustomerQueryAgent
 3. DestinationRecommendationAgent
 4. ItineraryPlanningAgent
-5. CodeEvaluationAgent
-6. ModelInferenceAgent
-7. WebSearchAgent
-8. EchoAgent
+5. EchoAgent
 
 **Endpoints**:
 - `GET /api/health` - Health check
@@ -113,9 +110,6 @@ We will use a parallel deployment strategy to minimize risk:
 - [ ] Implement CustomerQueryAgent
 - [ ] Implement DestinationRecommendationAgent
 - [ ] Implement ItineraryPlanningAgent
-- [ ] Implement CodeEvaluationAgent
-- [ ] Implement ModelInferenceAgent
-- [ ] Implement WebSearchAgent
 - [ ] Implement EchoAgent
 - [ ] Create tool wrappers for MCP calls
 

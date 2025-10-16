@@ -16,9 +16,6 @@ Available specialized agents:
 - CustomerQueryAgent: Analyzes customer preferences and requirements
 - DestinationRecommendationAgent: Suggests travel destinations
 - ItineraryPlanningAgent: Creates detailed travel itineraries
-- CodeEvaluationAgent: Evaluates code snippets and calculations
-- ModelInferenceAgent: Performs specialized AI model inference
-- WebSearchAgent: Searches for current travel information
 - EchoAgent: Simple echo tool for testing
 
 Your task:

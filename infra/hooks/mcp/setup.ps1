@@ -3,7 +3,7 @@
 ##########################################################################
 # MCP Tools
 ##########################################################################
-$tools = @('echo-ping', 'customer-query', 'destination-recommendation', 'itinerary-planning', 'code-evaluation', 'model-inference', 'web-search')
+$tools = @('echo-ping', 'customer-query', 'destination-recommendation', 'itinerary-planning')
 Write-Host '>> Creating .env file for the MCP servers...'
 
 foreach ($tool in $tools) {

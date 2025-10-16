@@ -11,10 +11,8 @@ import { environment } from '../../environments/environment';
 export type ServerID =
   | 'echo-ping'
   | 'customer-query'
-  | 'web-search'
   | 'itinerary-planning'
-  | 'model-inference'
-  | 'code-evaluation';
+  | 'destination-recommendation';
 
 export type Tools = {
   id: ServerID;
