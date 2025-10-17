@@ -1,7 +1,7 @@
 name: Java CodeQL Configuration
 
 paths:
-  - packages/tools/destination-recommendation/**
+  - packages/mcp-servers/destination-recommendation/**
 
 paths-ignore:
   - '**/target/**'

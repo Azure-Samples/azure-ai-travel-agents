@@ -6,22 +6,22 @@
     "password": true
   }],
   "servers": {
-    "tool-echo-ping": {
+    "mcp-echo-ping": {
       "headers": {
         "Authorization": "Bearer ${input:toolEchoPingAccessToken}",
       },
       "type": "http",
       "url": "http://localhost:5004/mcp"
     },
-    "tool-itinerary-planning": {
+    "mcp-itinerary-planning": {
       "type": "http",
       "url": "http://localhost:5003/mcp"
     },
-    "tool-destination-recommendation": {
+    "mcp-destination-recommendation": {
       "type": "http",
       "url": "http://localhost:5002/mcp"
     },
-    "tool-customer-query": {
+    "mcp-customer-query": {
       "type": "http",
       "url": "http://localhost:5001/mcp"
     }

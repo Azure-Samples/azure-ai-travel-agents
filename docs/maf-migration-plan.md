@@ -18,7 +18,7 @@ This document outlines the migration strategy from the current LlamaIndex.TS orc
 
 **Components**:
 - Main API server: `packages/api/src/index.ts`
-- Orchestrator: `packages/api/src/orchestrator/llamaindex/`
+- Orchestrator: `packages/llamaindex-ts/src/`
   - Agent setup: `index.ts`
   - Provider configuration: `providers/`
   - Tool configuration: `tools/index.ts`

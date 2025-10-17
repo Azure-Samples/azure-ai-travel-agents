@@ -11,7 +11,7 @@ This document provides detailed technical documentation for each Model Context P
 1. [MCP Overview](#mcp-overview)
 2. [Server Implementations](#server-implementations)
 3. [Communication Protocols](#communication-protocols)
-4. [Tool Specifications](#tool-specifications)
+4. [Tool Specifications](#mcp-specifications)
 5. [Error Handling](#error-handling)
 6. [Performance Considerations](#performance-considerations)
 7. [Development Guidelines](#development-guidelines)

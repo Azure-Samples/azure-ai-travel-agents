@@ -8,8 +8,8 @@ on:
       - 'packages/api/*.js'
       - 'packages/ui/*.ts'
       - 'packages/ui/*.js'
-      - 'packages/tools/echo-ping/**/*.ts'
-      - 'packages/tools/echo-ping/**/*.js'
+      - 'packages/mcp-servers/echo-ping/**/*.ts'
+      - 'packages/mcp-servers/echo-ping/**/*.js'
       - 'src/shared/**/*.ts'
       - 'src/shared/**/*.js'
       - '.github/workflows/codeql-typescript.yml'
@@ -21,8 +21,8 @@ on:
       - 'packages/api/*.js'
       - 'packages/ui/*.ts'
       - 'packages/ui/*.js'
-      - 'packages/tools/echo-ping/**/*.ts'
-      - 'packages/tools/echo-ping/**/*.js'
+      - 'packages/mcp-servers/echo-ping/**/*.ts'
+      - 'packages/mcp-servers/echo-ping/**/*.js'
       - 'src/shared/**/*.ts'
       - 'src/shared/**/*.js'
       - '.github/workflows/codeql-typescript.yml'
@@ -51,7 +51,7 @@ jobs:
           
       - name: Install dependencies
         run: |
-          for dir in packages/tools/echo-ping src/api src/ui; do
+          for dir in packages/mcp-servers/echo-ping src/api src/ui; do
             if [ -f "$dir/package.json" ]; then
               cd $dir && npm install && cd -
             fi

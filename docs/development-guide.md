@@ -254,9 +254,9 @@ packages/ui/
 └── .env.sample                 # Environment template
 ```
 
-### MCP Tools Structure (packages/tools/)
+### MCP Tools Structure (packages/mcp-servers/)
 ```
-packages/tools/
+packages/mcp-servers/
 ├── echo-ping/                  # TypeScript/Node.js example
 │   ├── src/
 │   │   ├── index.ts            # Server entry point
@@ -290,7 +290,7 @@ docker-compose up -d
 
 # Option B: Local services
 # Terminal 1: Start API
-cd packages/api
+cd packages/langchain-js (or packages/llamaindex-ts)
 npm start
 
 # Terminal 2: Start UI
@@ -409,8 +409,8 @@ echo "✅ All pre-commit checks passed"
 #### 1. Create Server Structure
 ```bash
 # Create new MCP server directory
-mkdir packages/tools/my-new-server
-cd packages/tools/my-new-server
+mkdir packages/mcp-servers/my-new-server
+cd packages/mcp-servers/my-new-server
 
 # Initialize based on technology choice
 # For TypeScript (similar to echo-ping):
@@ -425,7 +425,7 @@ cp -r ../customer-query/* .
 
 #### 2. Implement MCP Server (TypeScript Example)
 ```typescript
-// packages/tools/my-new-server/src/server.ts
+// packages/mcp-servers/my-new-server/src/server.ts
 import { McpServer } from '@modelcontextprotocol/sdk/server/index.js';
 import { 
   CallToolRequestSchema,
@@ -515,7 +515,7 @@ export class MyNewMCPServer {
 
 #### 3. Update Docker Configuration
 ```dockerfile
-# packages/tools/my-new-server/Dockerfile
+# packages/mcp-servers/my-new-server/Dockerfile
 FROM node:22-alpine
 
 WORKDIR /app
@@ -544,13 +544,13 @@ CMD ["npm", "start"]
 #### 4. Register in Docker Compose
 ```yaml
 # src/docker-compose.yml - add to services section
-tool-my-new-server:
-  container_name: tool-my-new-server
+mcp-my-new-server:
+  container_name: mcp-my-new-server
   build: ./tools/my-new-server
   ports:
     - "5008:3000"
   environment:
-    - OTEL_SERVICE_NAME=tool-my-new-server
+    - OTEL_SERVICE_NAME=mcp-my-new-server
     - OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:18889
   depends_on:
     - aspire-dashboard
@@ -561,7 +561,7 @@ tool-my-new-server:
 
 #### 5. Register in API
 ```typescript
-// packages/api/src/orchestrator/llamaindex/tools/index.ts
+// packages/llamaindex-ts/src/tools/index.ts
 export type McpServerName =
   | "echo-ping"
   | "customer-query"
@@ -587,7 +587,7 @@ export const McpToolsConfig = (): {
 
 #### 6. Add Agent Integration
 ```typescript
-// packages/api/src/orchestrator/llamaindex/index.ts
+// packages/llamaindex-ts/src/index.ts
 export async function setupAgents(filteredTools: McpServerDefinition[] = []) {
   // ... existing code
 
@@ -965,8 +965,8 @@ test.describe('Travel Planning User Journey', () => {
     await page.fill('[data-testid="message-input"]', 'Plan a 5-day trip to Paris');
 
     // Select tools
-    await page.check('[data-testid="tool-destination-recommendation"]');
-    await page.check('[data-testid="tool-itinerary-planning"]');
+    await page.check('[data-testid="mcp-destination-recommendation"]');
+    await page.check('[data-testid="mcp-itinerary-planning"]');
 
     // Submit request
     await page.click('[data-testid="submit-button"]');
@@ -986,14 +986,14 @@ test.describe('Travel Planning User Journey', () => {
     await page.goto('http://localhost:4200');
 
     // Initially no tools selected
-    const selectedTools = await page.$$('[data-testid^="tool-"]:checked');
+    const selectedTools = await page.$$('[data-testid^="mcp-"]:checked');
     expect(selectedTools.length).toBe(0);
 
     // Select tools
-    await page.check('[data-testid="tool-echo-ping"]');
+    await page.check('[data-testid="mcp-echo-ping"]');
 
     // Verify selection
-    const newSelectedTools = await page.$$('[data-testid^="tool-"]:checked');
+    const newSelectedTools = await page.$$('[data-testid^="mcp-"]:checked');
     expect(newSelectedTools.length).toBe(2);
   });
 });
@@ -1058,7 +1058,7 @@ console.log('Tools result:', result);
 #### Using Node.js Inspector
 ```bash
 # Start API with inspector
-cd packages/api
+cd packages/langchain-js (or packages/llamaindex-ts)
 npm run debug
 
 # Connect Chrome DevTools
@@ -1095,14 +1095,14 @@ debugLog('Processing MCP tool call', { toolName, args });
 #### Docker Container Debugging
 ```bash
 # View logs for specific MCP server
-docker-compose logs -f tool-echo-ping
+docker-compose logs -f mcp-echo-ping
 
 # Execute commands inside container
-docker-compose exec tool-echo-ping /bin/sh
+docker-compose exec mcp-echo-ping /bin/sh
 
 # Debug network connectivity
-docker-compose exec web-api ping tool-echo-ping
-docker-compose exec web-api curl http://tool-echo-ping:3000/health
+docker-compose exec web-api ping mcp-echo-ping
+docker-compose exec web-api curl http://mcp-echo-ping:3000/health
 ```
 
 #### MCP Protocol Debugging

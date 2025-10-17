@@ -92,7 +92,7 @@ Once all services are up and running, you can access the **UI** at http://localh
 ![UI Screenshot](azure-ai-travel-agent-demo-1.png)
 
 You can also view the traces via the [Aspire Dashboard](https://aspiredashboard.com/) at http://localhost:18888.
-  - On `Structured` tab you'll see the logging messages from the **tool-echo-ping** and **api** services. The `Traces` tab will show the traces across the services, such as the call from **api** to **echo-agent**.
+  - On `Structured` tab you'll see the logging messages from the **mcp-echo-ping** and **api** services. The `Traces` tab will show the traces across the services, such as the call from **api** to **echo-agent**.
 
 
 ## Preview the application using Azure AI Foundry
@@ -188,7 +188,7 @@ npm start --prefix=packages/ui
 ![UI Screenshot](azure-ai-travel-agent-demo-1.gif)
 
 You can also view the traces via the [Aspire Dashboard](https://aspiredashboard.com/) at http://localhost:18888.
-  - On `Structured` tab you'll see the logging messages from the **tool-echo-ping** and **api** services. The `Traces` tab will show the traces across the services, such as the call from **api** to **echo-agent**.
+  - On `Structured` tab you'll see the logging messages from the **mcp-echo-ping** and **api** services. The `Traces` tab will show the traces across the services, such as the call from **api** to **echo-agent**.
 
 ⚠️ In case you encounter issues when starting either the API or UI, try running `azd hooks run postprovision` to force run the post-provisioning hooks. This is due to an issue with the `azd provision` command not executing the post-provisioning hooks automatically, in some cases, the first time you run it.
 

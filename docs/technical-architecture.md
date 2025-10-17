@@ -57,13 +57,13 @@ The Azure AI Travel Agents is a sophisticated microservices-based AI application
 - `ChatService`: Manages conversation state and streaming
 - Environment-based configuration for different deployment scenarios
 
-### 2. API Layer (Express.js Server)
+### 2. API Layers - Two Standalone Services
 
 **Technology Stack:**
 - Node.js 22.16+ with TypeScript
 - Express.js 5.0 for HTTP server
-- **Current**: LangChain.js + LangGraph for agent orchestration
-- **Alternative**: LlamaIndex.TS for agent orchestration
+- **Option 1**: LangChain.js service (packages/langchain-js) with Express + LangGraph
+- **Option 2**: LlamaIndex.TS service (packages/llamaindex-ts) with Express + Multi-agent
 - OpenTelemetry for observability
 
 **Key Responsibilities:**
@@ -161,7 +161,7 @@ User Input → Angular UI → API Server → LangChain.js Orchestrator → Super
 
 6. **MCP Server Communication**
    - HTTP/SSE connections to relevant MCP servers
-   - Tool-specific processing (search, recommendation, planning, etc.)
+   - mcp-specific processing (search, recommendation, planning, etc.)
    - External API calls as needed (Azure OpenAI, etc.)
 
 7. **Response Aggregation**
@@ -209,7 +209,7 @@ Currently, the API does not require authentication for local development. In pro
     {
       "id": "echo-ping",
       "name": "Echo Test",
-      "url": "http://tool-echo-ping:3000/mcp",
+      "url": "http://mcp-echo-ping:3000/mcp",
       "type": "http",
       "reachable": true,
       "selected": false,
@@ -305,7 +305,7 @@ MCP is a protocol that enables AI models to securely access external tools and d
 // Client configuration
 const mcpClient = new MCPHTTPClient(
   "llamaindex-http-client",
-  "http://tool-echo-ping:3000/mcp",
+  "http://mcp-echo-ping:3000/mcp",
   accessToken
 );
 
@@ -319,7 +319,7 @@ const result = await mcpClient.callTool("echo", { input: "Hello" });
 // Client configuration  
 const mcpClient = new MCPSSEClient(
   "llamaindex-sse-client",
-  "http://tool-customer-query:8080/mcp",
+  "http://mcp-customer-query:8080/mcp",
   accessToken
 );
 
@@ -383,7 +383,7 @@ The system provides three orchestration implementations. The current production 
 The production system uses **LangChain.js** with the LangGraph supervisor pattern for agent orchestration:
 
 ```typescript
-// packages/api/src/orchestrator/langchain/graph/index.ts
+// packages/langchain-js/src/graph/index.ts
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { MemorySaver } from "@langchain/langgraph";
 
@@ -420,7 +420,7 @@ export class TravelAgentsWorkflow {
 - Multiple LLM providers (Azure OpenAI, Docker Models, GitHub Models, Ollama, Foundry Local)
 - State management with `MemorySaver`
 
-**Location**: `packages/api/src/orchestrator/langchain/`
+**Location**: `packages/langchain-js/src/`
 
 ### Alternative Implementation: LlamaIndex.TS
 
@@ -445,9 +445,9 @@ return multiAgent({
 });
 ```
 
-**Location**: `packages/api/src/orchestrator/llamaindex/`
+**Location**: `packages/llamaindex-ts/src/`
 
-**To Switch**: Change import in `packages/api/src/index.ts` from `./orchestrator/langchain/` to `./orchestrator/llamaindex/`
+**To Switch**: Change import in `packages/api/src/index.ts` from `@azure-ai-travel-agents/langchain-js` to `./orchestrator/llamaindex/`
 
 ### Alternative Implementation: Microsoft Agent Framework (Python)
 
@@ -656,9 +656,9 @@ graph TB
 # High-level service dependencies
 services:
   aspire-dashboard:     # Monitoring foundation
-  tool-*:              # 7 MCP servers (ports 5001-5004)
+  mcp-*:              # 7 MCP servers (ports 5001-5004)
   web-api:             # Express API (port 4000)
-    depends_on: tool-*
+    depends_on: mcp-*
   web-ui:              # Angular UI (port 4200) 
     depends_on: web-api
 ```
@@ -713,10 +713,10 @@ OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:18889
 #### Docker Environment (.env.docker)
 ```bash
 # MCP Server URLs (Docker internal)
-MCP_ECHO_PING_URL=http://tool-echo-ping:3000
-MCP_CUSTOMER_QUERY_URL=http://tool-customer-query:8080
-MCP_ITINERARY_PLANNING_URL=http://tool-itinerary-planning:8000
-MCP_DESTINATION_RECOMMENDATION_URL=http://tool-destination-recommendation:8080
+MCP_ECHO_PING_URL=http://mcp-echo-ping:3000
+MCP_CUSTOMER_QUERY_URL=http://mcp-customer-query:8080
+MCP_ITINERARY_PLANNING_URL=http://mcp-itinerary-planning:8000
+MCP_DESTINATION_RECOMMENDATION_URL=http://mcp-destination-recommendation:8080
 
 # Docker-specific settings
 IS_LOCAL_DOCKER_ENV=true
@@ -808,7 +808,7 @@ OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:18889
 2. **Individual Service Development**
    ```bash
    # Start specific services
-   docker-compose up aspire-dashboard tool-echo-ping web-api
+   docker-compose up aspire-dashboard mcp-echo-ping web-api
    
    # View logs
    docker-compose logs -f web-api
@@ -822,7 +822,7 @@ OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:18889
 #### Unit Testing
 ```bash
 # API tests
-cd packages/api
+cd packages/langchain-js (or packages/llamaindex-ts)
 npm test
 
 # UI tests  
@@ -862,7 +862,7 @@ DEBUG=true npm start --prefix=packages/api
 #### MCP Server Debugging
 ```bash
 # Check MCP server logs
-docker-compose logs tool-echo-ping
+docker-compose logs mcp-echo-ping
 
 # Test MCP connectivity directly
 node -e "
@@ -886,7 +886,7 @@ npm start --prefix=packages/ui
 #### Linting and Formatting
 ```bash
 # API
-cd packages/api
+cd packages/langchain-js (or packages/llamaindex-ts)
 npm run lint
 npm run format
 
@@ -899,7 +899,7 @@ npm run format
 #### Type Checking
 ```bash
 # API
-cd packages/api
+cd packages/langchain-js (or packages/llamaindex-ts)
 npx tsc --noEmit
 
 # UI
@@ -913,8 +913,8 @@ npx ng build --configuration development
 
 1. **Create Server Directory**
    ```bash
-   mkdir packages/tools/my-new-tool
-   cd packages/tools/my-new-tool
+   mkdir packages/mcp-servers/my-new-tool
+   cd packages/mcp-servers/my-new-tool
    ```
 
 2. **Implement MCP Server**
@@ -958,8 +958,8 @@ npx ng build --configuration development
 
 4. **Update Docker Compose**
    ```yaml
-   tool-my-new-tool:
-     container_name: tool-my-new-tool
+   mcp-my-new-tool:
+     container_name: mcp-my-new-tool
      build: ./tools/my-new-tool
      ports:
        - "5008:3000"
@@ -967,7 +967,7 @@ npx ng build --configuration development
 
 5. **Register in API**
    ```typescript
-   // packages/api/src/orchestrator/llamaindex/tools/index.ts
+   // packages/llamaindex-ts/src/tools/index.ts
    export type McpServerName = 
      | "echo-ping"
      | "my-new-tool";  // Add new tool
@@ -988,7 +988,7 @@ npx ng build --configuration development
 
 6. **Create Agent Integration**
    ```typescript
-   // packages/api/src/orchestrator/llamaindex/index.ts
+   // packages/llamaindex-ts/src/index.ts
    if (tools["my-new-tool"]) {
      const mcpServerConfig = mcpToolsConfig["my-new-tool"];
      const tools = await mcp(mcpServerConfig.config).tools();
@@ -1167,8 +1167,8 @@ services:
     language: typescript
     host: containerapp
     docker:
-      path: ./packages/tools/my-new-tool/Dockerfile
-      context: ./packages/tools/my-new-tool
+      path: ./packages/mcp-servers/my-new-tool/Dockerfile
+      context: ./packages/mcp-servers/my-new-tool
 ```
 
 This comprehensive documentation provides architects and developers with the detailed technical understanding needed to work with, extend, and deploy the Azure AI Travel Agents system effectively.

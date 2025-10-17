@@ -35,7 +35,7 @@ The production system currently uses **LangChain.js** for agent orchestration, p
 See [Orchestration Options](./orchestration.md) for detailed comparison.
 
 #### Alternative: LlamaIndex.TS
-Available as an alternative TypeScript implementation in `packages/api/src/orchestrator/llamaindex/`:
+Available as an alternative TypeScript implementation in `packages/llamaindex-ts/src/`:
 - TypeScript-based workflow management
 - Node.js/Express.js integration
 - Established stability and performance

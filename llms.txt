@@ -1262,9 +1262,9 @@ $tools = @('echo-ping', 'customer-query', 'destination-recommendation', 'itinera
 Write-Host '>> Creating .env file for the MCP servers...'
 
 foreach ($tool in $tools) {
-    $envSample = "./packages/tools/$tool/.env.sample"
-    $envFile = "./packages/tools/$tool/.env"
-    $envDockerFile = "./packages/tools/$tool/.env.docker"
+    $envSample = "./packages/mcp-servers/$tool/.env.sample"
+    $envFile = "./packages/mcp-servers/$tool/.env"
+    $envDockerFile = "./packages/mcp-servers/$tool/.env.docker"
     if (Test-Path $envSample) {
         Write-Host "Creating .env file for $tool..."
         if (-not (Test-Path $envFile)) {
@@ -1289,7 +1289,7 @@ docker model pull ai/phi4:14B-Q4_0
 
 # Only build docker compose, do not start the containers yet
 Write-Host '>> Building MCP servers with Docker Compose...'
-$composeServices = $tools | ForEach-Object { "tool-$_" } | Join-String ' '
+$composeServices = $tools | ForEach-Object { "mcp-$_" } | Join-String ' '
 docker compose -f src/docker-compose.yml up --build -d $composeServices
 ```
 
@@ -1382,10 +1382,10 @@ if (-not (Test-Path $apiEnvDockerPath)) {
     "# File automatically generated on $(Get-Date)" | Out-File $apiEnvDockerPath
     "# See .env.sample for more information" | Add-Content $apiEnvDockerPath
     "" | Add-Content $apiEnvDockerPath
-    "MCP_CUSTOMER_QUERY_URL=http://tool-customer-query:8080" | Add-Content $apiEnvDockerPath
-    "MCP_DESTINATION_RECOMMENDATION_URL=http://tool-destination-recommendation:5002" | Add-Content $apiEnvDockerPath
-    "MCP_ITINERARY_PLANNING_URL=http://tool-itinerary-planning:5003" | Add-Content $apiEnvDockerPath
-    "MCP_ECHO_PING_URL=http://tool-echo-ping:5004" | Add-Content $apiEnvDockerPath
+    "MCP_CUSTOMER_QUERY_URL=http://mcp-customer-query:8080" | Add-Content $apiEnvDockerPath
+    "MCP_DESTINATION_RECOMMENDATION_URL=http://mcp-destination-recommendation:5002" | Add-Content $apiEnvDockerPath
+    "MCP_ITINERARY_PLANNING_URL=http://mcp-itinerary-planning:5003" | Add-Content $apiEnvDockerPath
+    "MCP_ECHO_PING_URL=http://mcp-echo-ping:5004" | Add-Content $apiEnvDockerPath
 }
 
 # Install dependencies for the API service
@@ -1430,7 +1430,7 @@ $tools = @('echo-ping', 'customer-query', 'destination-recommendation', 'itinera
 Write-Host ">> Creating .env file for the MCP servers..."
 
 foreach ($tool in $tools) {
-    $toolPath = "./packages/tools/$tool"
+    $toolPath = "./packages/mcp-servers/$tool"
     $envSample = "$toolPath/.env.sample"
     $envFile = "$toolPath/.env"
     $envDockerFile = "$toolPath/.env.docker"
@@ -1463,7 +1463,7 @@ docker desktop enable model-runner --tcp 12434
 
 # Only build docker compose, do not start the containers yet
 Write-Host ">> Building MCP servers with Docker Compose..."
-$toolServices = $tools | ForEach-Object { "tool-$_" } | Join-String -Separator ' '
+$toolServices = $tools | ForEach-Object { "mcp-$_" } | Join-String -Separator ' '
 docker compose -f src/docker-compose.yml up --build -d $toolServices
 ```
 
@@ -1511,10 +1511,10 @@ if [ ! -f ./packages/api/.env.docker ]; then
     echo "# File automatically generated on $(date)" > ./packages/api/.env.docker
     echo "# See .env.sample for more information" >> ./packages/api/.env.docker
     echo ""
-    echo "MCP_CUSTOMER_QUERY_URL=http://tool-customer-query:8080" >> ./packages/api/.env.docker
-    echo "MCP_DESTINATION_RECOMMENDATION_URL=http://tool-destination-recommendation:5002" >> ./packages/api/.env.docker
-    echo "MCP_ITINERARY_PLANNING_URL=http://tool-itinerary-planning:5003" >> ./packages/api/.env.docker
-    echo "MCP_ECHO_PING_URL=http://tool-echo-ping:5004" >> ./packages/api/.env.docker
+    echo "MCP_CUSTOMER_QUERY_URL=http://mcp-customer-query:8080" >> ./packages/api/.env.docker
+    echo "MCP_DESTINATION_RECOMMENDATION_URL=http://mcp-destination-recommendation:5002" >> ./packages/api/.env.docker
+    echo "MCP_ITINERARY_PLANNING_URL=http://mcp-itinerary-planning:5003" >> ./packages/api/.env.docker
+    echo "MCP_ECHO_PING_URL=http://mcp-echo-ping:5004" >> ./packages/api/.env.docker
 fi
 
 ##########################################################################
@@ -1587,19 +1587,19 @@ printf ">> Creating .env file for the MCP servers...\n"
 
 #  for each tool copy the .env.sample (if it exists) to .env and .env.docker (dont overwrite existing .env files)
 for tool in $tools; do
-    if [ -f ./packages/tools/$tool/.env.sample ]; then
+    if [ -f ./packages/mcp-servers/$tool/.env.sample ]; then
         printf "Creating .env file for $tool...\n"
-        if [ ! -f ./packages/tools/$tool/.env ]; then
-            cp ./packages/tools/$tool/.env.sample ./packages/tools/$tool/.env
-            printf "# File automatically generated on $(date)\n" >> ./packages/tools/$tool/.env
-            printf "# See .env.sample for more information\n" >> ./packages/tools/$tool/.env
+        if [ ! -f ./packages/mcp-servers/$tool/.env ]; then
+            cp ./packages/mcp-servers/$tool/.env.sample ./packages/mcp-servers/$tool/.env
+            printf "# File automatically generated on $(date)\n" >> ./packages/mcp-servers/$tool/.env
+            printf "# See .env.sample for more information\n" >> ./packages/mcp-servers/$tool/.env
         fi
 
         # Create .env.docker file if it doesn't exist
-        if [ ! -f ./packages/tools/$tool/.env.docker ]; then
-            cp ./packages/tools/$tool/.env.sample ./packages/tools/$tool/.env.docker
-            printf "# File automatically generated on $(date)\n" >> ./packages/tools/$tool/.env.docker
-            printf "# See .env.sample for more information\n" >> ./packages/tools/$tool/.env.docker
+        if [ ! -f ./packages/mcp-servers/$tool/.env.docker ]; then
+            cp ./packages/mcp-servers/$tool/.env.sample ./packages/mcp-servers/$tool/.env.docker
+            printf "# File automatically generated on $(date)\n" >> ./packages/mcp-servers/$tool/.env.docker
+            printf "# See .env.sample for more information\n" >> ./packages/mcp-servers/$tool/.env.docker
         fi
     else
         printf "No .env.sample found for $tool, skipping...\n"
@@ -1608,5 +1608,5 @@ done
 
 #  only build docker compose, do not start the containers yet
 printf ">> Building MCP servers with Docker Compose...\n"
-docker compose -f src/docker-compose.yml up --build -d $(echo $tools | sed 's/\([^ ]*\)/tool-\1/g')
+docker compose -f src/docker-compose.yml up --build -d $(echo $tools | sed 's/\([^ ]*\)/mcp-\1/g')
 ```

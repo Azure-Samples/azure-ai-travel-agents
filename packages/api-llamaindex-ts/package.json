@@ -1,0 +1,51 @@
+{
+  "name": "@azure-ai-travel-agents/api-llamaindex-ts",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "start": "tsx --watch src/server.ts",
+    "build": "tsc",
+    "clean": "rm -rf dist"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@azure/ai-projects": "^1.0.0",
+    "@azure/core-rest-pipeline": "^1.22.1",
+    "@azure/identity": "^4.9.1",
+    "@llamaindex/azure": "^0.1.37",
+    "@llamaindex/core": "^0.6.22",
+    "@llamaindex/openai": "^0.4.20",
+    "@llamaindex/tools": "0.1.12",
+    "@llamaindex/workflow": "^1.1.24",
+    "@modelcontextprotocol/sdk": "^1.10.2",
+    "@opentelemetry/api": "^1.9.0",
+    "@opentelemetry/auto-instrumentations-node": "^0.57.0",
+    "@opentelemetry/exporter-metrics-otlp-grpc": "^0.200.0",
+    "@opentelemetry/exporter-trace-otlp-grpc": "^0.200.0",
+    "@opentelemetry/instrumentation-express": "^0.48.0",
+    "@opentelemetry/instrumentation-http": "^0.200.0",
+    "@opentelemetry/sdk-metrics": "^2.0.0",
+    "@opentelemetry/sdk-node": "^0.200.0",
+    "@opentelemetry/sdk-trace-node": "^2.0.0",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^5.0.1",
+    "foundry-local-sdk": "^0.3.1",
+    "llamaindex": "0.12.0",
+    "openai": "^4.96.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.24",
+    "tsx": "^4.19.4",
+    "typescript": "^5.3.3"
+  },
+  "volta": {
+    "node": "22.20.0"
+  }
+}

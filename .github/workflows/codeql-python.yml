@@ -4,15 +4,15 @@ on:
   push:
     branches: [main]
     paths:
-      - 'packages/tools/itinerary-planning/**/*.py'
-      - 'packages/tools/model-inference/**/*.py'
+      - 'packages/mcp-servers/itinerary-planning/**/*.py'
+      - 'packages/mcp-servers/model-inference/**/*.py'
       - '.github/workflows/codeql-python.yml'
       - '.github/codeql/python-config.yml'
   pull_request:
     branches: [main]
     paths:
-      - 'packages/tools/itinerary-planning/**/*.py'
-      - 'packages/tools/model-inference/**/*.py'
+      - 'packages/mcp-servers/itinerary-planning/**/*.py'
+      - 'packages/mcp-servers/model-inference/**/*.py'
       - '.github/workflows/codeql-python.yml'
       - '.github/codeql/python-config.yml'
   workflow_dispatch:  # Allow manual triggering
@@ -39,7 +39,7 @@ jobs:
           
       - name: Install Python dependencies
         run: |
-          for dir in packages/tools/itinerary-planning packages/tools/model-inference; do
+          for dir in packages/mcp-servers/itinerary-planning packages/mcp-servers/model-inference; do
             if [ -f "$dir/requirements.txt" ]; then
               pip install -r $dir/requirements.txt
             fi

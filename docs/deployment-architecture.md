@@ -41,6 +41,7 @@ graph TB
                 EP[Echo Ping]
                 CQ[Cust Query]
                 DR[Dest Rec]
+                WS[Web Search]
                 OTHER[...]
             end
         end
@@ -149,7 +150,7 @@ OTEL_SERVICE_NAME=api-local
 #### 5. Local Service Startup
 ```bash
 # Terminal 1: Start API server
-cd packages/api
+cd packages/langchain-js (or packages/llamaindex-ts)
 npm install
 npm start
 # API available at http://localhost:4000
@@ -175,7 +176,7 @@ docker run -d \
 #### Hot Reload Development
 ```bash
 # API with hot reload
-cd packages/api
+cd packages/langchain-js (or packages/llamaindex-ts)
 npm run start  # Uses tsx --watch
 
 # UI with hot reload
@@ -207,10 +208,10 @@ Docker Compose provides a complete multi-container environment that closely mirr
 # src/docker-compose.yml structure
 services:
   aspire-dashboard:    # Monitoring
-  tool-echo-ping:      # MCP servers (7 total)
-  tool-customer-query:
-  tool-destination-recommendation:
-  tool-itinerary-planning:
+  mcp-echo-ping:      # MCP servers (7 total)
+  mcp-customer-query:
+  mcp-destination-recommendation:
+  mcp-itinerary-planning:
   web-api:            # Express API server
   web-ui:             # Angular UI
 ```
@@ -228,10 +229,10 @@ cp ui/.env.sample ui/.env.docker
 # Configure for Docker networking
 cat > api/.env.docker << EOF
 # MCP Server URLs (Docker internal)
-MCP_ECHO_PING_URL=http://tool-echo-ping:3000
-MCP_CUSTOMER_QUERY_URL=http://tool-customer-query:8080
-MCP_DESTINATION_RECOMMENDATION_URL=http://tool-destination-recommendation:8080
-MCP_ITINERARY_PLANNING_URL=http://tool-itinerary-planning:8000
+MCP_ECHO_PING_URL=http://mcp-echo-ping:3000
+MCP_CUSTOMER_QUERY_URL=http://mcp-customer-query:8080
+MCP_DESTINATION_RECOMMENDATION_URL=http://mcp-destination-recommendation:8080
+MCP_ITINERARY_PLANNING_URL=http://mcp-itinerary-planning:8000
 
 # External services (from azd provision)
 AZURE_OPENAI_ENDPOINT=https://your-openai.openai.azure.com/
@@ -279,13 +280,13 @@ echo "Destination Rec: http://localhost:5002"
 ```bash
 # View logs
 docker-compose logs -f web-api
-docker-compose logs -f tool-echo-ping
+docker-compose logs -f mcp-echo-ping
 
 # Restart specific service
 docker-compose restart web-api
 
 # Scale services (if stateless)
-docker-compose up -d --scale tool-echo-ping=2
+docker-compose up -d --scale mcp-echo-ping=2
 
 # Rebuild single service
 docker-compose build web-api
@@ -309,7 +310,7 @@ docker network inspect src_default
 ```bash
 # Debug container issues
 docker-compose exec web-api /bin/sh
-docker-compose exec tool-echo-ping /bin/bash
+docker-compose exec mcp-echo-ping /bin/bash
 
 # Check container logs
 docker logs $(docker-compose ps -q web-api)
@@ -923,8 +924,8 @@ for server in echo-ping customer-query destination-recommendation itinerary-plan
   az acr build \
     --registry $ACR_NAME \
     --image travel-agents-mcp-${server}:latest \
-    --file packages/tools/${server}/Dockerfile \
-    packages/tools/${server}
+    --file packages/mcp-servers/${server}/Dockerfile \
+    packages/mcp-servers/${server}
 done
 
 # Update container app revisions

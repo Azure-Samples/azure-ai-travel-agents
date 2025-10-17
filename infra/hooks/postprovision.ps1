@@ -40,10 +40,10 @@ if (-not (Test-Path $apiEnvDockerPath)) {
     "# File automatically generated on $(Get-Date)" | Out-File $apiEnvDockerPath
     "# See .env.sample for more information" | Add-Content $apiEnvDockerPath
     "" | Add-Content $apiEnvDockerPath
-    "MCP_CUSTOMER_QUERY_URL=http://tool-customer-query:8080" | Add-Content $apiEnvDockerPath
-    "MCP_DESTINATION_RECOMMENDATION_URL=http://tool-destination-recommendation:5002" | Add-Content $apiEnvDockerPath
-    "MCP_ITINERARY_PLANNING_URL=http://tool-itinerary-planning:5003" | Add-Content $apiEnvDockerPath
-    "MCP_ECHO_PING_URL=http://tool-echo-ping:5004" | Add-Content $apiEnvDockerPath
+    "MCP_CUSTOMER_QUERY_URL=http://mcp-customer-query:8080" | Add-Content $apiEnvDockerPath
+    "MCP_DESTINATION_RECOMMENDATION_URL=http://mcp-destination-recommendation:5002" | Add-Content $apiEnvDockerPath
+    "MCP_ITINERARY_PLANNING_URL=http://mcp-itinerary-planning:5003" | Add-Content $apiEnvDockerPath
+    "MCP_ECHO_PING_URL=http://mcp-echo-ping:5004" | Add-Content $apiEnvDockerPath
 }
 
 # Install dependencies for the API service
@@ -88,7 +88,7 @@ $tools = @('echo-ping', 'customer-query', 'destination-recommendation', 'itinera
 Write-Host ">> Creating .env file for the MCP servers..."
 
 foreach ($tool in $tools) {
-    $toolPath = "./packages/tools/$tool"
+    $toolPath = "./packages/mcp-servers/$tool"
     $envSample = "$toolPath/.env.sample"
     $envFile = "$toolPath/.env"
     $envDockerFile = "$toolPath/.env.docker"
@@ -121,5 +121,5 @@ docker desktop enable model-runner --tcp 12434
 
 # Only build docker compose, do not start the containers yet
 Write-Host ">> Building MCP servers with Docker Compose..."
-$toolServices = $tools | ForEach-Object { "tool-$_" } | Join-String -Separator ' '
+$toolServices = $tools | ForEach-Object { "mcp-$_" } | Join-String -Separator ' '
 docker compose -f src/docker-compose.yml up --build -d $toolServices

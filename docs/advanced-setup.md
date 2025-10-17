@@ -113,7 +113,7 @@ Once all services are up and running, you can access the **UI** at http://localh
 ![UI Screenshot](azure-ai-travel-agent-demo-1.gif)
 
 You can also view the traces via the [Aspire Dashboard](https://aspiredashboard.com/) at http://localhost:18888.
-  - On `Structured` tab you'll see the logging messages from the **tool-echo-ping** and **api** services. The `Traces` tab will show the traces across the services, such as the call from **api** to **echo-agent**.
+  - On `Structured` tab you'll see the logging messages from the **mcp-echo-ping** and **api** services. The `Traces` tab will show the traces across the services, such as the call from **api** to **echo-agent**.
 
 
 Before using Docker Models, ensure you have the [Docker Model Runner](https://docs.docker.com/ai/model-runner/) installed and running. You can find a list of available models by running the following command in your terminal:
@@ -197,14 +197,14 @@ The application uses environment variables to configure the services. You can se
     - `packages/ui/.env.docker`
     - `packages/api/.env`
     - `packages/api/.env.docker`
-    - `packages/tools/customer-query/.env`
-    - `packages/tools/customer-query/.env.docker`
-    - `packages/tools/destination-recommendation/.env`
-    - `packages/tools/destination-recommendation/.env.docker`
-    - `packages/tools/itinerary-planning/.env`
-    - `packages/tools/itinerary-planning/.env.docker`
-    - `packages/tools/echo-ping/.env`
-    - `packages/tools/echo-ping/.env.docker`
+    - `packages/mcp-servers/customer-query/.env`
+    - `packages/mcp-servers/customer-query/.env.docker`
+    - `packages/mcp-servers/destination-recommendation/.env`
+    - `packages/mcp-servers/destination-recommendation/.env.docker`
+    - `packages/mcp-servers/itinerary-planning/.env`
+    - `packages/mcp-servers/itinerary-planning/.env.docker`
+    - `packages/mcp-servers/echo-ping/.env`
+    - `packages/mcp-servers/echo-ping/.env.docker`
 
 2. `.env.docker` files are used to set environment variables for Docker containers. These files should contain the same variables as `.env` files, but with values specific to the Docker environment. For example:
   
@@ -213,7 +213,7 @@ The application uses environment variables to configure the services. You can se
 MCP_CUSTOMER_QUERY_URL=http://localhost:8080
 
 # packages/api/.env.docker
-MCP_CUSTOMER_QUERY_URL=http://tool-customer-query:8080
+MCP_CUSTOMER_QUERY_URL=http://mcp-customer-query:8080
 ```
 
 3. Load the environment variable files in `docker-compose.yml` using the `env_file` directive, in the following order:

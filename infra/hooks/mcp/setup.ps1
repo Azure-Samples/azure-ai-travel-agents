@@ -7,9 +7,9 @@ $tools = @('echo-ping', 'customer-query', 'destination-recommendation', 'itinera
 Write-Host '>> Creating .env file for the MCP servers...'
 
 foreach ($tool in $tools) {
-    $envSample = "./packages/tools/$tool/.env.sample"
-    $envFile = "./packages/tools/$tool/.env"
-    $envDockerFile = "./packages/tools/$tool/.env.docker"
+    $envSample = "./packages/mcp-servers/$tool/.env.sample"
+    $envFile = "./packages/mcp-servers/$tool/.env"
+    $envDockerFile = "./packages/mcp-servers/$tool/.env.docker"
     if (Test-Path $envSample) {
         Write-Host "Creating .env file for $tool..."
         if (-not (Test-Path $envFile)) {
@@ -34,5 +34,5 @@ docker model pull ai/phi4:14B-Q4_0
 
 # Only build docker compose, do not start the containers yet
 Write-Host '>> Building MCP servers with Docker Compose...'
-$composeServices = $tools | ForEach-Object { "tool-$_" } | Join-String ' '
+$composeServices = $tools | ForEach-Object { "mcp-$_" } | Join-String ' '
 docker compose -f src/docker-compose.yml up --build -d $composeServices
