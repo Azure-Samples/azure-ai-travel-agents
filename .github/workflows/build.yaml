@@ -8,12 +8,12 @@ on:
     branches: [ main ]
 
 jobs:
-  build-api:
-    name: API
+  build-api-langchain:
+    name: API LangChain.js
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./packages/api
+        working-directory: ./packages/api-langchain-js
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -22,12 +22,42 @@ jobs:
       - run: npm ci
       - run: npm run build
 
-  build-ui:
-    name: UI
+  build-api-llamaindex:
+    name: API LlamaIndex.TS
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./packages/ui
+        working-directory: ./packages/api-llamaindex-ts
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci
+      - run: npm run build
+
+  build-api-maf-python:
+    name: API Microsoft Agent Framework (Python)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./packages/api-maf-python
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade pip
+      - run: pip install -e .
+      - run: pip install -e ".[dev]"
+      - run: pytest
+
+  build-ui-angular:
+    name: UI (Angular)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./packages/ui-angular
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -91,5 +121,4 @@ jobs:
         with:
           python-version: '3.13'
       - run: python -m pip install --upgrade pip
-      - run: pip install .
-      - run: pip install .
+      - run: pip install -e .
