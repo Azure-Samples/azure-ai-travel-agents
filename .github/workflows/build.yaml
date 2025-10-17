@@ -19,7 +19,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: npm ci
+      - run: npm i
       - run: npm run build
 
   build-api-llamaindex:
@@ -33,7 +33,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: npm ci
+      - run: npm i
       - run: npm run build
 
   build-api-maf-python:
@@ -61,7 +61,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: npm ci
+      - run: npm i
       - run: npm run build
 
   build-customer-query:
@@ -104,7 +104,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: npm ci
+      - run: npm i
       - run: npm run build
 
   build-itinerary-planning:
