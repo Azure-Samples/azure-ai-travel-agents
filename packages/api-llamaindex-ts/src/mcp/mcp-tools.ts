@@ -1,10 +1,8 @@
-import type { SSEClientTransportOptions } from "@modelcontextprotocol/sdk/client/sse.js";
+import { MCPClientOptions, McpServerDefinition } from "../utils/types.js";
 import { MCPClient as MCPHTTPClient } from "./mcp-http-client.js";
 import { MCPClient as MCPSSEClient } from "./mcp-sse-client.js";
-import { MCPClientOptions} from "@llamaindex/tools";
-import { McpServerDefinition, LlamaIndexMCPClientOptions } from "../utils/types.js";
 
-function client(config: LlamaIndexMCPClientOptions): MCPSSEClient | MCPHTTPClient {
+function client(config: MCPClientOptions): MCPSSEClient | MCPHTTPClient {
   console.log(`Initializing MCP client`);
   console.log(`Using configuration:`, {config});
 

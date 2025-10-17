@@ -1,16 +1,8 @@
 import { ToolCallLLM } from "@llamaindex/core/llms";
-import {
-  agentInputEvent,
-  agentOutputEvent,
-  agentStreamEvent,
-  agentToolCallEvent,
-  agentToolCallResultEvent,
-  AgentWorkflow,
-  stopAgentEvent,
-  Workflow,
-} from "@llamaindex/workflow";
-import { McpServerDefinition } from "../utils/types.js";
+import { AgentWorkflow } from "@llamaindex/workflow";
+import "@llamaindex/workflow-core";
 import { setupAgents } from "../agents/index.js";
+import { McpServerDefinition } from "../utils/types.js";
 
 export class TravelAgentsWorkflow {
   private llm: ToolCallLLM;
@@ -36,7 +28,10 @@ export class TravelAgentsWorkflow {
     console.log("Available agents:", Object.keys(this.agents));
   }
 
-  async *run(input: string) {
+  async *run(input: string): AsyncGenerator<{
+    eventName: string;
+    data: any;
+  }, void, unknown> {
     if (!this.supervisor) {
       throw new Error("Supervisor not initialized. Call initialize() first.");
     }
@@ -51,8 +46,8 @@ export class TravelAgentsWorkflow {
           eventName: event.toString(),
           data: {
             ...event.data,
-            agent: event.data.currentAgentName,
-          }
+            agent: (event.data as any).currentAgentName,
+          },
         };
         yield evt;
       }

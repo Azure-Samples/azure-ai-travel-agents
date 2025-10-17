@@ -94,7 +94,6 @@ apiRouter.post("/chat", async (req, res) => {
             const serializedData = JSON.stringify({
               type: "metadata",
               kind: "llamaindex-ts",
-              eventType: event.event?.['type'],
               event: event,
               data: event.data ? JSON.parse(JSON.stringify(event.data)) : null,
             });
