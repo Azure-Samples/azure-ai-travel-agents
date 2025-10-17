@@ -4,6 +4,7 @@ export type MCPClientOptions = SSEClientTransportOptions & {
     url: string;
     type: "sse" | "http";
     accessToken?: string;
+    verbose?: boolean;
   };
 
 export type McpServerDefinition = {

@@ -21,7 +21,6 @@ export const McpToolsConfig = (): {
               "Authorization": "Bearer " + process.env["MCP_ECHO_PING_ACCESS_TOKEN"],
           }
       },
-      useSSETransport: false
     },
     id: "echo-ping",
     name: "Echo Test",
@@ -31,7 +30,6 @@ export const McpToolsConfig = (): {
       url: process.env["MCP_CUSTOMER_QUERY_URL"] + MCP_API_HTTP_PATH,
       type: "http",
       verbose: true,
-      useSSETransport: false
     },
     id: "customer-query",
     name: "Customer Query",
@@ -41,7 +39,6 @@ export const McpToolsConfig = (): {
       url: process.env["MCP_ITINERARY_PLANNING_URL"] + MCP_API_HTTP_PATH,
       type: "http",
       verbose: true,
-      useSSETransport: false
     },
     id: "itinerary-planning",
     name: "Itinerary Planning",
@@ -51,7 +48,6 @@ export const McpToolsConfig = (): {
       url: process.env["MCP_DESTINATION_RECOMMENDATION_URL"] + MCP_API_HTTP_PATH,
       type: "http",
       verbose: true,
-      useSSETransport: false
     },
     id: "destination-recommendation",
     name: "Destination Recommendation",
