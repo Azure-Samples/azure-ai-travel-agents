@@ -65,9 +65,9 @@ flowchart TB
 - ✅ Native Node.js ecosystem integration
 
 **Implementation Details**:
-- Location: `packages/langchain-js/src/`
-- Entry Point: `packages/langchain-js/src/server.ts or packages/llamaindex-ts/src/server.ts`
-- Providers: `packages/langchain-js/src/providers/`
+- Location: `packages/api-langchain-js/src/`
+- Entry Point: `packages/api-langchain-js/src/server.ts`
+- Providers: `packages/api-langchain-js/src/providers/`
 - Documentation: [Technical Architecture](./technical-architecture.md#agent-orchestration)
 
 **Best For**:
@@ -81,7 +81,7 @@ flowchart TB
 
 ### Architecture
 
-LlamaIndex.TS is available as an alternative TypeScript implementation in `packages/llamaindex-ts/src/`:
+LlamaIndex.TS is available as an alternative TypeScript implementation in `packages/api-llamaindex-ts/src/`:
 - **Language**: TypeScript
 - **Runtime**: Node.js 22+
 - **Web Framework**: Express.js 5.0
@@ -128,8 +128,8 @@ flowchart TB
 - ✅ Seamless SSE streaming
 
 **Implementation Details**:
-- Location: `packages/llamaindex-ts/src/`
-- Switch: Change import in `packages/langchain-js/src/server.ts or packages/llamaindex-ts/src/server.ts`
+- Location: `packages/api-llamaindex-ts/src/`
+- Switch: Deploy `packages/api-llamaindex-ts` instead of `packages/api-langchain-js`
 - Documentation: [Technical Architecture](./technical-architecture.md#agent-orchestration)
 
 **Best For**:
@@ -143,7 +143,7 @@ flowchart TB
 
 ### Architecture
 
-The Microsoft Agent Framework (MAF) implementation is **fully implemented** in `packages/langchain-js and packages/llamaindex-ts-python/`:
+The Microsoft Agent Framework (MAF) implementation is **fully implemented** in `packages/api-maf-python/`:
 - **Language**: Python 3.11+
 - **Runtime**: Python with asyncio
 - **Web Framework**: FastAPI
@@ -192,10 +192,10 @@ flowchart TB
 
 **Implementation Details**:
 - Status: ✅ Fully implemented and functional
-- Location: `packages/langchain-js and packages/llamaindex-ts-python/`
-- Documentation: See `packages/langchain-js and packages/llamaindex-ts-python/README.md`
-- Architecture: `packages/langchain-js and packages/llamaindex-ts-python/ARCHITECTURE_DIAGRAMS.md`
-- Developer Guide: `packages/langchain-js and packages/llamaindex-ts-python/DEVELOPER_GUIDE.md`
+- Location: `packages/api-maf-python/`
+- Documentation: See `packages/api-maf-python/README.md`
+- Architecture: `packages/api-maf-python/ARCHITECTURE_DIAGRAMS.md`
+- Developer Guide: `packages/api-maf-python/DEVELOPER_GUIDE.md`
 
 **Best For**:
 - Teams with Python expertise
@@ -227,7 +227,7 @@ flowchart TB
 | **Observability** | OpenTelemetry | OpenTelemetry | OpenTelemetry |
 | **Deployment** | Container Apps | Container Apps | Container Apps |
 | **Best For** | Complex workflows, proven stability | RAG applications, simple agents | Python ML teams, Azure-native |
-| **Implementation Location** | `packages/langchain-js/src/` | `packages/llamaindex-ts/src/` | `packages/langchain-js and packages/llamaindex-ts-python/` |
+| **Implementation Location** | `packages/api-langchain-js/src/` | `packages/api-langchain-js/src/` | `packages/api-langchain-js/` |
 
 ## Common Elements
 
@@ -263,7 +263,7 @@ All three orchestration approaches share:
 
 ### TypeScript Orchestrations (LangChain.js ↔ LlamaIndex.TS)
 
-Both TypeScript implementations are in the same codebase and can be switched by changing the import in `packages/langchain-js/src/server.ts or packages/llamaindex-ts/src/server.ts`:
+Both TypeScript implementations are in the same codebase and can be switched by changing the import in `packages/api-{orchestrator}-{language}/src/server.ts or packages/api-{orchestrator}-{language}/src/server.ts`:
 
 ```typescript
 // For LangChain.js (current default)
@@ -281,11 +281,11 @@ You can run different orchestrations simultaneously:
 
 ```bash
 # Terminal 1: Run LangChain.js or LlamaIndex.TS API
-cd packages/langchain-js and packages/llamaindex-ts
+cd packages/api-langchain-js and packages/api-langchain-js
 npm start  # Runs on port 4000
 
 # Terminal 2: Run Microsoft Agent Framework API
-cd packages/langchain-js and packages/llamaindex-ts-python
+cd packages/api-{orchestrator}-{language}
 uvicorn main:app --reload --port 8000  # Runs on port 8000
 ```
 
@@ -325,7 +325,7 @@ flowchart TB
    - All three implementations available
    - LangChain.js is production default
    - LlamaIndex.TS available in same codebase
-   - MAF implementation in `packages/langchain-js and packages/llamaindex-ts-python/`
+   - MAF implementation in `packages/api-langchain-js/`
    - Review and test locally
    - Compare functionality across all three
    - Assess team expertise and requirements
@@ -409,29 +409,30 @@ flowchart TB
 Already active as the production default. See:
 - [Technical Architecture](./technical-architecture.md#agent-orchestration)
 - [Development Guide](./development-guide.md)
-- Source: `packages/langchain-js/src/`
+- Source: `packages/api-langchain-js/src/`
 
 **Key Files**:
-- `packages/langchain-js/src/index.ts` - Setup and initialization
-- `packages/langchain-js/src/graph/index.ts` - LangGraph workflow
-- `packages/langchain-js/src/agents/index.ts` - Agent definitions
-- `packages/langchain-js/src/providers/` - LLM providers
+- `packages/api-langchain-js/src/index.ts` - Setup and initialization
+- `packages/api-langchain-js/src/graph/index.ts` - LangGraph workflow
+- `packages/api-langchain-js/src/agents/index.ts` - Agent definitions
+- `packages/api-langchain-js/src/providers/` - LLM providers
 
 ### Using LlamaIndex.TS (Available Alternative)
 
-Switch by changing the import in `packages/langchain-js/src/server.ts or packages/llamaindex-ts/src/server.ts`:
-```typescript
-import { setupAgents } from "./orchestrator/llamaindex/index.js";
+Deploy the LlamaIndex.TS service instead of LangChain.js:
+```bash
+cd packages/api-llamaindex-ts
+npm start
 ```
 
 See:
 - [Technical Architecture](./technical-architecture.md#agent-orchestration)
-- Source: `packages/llamaindex-ts/src/`
+- Source: `packages/api-llamaindex-ts/src/`
 
 **Key Files**:
-- `packages/llamaindex-ts/src/index.ts` - Setup function
-- `packages/llamaindex-ts/src/tools/` - Tool implementations
-- `packages/llamaindex-ts/src/agents/` - Agent definitions
+- `packages/api-llamaindex-ts/src/index.ts` - Setup function
+- `packages/api-llamaindex-ts/src/tools/` - Tool implementations
+- `packages/api-llamaindex-ts/src/providers/` - LLM providers
 
 ### Using Microsoft Agent Framework (Python Alternative)
 
@@ -439,7 +440,7 @@ The MAF implementation is **already complete** and available for use:
 
 **Quick Start**:
 ```bash
-cd packages/langchain-js and packages/llamaindex-ts-python
+cd packages/api-{orchestrator}-{language}
 
 # Install dependencies
 pip install -e .
@@ -452,19 +453,19 @@ uvicorn main:app --reload
 ```
 
 **Documentation**:
-- **README**: `packages/langchain-js and packages/llamaindex-ts-python/README.md` - Getting started and overview
-- **Architecture**: `packages/langchain-js and packages/llamaindex-ts-python/ARCHITECTURE_DIAGRAMS.md` - System design and flow diagrams
-- **Developer Guide**: `packages/langchain-js and packages/llamaindex-ts-python/DEVELOPER_GUIDE.md` - Development setup and workflows
-- **MCP Integration**: `packages/langchain-js and packages/llamaindex-ts-python/MCP_QUICK_REFERENCE.md` - MCP tool usage patterns
-- **Implementation**: `packages/langchain-js and packages/llamaindex-ts-python/IMPLEMENTATION_GUIDE.md` - Technical implementation details
-- **Event Streaming**: `packages/langchain-js and packages/llamaindex-ts-python/EVENT_STREAMING.md` - SSE streaming architecture
+- **README**: `packages/api-{orchestrator}-{language}/README.md` - Getting started and overview
+- **Architecture**: `packages/api-{orchestrator}-{language}/ARCHITECTURE_DIAGRAMS.md` - System design and flow diagrams
+- **Developer Guide**: `packages/api-{orchestrator}-{language}/DEVELOPER_GUIDE.md` - Development setup and workflows
+- **MCP Integration**: `packages/api-{orchestrator}-{language}/MCP_QUICK_REFERENCE.md` - MCP tool usage patterns
+- **Implementation**: `packages/api-{orchestrator}-{language}/IMPLEMENTATION_GUIDE.md` - Technical implementation details
+- **Event Streaming**: `packages/api-{orchestrator}-{language}/EVENT_STREAMING.md` - SSE streaming architecture
 
 **Key Implementation Files**:
-- `packages/langchain-js and packages/llamaindex-ts-python/src/main.py` - FastAPI application entry point
-- `packages/langchain-js and packages/llamaindex-ts-python/src/orchestrator/magentic_workflow.py` - Magentic orchestration
-- `packages/langchain-js and packages/llamaindex-ts-python/src/orchestrator/workflow.py` - Alternative workflow implementation
-- `packages/langchain-js and packages/llamaindex-ts-python/src/orchestrator/agents/` - All agent implementations
-- `packages/langchain-js and packages/llamaindex-ts-python/src/orchestrator/tools/` - MCP tool registry and wrappers
+- `packages/api-{orchestrator}-{language}/src/main.py` - FastAPI application entry point
+- `packages/api-{orchestrator}-{language}/src/orchestrator/magentic_workflow.py` - Magentic orchestration
+- `packages/api-{orchestrator}-{language}/src/orchestrator/workflow.py` - Alternative workflow implementation
+- `packages/api-{orchestrator}-{language}/src/orchestrator/agents/` - All agent implementations
+- `packages/api-{orchestrator}-{language}/src/orchestrator/tools/` - MCP tool registry and wrappers
 
 ### Parallel Deployment
 
@@ -540,10 +541,10 @@ Monitoring includes:
 Both LlamaIndex.TS and Microsoft Agent Framework provide robust orchestration capabilities for the Azure AI Travel Agents system. The choice depends on your team's expertise, technology preferences, and specific requirements.
 
 **Current State**: 
-- **LlamaIndex.TS** (in `packages/langchain-js and packages/llamaindex-ts/`) is the production-ready, battle-tested implementation
-- **Microsoft Agent Framework** (in `packages/langchain-js and packages/llamaindex-ts-python/`) is a fully implemented alternative ready for evaluation
+- **LlamaIndex.TS** (in `packages/api-llamaindex-ts and packages/api-llamaindex-ts/`) is the production-ready, battle-tested implementation
+- **Microsoft Agent Framework** (in `packages/api-llamaindex-ts/`) is a fully implemented alternative ready for evaluation
 
-**Recommendation**: Evaluate the MAF implementation in `packages/langchain-js and packages/llamaindex-ts-python/` to determine if it better fits your team's needs. Both implementations are production-ready and can run in parallel if desired.
+**Recommendation**: Evaluate the MAF implementation in `packages/api-{orchestrator}-{language}/` to determine if it better fits your team's needs. Both implementations are production-ready and can run in parallel if desired.
 
 The parallel deployment option ensures you can evaluate both approaches in your environment, making an informed decision based on real-world performance and team experience.
 

@@ -62,8 +62,8 @@ The Azure AI Travel Agents is a sophisticated microservices-based AI application
 **Technology Stack:**
 - Node.js 22.16+ with TypeScript
 - Express.js 5.0 for HTTP server
-- **Option 1**: LangChain.js service (packages/langchain-js) with Express + LangGraph
-- **Option 2**: LlamaIndex.TS service (packages/llamaindex-ts) with Express + Multi-agent
+- **Option 1**: LangChain.js service (packages/api-langchain-js) with Express + LangGraph
+- **Option 2**: LlamaIndex.TS service (packages/api-langchain-js) with Express + Multi-agent
 - OpenTelemetry for observability
 
 **Key Responsibilities:**
@@ -383,7 +383,7 @@ The system provides three orchestration implementations. The current production 
 The production system uses **LangChain.js** with the LangGraph supervisor pattern for agent orchestration:
 
 ```typescript
-// packages/langchain-js/src/graph/index.ts
+// packages/api-langchain-js/src/graph/index.ts
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { MemorySaver } from "@langchain/langgraph";
 
@@ -420,7 +420,7 @@ export class TravelAgentsWorkflow {
 - Multiple LLM providers (Azure OpenAI, Docker Models, GitHub Models, Ollama, Foundry Local)
 - State management with `MemorySaver`
 
-**Location**: `packages/langchain-js/src/`
+**Location**: `packages/api-langchain-js/src/`
 
 ### Alternative Implementation: LlamaIndex.TS
 
@@ -445,9 +445,9 @@ return multiAgent({
 });
 ```
 
-**Location**: `packages/llamaindex-ts/src/`
+**Location**: `packages/api-llamaindex-ts/src/`
 
-**To Switch**: Change import in `packages/api/src/index.ts` from `@azure-ai-travel-agents/langchain-js` to `./orchestrator/llamaindex/`
+**To Switch**: Deploy `packages/api-llamaindex-ts` instead of `packages/api-langchain-js`
 
 ### Alternative Implementation: Microsoft Agent Framework (Python)
 
@@ -789,7 +789,7 @@ OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:18889
    npm start --prefix=packages/api
    
    # Terminal 2: Start UI  
-   npm start --prefix=packages/ui
+   npm start --prefix=packages/ui-{framework}
    ```
 
 5. **Access Applications**
@@ -822,11 +822,11 @@ OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:18889
 #### Unit Testing
 ```bash
 # API tests
-cd packages/langchain-js (or packages/llamaindex-ts)
+cd packages/api-langchain-js  # or: cd packages/api-llamaindex-ts
 npm test
 
 # UI tests  
-cd packages/ui
+cd packages/ui-{framework}
 npm test
 ```
 
@@ -866,7 +866,7 @@ docker-compose logs mcp-echo-ping
 
 # Test MCP connectivity directly
 node -e "
-const { MCPHTTPClient } = require('./packages/api/src/mcp/mcp-http-client.js');
+const { MCPHTTPClient } = require('./packages/api-langchain-js/src/mcp/mcp-http-client.js');
 const client = new MCPHTTPClient('test', 'http://localhost:5004/mcp');
 client.connect().then(() => console.log('Connected'));
 "
@@ -875,7 +875,7 @@ client.connect().then(() => console.log('Connected'));
 #### UI Debugging
 ```bash
 # Development server with source maps
-npm start --prefix=packages/ui
+npm start --prefix=packages/ui-{framework}
 
 # Browser DevTools
 # Use Angular DevTools extension for component inspection
@@ -886,12 +886,12 @@ npm start --prefix=packages/ui
 #### Linting and Formatting
 ```bash
 # API
-cd packages/langchain-js (or packages/llamaindex-ts)
+cd packages/api-langchain-js  # or: cd packages/api-llamaindex-ts
 npm run lint
 npm run format
 
 # UI
-cd packages/ui  
+cd packages/ui-{framework} 
 npm run lint
 npm run format
 ```
@@ -899,11 +899,11 @@ npm run format
 #### Type Checking
 ```bash
 # API
-cd packages/langchain-js (or packages/llamaindex-ts)
+cd packages/api-langchain-js  # or: cd packages/api-llamaindex-ts
 npx tsc --noEmit
 
 # UI
-cd packages/ui
+cd packages/ui-{framework}
 npx ng build --configuration development
 ```
 
@@ -967,7 +967,7 @@ npx ng build --configuration development
 
 5. **Register in API**
    ```typescript
-   // packages/llamaindex-ts/src/tools/index.ts
+   // Example: packages/api-langchain-js/src/tools/index.ts
    export type McpServerName = 
      | "echo-ping"
      | "my-new-tool";  // Add new tool
@@ -988,7 +988,7 @@ npx ng build --configuration development
 
 6. **Create Agent Integration**
    ```typescript
-   // packages/llamaindex-ts/src/index.ts
+   // Example: packages/api-langchain-js/src/index.ts or packages/api-llamaindex-ts/src/index.ts
    if (tools["my-new-tool"]) {
      const mcpServerConfig = mcpToolsConfig["my-new-tool"];
      const tools = await mcp(mcpServerConfig.config).tools();
@@ -1056,7 +1056,7 @@ const agentWithCustomTool = agent({
 
 #### Adding New Tool Selection
 ```typescript
-// packages/ui/src/app/services/api.service.ts
+// packages/ui-{framework}src/app/services/api.service.ts
 export type ServerID =
   | 'echo-ping'
   | 'customer-query' 

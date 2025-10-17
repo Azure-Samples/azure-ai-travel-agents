@@ -10,7 +10,7 @@ This section provides advanced setup instructions for running the application ei
 
 ### Using Local LLM Providers
 
-If you want to use local LLM providers like [Docker models](https://docs.docker.com/ai/model-runner/) or [Llama](https://ai.meta.com/llama/), you can set the `LLM_PROVIDER` environment variable in the `./packages/api/.env` file to the supported providers. This will configure the application to use the specified local LLM provider.
+If you want to use local LLM providers like [Docker models](https://docs.docker.com/ai/model-runner/) or [Llama](https://ai.meta.com/llama/), you can set the `LLM_PROVIDER` environment variable in the `./packages/api-{orchestrator}-{language}/.env` file to the supported providers. This will configure the application to use the specified local LLM provider.
 
 The application supports the following local LLM providers:
 - **Azure Foundry Local**: This provider allows you to run models locally using Azure's AI Foundry Local service.
@@ -47,7 +47,7 @@ gh repo clone YOUR-USERNAME/azure-ai-travel-agents
 </details>
 <br>
 
-To use a local LLM provider, you need to set the `LLM_PROVIDER` environment variable in the `./packages/api/.env` file, and provide the necessary configuration for the provider you want to use.
+To use a local LLM provider, you need to set the `LLM_PROVIDER` environment variable in the `./packages/api-{orchestrator}-{language}/.env` file, and provide the necessary configuration for the provider you want to use.
 
 In order to run the application locally, you need to clone the repository and run the preview script. This will set up the necessary environment and start the application. 
 
@@ -59,7 +59,7 @@ Before using Azure Foundry Local, ensure you have the [Azure AI Foundry Local](h
 foundry model list
 ```
 
-Then set the following environment variables in your `./packages/api/.env` file:
+Then set the following environment variables in your `./packages/api-{orchestrator}-{language}/.env` file:
 
 ```bash
 LLM_PROVIDER=foundry-local
@@ -99,13 +99,17 @@ AZURE_FOUNDRY_LOCAL_MODEL_ALIAS=phi-4-mini-reasoning
 Start the API service by running the following command in a terminal:
 
 ```bash
-npm start --prefix=packages/api
+npm start --prefix=packages/api-{orchestrator}-{language}
+# or
+# npm start --prefix=packages/api-{orchestrator}-{language}
+# or
+# npm start --prefix=packages/api-{orchestrator}-{language}
 ```
 
 Open a new terminal and start the UI service by running the following command:
 
 ```bash
-npm start --prefix=packages/ui
+npm start --prefix=packages/ui-{framework}
 ```
 
 Once all services are up and running, you can access the **UI** at http://localhost:4200.
@@ -122,14 +126,14 @@ Before using Docker Models, ensure you have the [Docker Model Runner](https://do
 docker model list
 ```
 
-Then set the following environment variables in your `./packages/api/.env` file:
+Then set the following environment variables in your `./packages/api-{orchestrator}-{language}/.env` file:
 
 ```bash
 LLM_PROVIDER=docker-models
 # DOCKER_MODEL_ENDPOINT=http://model-runner.docker.internal/engines/llama.cpp/v1
 # Use the following endpoint if you are running the model runner locally (default port is 12434)
 DOCKER_MODEL_ENDPOINT=http://localhost:12434/engines/llama.cpp/v1
-DOCKER_MODEL=ai/smollm2
+DOCKER_MODEL=ai/phi4:14B-Q4_0
 ```
 
 #### Using Ollama Models
@@ -140,7 +144,7 @@ Before using Ollama Models, ensure you have the [Ollama](https://ollama.com/) in
 ollama list
 ```
 
-Then set the following environment variables in your `./packages/api/.env` file:
+Then set the following environment variables in your `./packages/api-{orchestrator}-{language}/.env` file:
 
 ```bash
 LLM_PROVIDER=ollama-models
@@ -167,10 +171,10 @@ You will also need to have [Docker](https://www.docker.com/products/docker-deskt
 
 The included MCP servers are built using various technologies, such as Node.js, Python, and .NET. Each service has its own Dockerfile and is configured to run in a containerized environment.
 
-To build and start all MCP servers containers (defined in the `src/docker-compose.yml` file), run the following command:
+To build and start all MCP servers containers (defined in the `docker-compose.yml` file), run the following command:
 
 ```sh
-docker compose -f src/docker-compose.yml up --build -d
+docker compose -f docker-compose.yml up --build -d
 ```
 
 This command will build and start all the services defined in the `docker-compose.yml` file, including the UI and API services.
@@ -178,7 +182,7 @@ This command will build and start all the services defined in the `docker-compos
 If you want to run the MCP servers containers only, you can use the following command:
 
 ```sh
-docker compose -f src/docker-compose.yml up --build -d --no-deps customer-query destination-recommendation itinerary-planning echo-ping
+docker compose -f docker-compose.yml up --build -d --no-deps customer-query destination-recommendation itinerary-planning echo-ping
 ```
 
 Alternatively, if you're in VS Code you can use the **Run Task** command (Ctrl+Shift+P) and select the `Run AI Travel Agents` task.
@@ -192,11 +196,15 @@ Alternatively, if you're in VS Code you can use the **Run Task** command (Ctrl+S
 
 The application uses environment variables to configure the services. You can set them in a `.env` file in the root directory or directly in your terminal. We recommend the following approach:
 
-1. Create a `.env` file for each containerized service under `src/`, and optionally a `.env.docker` file for Docker-specific configurations:
-    - `packages/ui/.env`
-    - `packages/ui/.env.docker`
-    - `packages/api/.env`
-    - `packages/api/.env.docker`
+1. Create a `.env` file for each containerized service for each service, and optionally a `.env.docker` file for Docker-specific configurations:
+    - `packages/ui-{framework}.env`
+    - `packages/ui-{framework}.env.docker`
+    - `packages/api-{orchestrator}-{language}/.env`
+    - `packages/api-{orchestrator}-{language}/.env`
+    - `packages/api-{orchestrator}-{language}/.env`
+    - `packages/api-{orchestrator}-{language}/.env.docker`
+    - `packages/api-{orchestrator}-{language}/.env`
+    - `packages/api-{orchestrator}-{language}/.env.docker`
     - `packages/mcp-servers/customer-query/.env`
     - `packages/mcp-servers/customer-query/.env.docker`
     - `packages/mcp-servers/destination-recommendation/.env`
@@ -209,17 +217,17 @@ The application uses environment variables to configure the services. You can se
 2. `.env.docker` files are used to set environment variables for Docker containers. These files should contain the same variables as `.env` files, but with values specific to the Docker environment. For example:
   
 ```bash
-# packages/api/.env
+# packages/*/.env
 MCP_CUSTOMER_QUERY_URL=http://localhost:8080
 
-# packages/api/.env.docker
+# packages/*/.env.docker
 MCP_CUSTOMER_QUERY_URL=http://mcp-customer-query:8080
 ```
 
 3. Load the environment variable files in `docker-compose.yml` using the `env_file` directive, in the following order:
 ```yml
-  web-api:
-    container_name: web-api
+  services:
+    container_name: api-langchain-js
     # ...
     env_file: 
       - "./api/.env"
@@ -287,13 +295,12 @@ To describe the infrastructure and application, `azure.yaml` along with Infrastr
 The resources declared in [resources.bicep](https://github.com/Azure-Samples/azure-ai-travel-agents/blob/main/infra/resources.bicep) are provisioned when running `azd up` or `azd provision`.
 This includes:
 
-- Azure Container App to host the 'api' service.
-- Azure Container App to host the 'ui' service.
+- Azure Container App to host the 'api-{orchestrator}-{language}' services.
+- Azure Container App to host the 'ui-*' services.
 - Azure Container App to host the 'itinerary-planning' service.
 - Azure Container App to host the 'customer-query' service.
 - Azure Container App to host the 'destination-recommendation' service.
 - Azure Container App to host the 'echo-ping' service.
-- Azure OpenAI resource to host the 'model-inference' service.
 
 More information about [Bicep](https://aka.ms/bicep) language.
 

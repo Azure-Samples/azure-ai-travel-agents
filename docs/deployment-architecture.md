@@ -2,6 +2,7 @@
 createTime: 2025/06/06 13:07:02
 permalink: /article/hrj3bxyz/
 ---
+
 # Deployment Architecture Guide
 
 This document provides comprehensive guidance on deploying the Azure AI Travel Agents system across different environments, from local development to production Azure Container Apps deployments.
@@ -23,11 +24,11 @@ This document provides comprehensive guidance on deploying the Azure AI Travel A
 
 ### Deployment Environments
 
-| Environment | Purpose | Hosting | Complexity | Cost |
-|-------------|---------|---------|------------|------|
-| **Local Development** | Individual development and testing | Local machine | Low | Free |
-| **Docker Compose** | Team development and integration testing | Local/VM | Medium | Low |
-| **Azure Container Apps** | Production and staging | Azure Cloud | High | Variable |
+| Environment              | Purpose                                  | Hosting       | Complexity | Cost     |
+| ------------------------ | ---------------------------------------- | ------------- | ---------- | -------- |
+| **Local Development**    | Individual development and testing       | Local machine | Low        | Free     |
+| **Docker Compose**       | Team development and integration testing | Local/VM      | Medium     | Low      |
+| **Azure Container Apps** | Production and staging                   | Azure Cloud   | High       | Variable |
 
 ### Architecture Components
 
@@ -45,14 +46,14 @@ graph TB
                 OTHER[...]
             end
         end
-        
+
         subgraph Services["Azure Services"]
             OAI[Azure OpenAI]
             ACR[Container Registry]
             MON[Monitor<br/>Logs/Metrics]
             KV[Key Vault<br/>Secrets]
         end
-        
+
         UI --> API
         API --> MCP
         API --> OAI
@@ -84,6 +85,7 @@ azd version       # 1.9.0+
 ### Setup Process
 
 #### 1. Repository Setup
+
 ```bash
 # Clone repository
 git clone https://github.com/Azure-Samples/azure-ai-travel-agents.git
@@ -95,6 +97,7 @@ ls -la
 ```
 
 #### 2. Azure Authentication
+
 ```bash
 # Login to Azure
 azd auth login
@@ -107,6 +110,7 @@ az account show
 ```
 
 #### 3. Azure Resource Provisioning
+
 ```bash
 # Provision Azure resources
 azd provision
@@ -120,44 +124,55 @@ azd provision
 ```
 
 #### 4. Environment Configuration
+
 ```bash
 # Create local environment files
-cp packages/api/.env.sample packages/api/.env
-cp packages/ui/.env.sample packages/ui/.env
+cp packages/api-*/.env.sample packages/api-*/.env
+cp packages/ui-{framework}.env.sample packages/ui-{framework}.env
 
 # Edit configuration (auto-populated by azd provision)
-cat packages/api/.env
+cat packages/api-*/.env
 ```
 
 Example `.env` configuration:
+
 ```bash
 # Azure Services
-AZURE_OPENAI_ENDPOINT=https://your-openai.openai.azure.com/
+AZURE_OPENAI_ENDPOINT=https://your-openai.openai.azure.com/openai/v1/
 AZURE_OPENAI_API_KEY=your-api-key
 AZURE_OPENAI_DEPLOYMENT_NAME=gpt-5
 
 # MCP Server URLs (local development)
-MCP_ECHO_PING_URL=http://localhost:5004
 MCP_CUSTOMER_QUERY_URL=http://localhost:5001
 MCP_DESTINATION_RECOMMENDATION_URL=http://localhost:5002
 MCP_ITINERARY_PLANNING_URL=http://localhost:5003
+MCP_ECHO_PING_URL=http://localhost:5004
 
 # Monitoring
 OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:18889
-OTEL_SERVICE_NAME=api-local
+OTEL_SERVICE_NAME=api-langchain-js
 ```
 
 #### 5. Local Service Startup
+
 ```bash
-# Terminal 1: Start API server
-cd packages/langchain-js (or packages/llamaindex-ts)
-npm install
+# Terminal 1: Start Langchain.js API server
+cd packages/api-langchain-js && npm install
 npm start
 # API available at http://localhost:4000
 
+# Terminal 1: Start LlamaIndex.ts API server
+cd packages/api-llamaindex-ts && npm install
+npm start
+# API available at http://localhost:4001
+
+# Terminal 1: Start MAF Python API server
+cd packages/api-{orchestrator}-{language} && pip install -e .
+uvicorn src.main:app --reload --port 4010 --log-level=debug
+# API available at http://localhost:4010
+
 # Terminal 2: Start UI
-cd packages/ui
-npm install
+cd packages/ui-{framework} && npm install
 npm start
 # UI available at http://localhost:4200
 
@@ -173,18 +188,8 @@ docker run -d \
 
 ### Development Workflow
 
-#### Hot Reload Development
-```bash
-# API with hot reload
-cd packages/langchain-js (or packages/llamaindex-ts)
-npm run start  # Uses tsx --watch
-
-# UI with hot reload
-cd packages/ui
-npm run start  # Uses ng serve with watch
-```
-
 #### Testing and Validation
+
 ```bash
 # Health check
 curl http://localhost:4000/api/health
@@ -205,37 +210,40 @@ curl -X POST http://localhost:4000/api/chat \
 Docker Compose provides a complete multi-container environment that closely mirrors production:
 
 ```yaml
-# src/docker-compose.yml structure
+# docker-compose.yml structure
 services:
-  aspire-dashboard:    # Monitoring
-  mcp-echo-ping:      # MCP servers (7 total)
+  aspire-dashboard:
+  mcp-echo-ping:
   mcp-customer-query:
   mcp-destination-recommendation:
   mcp-itinerary-planning:
-  web-api:            # Express API server
-  web-ui:             # Angular UI
+  api-langchain-js:
+  api-llamaindex-ts:
+  api-maf-python:
+  ui-angular:
 ```
 
 ### Deployment Process
 
 #### 1. Environment Preparation
+
 ```bash
 cd src
 
 # Create Docker environment files
-cp api/.env.sample api/.env.docker
-cp ui/.env.sample ui/.env.docker
+cp api-*/.env.sample api-*/.env.docker
+cp ui-*/.env.sample ui-*/.env.docker
 
 # Configure for Docker networking
-cat > api/.env.docker << EOF
+cat > api-*/.env.docker << EOF
 # MCP Server URLs (Docker internal)
-MCP_ECHO_PING_URL=http://mcp-echo-ping:3000
+MCP_ECHO_PING_URL=http://mcp-echo-ping:8080
 MCP_CUSTOMER_QUERY_URL=http://mcp-customer-query:8080
 MCP_DESTINATION_RECOMMENDATION_URL=http://mcp-destination-recommendation:8080
 MCP_ITINERARY_PLANNING_URL=http://mcp-itinerary-planning:8000
 
 # External services (from azd provision)
-AZURE_OPENAI_ENDPOINT=https://your-openai.openai.azure.com/
+AZURE_OPENAI_ENDPOINT=https://your-openai.openai.azure.com/openai/v1/
 AZURE_OPENAI_API_KEY=your-api-key
 
 # Docker-specific settings
@@ -244,11 +252,12 @@ OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:18889
 EOF
 
 cat > ui/.env.docker << EOF
-NG_API_URL=http://web-api:4000
+NG_API_URL=http://api-langchain-js:4000
 EOF
 ```
 
 #### 2. Service Deployment
+
 ```bash
 # Build and start all services
 docker-compose up --build
@@ -261,45 +270,52 @@ docker-compose ps
 ```
 
 #### 3. Service Access
+
 ```bash
 # Service endpoints
-echo "UI: http://localhost:4200"
-echo "API: http://localhost:4000"
+echo "Angular UI: http://localhost:4200"
+echo "Langchain.js API: http://localhost:4000"
+echo "LlamaIndex.ts API: http://localhost:4001"
+echo "MAF Python API: http://localhost:4010"
 echo "Monitoring: http://localhost:18888"
 
 # MCP server endpoints
-echo "Echo Ping: http://localhost:5004"
 echo "Customer Query: http://localhost:5001"
 echo "Destination Rec: http://localhost:5002"
+echo "Itinerary Planning: http://localhost:5003"
+echo "Echo Ping: http://localhost:5004"
 # ... etc
 ```
 
 ### Docker Compose Management
 
 #### Service Operations
+
 ```bash
-# View logs
-docker-compose logs -f web-api
+# View logs (examples)
+docker-compose logs -f api-langchain-js
+docker -compose logs -f ui-angular
 docker-compose logs -f mcp-echo-ping
 
 # Restart specific service
-docker-compose restart web-api
+docker-compose restart api-langchain-js
 
 # Scale services (if stateless)
 docker-compose up -d --scale mcp-echo-ping=2
 
 # Rebuild single service
-docker-compose build web-api
-docker-compose up -d web-api
+docker-compose build api-langchain-js
+docker-compose up -d api-langchain-js
 ```
 
 #### Resource Monitoring
+
 ```bash
 # Resource usage
 docker stats
 
 # Service health
-docker-compose exec web-api curl http://localhost:4000/api/health
+docker-compose exec api-langchain-js curl http://localhost:4000/api/health
 
 # Network inspection
 docker network ls
@@ -307,13 +323,14 @@ docker network inspect src_default
 ```
 
 #### Troubleshooting
+
 ```bash
 # Debug container issues
-docker-compose exec web-api /bin/sh
+docker-compose exec api-langchain-js /bin/sh
 docker-compose exec mcp-echo-ping /bin/bash
 
 # Check container logs
-docker logs $(docker-compose ps -q web-api)
+docker logs $(docker-compose ps -q api-langchain-js)
 
 # Restart with fresh build
 docker-compose down
@@ -334,7 +351,7 @@ docker-compose up
 │  │                                                             ││
 │  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐  ││
 │  │  │     UI      │  │     API     │  │     MCP Services    │  ││
-│  │  │   (nginx)   │  │ (express)   │  │                     │  ││
+│  │  │   (nginx)   │  │    │  │                     │  ││
 │  │  │             │  │             │  │ ┌─────┬─────┬─────┐ │  ││
 │  │  │ Replicas:   │  │ Replicas:   │  │ │Echo │CustQ│ ... │ │  ││
 │  │  │   1-3       │  │   1-5       │  │ │Ping │     │     │ │  ││
@@ -364,6 +381,7 @@ docker-compose up
 ### Deployment Process
 
 #### 1. Prerequisites Verification
+
 ```bash
 # Verify Azure CLI login
 az account show
@@ -378,6 +396,7 @@ az provider show --namespace Microsoft.CognitiveServices --query "registrationSt
 ```
 
 #### 2. Automated Deployment
+
 ```bash
 # Deploy using Azure Developer CLI
 azd up
@@ -417,22 +436,52 @@ az acr create \
 # Step 4: Build and push images
 az acr build \
   --registry acrTravelAgents \
-  --image travel-agents-ui:latest \
-  --file packages/ui/Dockerfile \
-  packages/ui
+  --image travel-agents-ui-angular:latest \
+  --file packages/ui-{framework}Dockerfile \
+  packages/ui-{framework}
 
 az acr build \
   --registry acrTravelAgents \
-  --image travel-agents-api:latest \
-  --file packages/api/Dockerfile \
-  packages/api
+  --image travel-agents-api-langchain-js:latest \
+  --file packages/api-langchain-js/Dockerfile \
+  packages/api-langchain-js
+
+az acr build \
+  --registry acrTravelAgents \
+  --image travel-agents-api-llamaindex-ts:latest \
+  --file packages/api-llamaindex-ts/Dockerfile \
+  packages/api-llamaindex-ts
+
+az acr build \
+  --registry acrTravelAgents \
+  --image travel-agents-api-maf-python:latest \
+  --file packages/api-{orchestrator}-{language}/Dockerfile \
+  packages/api-{orchestrator}-{language}
+
+az acr build \
+  --registry acrTravelAgents \
+  --image travel-agents-mcp-echo-ping:latest \
+  --file packages/mcp-servers/echo-ping/Dockerfile \
+  packages/mcp-servers/echo-ping
+
+az acr build \
+  --registry acrTravelAgents \
+  --image travel-agents-mcp-customer-query:latest \
+  --file packages/mcp-servers/customer-query/Dockerfile \
+  packages/mcp-servers/customer-query
+
+az acr build \
+  --registry acrTravelAgents \
+  --image travel-agents-mcp-destination-recommendation:latest \
+  --file packages/mcp-servers/destination-recommendation/Dockerfile \
+  packages/mcp-servers/destination-recommendation
 
 # Step 5: Deploy container apps
 az containerapp create \
   --name ca-travel-ui \
   --resource-group rg-travel-agents-prod \
   --environment cae-travel-agents \
-  --image acrTravelAgents.azurecr.io/travel-agents-ui:latest \
+  --image acrTravelAgents.azurecr.io/travel-agents-ui-angular:latest \
   --target-port 4200 \
   --ingress external \
   --min-replicas 1 \
@@ -444,10 +493,11 @@ az containerapp create \
 ### Container App Configuration
 
 #### UI Container App
+
 ```yaml
 # Bicep template excerpt
 resource uiApp 'Microsoft.App/containerApps@2023-05-01' = {
-  name: 'ca-travel-ui'
+  name: 'ca-travel-ui-angular'
   location: location
   properties: {
     environmentId: containerAppsEnvironment.id
@@ -483,7 +533,7 @@ resource uiApp 'Microsoft.App/containerApps@2023-05-01' = {
           env: [
             {
               name: 'NG_API_URL'
-              value: 'https://${apiApp.properties.configuration.ingress.fqdn}'
+              value: 'https://${apiLangchainJsApp.properties.configuration.ingress.fqdn}'
             }
           ]
         }
@@ -508,9 +558,10 @@ resource uiApp 'Microsoft.App/containerApps@2023-05-01' = {
 ```
 
 #### API Container App
+
 ```yaml
-resource apiApp 'Microsoft.App/containerApps@2023-05-01' = {
-  name: 'ca-travel-api'
+resource apiLangchainJsApp 'Microsoft.App/containerApps@2023-05-01' = {
+  name: 'ca-travel-api-langchain-js'
   location: location
   properties: {
     environmentId: containerAppsEnvironment.id
@@ -536,8 +587,8 @@ resource apiApp 'Microsoft.App/containerApps@2023-05-01' = {
     template: {
       containers: [
         {
-          name: 'travel-api'
-          image: '${containerRegistry.properties.loginServer}/travel-agents-api:latest'
+          name: 'travel-api-langchain-js'
+          image: '${containerRegistry.properties.loginServer}/travel-agents-api-langchain-js:latest'
           resources: {
             cpu: json('1.0')
             memory: '2Gi'
@@ -592,36 +643,38 @@ resource apiApp 'Microsoft.App/containerApps@2023-05-01' = {
 ### Deployment Monitoring
 
 #### Deployment Status
+
 ```bash
 # Check deployment status
 azd show
 
 # Monitor container app status
 az containerapp show \
-  --name ca-travel-api \
+  --name ca-travel-api-langchain-js \
   --resource-group rg-travel-agents-prod \
   --query "properties.provisioningState"
 
 # View recent revisions
 az containerapp revision list \
-  --name ca-travel-api \
+  --name ca-travel-api-langchain-js \
   --resource-group rg-travel-agents-prod \
   --query "[].{Name:name,Active:properties.active,CreatedTime:properties.createdTime}"
 ```
 
 #### Application Logs
+
 ```bash
 # Stream API logs
 az containerapp logs show \
-  --name ca-travel-api \
+  --name ca-travel-api-langchain-js \
   --resource-group rg-travel-agents-prod \
   --follow
 
 # View specific revision logs
 az containerapp logs show \
-  --name ca-travel-api \
+  --name ca-travel-api-langchain-js \
   --resource-group rg-travel-agents-prod \
-  --revision-name "ca-travel-api--xyz123"
+  --revision-name "ca-travel-api-langchain-js--xyz123"
 ```
 
 ## Infrastructure as Code
@@ -908,15 +961,15 @@ echo "Building and pushing container images..."
 az acr build \
   --registry $ACR_NAME \
   --image travel-agents-ui:latest \
-  --file packages/ui/Dockerfile \
-  packages/ui
+  --file packages/ui-{framework}Dockerfile \
+  packages/ui-{framework}
 
 # API Image
 az acr build \
   --registry $ACR_NAME \
   --image travel-agents-api:latest \
-  --file packages/api/Dockerfile \
-  packages/api
+  --file packages/api-{orchestrator}-{language}/Dockerfile or packages/api-{orchestrator}-{language}/Dockerfile \
+  packages/api-{orchestrator}-{language} or packages/api-{orchestrator}-{language}
 
 # MCP Server Images
 for server in echo-ping customer-query destination-recommendation itinerary-planning; do
@@ -1047,7 +1100,7 @@ resource responseTimeAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
           "type": "Blade",
           "inputs": [
             {
-              "name": "query", 
+              "name": "query",
               "value": "requests | where name contains 'chat' | summarize avg(duration) by bin(timestamp, 5m)"
             }
           ]
@@ -1354,7 +1407,7 @@ resource autoShutdownScript 'Microsoft.Resources/deploymentScripts@2023-08-01' =
       # Scale down to 0 replicas during off-hours (evenings and weekends)
       $resourceGroup = $env:AZURE_RESOURCE_GROUP
       $containerApps = az containerapp list --resource-group $resourceGroup --query "[].name" -o tsv
-      
+
       foreach ($app in $containerApps) {
         az containerapp update --name $app --resource-group $resourceGroup --min-replicas 0
       }

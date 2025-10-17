@@ -8,7 +8,7 @@ This document outlines the migration strategy from the current LlamaIndex.TS orc
 
 ### Existing Architecture
 
-**Location**: `packages/api/`
+**Location**: `packages/api-{orchestrator}-{language}/ or packages/api-{orchestrator}-{language}/`
 
 **Technology Stack**:
 - Node.js 22.16+ with TypeScript
@@ -17,12 +17,12 @@ This document outlines the migration strategy from the current LlamaIndex.TS orc
 - @llamaindex/tools 0.1.2
 
 **Components**:
-- Main API server: `packages/api/src/index.ts`
-- Orchestrator: `packages/llamaindex-ts/src/`
+- Main API server: `packages/api-{orchestrator}-{language}/src/server.ts`
+- Orchestrator: `packages/api-{orchestrator}-{language}/src/`
   - Agent setup: `index.ts`
   - Provider configuration: `providers/`
   - Tool configuration: `tools/index.ts`
-- MCP clients: `packages/api/src/mcp/`
+- MCP clients: `packages/api-{orchestrator}-{language}/src/mcp/`
   - HTTP client: `mcp-http-client.ts`
   - SSE client: `mcp-sse-client.ts`
   - Tool list: `mcp-tools.ts`

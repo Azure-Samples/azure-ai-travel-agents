@@ -6,33 +6,60 @@ This file provides comprehensive guidelines for OpenAI Codex and other AI coding
 
 ### High-Level Architecture
 
-The Azure AI Travel Agents is a **modular AI multi-agent system** composed of multiple microservices ("tools") with **three orchestration implementations**:
+The Azure AI Travel Agents is a **modular AI multi-agent system** composed of multiple microservices ("tools") with **three standalone orchestration implementations**:
 
-1. **LangChain.js Orchestration** (TypeScript/Node.js) - **Current production default** in `packages/api-langchain-js/` (standalone service)
-2. **LlamaIndex.TS Orchestration** (TypeScript/Node.js) - in `packages/api-llamaindex-ts/` (standalone service)
-3. **Microsoft Agent Framework Orchestration** (Python) - Alternative implementation in `packages/api-maf-python/`
+1. **LangChain.js** (TypeScript/Node.js) - Complete service in `packages/api-langchain-js/`
+2. **LlamaIndex.TS** (TypeScript/Node.js) - Complete service in `packages/api-llamaindex-ts/`
+3. **Microsoft Agent Framework** (Python) - Complete service in `packages/api-maf-python/`
 
-All orchestrators communicate with the same MCP tool servers. Each component is containerized and communicates via HTTP APIs or Model Context Protocol (MCP).
+Each orchestrator is a **standalone service** with its own Express/FastAPI server. All orchestrators communicate with the same MCP tool servers via Model Context Protocol (MCP).
 
 ```
 ├── .github/                    # GitHub workflows, templates, and copilot instructions
 ├── docs/                       # Architecture and API documentation
 ├── infra/                      # Infrastructure as Code (Bicep templates)
 ├── packages/                   # Source code
-│   ├── api-langchain-js/           # LangChain.js service with Express API
-│   ├── api-llamaindex-ts/          # LlamaIndex.TS service with Express API
-│   ├── api-maf-python/             # FastAPI + Microsoft Agent Framework orchestrator (Python)
-│   ├── ui-angular/                     # Angular frontend application
-│   └── mcp-servers/                  # MCP servers (microservices)
-│      ├── echo-ping/          # TypeScript/Node.js (testing tool)
-│      ├── customer-query/     # C#/.NET (customer inquiry processing)
-│      ├── destination-recommendation/  # Java (travel destination suggestions)
-│      └── itinerary-planning/ # Python (detailed itinerary creation)
-│
+│   ├── api-langchain-js/       # LangChain.js service (TypeScript)
+│   │   ├── src/
+│   │   │   ├── server.ts       # Express API server
+│   │   │   ├── agents/         # Specialized agents
+│   │   │   ├── graph/          # LangGraph workflow
+│   │   │   ├── providers/      # LLM providers
+│   │   │   ├── tools/          # MCP tool configurations
+│   │   │   └── mcp/            # MCP client implementations
+│   │   ├── Dockerfile
+│   │   └── package.json
+│   │
+│   ├── api-llamaindex-ts/      # LlamaIndex.TS service (TypeScript)
+│   │   ├── src/
+│   │   │   ├── server.ts       # Express API server
+│   │   │   ├── providers/      # LLM providers
+│   │   │   ├── tools/          # MCP tool configurations
+│   │   │   └── mcp/            # MCP client implementations
+│   │   ├── Dockerfile
+│   │   └── package.json
+│   │
+│   ├── api-maf-python/         # Microsoft Agent Framework (Python)
+│   │   ├── src/
+│   │   │   ├── main.py         # FastAPI server
+│   │   │   └── orchestrator/   # MAF orchestrator
+│   │   ├── Dockerfile
+│   │   └── pyproject.toml
+│   │
+│   ├── ui-angular/             # Angular frontend application
+│   │   ├── src/app/
+│   │   ├── Dockerfile
+│   │   └── package.json
+│   │
+│   └── mcp-servers/            # MCP tool servers (microservices)
+│       ├── echo-ping/          # TypeScript/Node.js (testing tool)
+│       ├── customer-query/     # C#/.NET (customer inquiry processing)
+│       ├── destination-recommendation/  # Java (travel destination suggestions)
+│       └── itinerary-planning/ # Python (detailed itinerary creation)
 │
 ├── azure.yaml                  # Azure Developer CLI configuration
 ├── repomix.config.json         # Repository documentation config
-└── docker-compose.yml      # Local development environment
+└── docker-compose.yml          # Local development environment
 ```
 
 ### AI Agent Specialization
@@ -41,11 +68,12 @@ The system implements specialized agents coordinated by orchestration layers. Al
 
 #### Orchestration Options
 
-**Option 1: LangChain.js Orchestration**
+**Option 1: LangChain.js** (`packages/api-langchain-js/`)
 
 - **Language**: TypeScript with Node.js 22+
-- **Framework**: Express.js + LangChain.js + LangGraph
-- **Status**: Production-ready (active implementation as of Oct 2025)
+- **Server**: Express.js 5.0
+- **Framework**: LangChain.js + LangGraph
+- **Status**: Production-ready standalone service
 - **Orchestration Pattern**: LangGraph supervisor pattern with streaming
 - **Key Features**:
   - Official `@langchain/mcp-adapters` for MCP integration
@@ -53,36 +81,55 @@ The system implements specialized agents coordinated by orchestration layers. Al
   - Multiple LLM provider support (Azure OpenAI, Docker Models, GitHub Models, Ollama, Foundry Local)
   - Supervisor-based agent coordination via `@langchain/langgraph-supervisor`
 - **Agents**: Dynamically created based on available MCP tools
-  - **Triage Agent**: Routes user queries to appropriate specialized agents
+  - **Supervisor Agent**: Routes user queries to appropriate specialized agents
   - **Customer Query Agent**: Extracts preferences from customer inquiries (via customer-query MCP)
   - **Destination Recommendation Agent**: Suggests destinations (via destination-recommendation MCP)
   - **Itinerary Planning Agent**: Creates detailed travel plans (via itinerary-planning MCP)
   - **Echo Agent**: Testing and validation (via echo-ping MCP)
+- **Entry Point**: `src/server.ts` (Express server)
+- **Port**: 4000 (configurable via PORT env var)
 
-**Option 2: LlamaIndex.TS Orchestration** (`packages/api-llamaindex-ts/`)
+**Option 2: LlamaIndex.TS** (`packages/api-llamaindex-ts/`)
 
 - **Language**: TypeScript with Node.js 22+
-- **Framework**: Express.js + LlamaIndex.TS
-- **Status**: Available as alternative (previously production default)
+- **Server**: Express.js 5.0
+- **Framework**: LlamaIndex.TS multi-agent
+- **Status**: Production-ready standalone service
+- **Orchestration Pattern**: Multi-agent with triage pattern
+- **Key Features**:
+  - Native MCP client implementation
+  - Streaming support with async generators
+  - Multiple LLM provider support (Azure OpenAI, Docker Models, GitHub Models, Ollama, Foundry Local)
+  - Workflow-based agent coordination
 - **Agents**: Dynamically created based on available MCP tools
   - **Triage Agent**: Routes user queries to appropriate specialized agents
   - **Customer Query Agent**: Extracts preferences from customer inquiries (via customer-query MCP)
   - **Destination Recommendation Agent**: Suggests destinations (via destination-recommendation MCP)
   - **Itinerary Planning Agent**: Creates detailed travel plans (via itinerary-planning MCP)
   - **Echo Agent**: Testing and validation (via echo-ping MCP)
+- **Entry Point**: `src/server.ts` (Express server)
+- **Port**: 4000 (configurable via PORT env var)
 
-**Option 3: Microsoft Agent Framework Orchestration** (`packages/api-maf-python/`)
+**Option 3: Microsoft Agent Framework** (`packages/api-maf-python/`)
 
 - **Language**: Python 3.11+ with asyncio
-- **Framework**: FastAPI + Microsoft Agent Framework (`agent-framework` SDK)
-- **Status**: Fully implemented, production-ready alternative
+- **Server**: FastAPI
+- **Framework**: Microsoft Agent Framework (`agent-framework` SDK)
+- **Status**: Fully implemented standalone service
 - **Orchestration Pattern**: Magentic multi-agent coordination
-- **Agents**: Explicitly defined in `packages/api-maf-python/src/orchestrator/agents/`
+- **Key Features**:
+  - Built-in `MCPStreamableHTTPTool` for MCP integration
+  - Async/await pattern for concurrent operations
+  - Azure AI integration
+  - Structured agent composition
+- **Agents**: Explicitly defined in `src/orchestrator/agents/`
   - **TriageAgent**: Coordinates and routes requests to specialized agents
   - **CustomerQueryAgent**: Processes customer inquiries with MCP tools
   - **DestinationRecommendationAgent**: Provides destination suggestions
   - **ItineraryPlanningAgent**: Creates detailed itineraries with MCP tools
   - **EchoAgent**: Testing and validation via echo-ping MCP
+- **Entry Point**: `src/main.py` (FastAPI server)
+- **Port**: 8000 (configurable)
 
 #### MCP Tool Servers (Shared by All Orchestrations)
 
@@ -96,9 +143,9 @@ All three orchestration implementations communicate with these MCP servers:
 ### Service Communication
 
 - **Orchestration Layer**:
-  - **Option 1**: `packages/api-langchain-js/` (Express.js + LangChain.js)
-  - **Option 2**: `packages/api-langchain-js/` (Express.js + LlamaIndex.TS)
-  - **Option 3**: `packages/api-maf-python/` (FastAPI + Microsoft Agent Framework) - Python orchestration
+  - **Option 1**: `packages/api-{orchestrator}-{language}/` (Express.js + LangChain.js)
+  - **Option 2**: `packages/api-{orchestrator}-{language}/` (Express.js + LlamaIndex.TS)
+  - **Option 3**: `packages/api-{orchestrator}-{language}/` (FastAPI + Microsoft Agent Framework) - Python orchestration
 - **MCP Protocol**: All tools implement Model Context Protocol for standardized communication
 - **Frontend**: SPA in `packages/ui-angular/` with Tailwind CSS and Angular Material (works with any orchestration)
 - **Infrastructure**: Azure Container Apps deployment via Bicep templates in `infra/`
@@ -121,7 +168,7 @@ The system now offers **three orchestration options**, each with distinct advant
 | **Language**        | TypeScript                         | TypeScript                    | Python                     |
 | **Framework**       | LangChain.js + LangGraph           | LlamaIndex.TS                 | agent-framework SDK        |
 | **Status**          | **Production**                     | **Production**                | **Experimental**           |
-| **Location**        | `packages/api-langchain-js/`       | `packages/api-llamaindex-ts/` | `packages/api-maf-python/` |
+| **Location**        | `packages/api-{orchestrator}-{language}/`       | `packages/api-{orchestrator}-{language}/` | `packages/api-{orchestrator}-{language}/` |
 | **Best For**        | Proven LLM workflows, streaming    | RAG & indexing scenarios      | Python ML teams            |
 | **MCP Integration** | Official `@langchain/mcp-adapters` | Custom HTTP client            | Custom HTTP client         |
 | **Streaming**       | `streamEvents` pattern             | Native support                | FastAPI SSE                |
@@ -181,7 +228,7 @@ The system now offers **three orchestration options**, each with distinct advant
 
 ### Switching Between Orchestrations
 
-You can switch between the TypeScript orchestrations by changing the import in `packages/api-langchain-js/ or packages/api-llamaindex-ts/src/index.ts`:
+You can switch between the TypeScript orchestrations by changing the import in `packages/api-{orchestrator}-{language}/ or packages/api-{orchestrator}-{language}/src/index.ts`:
 
 ```typescript
 // For LangChain.js (current default)
@@ -191,7 +238,7 @@ import { setupAgents } from "./orchestrator/langchain/index.js";
 import { setupAgents } from "./orchestrator/llamaindex/index.js";
 ```
 
-For the Python implementation, run `packages/api-maf-python/` as a separate service on a different port.
+For the Python implementation, run `packages/api-{orchestrator}-{language}/` as a separate service on a different port.
 
 ### Running Multiple Orchestrations
 
@@ -203,7 +250,7 @@ cd packages/api
 npm start  # Runs on port 4000
 
 # Terminal 2: Run Microsoft Agent Framework API
-cd packages/api-maf-python
+cd packages/api-langchain-js  # or: cd packages/api-llamaindex-ts
 uvicorn main:app --reload --port 8000  # Runs on port 8000
 
 # Both can communicate with the same MCP servers
@@ -229,7 +276,7 @@ For detailed comparison, see `docs/orchestration.md`.
 
 ### TypeScript/Node.js Standards
 
-**Location**: `packages/api-langchain-js/ or packages/api-llamaindex-ts/`, `packages/ui/`, `packages/mcp-servers/echo-ping/`
+**Location**: `packages/api-{orchestrator}-{language}/ or packages/api-{orchestrator}-{language}/`, `packages/ui-angular`, `packages/mcp-servers/echo-ping/`
 
 **Key Conventions**:
 
@@ -261,8 +308,8 @@ const MCP_API_HTTP_PATH = "/api/mcp";
 **File Structure**:
 
 ```typescript
-// API structure (packages/api-langchain-js/ or packages/api-llamaindex-ts/)
-packages/api-langchain-js/ or packages/api-llamaindex-ts/
+// API structure (packages/api-{orchestrator}-{language}/ or packages/api-{orchestrator}-{language}/)
+packages/api-{orchestrator}-{language}/ or packages/api-{orchestrator}-{language}/
 ├── src/
 │   ├── index.ts                      # Express server setup
 │   ├── mcp/                          # MCP client implementations
@@ -297,7 +344,7 @@ packages/mcp-servers/echo-ping/
 **Location**:
 
 - **MCP Servers**: `packages/mcp-servers/itinerary-planning/`, `packages/mcp-servers/code-evaluation/`, `packages/mcp-servers/model-inference/`
-- **MAF Orchestration**: `packages/api-maf-python/` (Microsoft Agent Framework implementation)
+- **MAF Orchestration**: `packages/api-{orchestrator}-{language}/` (Microsoft Agent Framework implementation)
 
 **Key Conventions**:
 
@@ -325,7 +372,7 @@ target-version = "py313"
 **Project Structure (MAF Orchestration)**:
 
 ```python
-# pyproject.toml in packages/api-maf-python/
+# pyproject.toml in packages/api-{orchestrator}-{language}/
 [project]
 name = "azure-ai-travel-agents-api-python"
 requires-python = ">=3.11"
@@ -427,22 +474,22 @@ public static final String DEFAULT_API_PATH = "/api/recommend";
 **Frontend (Angular)**:
 
 - **Unit Tests**: Jasmine + Karma for component testing
-- **Location**: `packages/ui/src/app/**/*.spec.ts`
-- **Command**: `npm test` in `packages/ui/`
+- **Location**: `packages/ui-angularsrc/app/**/*.spec.ts`
+- **Command**: `npm test` in `packages/ui-angular`
 - **Coverage**: Components, services, and pipes
 
 **Backend API (Node.js - LangChain.js/LlamaIndex.TS)**:
 
 - **Build Tests**: TypeScript compilation validation
-- **Location**: `packages/api-langchain-js/ or packages/api-llamaindex-ts/`
-- **Command**: `npm run build` in `packages/api-langchain-js/` (standalone service)
+- **Location**: `packages/api-{orchestrator}-{language}/ or packages/api-{orchestrator}-{language}/`
+- **Command**: `npm run build` in `packages/api-{orchestrator}-{language}/` (standalone service)
 - **Integration**: MCP server connectivity testing via health endpoints
 
 **Backend API (Python - Microsoft Agent Framework)**:
 
 - **Unit Tests**: pytest for agent and workflow testing
-- **Location**: `packages/api-maf-python/src/tests/`
-- **Command**: `pytest` in `packages/api-maf-python/`
+- **Location**: `packages/api-{orchestrator}-{language}/src/tests/`
+- **Command**: `pytest` in `packages/api-{orchestrator}-{language}/`
 - **Coverage**: Agents, workflows, MCP integration, providers
 
 **MCP Servers**:
@@ -464,7 +511,7 @@ cd packages/api
 npm run build
 
 # API tests (Microsoft Agent Framework)
-cd packages/api-maf-python
+cd packages/api-langchain-js  # or: cd packages/api-llamaindex-ts
 pip install -e ".[dev]"
 pytest
 
@@ -527,22 +574,23 @@ chore(deps): update dependencies
 1. **Run All Builds**: Ensure all affected services build successfully
 
    ```bash
-   # API (LangChain.js or LlamaIndex.TS)
-   cd packages/api && npm run build
+   # LangChain.js API
+   cd packages/api-langchain-js && npm run build
+   
+   # LlamaIndex.TS API
+   cd packages/api-llamaindex-ts && npm run build
 
-   # API (Microsoft Agent Framework)
+   # Microsoft Agent Framework API
    cd packages/api-maf-python && pip install -e . && pytest
 
    # UI
-   cd packages/ui && npm run build
+   cd packages/ui-angular && npm run build
 
    # MCP Servers (as applicable)
    cd packages/mcp-servers/echo-ping && npm run build
    cd packages/mcp-servers/customer-query && dotnet build
    cd packages/mcp-servers/destination-recommendation && mvn clean install
    cd packages/mcp-servers/itinerary-planning && pip install .
-   cd packages/mcp-servers/code-evaluation && pip install .
-   cd packages/mcp-servers/model-inference && pip install .
    ```
 
 2. **Test Coverage**: Run existing tests and add new tests for new functionality
@@ -610,11 +658,27 @@ When creating new agents/tools, follow this pattern:
 3. **Add Docker Configuration**: `Dockerfile` and health endpoint
 4. **Register in Docker Compose**: Add service definition
 
-**For LangChain.js Orchestration** (Current Default): 5. **Register MCP Tool**: Update `packages/api-langchain-js/ or packages/api-llamaindex-ts/src/mcp/mcp-tools.ts` to include the new tool 6. **Tool Configuration**: Add tool metadata in `packages/api-langchain-js/ or packages/api-llamaindex-ts/src/orchestrator/langchain/tools/index.ts` 7. **Agent Definition** (optional): If needed, add specialized agent in `packages/api-langchain-js/ or packages/api-llamaindex-ts/src/orchestrator/langchain/agents/index.ts` 8. **Update Workflow**: Tools are automatically discovered; update `packages/api-langchain-js/ or packages/api-llamaindex-ts/src/orchestrator/langchain/graph/index.ts` if custom workflow logic is needed
+**For LangChain.js** (`packages/api-langchain-js/`):
 
-**For LlamaIndex.TS Orchestration** (Available Alternative): 5. **Register in API**: Update `packages/api-langchain-js/ or packages/api-llamaindex-ts/src/orchestrator/llamaindex/tools/index.ts` 6. **Create Agent Integration**: Add to `setupAgents()` function in `packages/api-langchain-js/ or packages/api-llamaindex-ts/src/orchestrator/llamaindex/index.ts` 7. **Update Documentation**: Add to tool overview in `packages/mcp-servers/README.md`
+5. **Register MCP Tool**: Update `packages/api-langchain-js/src/mcp/mcp-tools.ts` to include the new tool
+6. **Tool Configuration**: Add tool metadata in `packages/api-langchain-js/src/tools/index.ts`
+7. **Agent Definition** (optional): If needed, add specialized agent in `packages/api-langchain-js/src/agents/index.ts`
+8. **Update Workflow**: Tools are automatically discovered; update `packages/api-langchain-js/src/graph/index.ts` if custom workflow logic is needed
 
-**For Microsoft Agent Framework Orchestration**: 5. **Add Tool Metadata**: Update `packages/api-maf-python/src/orchestrator/tools/tool_config.py` 6. **Create Agent Class**: Add new agent in `packages/api-maf-python/src/orchestrator/agents/specialized_agents.py` 7. **Register Agent**: Export in `packages/api-maf-python/src/orchestrator/agents/__init__.py` 8. **Integrate in Workflow**: Add to workflow in `packages/api-maf-python/src/orchestrator/magentic_workflow.py` or `workflow.py` 9. **Update Documentation**: Add to `packages/api-maf-python/README.md`
+**For LlamaIndex.TS** (`packages/api-llamaindex-ts/`):
+
+5. **Register MCP Tool**: Update `packages/api-llamaindex-ts/src/mcp/mcp-tools.ts` to include the new tool
+6. **Tool Configuration**: Add tool metadata in `packages/api-llamaindex-ts/src/tools/index.ts`
+7. **Create Agent Integration**: Add to `setupAgents()` function in `packages/api-llamaindex-ts/src/index.ts`
+8. **Update Documentation**: Add to tool overview in `packages/mcp-servers/README.md`
+
+**For Microsoft Agent Framework** (`packages/api-maf-python/`):
+
+5. **Add Tool Metadata**: Update `packages/api-maf-python/src/orchestrator/tools/tool_config.py`
+6. **Create Agent Class**: Add new agent in `packages/api-maf-python/src/orchestrator/agents/specialized_agents.py`
+7. **Register Agent**: Export in `packages/api-maf-python/src/orchestrator/agents/__init__.py`
+8. **Integrate in Workflow**: Add to workflow in `packages/api-maf-python/src/orchestrator/magentic_workflow.py` or `workflow.py`
+9. **Update Documentation**: Add to `packages/api-maf-python/README.md`
 
 **Common Steps for All Orchestrations**:
 
@@ -623,5 +687,37 @@ When creating new agents/tools, follow this pattern:
 - Document in `packages/mcp-servers/README.md`
 - Add environment variables to `.env.sample`
 - Update architecture diagrams in `docs/`
+
+## Quick Reference
+
+### Starting Services
+
+```bash
+# LangChain.js
+cd packages/api-langchain-js && npm start
+
+# LlamaIndex.TS
+cd packages/api-llamaindex-ts && npm start
+
+# Microsoft Agent Framework
+cd packages/api-maf-python && python -m uvicorn main:app --reload
+
+# UI
+cd packages/ui-angular && npm start
+
+# All services via Docker
+docker compose up
+```
+
+### Package Naming Convention
+
+This repository uses specific package names:
+- `api-langchain-js` - LangChain.js orchestrator service
+- `api-llamaindex-ts` - LlamaIndex.TS orchestrator service  
+- `api-maf-python` - Microsoft Agent Framework service
+- `ui-angular` - Angular frontend
+- `mcp-servers/` - MCP tool servers
+
+See [Package Naming Guide](docs/package-naming-guide.md) for details.
 
 This guide ensures AI-generated code follows project conventions and integrates seamlessly with all three Azure AI Travel Agents orchestration architectures.
