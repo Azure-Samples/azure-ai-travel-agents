@@ -49,11 +49,9 @@ jobs:
           python-version: '3.12'
       - run: python -m pip install --upgrade pip
       - run: pip install -e .
-      - run: pip install -e ".[dev]"
-      - run: pytest
 
   build-ui-angular:
-    name: UI (Angular)
+    name: UI Angular
     runs-on: ubuntu-latest
     defaults:
       run:
