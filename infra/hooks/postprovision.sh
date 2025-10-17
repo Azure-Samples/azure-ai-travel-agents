@@ -40,10 +40,10 @@ if [ ! -f ./packages/api/.env.docker ]; then
     echo "# File automatically generated on $(date)" > ./packages/api/.env.docker
     echo "# See .env.sample for more information" >> ./packages/api/.env.docker
     echo ""
-    echo "MCP_CUSTOMER_QUERY_URL=http://tool-customer-query:8080" >> ./packages/api/.env.docker
-    echo "MCP_DESTINATION_RECOMMENDATION_URL=http://tool-destination-recommendation:5002" >> ./packages/api/.env.docker
-    echo "MCP_ITINERARY_PLANNING_URL=http://tool-itinerary-planning:5003" >> ./packages/api/.env.docker
-    echo "MCP_ECHO_PING_URL=http://tool-echo-ping:5004" >> ./packages/api/.env.docker
+    echo "MCP_CUSTOMER_QUERY_URL=http://mcp-customer-query:8080" >> ./packages/api/.env.docker
+    echo "MCP_DESTINATION_RECOMMENDATION_URL=http://mcp-destination-recommendation:5002" >> ./packages/api/.env.docker
+    echo "MCP_ITINERARY_PLANNING_URL=http://mcp-itinerary-planning:5003" >> ./packages/api/.env.docker
+    echo "MCP_ECHO_PING_URL=http://mcp-echo-ping:5004" >> ./packages/api/.env.docker
 fi
 
 ##########################################################################

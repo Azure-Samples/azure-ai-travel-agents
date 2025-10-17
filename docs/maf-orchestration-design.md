@@ -12,7 +12,7 @@ The current orchestration layer uses:
 
 - **Framework**: LlamaIndex.TS
 - **Language**: TypeScript/Node.js
-- **Location**: `packages/api/src/orchestrator/llamaindex/`
+- **Location**: `packages/api-llamaindex-ts/src/`
 - **Pattern**: Multi-agent workflow with triage agent as root
 
 ### New Implementation Goals

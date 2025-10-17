@@ -4,16 +4,32 @@ name: ai-travel-agents
 metadata:
   template: ai-travel-agents@1.13.1
 services:
-  api:
-    project: src/api
+  api-langchain-js:
+    project: packages/api-langchain-js
     host: containerapp
     language: ts
     docker:
       context: .
       path: Dockerfile
-  
-  ui:
-    project: src/ui
+
+  api-llamaindex-ts:
+    project: packages/api-llamaindex-ts
+    host: containerapp
+    language: ts
+    docker:
+      context: .
+      path: Dockerfile
+
+  api-maf-python:
+    project: packages/api-maf-python
+    host: containerapp
+    language: python
+    docker:
+      context: .
+      path: Dockerfile
+
+  ui-angular:
+    project: packages/ui-angular
     host: containerapp
     language: ts
     docker:
@@ -28,8 +44,8 @@ services:
           shell: sh
           run: 'echo NG_API_URL=\"$NG_API_URL\" > .env.production'
 
-  customer-query:
-    project: packages/tools/customer-query/AITravelAgent.CustomerQueryServer/
+  mcp-customer-query:
+    project: packages/mcp-servers/customer-query/AITravelAgent.CustomerQueryServer/
     host: containerapp
     language: dotnet
     docker:
@@ -37,8 +53,8 @@ services:
       path: ../Dockerfile
       remoteBuild: true
 
-  destination-recommendation:
-    project: packages/tools/destination-recommendation
+  mcp-destination-recommendation:
+    project: packages/mcp-servers/destination-recommendation
     host: containerapp
     language: java
     docker:
@@ -46,8 +62,8 @@ services:
       context: .
       remoteBuild: true
 
-  itinerary-planning:
-    project: packages/tools/itinerary-planning
+  mcp-itinerary-planning:
+    project: packages/mcp-servers/itinerary-planning
     host: containerapp
     language: python
     docker:
@@ -55,8 +71,8 @@ services:
       context: .
       remoteBuild: true
 
-  echo-ping:
-    project: packages/tools/echo-ping
+  mcp-echo-ping:
+    project: packages/mcp-servers/echo-ping
     language: ts
     host: containerapp
     docker:
@@ -76,9 +92,10 @@ workflows:
   up:
     steps:
       - azd: provision
-      - azd: deploy api
-      - azd: deploy ui
-      - azd: deploy customer-query
-      - azd: deploy destination-recommendation
-      - azd: deploy itinerary-planning
-      - azd: deploy echo-ping
+      - azd: deploy api-langchain-js
+      - azd: deploy api-llamaindex-ts
+      - azd: deploy ui-angular
+      - azd: deploy mcp-customer-query
+      - azd: deploy mcp-destination-recommendation
+      - azd: deploy mcp-itinerary-planning
+      - azd: deploy mcp-echo-ping

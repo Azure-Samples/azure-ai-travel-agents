@@ -144,7 +144,7 @@ cd api-python
 Create `pyproject.toml`:
 ```toml
 [project]
-name = "azure-ai-travel-agents-api-python"
+name = "@azure-ai-travel-agents/api-gateway-python"
 version = "1.0.0"
 requires-python = ">=3.12"
 dependencies = [

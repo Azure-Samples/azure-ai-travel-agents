@@ -1,0 +1,16 @@
+# Using spring-ai-starter-mcp-server-streamable-webmvc
+spring:
+  ai:
+    mcp:
+      server:
+        protocol: STREAMABLE
+        name: streamable-mcp-server
+        version: 1.0.0
+        type: SYNC
+        instructions: "This streamable server provides real-time notifications"
+        resource-change-notification: true
+        mcp-change-notification: true
+        prompt-change-notification: true
+        streamable-http:
+          mcp-endpoint: /mcp
+          keep-alive-interval: 30s

@@ -1,8 +1,8 @@
 name: Python CodeQL Configuration
 
 paths:
-  - packages/tools/itinerary-planning/**
-  - packages/tools/model-inference/**
+  - packages/mcp-servers/itinerary-planning/**
+  - packages/mcp-servers/model-inference/**
 
 paths-ignore:
   - '**/venv/**'

@@ -8,6 +8,18 @@ Welcome to the Azure AI Travel Agents sample application! This project demonstra
 - To implement various Model Context Protocol (MCP) servers in different programming languages.
 - To provision and deploy the application to Azure using the Azure Developer CLI (azd).
 
+> [!NOTE]
+> **About Package Names**: In this documentation, we use generic naming patterns:
+> - `packages/api-{orchestrator}-{language}` refers to API services like:
+>   - `packages/api-langchain-js` (LangChain.js with TypeScript)
+>   - `packages/api-llamaindex-ts` (LlamaIndex.TS with TypeScript)
+>   - `packages/api-maf-python` (Microsoft Agent Framework with Python)
+> - `packages/ui-{framework}` refers to the UI service (currently `packages/ui-angular`)
+>
+> Choose the appropriate package based on your preferred orchestrator and implementation.
+> 
+> For more details, see the [Package Naming Guide](./package-naming-guide.md).
+
 ## Preview the application locally for FREE
 
 To run and preview the application locally, we will use [Docker Model Runner](https://docs.docker.com/ai/model-runner/).
@@ -78,13 +90,14 @@ gh repo clone YOUR-USERNAME/azure-ai-travel-agents
 Start the API service by running the following command in a terminal:
 
 ```bash
-npm start --prefix=packages/api
+# Start LangChain.js service (or use packages/api-langchain-js)
+npm start --prefix=packages/api-langchain-js
 ```
 
 Open a new terminal and start the UI service by running the following command:
 
 ```bash
-npm start --prefix=packages/ui
+npm start --prefix=packages/ui-{framework}
 ```
 
 Once all services are up and running, you can access the **UI** at http://localhost:4200.
@@ -92,7 +105,7 @@ Once all services are up and running, you can access the **UI** at http://localh
 ![UI Screenshot](azure-ai-travel-agent-demo-1.png)
 
 You can also view the traces via the [Aspire Dashboard](https://aspiredashboard.com/) at http://localhost:18888.
-  - On `Structured` tab you'll see the logging messages from the **tool-echo-ping** and **api** services. The `Traces` tab will show the traces across the services, such as the call from **api** to **echo-agent**.
+  - On `Structured` tab you'll see the logging messages from the **mcp-echo-ping** and **api** services. The `Traces` tab will show the traces across the services, such as the call from **api** to **echo-agent**.
 
 
 ## Preview the application using Azure AI Foundry
@@ -174,13 +187,14 @@ When asked, enter a name that will be used for the resource group. **Depending o
 5. Open a new terminal and run the following command to start the API:
 
 ```bash
-npm start --prefix=packages/api
+# Start LangChain.js service (or use packages/api-langchain-js)
+npm start --prefix=packages/api-langchain-js
 ```
 
 6. Open a new terminal and run the following command to start the UI:
 
 ```bash
-npm start --prefix=packages/ui
+npm start --prefix=packages/ui-{framework}
 ```
 
 7. Once all services are up and running, you can access the **UI** at http://localhost:4200.
@@ -188,7 +202,7 @@ npm start --prefix=packages/ui
 ![UI Screenshot](azure-ai-travel-agent-demo-1.gif)
 
 You can also view the traces via the [Aspire Dashboard](https://aspiredashboard.com/) at http://localhost:18888.
-  - On `Structured` tab you'll see the logging messages from the **tool-echo-ping** and **api** services. The `Traces` tab will show the traces across the services, such as the call from **api** to **echo-agent**.
+  - On `Structured` tab you'll see the logging messages from the **mcp-echo-ping** and **api** services. The `Traces` tab will show the traces across the services, such as the call from **api** to **echo-agent**.
 
 ⚠️ In case you encounter issues when starting either the API or UI, try running `azd hooks run postprovision` to force run the post-provisioning hooks. This is due to an issue with the `azd provision` command not executing the post-provisioning hooks automatically, in some cases, the first time you run it.
 

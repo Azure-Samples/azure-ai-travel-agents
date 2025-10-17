@@ -1,84 +1,81 @@
 name: ai-travel-agents
 services:
-  tool-customer-query:
-    container_name: tool-customer-query
-    build: packages/tools/customer-query
+  mcp-customer-query:
+    container_name: mcp-customer-query
+    build: packages/mcp-servers/customer-query
     ports:
       - "5001:8080"
     environment:
-      - OTEL_SERVICE_NAME=tool-customer-query
+      - OTEL_SERVICE_NAME=mcp-customer-query
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:18889
 
-  tool-destination-recommendation:
-    container_name: tool-destination-recommendation
-    build: packages/tools/destination-recommendation
+  mcp-destination-recommendation:
+    container_name: mcp-destination-recommendation
+    build: packages/mcp-servers/destination-recommendation
     ports:
       - "5002:8080"
 
-  tool-itinerary-planning:
-    container_name: tool-itinerary-planning
-    build: packages/tools/itinerary-planning
+  mcp-itinerary-planning:
+    container_name: mcp-itinerary-planning
+    build: packages/mcp-servers/itinerary-planning
     ports:
       - "5003:8000"
 
-  tool-echo-ping:
-    container_name: tool-echo-ping
-    build: packages/tools/echo-ping
+  mcp-echo-ping:
+    container_name: mcp-echo-ping
+    build: packages/mcp-servers/echo-ping
     ports:
       - "5004:3000"
-    depends_on:
-      - aspire-dashboard
     env_file:
-      - "./packages/tools/echo-ping/.env"
-      - "./packages/tools/echo-ping/.env.docker" # override .env with .env.docker
+      - "./packages/mcp-servers/echo-ping/.env"
+      - "./packages/mcp-servers/echo-ping/.env.docker" # override .env with .env.docker
 
-  web-api:
-    container_name: web-api
-    build: ./packages/api
+  api-langchain-js:
+    container_name: api-langchain-js
+    build: ./packages/api-langchain-js
     ports:
       - "4000:4000"
-    depends_on:
-      - tool-customer-query
-      # TODO: enable back when the build issue is resolved
-      # - tool-destination-recommendation
-      - tool-itinerary-planning
-      - tool-echo-ping
     env_file:
-      - "./packages/api/.env"
-      - "./packages/api/.env.docker" # override .env with .env.docker
+      - "./packages/api-langchain-js/.env"
+      - "./packages/api-langchain-js/.env.docker" # override .env with .env.docker
     environment:
       - IS_LOCAL_DOCKER_ENV=true 
       - DEBUG=true # Enable Azure JS SDK debug logging
   
-  web-api-python:
-    container_name: api-python
-    build: ./packages/api-python
+  
+  api-llamaindex-ts:
+    container_name: api-llamaindex-ts
+    build: ./packages/api-llamaindex-ts
     ports:
-      - "4010:4000"
-    depends_on:
-      - tool-customer-query
-      # TODO: enable back when the build issue is resolved
-      # - tool-destination-recommendation
-      - tool-itinerary-planning
-      - tool-echo-ping
+      - "4001:4001"
+    env_file:
+      - "./packages/api-llamaindex-ts/.env"
+      - "./packages/api-llamaindex-ts/.env.docker" # override .env with .env.docker
+    environment:
+      - IS_LOCAL_DOCKER_ENV=true 
+      - DEBUG=true # Enable Azure JS SDK debug logging
+  
+  api-maf-python:
+    container_name: api-maf-python
+    build: ./packages/api-maf-python
+    ports:
+      - "4010:4010"
     env_file: 
-      - "./packages/api-python/.env"
-      - "./packages/api-python/.env.docker" # override .env with .env.docker
+      - "./packages/api-maf-python/.env"
+      - "./packages/api-maf-python/.env.docker" # override .env with .env.docker
     environment:
       - IS_LOCAL_DOCKER_ENV=true 
       - DEBUG=true # Enable Azure JS SDK debug logging
 
 
-  web-ui:
-    container_name: web-ui
-    build: ./packages/ui
+  ui-angular:
+    container_name: ui-angular
+    build: ./packages/ui-angular
     ports:
       - "4200:4200"
-    depends_on:
-      - web-api
     env_file: 
-      - "./packages/api/.env"
-      - "./packages/api/.env.docker" # override .env with .env.docker
+      - "./packages/ui-angular/.env"
+      - "./packages/ui-angular/.env.docker" # override .env with .env.docker
 
   aspire-dashboard:
     container_name: aspire-dashboard

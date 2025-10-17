@@ -23,7 +23,7 @@ This directory contains comprehensive technical documentation for architects, de
 
 The system supports three orchestration approaches for coordinating AI agents:
 
-#### Current Implementation: LangChain.js
+#### LangChain.js
 The production system currently uses **LangChain.js** for agent orchestration, providing:
 - TypeScript-based workflow management with LangGraph supervisor pattern
 - Official `@langchain/mcp-adapters` for MCP integration
@@ -34,8 +34,8 @@ The production system currently uses **LangChain.js** for agent orchestration, p
 
 See [Orchestration Options](./orchestration.md) for detailed comparison.
 
-#### Alternative: LlamaIndex.TS
-Available as an alternative TypeScript implementation in `packages/api/src/orchestrator/llamaindex/`:
+#### LlamaIndex.TS
+Available as an alternative TypeScript implementation:
 - TypeScript-based workflow management
 - Node.js/Express.js integration
 - Established stability and performance
@@ -44,11 +44,11 @@ Available as an alternative TypeScript implementation in `packages/api/src/orche
 
 See [Technical Architecture - Agent Orchestration](./technical-architecture.md#agent-orchestration) for implementation details.
 
-#### Alternative: Microsoft Agent Framework (MAF) Implementation
+#### Microsoft Agent Framework (MAF) Implementation
 
-**IMPLEMENTED**: Working Python implementation using Microsoft Agent Framework for agent orchestration.
+A Python implementation using Microsoft Agent Framework for agent orchestration.
 
-Located in `packages/api-python/`, this is a complete, production-ready alternative to the TypeScript API that uses:
+Located in `packages/api-maf-python/`, this is a complete, production-ready alternative to the TypeScript API that uses:
 - **Microsoft Agent Framework** (`agent-framework` Python SDK)
 - **Magentic Orchestration** pattern for multi-agent workflows
 - **Built-in MCP Support** via `MCPStreamableHTTPTool`
@@ -64,12 +64,6 @@ Located in `packages/api-python/`, this is a complete, production-ready alternat
 - ✅ OpenTelemetry observability ready
 - ✅ Proper async lifecycle management
 
-**Documentation**:
-- Implementation details: `packages/api-python/README.md`
-- Architecture diagrams: `packages/api-python/ARCHITECTURE_DIAGRAMS.md`
-- Developer guide: `packages/api-python/DEVELOPER_GUIDE.md`
-- MCP integration: `packages/api-python/MCP_QUICK_REFERENCE.md`
-
 **Status**: Alternative implementation available for evaluation and use alongside LangChain.js and LlamaIndex.TS.
 
 > **Note**: All three orchestration approaches maintain compatibility with the existing MCP server architecture, ensuring no changes are needed to the specialized AI tool servers (Customer Query, Destination Recommendation, Itinerary Planning, etc.).
@@ -80,9 +74,9 @@ The Azure AI Travel Agents system is built on a microservices architecture with 
 
 - **Frontend**: Angular UI with real-time streaming
 - **API Server & Orchestration**: 
-  - **Current**: Express.js with LangChain.js orchestration (TypeScript)
-  - **Alternative 1**: Express.js with LlamaIndex.TS orchestration (TypeScript)
-  - **Alternative 2**: FastAPI with Microsoft Agent Framework (Python)
+  - **Alternative 1**: Express.js with LangChain.js orchestration (TypeScript)
+  - **Alternative 2**: Express.js with LlamaIndex.TS orchestration (TypeScript)
+  - **Alternative 3**: FastAPI with Microsoft Agent Framework (Python)
 - **MCP Servers**: 4 specialized services in TypeScript, C#, Java, and Python
 - **AI Services**: Azure OpenAI and custom model inference
 - **Monitoring**: OpenTelemetry with Aspire Dashboard
@@ -108,7 +102,7 @@ flowchart LR
 
 ### Alternative Architecture (Microsoft Agent Framework)
 
-**IMPLEMENTED** in `packages/api-python/`
+**IMPLEMENTED** in `packages/api-maf-python/`
 
 ```mermaid
 flowchart LR
@@ -190,7 +184,7 @@ The system provides two orchestration approaches, each with distinct advantages:
 ### Microsoft Agent Framework (Implemented Alternative)
 **Status**: ✅ Implemented, Available for Use
 
-**Location**: `packages/api-python/`
+**Location**: `packages/api-maf-python/`
 
 **Advantages**:
 - Native Microsoft Agent Framework SDK integration
@@ -211,7 +205,7 @@ The system provides two orchestration approaches, each with distinct advantages:
 
 **Deployment**: Can run parallel to TypeScript API for evaluation or as replacement.
 
-See implementation documentation in `packages/api-python/README.md` for details.
+See implementation documentation in `packages/api-maf-python/README.md` for details.
 
 ## Documentation Features
 

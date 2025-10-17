@@ -4,27 +4,27 @@ on:
   push:
     branches: [main]
     paths:
-      - 'packages/api/*.ts'
-      - 'packages/api/*.js'
-      - 'packages/ui/*.ts'
-      - 'packages/ui/*.js'
-      - 'packages/tools/echo-ping/**/*.ts'
-      - 'packages/tools/echo-ping/**/*.js'
-      - 'src/shared/**/*.ts'
-      - 'src/shared/**/*.js'
+      - 'packages/api-langchain-js/*.ts'
+      - 'packages/api-langchain-js/*.js'
+      - 'packages/api-llamaindex-ts/*.ts'
+      - 'packages/api-llamaindex-ts/*.js'
+      - 'packages/ui-angular/*.ts'
+      - 'packages/ui-angular/*.js'
+      - 'packages/mcp-servers/echo-ping/**/*.ts'
+      - 'packages/mcp-servers/echo-ping/**/*.js'
       - '.github/workflows/codeql-typescript.yml'
       - '.github/codeql/typescript-config.yml'
   pull_request:
     branches: [main]
     paths:
-      - 'packages/api/*.ts'
-      - 'packages/api/*.js'
-      - 'packages/ui/*.ts'
-      - 'packages/ui/*.js'
-      - 'packages/tools/echo-ping/**/*.ts'
-      - 'packages/tools/echo-ping/**/*.js'
-      - 'src/shared/**/*.ts'
-      - 'src/shared/**/*.js'
+      - 'packages/api-langchain-js/*.ts'
+      - 'packages/api-langchain-js/*.js'
+      - 'packages/api-llamaindex-ts/*.ts'
+      - 'packages/api-llamaindex-ts/*.js'
+      - 'packages/ui-angular/*.ts'
+      - 'packages/ui-angular/*.js'
+      - 'packages/mcp-servers/echo-ping/**/*.ts'
+      - 'packages/mcp-servers/echo-ping/**/*.js'
       - '.github/workflows/codeql-typescript.yml'
       - '.github/codeql/typescript-config.yml'
   workflow_dispatch:  # Allow manual triggering
@@ -51,7 +51,7 @@ jobs:
           
       - name: Install dependencies
         run: |
-          for dir in packages/tools/echo-ping src/api src/ui; do
+          for dir in packages/mcp-servers/echo-ping packages/api-langchain-js packages/api-llamaindex-ts packages/ui-angular; do
             if [ -f "$dir/package.json" ]; then
               cd $dir && npm install && cd -
             fi

@@ -7,6 +7,18 @@ permalink: /article/u0lpuu36/
 
 This comprehensive guide provides developers with everything needed to contribute to, extend, and customize the Azure AI Travel Agents system.
 
+> [!IMPORTANT]
+> **Generic Naming Convention**: This guide uses generic package references:
+> - `packages/api-{orchestrator}-{language}` - Replace with your chosen API service:
+>   - `api-langchain-js` for LangChain.js (TypeScript)
+>   - `api-llamaindex-ts` for LlamaIndex.TS (TypeScript)
+>   - `api-maf-python` for Microsoft Agent Framework (Python)
+> - `packages/ui-{framework}` - Currently `ui-angular` for the Angular UI
+>
+> The actual package structure in the repository uses these specific names.
+> 
+> 📘 See the complete [Package Naming Guide](./package-naming-guide.md) for detailed examples and usage.
+
 ## Table of Contents
 
 1. [Development Environment Setup](#development-environment-setup)
@@ -101,18 +113,21 @@ cp .github/hooks/* .git/hooks/
 chmod +x .git/hooks/*
 
 # Install dependencies
-npm install --prefix packages/api
-npm install --prefix packages/ui
+# Install dependencies for chosen orchestrator
+npm install --prefix packages/api-{orchestrator}-{language}
+# Or for LlamaIndex:
+# npm install --prefix packages/api-llamaindex-ts
+npm install --prefix packages/ui-{framework}
 
 # Verify setup
-npm run health-check --prefix packages/api
+npm run health-check --prefix packages/api-{orchestrator}-{language}
 ```
 
 #### 2. Environment Configuration
 ```bash
 # Create environment files
-cp packages/api/.env.sample packages/api/.env
-cp packages/ui/.env.sample packages/ui/.env
+cp packages/api-{orchestrator}-{language}/.env.sample packages/api-{orchestrator}-{language}/.env
+cp packages/ui-{framework}.env.sample packages/ui-{framework}.env
 
 # Configure Azure services (run azd provision first)
 azd auth login
@@ -144,8 +159,9 @@ azd provision
     "**/.angular": true
   },
   "eslint.workingDirectories": [
-    "packages/api",
-    "packages/ui"
+    "packages/api-{orchestrator}-{language}"
+    "packages/api-{orchestrator}-{language}",
+    "packages/ui-{framework}
   ],
   "docker.defaultRegistry": "your-acr.azurecr.io"
 }
@@ -160,24 +176,24 @@ azd provision
       "name": "Debug API",
       "type": "node",
       "request": "launch",
-      "program": "${workspaceFolder}/packages/api/src/index.ts",
+      "program": "${workspaceFolder}/packages/api-{orchestrator}-{language}/src/server.ts",
       "env": {
         "NODE_ENV": "development"
       },
       "runtimeArgs": ["-r", "tsx/cjs"],
-      "cwd": "${workspaceFolder}/packages/api",
+      "cwd": "${workspaceFolder}/packages/api-{orchestrator}-{language}",
       "console": "integratedTerminal",
       "sourceMaps": true,
       "restart": true,
-      "envFile": "${workspaceFolder}/packages/api/.env"
+      "envFile": "${workspaceFolder}/packages/api-{orchestrator}-{language}/.env"
     },
     {
       "name": "Debug UI",
       "type": "node",
       "request": "launch",
-      "program": "${workspaceFolder}/packages/ui/node_modules/@angular/cli/bin/ng",
+      "program": "${workspaceFolder}/packages/ui-{framework}/node_modules/@angular/cli/bin/ng",
       "args": ["serve", "--source-map"],
-      "cwd": "${workspaceFolder}/packages/ui",
+      "cwd": "${workspaceFolder}/packages/ui-{framework}",
       "console": "integratedTerminal"
     }
   ]
@@ -213,21 +229,23 @@ azure-ai-travel-agents/
 └── CONTRIBUTING.md             # Contribution guidelines
 ```
 
-### API Structure (packages/api/)
+### API Structures
+
+**LangChain.js Service (packages/api-langchain-js/)**
 ```
-packages/api/
+packages/api-langchain-js/
 ├── src/
-│   ├── index.ts                # Main server entry point
+│   ├── server.ts               # Express API server
+│   ├── index.ts                # Orchestrator exports
+│   ├── agents/                 # Specialized agents
+│   ├── graph/                  # LangGraph workflow
+│   ├── providers/              # LLM providers (Azure OpenAI, Ollama, etc.)
+│   ├── tools/                  # MCP tool configurations
 │   ├── mcp/                    # MCP client implementations
 │   │   ├── mcp-tools.ts        # Tool discovery and management
 │   │   ├── mcp-http-client.ts  # HTTP MCP client
 │   │   └── mcp-sse-client.ts   # SSE MCP client
-│   ├── orchestrator/           # Agent orchestration
-│   │   └── llamaindex/         # LlamaIndex.TS integration
-│   │       ├── index.ts        # Agent setup and coordination
-│   │       ├── providers/      # LLM providers
-│   │       └── tools/          # Tool configurations
-│   └── utils/                  # Shared utilities
+│   └── types.ts                # Type definitions
 ├── package.json                # Dependencies and scripts
 ├── tsconfig.json               # TypeScript configuration
 ├── Dockerfile                  # Container image definition
@@ -235,9 +253,33 @@ packages/api/
 └── .env                        # Local environment (git-ignored)
 ```
 
-### UI Structure (packages/ui/)
+**LlamaIndex.TS Service (packages/api-llamaindex-ts/)**
 ```
-packages/ui/
+packages/api-llamaindex-ts/
+├── src/
+│   ├── server.ts               # Express API server
+│   ├── index.ts                # Orchestrator exports
+│   ├── providers/              # LLM providers (Azure OpenAI, Ollama, etc.)
+│   ├── tools/                  # MCP tool configurations
+│   ├── mcp/                    # MCP client implementations
+│   │   ├── mcp-tools.ts        # Tool discovery and management
+│   │   ├── mcp-http-client.ts  # HTTP MCP client
+│   │   └── mcp-sse-client.ts   # SSE MCP client
+│   └── types.ts                # Type definitions
+├── package.json                # Dependencies and scripts
+├── tsconfig.json               # TypeScript configuration
+├── Dockerfile                  # Container image definition
+├── .env.sample                 # Environment template
+└── .env                        # Local environment (git-ignored)
+```
+
+> **Note**: Both services are standalone and complete. Choose one based on your preference:
+> - **api-langchain-js**: LangGraph supervisor pattern, more complex workflows
+> - **api-llamaindex-ts**: Multi-agent triage pattern, simpler setup
+
+### UI Structure (packages/ui-{framework})
+```
+packages/ui-{framework}
 ├── src/
 │   ├── app/                    # Angular application
 │   │   ├── components/         # Reusable components
@@ -254,9 +296,9 @@ packages/ui/
 └── .env.sample                 # Environment template
 ```
 
-### MCP Tools Structure (packages/tools/)
+### MCP Tools Structure (packages/mcp-servers/)
 ```
-packages/tools/
+packages/mcp-servers/
 ├── echo-ping/                  # TypeScript/Node.js example
 │   ├── src/
 │   │   ├── index.ts            # Server entry point
@@ -290,11 +332,11 @@ docker-compose up -d
 
 # Option B: Local services
 # Terminal 1: Start API
-cd packages/api
+cd packages/api-{orchestrator}-{language} (or packages/api-{orchestrator}-{language})
 npm start
 
 # Terminal 2: Start UI
-cd packages/ui
+cd packages/ui-{framework}
 npm start
 
 # Terminal 3: Start monitoring (optional)
@@ -310,12 +352,12 @@ docker run -d --name aspire-dashboard \
 git checkout -b feature/new-travel-feature
 
 # Make changes and test locally
-npm run test --prefix packages/api
-npm run test --prefix packages/ui
+npm run test --prefix packages/api-{orchestrator}-{language}
+npm run test --prefix packages/ui-{framework}
 
 # Build and verify
-npm run build --prefix packages/api
-npm run build --prefix packages/ui
+npm run build --prefix packages/api-{orchestrator}-{language}
+npm run build --prefix packages/ui-{framework}
 
 # Commit changes
 git add .
@@ -331,12 +373,12 @@ git push origin feature/new-travel-feature
 npm run test:all
 
 # Check code quality
-npm run lint --prefix packages/api
-npm run lint --prefix packages/ui
+npm run lint --prefix packages/api-{orchestrator}-{language}
+npm run lint --prefix packages/ui-{framework}
 
 # Type checking
-npm run type-check --prefix packages/api
-npm run type-check --prefix packages/ui
+npm run type-check --prefix packages/api-{orchestrator}-{language}
+npm run type-check --prefix packages/ui-{framework}
 
 # Integration tests
 npm run test:integration
@@ -373,27 +415,27 @@ chore(deps): update dependencies
 echo "Running pre-commit checks..."
 
 # Lint check
-npm run lint --prefix packages/api --silent
+npm run lint --prefix packages/api-{orchestrator}-{language} --silent
 if [ $? -ne 0 ]; then
   echo "❌ API linting failed"
   exit 1
 fi
 
-npm run lint --prefix packages/ui --silent
+npm run lint --prefix packages/ui-{framework}--silent
 if [ $? -ne 0 ]; then
   echo "❌ UI linting failed"
   exit 1
 fi
 
 # Type check
-npm run type-check --prefix packages/api --silent
+npm run type-check --prefix packages/api-{orchestrator}-{language} --silent
 if [ $? -ne 0 ]; then
   echo "❌ API type checking failed"
   exit 1
 fi
 
 # Unit tests
-npm run test --prefix packages/api --silent
+npm run test --prefix packages/api-{orchestrator}-{language} --silent
 if [ $? -ne 0 ]; then
   echo "❌ API tests failed"
   exit 1
@@ -409,8 +451,8 @@ echo "✅ All pre-commit checks passed"
 #### 1. Create Server Structure
 ```bash
 # Create new MCP server directory
-mkdir packages/tools/my-new-server
-cd packages/tools/my-new-server
+mkdir packages/mcp-servers/my-new-server
+cd packages/mcp-servers/my-new-server
 
 # Initialize based on technology choice
 # For TypeScript (similar to echo-ping):
@@ -425,7 +467,7 @@ cp -r ../customer-query/* .
 
 #### 2. Implement MCP Server (TypeScript Example)
 ```typescript
-// packages/tools/my-new-server/src/server.ts
+// packages/mcp-servers/my-new-server/src/server.ts
 import { McpServer } from '@modelcontextprotocol/sdk/server/index.js';
 import { 
   CallToolRequestSchema,
@@ -515,7 +557,7 @@ export class MyNewMCPServer {
 
 #### 3. Update Docker Configuration
 ```dockerfile
-# packages/tools/my-new-server/Dockerfile
+# packages/mcp-servers/my-new-server/Dockerfile
 FROM node:22-alpine
 
 WORKDIR /app
@@ -544,13 +586,13 @@ CMD ["npm", "start"]
 #### 4. Register in Docker Compose
 ```yaml
 # src/docker-compose.yml - add to services section
-tool-my-new-server:
-  container_name: tool-my-new-server
+mcp-my-new-server:
+  container_name: mcp-my-new-server
   build: ./tools/my-new-server
   ports:
     - "5008:3000"
   environment:
-    - OTEL_SERVICE_NAME=tool-my-new-server
+    - OTEL_SERVICE_NAME=mcp-my-new-server
     - OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:18889
   depends_on:
     - aspire-dashboard
@@ -561,7 +603,7 @@ tool-my-new-server:
 
 #### 5. Register in API
 ```typescript
-// packages/api/src/orchestrator/llamaindex/tools/index.ts
+// packages/api-{orchestrator}-{language}/src/tools/index.ts
 export type McpServerName =
   | "echo-ping"
   | "customer-query"
@@ -587,7 +629,7 @@ export const McpToolsConfig = (): {
 
 #### 6. Add Agent Integration
 ```typescript
-// packages/api/src/orchestrator/llamaindex/index.ts
+// packages/api-{orchestrator}-{language}/src/index.ts
 export async function setupAgents(filteredTools: McpServerDefinition[] = []) {
   // ... existing code
 
@@ -617,7 +659,7 @@ export async function setupAgents(filteredTools: McpServerDefinition[] = []) {
 #### 1. Create Component
 ```bash
 # Generate new component
-cd packages/ui
+cd packages/ui-{framework}
 ng generate component components/my-new-component
 
 # Generate service if needed
@@ -626,7 +668,7 @@ ng generate service services/my-new-service
 
 #### 2. Implement Component
 ```typescript
-// packages/ui/src/app/components/my-new-component/my-new-component.component.ts
+// packages/ui-{framework}src/app/components/my-new-component/my-new-component.component.ts
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -699,7 +741,7 @@ export class MyNewComponentComponent implements OnInit {
 
 #### 3. Add to Module/Route
 ```typescript
-// packages/ui/src/app/app.routes.ts
+// packages/ui-{framework}src/app/app.routes.ts
 import { Routes } from '@angular/router';
 import { MyNewComponentComponent } from './components/my-new-component/my-new-component.component';
 
@@ -717,7 +759,7 @@ export const routes: Routes = [
 
 #### 1. Define Route Handler
 ```typescript
-// packages/api/src/routes/my-new-routes.ts
+// packages/api-{orchestrator}-{language}/src/ or packages/api-{orchestrator}-{language}/src/my-new-routes.ts
 import { Router } from 'express';
 import { z } from 'zod';
 
@@ -794,7 +836,7 @@ export default router;
 
 #### 2. Register Routes
 ```typescript
-// packages/api/src/index.ts
+// packages/api-{orchestrator}-{language}/src/server.ts
 import myNewRoutes from './routes/my-new-routes.js';
 
 // ... existing code
@@ -811,7 +853,7 @@ apiRouter.use('/my-new', myNewRoutes);
 
 #### API Unit Tests
 ```typescript
-// packages/api/src/__tests__/mcp-tools.test.ts
+// packages/api-{orchestrator}-{language}/src/__tests__/ or packages/api-{orchestrator}-{language}/src/__tests__/mcp-tools.test.ts
 import { describe, it, expect, beforeEach, afterEach } from '@jest/globals';
 import { mcpToolsList } from '../mcp/mcp-tools.js';
 
@@ -867,7 +909,7 @@ describe('MCP Tools', () => {
 
 #### UI Unit Tests
 ```typescript
-// packages/ui/src/app/components/my-component/my-component.component.spec.ts
+// packages/ui-{framework}src/app/components/my-component/my-component.component.spec.ts
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MyNewComponentComponent } from './my-new-component.component';
 
@@ -914,7 +956,7 @@ describe('MyNewComponentComponent', () => {
 
 #### API Integration Tests
 ```typescript
-// packages/api/src/__tests__/integration/chat.test.ts
+// packages/api-{orchestrator}-{language}/src/__tests__/ or packages/api-{orchestrator}-{language}/src/__tests__/integration/chat.test.ts
 import request from 'supertest';
 import { app } from '../index.js';
 
@@ -965,8 +1007,8 @@ test.describe('Travel Planning User Journey', () => {
     await page.fill('[data-testid="message-input"]', 'Plan a 5-day trip to Paris');
 
     // Select tools
-    await page.check('[data-testid="tool-destination-recommendation"]');
-    await page.check('[data-testid="tool-itinerary-planning"]');
+    await page.check('[data-testid="mcp-destination-recommendation"]');
+    await page.check('[data-testid="mcp-itinerary-planning"]');
 
     // Submit request
     await page.click('[data-testid="submit-button"]');
@@ -986,14 +1028,14 @@ test.describe('Travel Planning User Journey', () => {
     await page.goto('http://localhost:4200');
 
     // Initially no tools selected
-    const selectedTools = await page.$$('[data-testid^="tool-"]:checked');
+    const selectedTools = await page.$$('[data-testid^="mcp-"]:checked');
     expect(selectedTools.length).toBe(0);
 
     // Select tools
-    await page.check('[data-testid="tool-echo-ping"]');
+    await page.check('[data-testid="mcp-echo-ping"]');
 
     // Verify selection
-    const newSelectedTools = await page.$$('[data-testid^="tool-"]:checked');
+    const newSelectedTools = await page.$$('[data-testid^="mcp-"]:checked');
     expect(newSelectedTools.length).toBe(2);
   });
 });
@@ -1058,7 +1100,7 @@ console.log('Tools result:', result);
 #### Using Node.js Inspector
 ```bash
 # Start API with inspector
-cd packages/api
+cd packages/api-{orchestrator}-{language} (or packages/api-{orchestrator}-{language})
 npm run debug
 
 # Connect Chrome DevTools
@@ -1068,7 +1110,7 @@ npm run debug
 
 #### Logging and Tracing
 ```typescript
-// packages/api/src/utils/logger.ts
+// packages/api-{orchestrator}-{language}/src/utils/logger.ts
 import { trace } from '@opentelemetry/api';
 
 const tracer = trace.getTracer('api-debug');
@@ -1095,14 +1137,14 @@ debugLog('Processing MCP tool call', { toolName, args });
 #### Docker Container Debugging
 ```bash
 # View logs for specific MCP server
-docker-compose logs -f tool-echo-ping
+docker-compose logs -f mcp-echo-ping
 
 # Execute commands inside container
-docker-compose exec tool-echo-ping /bin/sh
+docker-compose exec mcp-echo-ping /bin/sh
 
 # Debug network connectivity
-docker-compose exec web-api ping tool-echo-ping
-docker-compose exec web-api curl http://tool-echo-ping:3000/health
+docker-compose exec web-api ping mcp-echo-ping
+docker-compose exec web-api curl http://mcp-echo-ping:3000/health
 ```
 
 #### MCP Protocol Debugging
@@ -1133,7 +1175,7 @@ mcpClient.on('response', (response) => {
 # Available for Chrome and Firefox
 
 # Use Angular CLI in debug mode
-cd packages/ui
+cd packages/ui-angular
 ng serve --source-map --verbose
 ```
 
@@ -1164,7 +1206,7 @@ export class MyComponent {
 
 #### Network Debugging
 ```typescript
-// packages/ui/src/app/services/api.service.ts
+// packages/ui-{framework}src/app/services/api.service.ts
 export class ApiService {
   async streamChatMessage(message: string, tools: Tools[]) {
     // Add request/response logging

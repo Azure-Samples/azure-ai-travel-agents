@@ -78,6 +78,10 @@ export default withMermaid({
             text: "Advanced Setup",
             link: "/advanced-setup.md",
           },
+          {
+            text: "Package Naming Guide",
+            link: "/package-naming-guide.md",
+          },
         ],
       },
       {

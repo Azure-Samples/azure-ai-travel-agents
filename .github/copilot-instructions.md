@@ -7,7 +7,7 @@
   - **LangChain.js** (current default) at `packages/api/src/orchestrator/langchain/`
   - **LlamaIndex.TS** (available alternative) at `packages/api/src/orchestrator/llamaindex/`
   - **Microsoft Agent Framework** (Python alternative) at `packages/api-python/`
-- Each tool is isolated in its own directory under `packages/tools/` and communicates via HTTP APIs or Model Context Protocol (MCP).
+- Each tool is isolated in its own directory under `packages/mcp-servers/` and communicates via HTTP APIs or Model Context Protocol (MCP).
 - The frontend UI is in `packages/ui/` (Angular + Tailwind CSS), talking to the API gateway.
 - Infrastructure is managed with Bicep templates in `infra/` and setup scripts in `infra/hooks/`.
 
@@ -16,7 +16,7 @@
 - **Build & Run All Services:**  
   Run `./run.sh` from the repo root to build and start all services locally via Docker Compose.
 - **Service-Specific Development:**  
-  Each tool under `packages/tools/` can be built and run independently using its language's standard commands (e.g., `npm`, `mvnw`, `python`).
+  Each tool under `packages/mcp-servers/` can be built and run independently using its language's standard commands (e.g., `npm`, `mvnw`, `python`).
 - **UI Development:**  
   Run `npm start` in `packages/ui/` for local frontend development.
 - **Infrastructure Deployment:**  
@@ -48,12 +48,12 @@
   - **LlamaIndex.TS orchestrator**: `packages/api/src/orchestrator/llamaindex/`
   - **Microsoft Agent Framework**: `packages/api-python/src/orchestrator/`
 - **MCP (Model Context Protocol):**  
-  All tools implement MCP for standardized communication. MCP servers in `packages/tools/` (TypeScript, Python, C#, Java).
+  All tools implement MCP for standardized communication. MCP servers in `packages/mcp-servers/` (TypeScript, Python, C#, Java).
 
 ## Patterns & Examples
 
 - **Adding a New Tool:**  
-  Scaffold under `packages/tools/`, provide a `Dockerfile`, and register with the API gateway:
+  Scaffold under `packages/mcp-servers/`, provide a `Dockerfile`, and register with the API gateway:
   - For **LangChain.js**: Update `packages/api/src/mcp/mcp-tools.ts` and `packages/api/src/orchestrator/langchain/tools/index.ts`
   - For **LlamaIndex.TS**: Update `packages/api/src/orchestrator/llamaindex/tools/index.ts`
   - For **Microsoft Agent Framework**: Update `packages/api-python/src/orchestrator/tools/tool_config.py`
@@ -71,7 +71,7 @@
   - `src/orchestrator/llamaindex/` - LlamaIndex.TS orchestrator (available alternative)
   - `src/mcp/` - MCP client implementation
 - `packages/api-python/` - Python-based API with Microsoft Agent Framework orchestrator
-- `packages/tools/` - MCP servers (microservices in TypeScript, Python, C#, Java)
+- `packages/mcp-servers/` - MCP servers (microservices in TypeScript, Python, C#, Java)
 - `packages/ui/` - Angular frontend
 - `infra/` - Infrastructure as code (Bicep, setup scripts)
 - `docs/` - Architecture and API documentation (see `docs/orchestration.md` for orchestrator comparison)
