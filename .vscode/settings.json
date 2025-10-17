@@ -1,5 +1,14 @@
 {
     "python-envs.defaultEnvManager": "ms-python.python:conda",
     "python-envs.defaultPackageManager": "ms-python.python:conda",
-    "python-envs.pythonProjects": []
+    "python-envs.pythonProjects": [],
+    "github.copilot.chat.codeGeneration.instructionFiles": [
+        "AGENTS.md",
+        ".github/copilot-instructions.md"
+    ],
+    "github.copilot.chat.instructions": [
+        {
+            "file": "AGENTS.md"
+        }
+    ]
 }

@@ -4,7 +4,7 @@
 printf ">> Installing dependencies for the UI service...\n"
 if [ ! -d ./packages/ui/node_modules ]; then
     printf "Installing dependencies for the UI service...\n"
-    npm ci --prefix=src/ui
+    npm ci --prefix=./packages/ui
     status=$?
     if [ $status -ne 0 ]; then
         printf "UI dependencies installation failed with exit code $status. Exiting.\n"

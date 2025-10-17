@@ -111,8 +111,9 @@ services:
     environment:
       - DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS=true
 
-  llm:
-    provider:
-      type: model
-      options:
-        model: ${DOCKER_MODEL:-ai/phi4:14B-Q4_0}
+# To use a local Docker-based LLM model, uncomment the following lines and set DOCKER_MODEL env variable as needed
+  #llm:
+  #  provider:
+  #    type: model
+  #    options:
+  #      model: ${DOCKER_MODEL:-ai/phi4:14B-Q4_0}

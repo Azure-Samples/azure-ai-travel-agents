@@ -4,14 +4,17 @@
     "dockerfile": "./Dockerfile",
     "context": "."
   },
-  "runArgs": ["--init", "--privileged"],
+  "runArgs": [
+    "--init",
+    "--privileged"
+  ],
   "mounts": [
-        // Keep command history 
-        "source=ostf-bashhistory,target=/commandhistory,type=volume",
-        // Use docker-in-docker socket
-        "source=dind-var-lib-docker,target=/var/lib/docker,type=volume"
-    ],
-    "overrideCommand": false,
+    // Keep command history 
+    "source=ostf-bashhistory,target=/commandhistory,type=volume",
+    // Use docker-in-docker socket
+    "source=dind-var-lib-docker,target=/var/lib/docker,type=volume"
+  ],
+  "overrideCommand": false,
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {
       "installZsh": "true",
@@ -26,6 +29,9 @@
     "ghcr.io/devcontainers/features/github-cli:1": {},
     "ghcr.io/devcontainers/features/node:1": {
       "version": "lts"
+    },
+    "ghcr.io/devcontainers/features/dotnet:2": {
+      "version": "9.0"
     }
   },
   "customizations": {
@@ -33,7 +39,8 @@
       "extensions": [
         "esbenp.prettier-vscode",
         "ms-azuretools.vscode-docker",
-        "GitHub.copilot"
+        "GitHub.copilot",
+        "ms-dotnettools.csdevkit"
       ]
     }
   },
