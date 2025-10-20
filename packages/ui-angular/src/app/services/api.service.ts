@@ -65,14 +65,68 @@ export interface ChatMessage {
 export class ApiService {
   ngZone = inject(NgZone);
   private readonly http = inject(HttpClient);
-  private apiUrl = environment.apiServerUrl;
+  private apiUrl = '';
   chatStreamState = new BehaviorSubject<Partial<ChatStreamState>>({});
 
  // Track both position and incomplete JSON
   private lastProcessedIndex = 0;
   private incompleteJsonBuffer = '';
 
+  async getAvailableApiUrls(): Promise<{ label: string; url: string, isOnline: boolean }[]> {
+    return [
+      {
+        ...environment.apiLangChainJsServer,
+        isOnline: await this.checkApiHealth(environment.apiLangChainJsServer.url),
+      },
+      {
+        ...environment.apiLlamaIndexTsServer,
+        isOnline: await this.checkApiHealth(environment.apiLlamaIndexTsServer.url),
+      },
+      {
+        ...environment.apiMafPythonServer,
+        isOnline: await this.checkApiHealth(environment.apiMafPythonServer.url),
+      },
+    ];
+  }
+
+  private async checkApiHealth(url: string): Promise<boolean> {
+    const healthUrl = `${url}/api/health`;
+    try {
+      const response = await fetch(healthUrl, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      return response.ok;
+    } catch (error) {
+      console.error(`Health check failed for ${healthUrl}:`);
+      return false;
+    }
+  }
+
+  setApiUrl(url: string) {
+    this.apiUrl = url;
+  }
+
+  async initializeApiUrlToDefault() {
+    const apiUrls = await this.getAvailableApiUrls();
+    const onlineApi = apiUrls.find(api => api.isOnline);
+    if (onlineApi) {
+      this.apiUrl = onlineApi.url;
+    } else if (apiUrls.length > 0) {
+      this.apiUrl = apiUrls[0].url;
+    } else {
+      throw new Error('No API URLs are configured.');
+    }
+  }
+
   async fetchAvailableTools(): Promise<{ tools: Tools[] } | void> {
+
+    if (!this.apiUrl) {
+      await this.initializeApiUrlToDefault();
+    }
+
     try {
       const response = await fetch(`${this.apiUrl}/api/tools`, {
         method: 'GET',

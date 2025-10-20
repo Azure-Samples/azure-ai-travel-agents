@@ -32,8 +32,16 @@ export class ChatService {
   async fetchAvailableTools() {
     const toolsResult = await this.apiService.fetchAvailableTools();
     if (toolsResult) {
-      this.tools.set(toolsResult.tools.filter((tool) => tool.selected));
+      this.tools.set(toolsResult.tools);
     }
+  }
+
+  async fetchAvailableApiUrls() {
+    return await this.apiService.getAvailableApiUrls();
+  }
+
+  setApiUrl(url: string) {
+    this.apiService.setApiUrl(url);
   }
 
   async sendMessage(event: Event) {

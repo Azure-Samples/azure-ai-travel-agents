@@ -89,11 +89,12 @@
               class="flex flex-row rounded-3xl px-4 py-2 w-full"
             >
               @for (evt of message.metadata?.events; track $index) {
-                @if((evt.event !== 'AgentStream' && evt.event !== 'AgentDelta' && evt.event !== 'llm_token')) {
+              @if((evt.event !== 'AgentStream' && evt.event !== 'AgentDelta' &&
+              evt.event !== 'llm_token')) {
               <accordion-preview
                 [isOpened]="false"
                 icon="lucideCheck"
-                [title]="'Processing ' + evt.kind + ' event: ' +  evt.event"
+                [title]="'Processing ' + evt.kind + ' event: ' + evt.event"
                 class="flex flex-row rounded-3xl px-4 w-full"
               >
                 <div class="text-muted-foreground">
@@ -237,6 +238,28 @@
                 {{ tool.name }}
               </div>
               }
+            </div>
+            <div class="space-y-2">
+              <h4 class="font-medium leading-none">Orchestration API</h4>
+            </div>
+            <div class="grid gap-2">
+              <brn-select
+                class="inline-block"
+                placeholder="Select an option"
+                [(ngModel)]="selectedApiUrl"
+              >
+                <hlm-select-trigger class="w-56">
+                  <hlm-select-value />
+                </hlm-select-trigger>
+                <hlm-select-content>
+                  @for( api of availableApiUrls(); track api) {
+                  <hlm-option [value]="api.url" [disabled]="!api.isOnline">
+                    {{ api.label }}
+                    @if(!api.isOnline) { (Offline) }
+                  </hlm-option>
+                  }
+                </hlm-select-content>
+              </brn-select>
             </div>
           </div>
         </brn-popover>
