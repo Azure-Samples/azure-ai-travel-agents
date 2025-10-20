@@ -1,0 +1,270 @@
+{
+  "adventure": {
+    "name": "Azure AI Travel Agents",
+    "description": "A multi-agent AI system demonstrating three orchestration frameworks (LangChain.js, LlamaIndex.TS, Microsoft Agent Framework) using the Model Context Protocol (MCP) to coordinate specialized travel planning agents across multiple programming languages.",
+    "url": "https://github.com/Azure-Samples/ai-travel-agents",
+    "customInstructions": "This project showcases different AI orchestration patterns using MCP as the common integration protocol. Each orchestrator (LangChain.js, LlamaIndex.TS, MAF) is a standalone service that coordinates with the same set of MCP tool servers. Focus on how different frameworks approach agent coordination, streaming, and tool integration.",
+    "quests": [
+      {
+        "title": "LangChain.js Orchestration",
+        "description": "Explore how LangChain.js with LangGraph implements a supervisor pattern to coordinate multiple AI agents. Learn about streaming responses, dynamic tool creation, and agent workflow management using the latest LangChain patterns.",
+        "files": [
+          {
+            "path": "packages/api-langchain-js/src/server.ts",
+            "description": "Express API server entry point that handles chat streaming via Server-Sent Events (SSE) and coordinates with the LangGraph workflow",
+            "highlights": [
+              {
+                "name": "POST /chat endpoint",
+                "description": "Streams chat responses using SSE, manages workflow initialization, and handles agent selection based on available MCP tools"
+              },
+              {
+                "name": "setupAgents",
+                "description": "Initializes the agent workflow by discovering and filtering available MCP tools before creating the supervisor and specialized agents"
+              }
+            ]
+          },
+          {
+            "path": "packages/api-langchain-js/src/graph/index.ts",
+            "description": "LangGraph workflow implementation using the supervisor pattern to orchestrate multiple specialized agents",
+            "highlights": [
+              {
+                "name": "TravelAgentsWorkflow.initialize",
+                "description": "Sets up the agent graph with filtered MCP tools and creates the supervisor that routes requests to specialized agents"
+              },
+              {
+                "name": "TravelAgentsWorkflow.run",
+                "description": "Executes the workflow using streamEvents to yield real-time updates including LLM tokens, tool calls, and agent transitions"
+              }
+            ]
+          },
+          {
+            "path": "packages/api-langchain-js/src/agents/index.ts",
+            "description": "Agent creation logic that dynamically builds specialized agents based on available MCP tools",
+            "highlights": [
+              {
+                "name": "setupAgents",
+                "description": "Creates specialized agents (Echo, CustomerQuery, Destination, Itinerary) using createReactAgent and configures the supervisor with createSupervisor"
+              },
+              {
+                "name": "createMcpTools",
+                "description": "Converts MCP server definitions into LangChain DynamicStructuredTools that agents can use"
+              }
+            ]
+          },
+          {
+            "path": "packages/api-langchain-js/src/tools/mcp-bridge.ts",
+            "description": "Bridge layer that converts MCP protocol tools into LangChain-compatible tools with proper schema validation",
+            "highlights": [
+              {
+                "name": "createMcpToolsFromDefinition",
+                "description": "Connects to MCP servers, retrieves tool schemas, and wraps them as DynamicStructuredTools with Zod validation"
+              },
+              {
+                "name": "Tool invocation handler",
+                "description": "Executes MCP tool calls by sending properly formatted requests to MCP servers and processing responses"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Model Context Protocol (MCP) Integration",
+        "description": "Understand how the Model Context Protocol enables standardized communication between orchestrators and tool servers. Learn about MCP clients, tool discovery, and cross-language integration patterns.",
+        "files": [
+          {
+            "path": "packages/api-langchain-js/src/mcp/mcp-tools.ts",
+            "description": "Core MCP client management that discovers and lists available tools from multiple MCP servers",
+            "highlights": [
+              {
+                "name": "mcpToolsList",
+                "description": "Connects to all configured MCP servers in parallel, retrieves their available tools, and handles connection failures gracefully"
+              },
+              {
+                "name": "client factory",
+                "description": "Creates appropriate MCP client instances (HTTP or SSE) based on server configuration for flexible transport options"
+              }
+            ]
+          },
+          {
+            "path": "packages/api-langchain-js/src/mcp/mcp-http-client.ts",
+            "description": "HTTP-based MCP client implementation for communicating with MCP servers using RESTful requests",
+            "highlights": [
+              {
+                "name": "MCPHTTPClient.connect",
+                "description": "Establishes connection to MCP server and performs protocol negotiation using JSON-RPC 2.0"
+              },
+              {
+                "name": "MCPHTTPClient.callTool",
+                "description": "Executes tool calls by sending properly formatted JSON-RPC requests and parsing responses according to MCP spec"
+              }
+            ]
+          },
+          {
+            "path": "packages/mcp-servers/echo-ping/src/server.ts",
+            "description": "Example MCP server implementation in TypeScript showing how to build MCP-compliant tool servers",
+            "highlights": [
+              {
+                "name": "EchoMCPServer.handlePostRequest",
+                "description": "Processes incoming MCP requests using StreamableHTTPServerTransport for bidirectional streaming communication"
+              },
+              {
+                "name": "setupServerRequestHandlers",
+                "description": "Registers MCP protocol handlers for tool listing and tool execution requests following the MCP specification"
+              }
+            ]
+          },
+          {
+            "path": "packages/mcp-servers/itinerary-planning/src/mcp_server.py",
+            "description": "Python MCP server demonstrating FastMCP framework for building travel itinerary planning tools",
+            "highlights": [
+              {
+                "name": "@mcp.tool decorator",
+                "description": "Exposes Python functions as MCP tools with automatic schema generation from type hints and Pydantic models"
+              },
+              {
+                "name": "suggest_hotels tool",
+                "description": "Generates hotel recommendations with detailed attributes (location, pricing, amenities) showcasing complex data structures in MCP"
+              },
+              {
+                "name": "search_flights tool",
+                "description": "Creates flight options including multi-segment routes and connections, demonstrating nested data handling in MCP responses"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Multi-Provider LLM Integration",
+        "description": "Discover how the system supports multiple LLM providers (Azure OpenAI, Docker Models, GitHub Models, Ollama) with a unified interface. Learn about provider abstraction and configuration patterns.",
+        "files": [
+          {
+            "path": "packages/api-langchain-js/src/providers/index.ts",
+            "description": "Provider factory that selects and initializes the appropriate LLM based on environment configuration",
+            "highlights": [
+              {
+                "name": "llm factory function",
+                "description": "Routes to the correct LLM provider based on LLM_PROVIDER environment variable, supporting azure-openai, github-models, docker-models, ollama-models, and foundry-local"
+              }
+            ]
+          },
+          {
+            "path": "packages/api-langchain-js/src/providers/azure-openai.ts",
+            "description": "Azure OpenAI provider configuration with support for both standard and Foundry deployments",
+            "highlights": [
+              {
+                "name": "llm function",
+                "description": "Configures AzureChatOpenAI with streaming enabled, temperature controls, and Foundry-specific endpoint handling for Azure AI deployments"
+              }
+            ]
+          },
+          {
+            "path": "packages/api-langchain-js/src/providers/docker-models.ts",
+            "description": "Docker Models provider for local LLM execution using Docker containers",
+            "highlights": [
+              {
+                "name": "llm function",
+                "description": "Sets up ChatOpenAI to connect to locally-running LLM containers via Docker Model Runner, enabling offline development"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Angular UI and Real-time Streaming",
+        "description": "Explore the Angular frontend that handles Server-Sent Events (SSE) streaming for real-time agent responses. Learn about state management, markdown rendering, and progressive message updates.",
+        "files": [
+          {
+            "path": "packages/ui-angular/src/app/services/api.service.ts",
+            "description": "Angular service that manages API communication and processes SSE streams from the backend",
+            "highlights": [
+              {
+                "name": "stream method",
+                "description": "Handles HTTP POST with SSE by processing HttpDownloadProgressEvent chunks, parsing NDJSON responses, and emitting structured chat events"
+              },
+              {
+                "name": "ChatEvent interface",
+                "description": "Defines the event structure for metadata, errors, and messages flowing from agents including agent names, reasoning steps, and tool calls"
+              },
+              {
+                "name": "fetchAvailableTools",
+                "description": "Retrieves and displays available MCP tools, allowing users to see which travel planning capabilities are active"
+              }
+            ]
+          },
+          {
+            "path": "packages/ui-angular/src/app/chat-conversation/chat-conversation.service.ts",
+            "description": "Chat state management service that coordinates message flow, agent events, and UI updates",
+            "highlights": [
+              {
+                "name": "sendMessage",
+                "description": "Orchestrates the chat flow by sending user messages, managing loading states, and processing streamed responses into the message buffer"
+              },
+              {
+                "name": "messagesStream BehaviorSubject",
+                "description": "Reactive stream that emits message updates as they arrive, enabling real-time UI updates with markdown rendering"
+              },
+              {
+                "name": "agentEventsBuffer",
+                "description": "Accumulates agent events (tool calls, reasoning) for display in the UI, providing transparency into agent decision-making"
+              }
+            ]
+          },
+          {
+            "path": "packages/ui-angular/src/app/chat-conversation/chat-conversation.component.ts",
+            "description": "Main chat interface component that renders messages, handles user input, and displays agent activity",
+            "highlights": [
+              {
+                "name": "Component initialization",
+                "description": "Sets up message stream subscriptions, fetches available tools on startup, and configures marked.js for markdown rendering of agent responses"
+              },
+              {
+                "name": "Event stream processing",
+                "description": "Processes different event types (metadata, message, error, end) to update UI state and display agent reasoning in real-time"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "LlamaIndex.TS Alternative Orchestration",
+        "description": "Compare LlamaIndex.TS's approach to agent orchestration with its workflow-based pattern and tool integration. See how it differs from LangChain.js while using the same MCP tools.",
+        "files": [
+          {
+            "path": "packages/api-llamaindex-ts/src/server.ts",
+            "description": "LlamaIndex.TS Express server with similar API structure but different orchestration implementation",
+            "highlights": [
+              {
+                "name": "POST /chat endpoint",
+                "description": "Implements SSE streaming using LlamaIndex.TS workflow pattern with different event types and agent coordination"
+              }
+            ]
+          },
+          {
+            "path": "packages/api-llamaindex-ts/src/index.ts",
+            "description": "LlamaIndex.TS orchestrator setup with workflow-based agent coordination",
+            "highlights": [
+              {
+                "name": "setupAgents",
+                "description": "Creates LlamaIndex agents using the Workflow pattern with triage-based routing instead of supervisor pattern"
+              },
+              {
+                "name": "Agent workflow",
+                "description": "Defines agent interaction flow using LlamaIndex's native workflow system for coordinating specialized travel agents"
+              }
+            ]
+          },
+          {
+            "path": "packages/api-llamaindex-ts/src/tools/mcp-bridge.ts",
+            "description": "LlamaIndex-specific MCP tool bridge showing framework-specific tool integration patterns",
+            "highlights": [
+              {
+                "name": "createMcpToolsFromDefinition",
+                "description": "Converts MCP tools to LlamaIndex FunctionTool format with schema mapping differences from LangChain implementation"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -9,6 +9,7 @@ export default withMermaid({
   title: "Azure AI Travel Agents",
   description: "Documentation for Azure AI Travel Agents",
   lang: "en-US",
+  srcDir: "src",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     logo: "ai-travel-agents-logo.png",
@@ -21,39 +22,43 @@ export default withMermaid({
         { name: "apple-mobile-web-app-status-bar-style", content: "black" },
       ],
     ],
-    navbar: [
+    nav: [
       {
         text: "Getting Started",
-        link: "/",
+        link: "/getting-started",
       },
       {
         text: "Architecture",
-        children: [
+        items: [
           {
             text: "Technical Architecture",
-            link: "/technical-architecture.md",
+            link: "/technical-architecture",
           },
-          { text: "Flow Diagrams", link: "/flow-diagrams.md" },
+          { text: "Flow Diagrams", link: "/flow-diagrams" },
           {
             text: "Deployment Architecture",
-            link: "/deployment-architecture.md",
+            link: "/deployment-architecture",
           },
         ],
       },
       {
         text: "Implementation",
-        children: [
-          { text: "MCP Servers", link: "/mcp-servers.md" },
-          { text: "Development Guide", link: "/development-guide.md" },
+        items: [
+          { text: "MCP Servers", link: "/mcp-servers" },
+          { text: "Development Guide", link: "/development-guide" },
         ],
       },
       {
         text: "Orchestration",
-        children: [
-          { text: "Orchestration Overview", link: "/orchestration.md" },
-          { text: "LlamaIndex.TS (Current)", link: "/technical-architecture.md#agent-orchestration" },
-          { text: "MAF Implementation", link: "https://github.com/Azure-Samples/azure-ai-travel-agents/tree/main/src/api-python" },
+        items: [
+          { text: "Orchestration Overview", link: "/orchestration" },
+          { text: "LlamaIndex.TS (Current)", link: "/technical-architecture#agent-orchestration" },
+          { text: "MAF Implementation", link: "/maf-orchestration-design" },
         ],
+      },
+      {
+        text: "AI Adventures",
+        link: "/adventures/index.html",
       },
       {
         text: "Star Us",
@@ -68,19 +73,19 @@ export default withMermaid({
         items: [
           {
             text: "Welcome",
-            link: "/index.md",
+            link: "/index",
           },
           {
             text: "Quick Start Guide",
-            link: "/getting-started.md",
+            link: "/getting-started",
           },
           {
             text: "Advanced Setup",
-            link: "/advanced-setup.md",
+            link: "/advanced-setup",
           },
           {
             text: "Package Naming Guide",
-            link: "/package-naming-guide.md",
+            link: "/package-naming-guide",
           },
         ],
       },
@@ -90,19 +95,19 @@ export default withMermaid({
         items: [
           {
             text: "Overview",
-            link: "/overview.md",
+            link: "/overview",
           },
           {
             text: "Technical Architecture",
-            link: "/technical-architecture.md",
+            link: "/technical-architecture",
           },
           {
             text: "Flow Diagrams",
-            link: "/flow-diagrams.md",
+            link: "/flow-diagrams",
           },
           {
             text: "Deployment Architecture",
-            link: "/deployment-architecture.md",
+            link: "/deployment-architecture",
           },
         ],
       },
@@ -112,11 +117,11 @@ export default withMermaid({
         items: [
           {
             text: "Orchestration Overview",
-            link: "/orchestration.md",
+            link: "/orchestration",
           },
           {
             text: "LlamaIndex.TS (Current)",
-            link: "/technical-architecture.md#agent-orchestration",
+            link: "/technical-architecture#agent-orchestration",
           },
           {
             text: "MAF Implementation (Python)",
@@ -130,11 +135,11 @@ export default withMermaid({
         items: [
           {
             text: "MCP Servers",
-            link: "/mcp-servers.md",
+            link: "/mcp-servers",
           },
           {
             text: "Development Guide",
-            link: "/development-guide.md",
+            link: "/development-guide",
           },
         ],
       },
@@ -144,33 +149,37 @@ export default withMermaid({
         items: [
           {
             text: "MAF Overview",
-            link: "/MAF-README.md",
+            link: "/MAF-README",
           },
           {
             text: "Visual Guide",
-            link: "/maf-visual-guide.md",
+            link: "/maf-visual-guide",
           },
           {
             text: "Orchestration Design",
-            link: "/maf-orchestration-design.md",
+            link: "/maf-orchestration-design",
           },
           {
             text: "Implementation Guide",
-            link: "/maf-implementation-guide.md",
+            link: "/maf-implementation-guide",
           },
           {
             text: "Comparison (MAF vs LlamaIndex)",
-            link: "/maf-comparison.md",
+            link: "/maf-comparison",
           },
           {
             text: "Migration Plan",
-            link: "/maf-migration-plan.md",
+            link: "/maf-migration-plan",
           },
           {
             text: "Quick Reference",
-            link: "/maf-quick-reference.md",
+            link: "/maf-quick-reference",
           },
         ],
+      },
+      {
+        text: "AI Adventures",
+        link: "/adventures/index.html",
       },
     ],
 
@@ -203,6 +212,9 @@ export default withMermaid({
         },
       }),
     ],
+  },
+  rewrites: {
+    'labs/index.html': 'labs/adventures/index.html',
   },
   ignoreDeadLinks: [
     // ignore all localhost links
