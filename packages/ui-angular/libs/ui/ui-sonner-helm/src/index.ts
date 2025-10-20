@@ -1,1 +1,5 @@
-export * from './lib/hlm-toaster.component';
+import { HlmToaster } from './lib/hlm-toaster';
+
+export * from './lib/hlm-toaster';
+
+export const HlmToasterImports = [HlmToaster] as const;

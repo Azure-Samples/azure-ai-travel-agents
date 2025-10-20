@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { HlmSkeletonComponent } from '@spartan-ng/ui-skeleton-helm';
+import { HlmSkeletonImports } from '@spartan-ng/helm/skeleton';
 
 @Component({
   selector: 'skeleton-preview',
   standalone: true,
-  imports: [HlmSkeletonComponent],
+  imports: [HlmSkeletonImports],
   template: `
     <div class='flex items-center p-4 m-4 w-fit space-x-4'>
       <hlm-skeleton class='w-12 h-12 rounded-full' />

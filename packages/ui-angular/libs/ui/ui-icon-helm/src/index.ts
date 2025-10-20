@@ -1,11 +1,7 @@
-import { NgModule } from '@angular/core';
-import { HlmIconDirective } from './lib/hlm-icon.directive';
+import { NgIcon } from '@ng-icons/core';
+import { HlmIcon } from './lib/hlm-icon';
 
-export * from './lib/hlm-icon.directive';
+export * from './lib/hlm-icon';
 export * from './lib/hlm-icon.token';
 
-@NgModule({
-	imports: [HlmIconDirective],
-	exports: [HlmIconDirective],
-})
-export class HlmIconModule {}
+export const HlmIconImports = [HlmIcon, NgIcon] as const;

@@ -1,31 +1,21 @@
 import { Component, input } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideBrain, lucideCheck, lucideChevronDown } from '@ng-icons/lucide';
-import {
-  HlmAccordionContentComponent,
-  HlmAccordionDirective,
-  HlmAccordionIconDirective,
-  HlmAccordionItemDirective,
-  HlmAccordionTriggerDirective,
-} from '@spartan-ng/ui-accordion-helm';
-import { HlmIconDirective } from '@spartan-ng/ui-icon-helm';
+import { HlmAccordionImports } from '@spartan-ng/helm/accordion';
+import { HlmIconImports } from '@spartan-ng/helm/icon';
 
 @Component({
 	selector: 'accordion-preview',
 	standalone: true,
 	imports: [
-		HlmAccordionDirective,
-		HlmAccordionItemDirective,
-		HlmAccordionTriggerDirective,
-		HlmAccordionContentComponent,
-		HlmAccordionIconDirective,
-		HlmIconDirective,
+		HlmAccordionImports,
+    HlmIconImports,
     NgIcon,
 	],
 	viewProviders: [provideIcons({ lucideChevronDown, lucideCheck, lucideBrain })],
 	template: `
 		<div hlmAccordion class="w-full scroll-m-0">
-			<div hlmAccordionItem class="max-h-[300px] !border-b-0" [isOpened]="isOpened()">
+			<h6 hlmAccordionItem class="max-h-[300px] !border-b-0" [isOpened]="isOpened()">
         <button hlmAccordionTrigger>
 					<span class="flex gap-2">
             <ng-icon hlm hlmAlertIcon [name]="icon()" />
@@ -36,7 +26,7 @@ import { HlmIconDirective } from '@spartan-ng/ui-icon-helm';
 				<hlm-accordion-content class="overflow-y-scroll">
           <ng-content></ng-content>
         </hlm-accordion-content>
-			</div>
+			</h6>
 		</div>
 	`,
   styles: [

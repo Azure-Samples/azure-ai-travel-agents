@@ -1,24 +1,11 @@
-import { NgModule } from '@angular/core';
+import { HlmAlert } from './lib/hlm-alert';
+import { HlmAlertDescription } from './lib/hlm-alert-description';
+import { HlmAlertIcon } from './lib/hlm-alert-icon';
+import { HlmAlertTitle } from './lib/hlm-alert-title';
 
-import { HlmAlertDescriptionDirective } from './lib/hlm-alert-description.directive';
-import { HlmAlertIconDirective } from './lib/hlm-alert-icon.directive';
-import { HlmAlertTitleDirective } from './lib/hlm-alert-title.directive';
-import { HlmAlertDirective } from './lib/hlm-alert.directive';
+export * from './lib/hlm-alert';
+export * from './lib/hlm-alert-description';
+export * from './lib/hlm-alert-icon';
+export * from './lib/hlm-alert-title';
 
-export * from './lib/hlm-alert-description.directive';
-export * from './lib/hlm-alert-icon.directive';
-export * from './lib/hlm-alert-title.directive';
-export * from './lib/hlm-alert.directive';
-
-export const HlmAlertImports = [
-	HlmAlertDirective,
-	HlmAlertTitleDirective,
-	HlmAlertDescriptionDirective,
-	HlmAlertIconDirective,
-] as const;
-
-@NgModule({
-	imports: [...HlmAlertImports],
-	exports: [...HlmAlertImports],
-})
-export class HlmAlertModule {}
+export const HlmAlertImports = [HlmAlert, HlmAlertTitle, HlmAlertDescription, HlmAlertIcon] as const;

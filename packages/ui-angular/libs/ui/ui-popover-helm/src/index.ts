@@ -1,15 +1,7 @@
-import { NgModule } from '@angular/core';
+import { HlmPopoverClose } from './lib/hlm-popover-close';
+import { HlmPopoverContent } from './lib/hlm-popover-content';
 
-import { HlmPopoverCloseDirective } from './lib/hlm-popover-close.directive';
-import { HlmPopoverContentDirective } from './lib/hlm-popover-content.directive';
+export * from './lib/hlm-popover-close';
+export * from './lib/hlm-popover-content';
 
-export * from './lib/hlm-popover-close.directive';
-export * from './lib/hlm-popover-content.directive';
-
-export const HlmPopoverImports = [HlmPopoverContentDirective, HlmPopoverCloseDirective] as const;
-
-@NgModule({
-	imports: [...HlmPopoverImports],
-	exports: [...HlmPopoverImports],
-})
-export class HlmPopoverModule {}
+export const HlmPopoverImports = [HlmPopoverContent, HlmPopoverClose] as const;

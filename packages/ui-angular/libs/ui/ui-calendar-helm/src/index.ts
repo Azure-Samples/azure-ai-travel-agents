@@ -1,10 +1,9 @@
-import { NgModule } from '@angular/core';
-import { HlmCalendarComponent } from './lib/hlm-calendar.component';
+import { HlmCalendar } from './lib/hlm-calendar';
+import { HlmCalendarMulti } from './lib/hlm-calendar-multi';
+import { HlmCalendarRange } from './lib/hlm-calendar-range';
 
-export * from './lib/hlm-calendar.component';
+export * from './lib/hlm-calendar';
+export * from './lib/hlm-calendar-multi';
+export * from './lib/hlm-calendar-range';
 
-@NgModule({
-	imports: [HlmCalendarComponent],
-	exports: [HlmCalendarComponent],
-})
-export class HlmCalendarModule {}
+export const HlmCalendarImports = [HlmCalendar, HlmCalendarMulti, HlmCalendarRange] as const;

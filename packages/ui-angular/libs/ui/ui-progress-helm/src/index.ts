@@ -1,15 +1,7 @@
-import { NgModule } from '@angular/core';
+import { HlmProgress } from './lib/hlm-progress';
+import { HlmProgressIndicator } from './lib/hlm-progress-indicator';
 
-import { HlmProgressIndicatorDirective } from './lib/hlm-progress-indicator.directive';
-import { HlmProgressDirective } from './lib/hlm-progress.directive';
+export * from './lib/hlm-progress';
+export * from './lib/hlm-progress-indicator';
 
-export * from './lib/hlm-progress-indicator.directive';
-export * from './lib/hlm-progress.directive';
-
-export const HlmProgressImports = [HlmProgressDirective, HlmProgressIndicatorDirective] as const;
-
-@NgModule({
-	imports: [...HlmProgressImports],
-	exports: [...HlmProgressImports],
-})
-export class HlmProgressModule {}
+export const HlmProgressImports = [HlmProgress, HlmProgressIndicator] as const;

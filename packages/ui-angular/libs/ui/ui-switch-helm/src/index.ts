@@ -1,14 +1,7 @@
-import { NgModule } from '@angular/core';
+import { HlmSwitch } from './lib/hlm-switch';
+import { HlmSwitchThumb } from './lib/hlm-switch-thumb';
 
-import { HlmSwitchThumbDirective } from './lib/hlm-switch-thumb.directive';
-import { HlmSwitchComponent } from './lib/hlm-switch.component';
+export * from './lib/hlm-switch';
+export * from './lib/hlm-switch-thumb';
 
-export * from './lib/hlm-switch-thumb.directive';
-export * from './lib/hlm-switch.component';
-
-export const HlmSwitchImports = [HlmSwitchComponent, HlmSwitchThumbDirective] as const;
-@NgModule({
-	imports: [...HlmSwitchImports],
-	exports: [...HlmSwitchImports],
-})
-export class HlmSwitchModule {}
+export const HlmSwitchImports = [HlmSwitch, HlmSwitchThumb] as const;

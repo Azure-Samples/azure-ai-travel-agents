@@ -1,17 +1,5 @@
-import { NgModule } from '@angular/core';
-import { HlmToggleGroupDirective } from './lib/hlm-toggle-group.directive';
-import { HlmToggleDirective } from './lib/hlm-toggle.directive';
+import { HlmToggle } from './lib/hlm-toggle';
 
-export * from './lib/hlm-toggle-group.directive';
-export * from './lib/hlm-toggle.directive';
-@NgModule({
-	imports: [HlmToggleDirective],
-	exports: [HlmToggleDirective],
-})
-export class HlmToggleModule {}
+export * from './lib/hlm-toggle';
 
-@NgModule({
-	imports: [HlmToggleDirective, HlmToggleGroupDirective],
-	exports: [HlmToggleDirective, HlmToggleGroupDirective],
-})
-export class HlmToggleGroupModule {}
+export const HlmToggleImports = [HlmToggle] as const;
