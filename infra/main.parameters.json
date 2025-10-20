@@ -8,10 +8,10 @@
       "location": {
         "value": "${AZURE_LOCATION}"
       },
-      "apiExists": {
-        "value": "${SERVICE_API_RESOURCE_EXISTS=false}"
+      "apiLangchainJsExists": {
+        "value": "${SERVICE_API_LANGCHAIN_JS_RESOURCE_EXISTS=false}"
       },
-      "apiDefinition": {
+      "apiLangchainJsDefinition": {
         "value": {
           "settings": [
             {
@@ -30,10 +30,54 @@
           ]
         }
       },
-      "uiExists": {
-        "value": "${SERVICE_UI_RESOURCE_EXISTS=false}"
+      "apiLlamaindexTsExists": {
+        "value": "${SERVICE_API_LLAMAINDEX_TS_RESOURCE_EXISTS=false}"
       },
-      "uiDefinition": {
+      "apiLlamaindexTsDefinition": {
+        "value": {
+          "settings": [
+            {
+              "name": "",
+              "value": "${VAR}",
+              "_comment_name": "The name of the environment variable when running in Azure. If empty, ignored.",
+              "_comment_value": "The value to provide. This can be a fixed literal, or an expression like ${VAR} to use the value of 'VAR' from the current environment."
+            },
+            {
+              "name": "",
+              "value": "${VAR_S}",
+              "secret": true,
+              "_comment_name": "The name of the environment variable when running in Azure. If empty, ignored.",
+              "_comment_value": "The value to provide. This can be a fixed literal, or an expression like ${VAR_S} to use the value of 'VAR_S' from the current environment."
+            }
+          ]
+        }
+      },
+      "apiMafPythonExists": {
+        "value": "${SERVICE_API_MAF_PYTHON_RESOURCE_EXISTS=false}"
+      },
+      "apiMafPythonDefinition": {
+        "value": {
+          "settings": [
+            {
+              "name": "",
+              "value": "${VAR}",
+              "_comment_name": "The name of the environment variable when running in Azure. If empty, ignored.",
+              "_comment_value": "The value to provide. This can be a fixed literal, or an expression like ${VAR} to use the value of 'VAR' from the current environment."
+            },
+            {
+              "name": "",
+              "value": "${VAR_S}",
+              "secret": true,
+              "_comment_name": "The name of the environment variable when running in Azure. If empty, ignored.",
+              "_comment_value": "The value to provide. This can be a fixed literal, or an expression like ${VAR_S} to use the value of 'VAR_S' from the current environment."
+            }
+          ]
+        }
+      },
+      "uiAngularExists": {
+        "value": "${SERVICE_UI_ANGULAR_RESOURCE_EXISTS=false}"
+      },
+      "uiAngularDefinition": {
         "value": {
           "settings": [
             {

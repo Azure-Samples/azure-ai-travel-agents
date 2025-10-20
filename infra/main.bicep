@@ -9,12 +9,18 @@ param environmentName string
 @description('Primary location for all resources')
 param location string
 
-param apiExists bool
+param apiLangchainJsExists bool
 @secure()
-param apiDefinition object
-param uiExists bool
+param apiLangchainJsDefinition object 
+param apiLlamaindexTsExists bool
 @secure()
-param uiDefinition object
+param apiLlamaindexTsDefinition object
+param apiMafPythonExists bool
+@secure()
+param apiMafPythonDefinition object
+param uiAngularExists bool
+@secure()
+param uiAngularDefinition object
 param itineraryPlanningExists bool
 @secure()
 param itineraryPlanningDefinition object
@@ -49,10 +55,10 @@ resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   tags: tags
 }
 
-var llamaIndexConfig = {
+var orchestratorConfig = {
   chat: {
     model: 'gpt-5'
-    version: '2024-07-18'
+    version: '2025-08-07'
     capacity: 50
   }
   embedding: {
@@ -65,7 +71,7 @@ var llamaIndexConfig = {
     echo: '123-this-is-a-fake-token-please-use-a-token-provider'
   }
   model_provider: 'openai'
-  llm_temperature: '0.7'
+  llm_temperature: '1'
   llm_max_tokens: '100'
   top_k: '3'
 }
@@ -78,11 +84,15 @@ module resources 'resources.bicep' = {
     location: location
     tags: tags
     principalId: principalId
-    apiExists: apiExists
-    apiDefinition: apiDefinition
-    uiExists: uiExists
-    uiDefinition: uiDefinition
-    llamaIndexConfig: llamaIndexConfig
+    apiLangchainJsExists: apiLangchainJsExists
+    apiLangchainJsDefinition: apiLangchainJsDefinition
+    apiLlamaindexTsExists: apiLlamaindexTsExists
+    apiLlamaindexTsDefinition: apiLlamaindexTsDefinition
+    apiMafPythonExists: apiMafPythonExists
+    apiMafPythonDefinition: apiMafPythonDefinition
+    uiAngularExists: uiAngularExists
+    uiAngularDefinition: uiAngularDefinition
+    orchestratorConfig: orchestratorConfig
     isContinuousIntegration: isContinuousIntegration
     itineraryPlanningExists: itineraryPlanningExists
     itineraryPlanningDefinition: itineraryPlanningDefinition
@@ -96,20 +106,24 @@ module resources 'resources.bicep' = {
 }
 
 output AZURE_CONTAINER_REGISTRY_ENDPOINT string = resources.outputs.AZURE_CONTAINER_REGISTRY_ENDPOINT
-output AZURE_RESOURCE_API_ID string = resources.outputs.AZURE_RESOURCE_API_ID
-output AZURE_RESOURCE_UI_ID string = resources.outputs.AZURE_RESOURCE_UI_ID
+output AZURE_RESOURCE_API_LANGCHAIN_JS_ID string = resources.outputs.AZURE_RESOURCE_API_LANGCHAIN_JS_ID
+output AZURE_RESOURCE_API_LLAMAINDEX_TS_ID string = resources.outputs.AZURE_RESOURCE_API_LLAMAINDEX_TS_ID
+output AZURE_RESOURCE_API_MAF_PYTHON_ID string = resources.outputs.AZURE_RESOURCE_API_MAF_PYTHON_ID
+output AZURE_RESOURCE_UI_ANGULAR_ID string = resources.outputs.AZURE_RESOURCE_UI_ANGULAR_ID
 output AZURE_RESOURCE_ITINERARY_PLANNING_ID string = resources.outputs.AZURE_RESOURCE_ITINERARY_PLANNING_ID
 output AZURE_RESOURCE_CUSTOMER_QUERY_ID string = resources.outputs.AZURE_RESOURCE_CUSTOMER_QUERY_ID
 output AZURE_RESOURCE_DESTINATION_RECOMMENDATION_ID string = resources.outputs.AZURE_RESOURCE_DESTINATION_RECOMMENDATION_ID
 output AZURE_RESOURCE_ECHO_PING_ID string = resources.outputs.AZURE_RESOURCE_ECHO_PING_ID
-output NG_API_URL string = resources.outputs.NG_API_URL
+output NG_API_URL_LANGCHAIN_JS string = resources.outputs.NG_API_URL_LANGCHAIN_JS
+output NG_API_URL_LLAMAINDEX_TS string = resources.outputs.NG_API_URL_LLAMAINDEX_TS
+output NG_API_URL_MAF_PYTHON string = resources.outputs.NG_API_URL_MAF_PYTHON
 output AZURE_OPENAI_ENDPOINT string = resources.outputs.AZURE_OPENAI_ENDPOINT
-output AZURE_OPENAI_DEPLOYMENT string = llamaIndexConfig.chat.model
-output AZURE_OPENAI_API_VERSION string = llamaIndexConfig.chat.version
+output AZURE_OPENAI_DEPLOYMENT string = orchestratorConfig.chat.model
+output AZURE_OPENAI_API_VERSION string = orchestratorConfig.chat.version
 
-//  LlamaIndex configuration
-output EMBEDDING_MODEL string = llamaIndexConfig.embedding.model
-output EMBEDDING_DIM string = llamaIndexConfig.embedding.dim
+//  Orchestrator configuration
+output EMBEDDING_MODEL string = orchestratorConfig.embedding.model
+output EMBEDDING_DIM string = orchestratorConfig.embedding.dim
 output AZURE_CLIENT_ID string = resources.outputs.AZURE_CLIENT_ID
 output AZURE_TENANT_ID string = tenant().tenantId
-output MCP_ECHO_PING_ACCESS_TOKEN string = llamaIndexConfig.sampleAccessTokens.echo
+output MCP_ECHO_PING_ACCESS_TOKEN string = orchestratorConfig.sampleAccessTokens.echo

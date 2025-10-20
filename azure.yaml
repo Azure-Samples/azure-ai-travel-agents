@@ -44,7 +44,7 @@ services:
           shell: sh
           run: 'echo NG_API_URL=\"$NG_API_URL\" > .env.production'
 
-  mcp-customer-query:
+  customer-query:
     project: packages/mcp-servers/customer-query/AITravelAgent.CustomerQueryServer/
     host: containerapp
     language: dotnet
@@ -53,7 +53,7 @@ services:
       path: ../Dockerfile
       remoteBuild: true
 
-  mcp-destination-recommendation:
+  destination-recommendation:
     project: packages/mcp-servers/destination-recommendation
     host: containerapp
     language: java
@@ -62,7 +62,7 @@ services:
       context: .
       remoteBuild: true
 
-  mcp-itinerary-planning:
+  itinerary-planning:
     project: packages/mcp-servers/itinerary-planning
     host: containerapp
     language: python
@@ -71,7 +71,7 @@ services:
       context: .
       remoteBuild: true
 
-  mcp-echo-ping:
+  echo-ping:
     project: packages/mcp-servers/echo-ping
     language: ts
     host: containerapp
@@ -94,8 +94,9 @@ workflows:
       - azd: provision
       - azd: deploy api-langchain-js
       - azd: deploy api-llamaindex-ts
+      - azd: deploy api-maf-python
       - azd: deploy ui-angular
-      - azd: deploy mcp-customer-query
-      - azd: deploy mcp-destination-recommendation
-      - azd: deploy mcp-itinerary-planning
-      - azd: deploy mcp-echo-ping
+      - azd: deploy customer-query
+      - azd: deploy destination-recommendation
+      - azd: deploy itinerary-planning
+      - azd: deploy echo-ping

@@ -5,7 +5,7 @@
 ##########################################################################
 # MCP Tools
 ##########################################################################
-tools="echo-ping customer-query destination-recommendation itinerary-planning"
+tools="mcp-echo-ping mcp-customer-query mcp-destination-recommendation mcp-itinerary-planning"
 printf ">> Creating .env file for the MCP servers...\n"
 
 #  for each tool copy the .env.sample (if it exists) to .env and .env.docker (dont overwrite existing .env files)
@@ -31,4 +31,4 @@ done
 
 #  only build docker compose, do not start the containers yet
 printf ">> Building MCP servers with Docker Compose...\n"
-docker compose -f src/docker-compose.yml up --build -d $(echo $tools | sed 's/\([^ ]*\)/mcp-\1/g')
+docker compose -f docker-compose.yml up --build -d $tools

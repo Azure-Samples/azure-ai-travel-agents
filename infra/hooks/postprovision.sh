@@ -9,85 +9,108 @@
 echo "Running post-deployment script for AI Travel Agents application..."
 
 ##########################################################################
-# API
+# API Services (LangChain.js, LlamaIndex.TS, MAF Python)
 ##########################################################################
 
-echo ">> Creating .env file for the API service..."
-if [ ! -f ./packages/api/.env ]; then
-    echo "# File automatically generated on $(date)" > ./packages/api/.env
-    echo "# See .env.sample for more information" >> ./packages/api/.env
-    echo ""
-    AZURE_OPENAI_ENDPOINT=$(azd env get-value AZURE_OPENAI_ENDPOINT)
-    echo "AZURE_OPENAI_ENDPOINT=\"$AZURE_OPENAI_ENDPOINT\"" >> ./packages/api/.env
-    echo ""
-    echo "LLM_PROVIDER=azure-openai" >> ./packages/api/.env
-    echo ""
-    echo "AZURE_OPENAI_DEPLOYMENT=gpt-5" >> ./packages/api/.env
-    echo ""
-    echo "MCP_CUSTOMER_QUERY_URL=http://localhost:8080" >> ./packages/api/.env
-    echo "MCP_DESTINATION_RECOMMENDATION_URL=http://localhost:5002" >> ./packages/api/.env
-    echo "MCP_ITINERARY_PLANNING_URL=http://localhost:5003" >> ./packages/api/.env
-    echo "MCP_ECHO_PING_URL=http://localhost:5004" >> ./packages/api/.env
-    echo "MCP_ECHO_PING_ACCESS_TOKEN=123-this-is-a-fake-token-please-use-a-token-provider" >> ./packages/api/.env
-    echo ""
-    echo "OTEL_SERVICE_NAME=api" >> ./packages/api/.env
-    echo "OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:18889" >> ./packages/api/.env
-    echo "OTEL_EXPORTER_OTLP_HEADERS=header-value" >> ./packages/api/.env
-fi
+echo ">> Creating .env files for API services..."
 
-# Set overrides for docker environment
-if [ ! -f ./packages/api/.env.docker ]; then
-    echo "# File automatically generated on $(date)" > ./packages/api/.env.docker
-    echo "# See .env.sample for more information" >> ./packages/api/.env.docker
-    echo ""
-    echo "MCP_CUSTOMER_QUERY_URL=http://mcp-customer-query:8080" >> ./packages/api/.env.docker
-    echo "MCP_DESTINATION_RECOMMENDATION_URL=http://mcp-destination-recommendation:5002" >> ./packages/api/.env.docker
-    echo "MCP_ITINERARY_PLANNING_URL=http://mcp-itinerary-planning:5003" >> ./packages/api/.env.docker
-    echo "MCP_ECHO_PING_URL=http://mcp-echo-ping:5004" >> ./packages/api/.env.docker
-fi
+# Get shared Azure OpenAI endpoint
+AZURE_OPENAI_ENDPOINT=$(azd env get-value AZURE_OPENAI_ENDPOINT)
+
+# Function to create API .env file
+create_api_env_file() {
+    local api_path=$1
+    local service_name=$2
+    local port=$3
+    
+    if [ ! -f "$api_path/.env" ]; then
+        echo "# File automatically generated on $(date)" > "$api_path/.env"
+        echo "# See .env.sample for more information" >> "$api_path/.env"
+        echo "" >> "$api_path/.env"
+        echo "AZURE_OPENAI_ENDPOINT=\"$AZURE_OPENAI_ENDPOINT\"" >> "$api_path/.env"
+        echo "" >> "$api_path/.env"
+        echo "LLM_PROVIDER=azure-openai" >> "$api_path/.env"
+        echo "" >> "$api_path/.env"
+        echo "AZURE_OPENAI_DEPLOYMENT=gpt-5" >> "$api_path/.env"
+        echo "" >> "$api_path/.env"
+        echo "MCP_CUSTOMER_QUERY_URL=http://localhost:8080" >> "$api_path/.env"
+        echo "MCP_DESTINATION_RECOMMENDATION_URL=http://localhost:5002" >> "$api_path/.env"
+        echo "MCP_ITINERARY_PLANNING_URL=http://localhost:5003" >> "$api_path/.env"
+        echo "MCP_ECHO_PING_URL=http://localhost:5004" >> "$api_path/.env"
+        echo "MCP_ECHO_PING_ACCESS_TOKEN=123-this-is-a-fake-token-please-use-a-token-provider" >> "$api_path/.env"
+        echo "" >> "$api_path/.env"
+        echo "PORT=$port" >> "$api_path/.env"
+        echo "" >> "$api_path/.env"
+        echo "OTEL_SERVICE_NAME=$service_name" >> "$api_path/.env"
+        echo "OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:18889" >> "$api_path/.env"
+        echo "OTEL_EXPORTER_OTLP_HEADERS=header-value" >> "$api_path/.env"
+        echo "Created .env file for $service_name"
+    fi
+    
+    # Set overrides for docker environment
+    if [ ! -f "$api_path/.env.docker" ]; then
+        echo "# File automatically generated on $(date)" > "$api_path/.env.docker"
+        echo "# See .env.sample for more information" >> "$api_path/.env.docker"
+        echo "" >> "$api_path/.env.docker"
+        echo "MCP_CUSTOMER_QUERY_URL=http://customer-query:8080" >> "$api_path/.env.docker"
+        echo "MCP_DESTINATION_RECOMMENDATION_URL=http://destination-recommendation:5002" >> "$api_path/.env.docker"
+        echo "MCP_ITINERARY_PLANNING_URL=http://itinerary-planning:5003" >> "$api_path/.env.docker"
+        echo "MCP_ECHO_PING_URL=http://echo-ping:5004" >> "$api_path/.env.docker"
+        echo "Created .env.docker file for $service_name"
+    fi
+}
+
+# Create .env files for all API orchestrators
+create_api_env_file "./packages/api-langchain-js" "api-langchain-js" "4000"
+create_api_env_file "./packages/api-llamaindex-ts" "api-llamaindex-ts" "4000"
+create_api_env_file "./packages/api-maf-python" "api-maf-python" "8000"
+
+# Install dependencies for TypeScript API services
+for service in "api-langchain-js" "api-llamaindex-ts"; do
+    echo ">> Installing dependencies for $service service..."
+    if [ ! -d "./packages/$service/node_modules" ]; then
+        echo "Installing dependencies for $service service..."
+        npm ci --prefix=./packages/$service --legacy-peer-deps
+    else
+        echo "Dependencies for $service service already installed."
+    fi
+done
 
 ##########################################################################
-# UI
+# UI (Angular)
 ##########################################################################
 
 echo ">> Creating .env file for the UI service..."
-if [ ! -f ./packages/ui/.env ]; then
-    echo "# File automatically generated on $(date)" > ./packages/ui/.env
-    echo "# See .env.sample for more information" >> ./packages/ui/.env
-    echo ""
-    NG_API_URL=$(azd env get-value NG_API_URL)
-    echo "NG_API_URL=http://localhost:4000" >> ./packages/ui/.env
-    echo ""
-    echo "# Uncomment the following line to use the provisioned endpoint for the API" >> ./packages/ui/.env
-    echo "# NG_API_URL=\"$NG_API_URL\"" >> ./packages/ui/.env
+if [ ! -f ./packages/ui-angular/.env ]; then
+    echo "# File automatically generated on $(date)" > ./packages/ui-angular/.env
+    echo "# See .env.sample for more information" >> ./packages/ui-angular/.env
+    echo "" >> ./packages/ui-angular/.env
+    
+    # Get provisioned API URLs (if available)
+    NG_API_URL_LANGCHAIN_JS=$(azd env get-value NG_API_URL_LANGCHAIN_JS 2>/dev/null || echo "")
+    NG_API_URL_LLAMAINDEX_TS=$(azd env get-value NG_API_URL_LLAMAINDEX_TS 2>/dev/null || echo "")
+    NG_API_URL_MAF_PYTHON=$(azd env get-value NG_API_URL_MAF_PYTHON 2>/dev/null || echo "")
+
+    echo "# LangChain.js: $NG_API_URL_LANGCHAIN_JS" >> ./packages/ui-angular/.env
+    echo "" >> ./packages/ui-angular/.env
+    echo "# Available provisioned API endpoints:" >> ./packages/ui-angular/.env
+    [ -n "$NG_API_URL_LLAMAINDEX_TS" ] && echo "# LlamaIndex.TS: $NG_API_URL_LLAMAINDEX_TS" >> ./packages/ui-angular/.env
+    [ -n "$NG_API_URL_MAF_PYTHON" ] && echo "# MAF Python: $NG_API_URL_MAF_PYTHON" >> ./packages/ui-angular/.env
 fi
 
-# Execute the API and UI setup scripts
-echo ">> Setting up API and UI services..."
-if [ -f ./infra/hooks/api/setup.sh ]; then
-    echo "Executing API setup script..."
-    ./infra/hooks/api/setup.sh
-    api_status=$?
-    if [ $api_status -ne 0 ]; then
-        echo "API setup failed with exit code $api_status. Exiting."
-        exit $api_status
-    fi
+# Install dependencies for the UI service
+echo ">> Installing dependencies for the UI service..."
+if [ ! -d ./packages/ui-angular/node_modules ]; then
+    echo "Installing dependencies for the UI service..."
+    npm ci --prefix=./packages/ui-angular
 else
-    echo "API setup script not found. Skipping API setup."
-fi
-if [ -f ./infra/hooks/ui/setup.sh ]; then
-    echo "Executing UI setup script..."
-    ./infra/hooks/ui/setup.sh
-    ui_status=$?
-    if [ $ui_status -ne 0 ]; then
-        echo "UI setup failed with exit code $ui_status. Exiting."
-        exit $ui_status
-    fi
-else
-    echo "UI setup script not found. Skipping UI setup."
+    echo "Dependencies for the UI service already installed."
 fi
 
-# Execute the MCP tools setup script
+##########################################################################
+# MCP Tools
+##########################################################################
+
 echo ">> Setting up MCP tools..."
 if [ -f ./infra/hooks/mcp/setup.sh ]; then
     echo "Executing MCP tools setup script..."

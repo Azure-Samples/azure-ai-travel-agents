@@ -7,76 +7,114 @@
 Write-Host "Running post-deployment script for AI Travel Agents application..."
 
 ##########################################################################
-# API
+# API Services (LangChain.js, LlamaIndex.TS, MAF Python)
 ##########################################################################
 
-Write-Host ">> Creating .env file for the API service..."
-$apiEnvPath = "./packages/api/.env"
-if (-not (Test-Path $apiEnvPath)) {
-    "# File automatically generated on $(Get-Date)" | Out-File $apiEnvPath
-    "# See .env.sample for more information" | Add-Content $apiEnvPath
-    "" | Add-Content $apiEnvPath
-    $AZURE_OPENAI_ENDPOINT = azd env get-value AZURE_OPENAI_ENDPOINT | Out-String | ForEach-Object { $_.Trim() }
-    "AZURE_OPENAI_ENDPOINT=$AZURE_OPENAI_ENDPOINT" | Add-Content $apiEnvPath
-    "" | Add-Content $apiEnvPath
-    "LLM_PROVIDER=azure-openai" | Add-Content $apiEnvPath
-    "" | Add-Content $apiEnvPath
-    "AZURE_OPENAI_DEPLOYMENT=gpt-5" | Add-Content $apiEnvPath
-    "" | Add-Content $apiEnvPath
-    "MCP_CUSTOMER_QUERY_URL=http://localhost:8080" | Add-Content $apiEnvPath
-    "MCP_DESTINATION_RECOMMENDATION_URL=http://localhost:5002" | Add-Content $apiEnvPath
-    "MCP_ITINERARY_PLANNING_URL=http://localhost:5003" | Add-Content $apiEnvPath
-    "MCP_ECHO_PING_URL=http://localhost:5004" | Add-Content $apiEnvPath
-    "MCP_ECHO_PING_ACCESS_TOKEN=123-this-is-a-fake-token-please-use-a-token-provider" | Add-Content $apiEnvPath
-    "" | Add-Content $apiEnvPath
-    "OTEL_SERVICE_NAME=api" | Add-Content $apiEnvPath
-    "OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:18889" | Add-Content $apiEnvPath
-    "OTEL_EXPORTER_OTLP_HEADERS=header-value" | Add-Content $apiEnvPath
+Write-Host ">> Creating .env files for API services..."
+
+# Get shared Azure OpenAI endpoint
+$AZURE_OPENAI_ENDPOINT = azd env get-value AZURE_OPENAI_ENDPOINT | Out-String | ForEach-Object { $_.Trim() }
+
+# Function to create API .env file
+function Create-ApiEnvFile {
+    param(
+        [string]$ApiPath,
+        [string]$ServiceName,
+        [int]$Port = 4000
+    )
+    
+    $apiEnvPath = "$ApiPath/.env"
+    if (-not (Test-Path $apiEnvPath)) {
+        "# File automatically generated on $(Get-Date)" | Out-File $apiEnvPath
+        "# See .env.sample for more information" | Add-Content $apiEnvPath
+        "" | Add-Content $apiEnvPath
+        "AZURE_OPENAI_ENDPOINT=$AZURE_OPENAI_ENDPOINT" | Add-Content $apiEnvPath
+        "" | Add-Content $apiEnvPath
+        "LLM_PROVIDER=azure-openai" | Add-Content $apiEnvPath
+        "" | Add-Content $apiEnvPath
+        "AZURE_OPENAI_DEPLOYMENT=gpt-5" | Add-Content $apiEnvPath
+        "" | Add-Content $apiEnvPath
+        "MCP_CUSTOMER_QUERY_URL=http://localhost:8080" | Add-Content $apiEnvPath
+        "MCP_DESTINATION_RECOMMENDATION_URL=http://localhost:5002" | Add-Content $apiEnvPath
+        "MCP_ITINERARY_PLANNING_URL=http://localhost:5003" | Add-Content $apiEnvPath
+        "MCP_ECHO_PING_URL=http://localhost:5004" | Add-Content $apiEnvPath
+        "MCP_ECHO_PING_ACCESS_TOKEN=123-this-is-a-fake-token-please-use-a-token-provider" | Add-Content $apiEnvPath
+        "" | Add-Content $apiEnvPath
+        "PORT=$Port" | Add-Content $apiEnvPath
+        "" | Add-Content $apiEnvPath
+        "OTEL_SERVICE_NAME=$ServiceName" | Add-Content $apiEnvPath
+        "OTEL_EXPORTER_OTLP_ENDPOINT=http://aspire-dashboard:18889" | Add-Content $apiEnvPath
+        "OTEL_EXPORTER_OTLP_HEADERS=header-value" | Add-Content $apiEnvPath
+        Write-Host "Created .env file for $ServiceName"
+    }
+    
+    # Set overrides for docker environment
+    $apiEnvDockerPath = "$ApiPath/.env.docker"
+    if (-not (Test-Path $apiEnvDockerPath)) {
+        "# File automatically generated on $(Get-Date)" | Out-File $apiEnvDockerPath
+        "# See .env.sample for more information" | Add-Content $apiEnvDockerPath
+        "" | Add-Content $apiEnvDockerPath
+        "MCP_CUSTOMER_QUERY_URL=http://customer-query:8080" | Add-Content $apiEnvDockerPath
+        "MCP_DESTINATION_RECOMMENDATION_URL=http://destination-recommendation:5002" | Add-Content $apiEnvDockerPath
+        "MCP_ITINERARY_PLANNING_URL=http://itinerary-planning:5003" | Add-Content $apiEnvDockerPath
+        "MCP_ECHO_PING_URL=http://echo-ping:5004" | Add-Content $apiEnvDockerPath
+        Write-Host "Created .env.docker file for $ServiceName"
+    }
 }
 
-# Set overrides for docker environment
-$apiEnvDockerPath = "./packages/api/.env.docker"
-if (-not (Test-Path $apiEnvDockerPath)) {
-    "# File automatically generated on $(Get-Date)" | Out-File $apiEnvDockerPath
-    "# See .env.sample for more information" | Add-Content $apiEnvDockerPath
-    "" | Add-Content $apiEnvDockerPath
-    "MCP_CUSTOMER_QUERY_URL=http://mcp-customer-query:8080" | Add-Content $apiEnvDockerPath
-    "MCP_DESTINATION_RECOMMENDATION_URL=http://mcp-destination-recommendation:5002" | Add-Content $apiEnvDockerPath
-    "MCP_ITINERARY_PLANNING_URL=http://mcp-itinerary-planning:5003" | Add-Content $apiEnvDockerPath
-    "MCP_ECHO_PING_URL=http://mcp-echo-ping:5004" | Add-Content $apiEnvDockerPath
-}
+# Create .env files for all API orchestrators
+Create-ApiEnvFile -ApiPath "./packages/api-langchain-js" -ServiceName "api-langchain-js" -Port 4000
+Create-ApiEnvFile -ApiPath "./packages/api-llamaindex-ts" -ServiceName "api-llamaindex-ts" -Port 4000
+Create-ApiEnvFile -ApiPath "./packages/api-maf-python" -ServiceName "api-maf-python" -Port 8000
 
-# Install dependencies for the API service
-Write-Host ">> Installing dependencies for the API service..."
-if (-not (Test-Path "./packages/api/node_modules")) {
-    Write-Host "Installing dependencies for the API service..."
-    npm ci --prefix=src/api --legacy-peer-deps
-} else {
-    Write-Host "Dependencies for the API service already installed."
+# Install dependencies for TypeScript API services
+$tsApiServices = @("api-langchain-js", "api-llamaindex-ts")
+foreach ($service in $tsApiServices) {
+    Write-Host ">> Installing dependencies for $service service..."
+    if (-not (Test-Path "./packages/$service/node_modules")) {
+        Write-Host "Installing dependencies for $service service..."
+        npm ci --prefix=./packages/$service --legacy-peer-deps
+    } else {
+        Write-Host "Dependencies for $service service already installed."
+    }
 }
 
 ##########################################################################
-# UI
+# UI (Angular)
 ##########################################################################
 
 Write-Host ">> Creating .env file for the UI service..."
-$uiEnvPath = "./packages/ui/.env"
+$uiEnvPath = "./packages/ui-angular/.env"
 if (-not (Test-Path $uiEnvPath)) {
     "# File automatically generated on $(Get-Date)" | Out-File $uiEnvPath
     "# See .env.sample for more information" | Add-Content $uiEnvPath
     "" | Add-Content $uiEnvPath
-    $NG_API_URL = azd env get-value NG_API_URL | Out-String | ForEach-Object { $_.Trim() }
-    "NG_API_URL=http://localhost:4000" | Add-Content $uiEnvPath
+    
+    # Get provisioned API URLs (if available)
+    try {
+        $NG_API_URL_LANGCHAIN_JS = azd env get-value NG_API_URL_LANGCHAIN_JS 2>$null | Out-String | ForEach-Object { $_.Trim() }
+        $NG_API_URL_LLAMAINDEX_TS = azd env get-value NG_API_URL_LLAMAINDEX_TS 2>$null | Out-String | ForEach-Object { $_.Trim() }
+        $NG_API_URL_MAF_PYTHON = azd env get-value NG_API_URL_MAF_PYTHON 2>$null | Out-String | ForEach-Object { $_.Trim() }
+    } catch {
+        # Ignore errors if env values don't exist yet
+    }
+    
+    "LangChain.js: $NG_API_URL_LANGCHAIN_JS" | Add-Content $uiEnvPath
     "" | Add-Content $uiEnvPath
-    "# Uncomment the following line to use the provisioned endpoint for the API" | Add-Content $uiEnvPath
-    "# NG_API_URL=$NG_API_URL" | Add-Content $uiEnvPath
+    "# Available provisioned API endpoints:" | Add-Content $uiEnvPath
+    if ($NG_API_URL_LLAMAINDEX_TS) {
+        "# LlamaIndex.TS: $NG_API_URL_LLAMAINDEX_TS" | Add-Content $uiEnvPath
+    }
+    if ($NG_API_URL_MAF_PYTHON) {
+        "# MAF Python: $NG_API_URL_MAF_PYTHON" | Add-Content $uiEnvPath
+    }
 }
 
 # Install dependencies for the UI service
 Write-Host ">> Installing dependencies for the UI service..."
-if (-not (Test-Path "./packages/ui/node_modules")) {
+if (-not (Test-Path "./packages/ui-angular/node_modules")) {
     Write-Host "Installing dependencies for the UI service..."
-    npm ci --prefix=src/ui
+    npm ci --prefix=./packages/ui-angular
 } else {
     Write-Host "Dependencies for the UI service already installed."
 }
@@ -121,5 +159,5 @@ docker desktop enable model-runner --tcp 12434
 
 # Only build docker compose, do not start the containers yet
 Write-Host ">> Building MCP servers with Docker Compose..."
-$toolServices = $tools | ForEach-Object { "mcp-$_" } | Join-String -Separator ' '
-docker compose -f src/docker-compose.yml up --build -d $toolServices
+$toolServices = $tools | Join-String -Separator ' '
+docker compose -f docker-compose.yml up --build -d $toolServices

@@ -4,13 +4,18 @@ param location string = resourceGroup().location
 @description('Tags that will be applied to all resources')
 param tags object = {}
 
-
-param apiExists bool
+param apiLangchainJsExists bool
 @secure()
-param apiDefinition object
-param uiExists bool
+param apiLangchainJsDefinition object
+param apiLlamaindexTsExists bool
 @secure()
-param uiDefinition object
+param apiLlamaindexTsDefinition object
+param apiMafPythonExists bool
+@secure()
+param apiMafPythonDefinition object
+param uiAngularExists bool
+@secure()
+param uiAngularDefinition object
 param itineraryPlanningExists bool
 @secure()
 param itineraryPlanningDefinition object
@@ -27,8 +32,8 @@ param echoPingDefinition object
 @description('Id of the user or app to assign application roles')
 param principalId string
 
-@description('The configuration for the LlamaIndex application')
-param llamaIndexConfig object = {}
+@description('The configuration for the orchestrator applications')
+param orchestratorConfig object = {}
 
 param isContinuousIntegration bool
 var principalType = isContinuousIntegration ? 'ServicePrincipal' : 'User'
@@ -58,12 +63,22 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.1.1' =
     publicNetworkAccess: 'Enabled'
     roleAssignments:[
       {
-        principalId: apiIdentity.outputs.principalId
+        principalId: apiLangchainJsIdentity.outputs.principalId
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')
       }
       {
-        principalId: uiIdentity.outputs.principalId
+        principalId: apiLlamaindexTsIdentity.outputs.principalId
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')
+      }
+      {
+        principalId: apiMafPythonIdentity.outputs.principalId
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')
+      }
+      {
+        principalId: uiAngularIdentity.outputs.principalId
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')
       }
@@ -102,41 +117,41 @@ module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.4.5
   }
 }
 
-module apiIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.1' = {
-  name: 'apiidentity'
+module apiLangchainJsIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.1' = {
+  name: 'apiLangchainJsidentity'
   params: {
-    name: '${abbrs.managedIdentityUserAssignedIdentities}api-${resourceToken}'
+    name: '${abbrs.managedIdentityUserAssignedIdentities}api-langchain-js-${resourceToken}'
     location: location
   }
 }
 
-module apiFetchLatestImage './modules/fetch-container-image.bicep' = {
-  name: 'api-fetch-image'
+module apiLangchainJsFetchLatestImage './modules/fetch-container-image.bicep' = {
+  name: 'api-langchain-js-fetch-image'
   params: {
-    exists: apiExists
-    name: 'api'
+    exists: apiLangchainJsExists
+    name: 'api-langchain-js'
   }
 }
 
-var apiAppSettingsArray = filter(array(apiDefinition.settings), i => i.name != '')
-var apiSecrets = map(filter(apiAppSettingsArray, i => i.?secret != null), i => {
+var apiLangchainJsAppSettingsArray = filter(array(apiLangchainJsDefinition.settings), i => i.name != '')
+var apiLangchainJsSecrets = map(filter(apiLangchainJsAppSettingsArray, i => i.?secret != null), i => {
   name: i.name
   value: i.value
   secretRef: i.?secretRef ?? take(replace(replace(toLower(i.name), '_', '-'), '.', '-'), 32)
 })
-var apiEnv = map(filter(apiAppSettingsArray, i => i.?secret == null), i => {
+var apiLangchainJsEnv = map(filter(apiLangchainJsAppSettingsArray, i => i.?secret == null), i => {
   name: i.name
   value: i.value
 })
 
-module api 'br/public:avm/res/app/container-app:0.8.0' = {
-  name: 'api'
+module apiLangchainJs 'br/public:avm/res/app/container-app:0.8.0' = {
+  name: 'apiLangchainJs'
   params: {
-    name: 'api'
+    name: 'api-langchain-js'
     ingressTargetPort: 4000
     corsPolicy: {
       allowedOrigins: [
-        'https://ui.${containerAppsEnvironment.outputs.defaultDomain}'
+        'https://ui-angular.${containerAppsEnvironment.outputs.defaultDomain}'
       ]
       allowedMethods: [
         'GET', 'POST'
@@ -147,14 +162,14 @@ module api 'br/public:avm/res/app/container-app:0.8.0' = {
     secrets: {
       secureList:  union([
       ],
-      map(apiSecrets, secret => {
+      map(apiLangchainJsSecrets, secret => {
         name: secret.secretRef
         value: secret.value
       }))
     }
     containers: [
       {
-        image: apiFetchLatestImage.outputs.?containers[?0].?image ?? 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+        image: apiLangchainJsFetchLatestImage.outputs.?containers[?0].?image ?? 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
         name: 'main'
         resources: {
           cpu: json('0.5')
@@ -171,7 +186,7 @@ module api 'br/public:avm/res/app/container-app:0.8.0' = {
           }
           {
             name: 'AZURE_CLIENT_ID'
-            value: apiIdentity.outputs.clientId
+            value: apiLangchainJsIdentity.outputs.clientId
           }
           {
             name: 'LLM_PROVIDER'
@@ -183,7 +198,7 @@ module api 'br/public:avm/res/app/container-app:0.8.0' = {
           }
           {
             name: 'AZURE_OPENAI_DEPLOYMENT' 
-            value: llamaIndexConfig.chat.model
+            value: orchestratorConfig.chat.model
           }
           {
             name: 'MCP_ITINERARY_PLANNING_URL'
@@ -203,15 +218,15 @@ module api 'br/public:avm/res/app/container-app:0.8.0' = {
           }
           {
             name: 'MCP_ECHO_PING_ACCESS_TOKEN'
-            value: llamaIndexConfig.sampleAccessTokens.echo
+            value: orchestratorConfig.sampleAccessTokens.echo
           }
           {
             name: 'PORT'
             value: '4000'
           }
         ],
-        apiEnv,
-        map(apiSecrets, secret => {
+        apiLangchainJsEnv,
+        map(apiLangchainJsSecrets, secret => {
             name: secret.name
             secretRef: secret.secretRef
         }))
@@ -219,65 +234,327 @@ module api 'br/public:avm/res/app/container-app:0.8.0' = {
     ]
     managedIdentities:{
       systemAssigned: false
-      userAssignedResourceIds: [apiIdentity.outputs.resourceId]
+      userAssignedResourceIds: [apiLangchainJsIdentity.outputs.resourceId]
     }
     registries:[
       {
         server: containerRegistry.outputs.loginServer
-        identity: apiIdentity.outputs.resourceId
+        identity: apiLangchainJsIdentity.outputs.resourceId
       }
     ]
     environmentResourceId: containerAppsEnvironment.outputs.resourceId
     location: location
-    tags: union(tags, { 'azd-service-name': 'api' })
+    tags: union(tags, { 'azd-service-name': 'api-langchain-js' })
   }
 }
 
-module uiIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.1' = {
-  name: 'uiidentity'
+module apiLlamaindexTsIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.1' = {
+  name: 'apiLlamaindexTsidentity'
   params: {
-    name: '${abbrs.managedIdentityUserAssignedIdentities}ui-${resourceToken}'
+    name: '${abbrs.managedIdentityUserAssignedIdentities}api-llamaindex-ts-${resourceToken}'
     location: location
   }
 }
 
-module uiFetchLatestImage './modules/fetch-container-image.bicep' = {
-  name: 'ui-fetch-image'
+module apiLlamaindexTsFetchLatestImage './modules/fetch-container-image.bicep' = {
+  name: 'api-llamaindex-ts-fetch-image'
   params: {
-    exists: uiExists
-    name: 'ui'
+    exists: apiLlamaindexTsExists
+    name: 'api-llamaindex-ts'
   }
 }
 
-var uiAppSettingsArray = filter(array(uiDefinition.settings), i => i.name != '')
-var uiSecrets = map(filter(uiAppSettingsArray, i => i.?secret != null), i => {
+var apiLlamaindexTsAppSettingsArray = filter(array(apiLlamaindexTsDefinition.settings), i => i.name != '')
+var apiLlamaindexTsSecrets = map(filter(apiLlamaindexTsAppSettingsArray, i => i.?secret != null), i => {
   name: i.name
   value: i.value
   secretRef: i.?secretRef ?? take(replace(replace(toLower(i.name), '_', '-'), '.', '-'), 32)
 })
-var uiEnv = map(filter(uiAppSettingsArray, i => i.?secret == null), i => {
+var apiLlamaindexTsEnv = map(filter(apiLlamaindexTsAppSettingsArray, i => i.?secret == null), i => {
   name: i.name
   value: i.value
 })
 
-module ui 'br/public:avm/res/app/container-app:0.8.0' = {
-  name: 'ui'
+module apiLlamaindexTs 'br/public:avm/res/app/container-app:0.8.0' = {
+  name: 'apiLlamaindexTs'
   params: {
-    name: 'ui'
-    ingressTargetPort: 80
+    name: 'api-llamaindex-ts'
+    ingressTargetPort: 4000
+    corsPolicy: {
+      allowedOrigins: [
+        'https://ui-angular.${containerAppsEnvironment.outputs.defaultDomain}'
+      ]
+      allowedMethods: [
+        'GET', 'POST'
+      ]
+    }
     scaleMinReplicas: 1
     scaleMaxReplicas: 1
     secrets: {
       secureList:  union([
       ],
-      map(uiSecrets, secret => {
+      map(apiLlamaindexTsSecrets, secret => {
         name: secret.secretRef
         value: secret.value
       }))
     }
     containers: [
       {
-        image: uiFetchLatestImage.outputs.?containers[?0].?image ?? 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+        image: apiLlamaindexTsFetchLatestImage.outputs.?containers[?0].?image ?? 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+        name: 'main'
+        resources: {
+          cpu: json('0.5')
+          memory: '1.0Gi'
+        }
+        env: union([
+          {
+            name: 'DEBUG'
+            value: 'true'
+          }
+          {
+            name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
+            value: monitoring.outputs.applicationInsightsConnectionString
+          }
+          {
+            name: 'AZURE_CLIENT_ID'
+            value: apiLlamaindexTsIdentity.outputs.clientId
+          }
+          {
+            name: 'LLM_PROVIDER'
+            value: 'azure-openai'
+          }
+          {
+            name: 'AZURE_OPENAI_ENDPOINT' 
+            value: openAi.outputs.endpoint
+          }
+          {
+            name: 'AZURE_OPENAI_DEPLOYMENT' 
+            value: orchestratorConfig.chat.model
+          }
+          {
+            name: 'MCP_ITINERARY_PLANNING_URL'
+            value: 'https://itinerary-planning.internal.${containerAppsEnvironment.outputs.defaultDomain}'
+          }
+          {
+            name: 'MCP_CUSTOMER_QUERY_URL'
+            value: 'https://customer-query.internal.${containerAppsEnvironment.outputs.defaultDomain}'
+          }
+          {
+            name: 'MCP_DESTINATION_RECOMMENDATION_URL'
+            value: 'https://destination-recommendation.internal.${containerAppsEnvironment.outputs.defaultDomain}'
+          }
+          {
+            name: 'MCP_ECHO_PING_URL'
+            value: 'https://echo-ping.internal.${containerAppsEnvironment.outputs.defaultDomain}'
+          }
+          {
+            name: 'MCP_ECHO_PING_ACCESS_TOKEN'
+            value: orchestratorConfig.sampleAccessTokens.echo
+          }
+          {
+            name: 'PORT'
+            value: '4000'
+          }
+        ],
+        apiLlamaindexTsEnv,
+        map(apiLlamaindexTsSecrets, secret => {
+            name: secret.name
+            secretRef: secret.secretRef
+        }))
+      }
+    ]
+    managedIdentities:{
+      systemAssigned: false
+      userAssignedResourceIds: [apiLlamaindexTsIdentity.outputs.resourceId]
+    }
+    registries:[
+      {
+        server: containerRegistry.outputs.loginServer
+        identity: apiLlamaindexTsIdentity.outputs.resourceId
+      }
+    ]
+    environmentResourceId: containerAppsEnvironment.outputs.resourceId
+    location: location
+    tags: union(tags, { 'azd-service-name': 'api-llamaindex-ts' })
+  }
+}
+
+module apiMafPythonIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.1' = {
+  name: 'apiMafPythonidentity'
+  params: {
+    name: '${abbrs.managedIdentityUserAssignedIdentities}api-maf-python-${resourceToken}'
+    location: location
+  }
+}
+
+module apiMafPythonFetchLatestImage './modules/fetch-container-image.bicep' = {
+  name: 'api-maf-python-fetch-image'
+  params: {
+    exists: apiMafPythonExists
+    name: 'api-maf-python'
+  }
+}
+
+var apiMafPythonAppSettingsArray = filter(array(apiMafPythonDefinition.settings), i => i.name != '')
+var apiMafPythonSecrets = map(filter(apiMafPythonAppSettingsArray, i => i.?secret != null), i => {
+  name: i.name
+  value: i.value
+  secretRef: i.?secretRef ?? take(replace(replace(toLower(i.name), '_', '-'), '.', '-'), 32)
+})
+var apiMafPythonEnv = map(filter(apiMafPythonAppSettingsArray, i => i.?secret == null), i => {
+  name: i.name
+  value: i.value
+})
+
+module apiMafPython 'br/public:avm/res/app/container-app:0.8.0' = {
+  name: 'apiMafPython'
+  params: {
+    name: 'api-maf-python'
+    ingressTargetPort: 4000
+    corsPolicy: {
+      allowedOrigins: [
+        'https://ui-angular.${containerAppsEnvironment.outputs.defaultDomain}'
+      ]
+      allowedMethods: [
+        'GET', 'POST'
+      ]
+    }
+    scaleMinReplicas: 1
+    scaleMaxReplicas: 1
+    secrets: {
+      secureList:  union([
+      ],
+      map(apiMafPythonSecrets, secret => {
+        name: secret.secretRef
+        value: secret.value
+      }))
+    }
+    containers: [
+      {
+        image: apiMafPythonFetchLatestImage.outputs.?containers[?0].?image ?? 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+        name: 'main'
+        resources: {
+          cpu: json('0.5')
+          memory: '1.0Gi'
+        }
+        env: union([
+          {
+            name: 'DEBUG'
+            value: 'true'
+          }
+          {
+            name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
+            value: monitoring.outputs.applicationInsightsConnectionString
+          }
+          {
+            name: 'AZURE_CLIENT_ID'
+            value: apiMafPythonIdentity.outputs.clientId
+          }
+          {
+            name: 'LLM_PROVIDER'
+            value: 'azure-openai'
+          }
+          {
+            name: 'AZURE_OPENAI_ENDPOINT' 
+            value: openAi.outputs.endpoint
+          }
+          {
+            name: 'AZURE_OPENAI_DEPLOYMENT' 
+            value: orchestratorConfig.chat.model
+          }
+          {
+            name: 'MCP_ITINERARY_PLANNING_URL'
+            value: 'https://itinerary-planning.internal.${containerAppsEnvironment.outputs.defaultDomain}'
+          }
+          {
+            name: 'MCP_CUSTOMER_QUERY_URL'
+            value: 'https://customer-query.internal.${containerAppsEnvironment.outputs.defaultDomain}'
+          }
+          {
+            name: 'MCP_DESTINATION_RECOMMENDATION_URL'
+            value: 'https://destination-recommendation.internal.${containerAppsEnvironment.outputs.defaultDomain}'
+          }
+          {
+            name: 'MCP_ECHO_PING_URL'
+            value: 'https://echo-ping.internal.${containerAppsEnvironment.outputs.defaultDomain}'
+          }
+          {
+            name: 'MCP_ECHO_PING_ACCESS_TOKEN'
+            value: orchestratorConfig.sampleAccessTokens.echo
+          }
+          {
+            name: 'PORT'
+            value: '4000'
+          }
+        ],
+        apiMafPythonEnv,
+        map(apiMafPythonSecrets, secret => {
+            name: secret.name
+            secretRef: secret.secretRef
+        }))
+      }
+    ]
+    managedIdentities:{
+      systemAssigned: false
+      userAssignedResourceIds: [apiMafPythonIdentity.outputs.resourceId]
+    }
+    registries:[
+      {
+        server: containerRegistry.outputs.loginServer
+        identity: apiMafPythonIdentity.outputs.resourceId
+      }
+    ]
+    environmentResourceId: containerAppsEnvironment.outputs.resourceId
+    location: location
+    tags: union(tags, { 'azd-service-name': 'api-maf-python' })
+  }
+}
+
+module uiAngularIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.1' = {
+  name: 'uiAngularidentity'
+  params: {
+    name: '${abbrs.managedIdentityUserAssignedIdentities}ui-angular-${resourceToken}'
+    location: location
+  }
+}
+
+module uiAngularFetchLatestImage './modules/fetch-container-image.bicep' = {
+  name: 'ui-angular-fetch-image'
+  params: {
+    exists: uiAngularExists
+    name: 'ui-angular'
+  }
+}
+
+var uiAngularAppSettingsArray = filter(array(uiAngularDefinition.settings), i => i.name != '')
+var uiAngularSecrets = map(filter(uiAngularAppSettingsArray, i => i.?secret != null), i => {
+  name: i.name
+  value: i.value
+  secretRef: i.?secretRef ?? take(replace(replace(toLower(i.name), '_', '-'), '.', '-'), 32)
+})
+var uiAngularEnv = map(filter(uiAngularAppSettingsArray, i => i.?secret == null), i => {
+  name: i.name
+  value: i.value
+})
+
+module uiAngular 'br/public:avm/res/app/container-app:0.8.0' = {
+  name: 'uiAngular'
+  params: {
+    name: 'ui-angular'
+    ingressTargetPort: 80
+    scaleMinReplicas: 1
+    scaleMaxReplicas: 1
+    secrets: {
+      secureList:  union([
+      ],
+      map(uiAngularSecrets, secret => {
+        name: secret.secretRef
+        value: secret.value
+      }))
+    }
+    containers: [
+      {
+        image: uiAngularFetchLatestImage.outputs.?containers[?0].?image ?? 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
         name: 'main'
         resources: {
           cpu: json('0.5')
@@ -290,15 +567,15 @@ module ui 'br/public:avm/res/app/container-app:0.8.0' = {
           }
           {
             name: 'AZURE_CLIENT_ID'
-            value: uiIdentity.outputs.clientId
+            value: uiAngularIdentity.outputs.clientId
           }
           {
             name: 'PORT'
             value: '80'
           }
         ],
-        uiEnv,
-        map(uiSecrets, secret => {
+        uiAngularEnv,
+        map(uiAngularSecrets, secret => {
             name: secret.name
             secretRef: secret.secretRef
         }))
@@ -306,17 +583,17 @@ module ui 'br/public:avm/res/app/container-app:0.8.0' = {
     ]
     managedIdentities:{
       systemAssigned: false
-      userAssignedResourceIds: [uiIdentity.outputs.resourceId]
+      userAssignedResourceIds: [uiAngularIdentity.outputs.resourceId]
     }
     registries:[
       {
         server: containerRegistry.outputs.loginServer
-        identity: uiIdentity.outputs.resourceId
+        identity: uiAngularIdentity.outputs.resourceId
       }
     ]
     environmentResourceId: containerAppsEnvironment.outputs.resourceId
     location: location
-    tags: union(tags, { 'azd-service-name': 'ui' })
+    tags: union(tags, { 'azd-service-name': 'ui-angular' })
   }
 }
 
@@ -654,7 +931,7 @@ module echoPing 'br/public:avm/res/app/container-app:0.8.0' = {
           }
           {
             name: 'MCP_ECHO_PING_ACCESS_TOKEN'
-            value: llamaIndexConfig.sampleAccessTokens.echo
+            value: orchestratorConfig.sampleAccessTokens.echo
           }
           {
             name: 'PORT'
@@ -697,14 +974,14 @@ module openAi 'br/public:avm/res/cognitive-services/account:0.10.2' =  {
     publicNetworkAccess: 'Enabled'
     deployments: [
       {
-        name: llamaIndexConfig.chat.model
+        name: orchestratorConfig.chat.model
         model: {
           format: 'OpenAI'
-          name: llamaIndexConfig.chat.model
-          version: llamaIndexConfig.chat.version
+          name: orchestratorConfig.chat.model
+          version: orchestratorConfig.chat.version
         }
         sku: {
-          capacity: llamaIndexConfig.chat.capacity
+          capacity: orchestratorConfig.chat.capacity
           name: 'GlobalStandard'
         }
         versionUpgradeOption: 'OnceCurrentVersionExpired'
@@ -717,7 +994,17 @@ module openAi 'br/public:avm/res/cognitive-services/account:0.10.2' =  {
         roleDefinitionIdOrName: 'Cognitive Services OpenAI User'
       }
       {
-        principalId: apiIdentity.outputs.principalId
+        principalId: apiLangchainJsIdentity.outputs.principalId
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Cognitive Services OpenAI User'
+      }
+      {
+        principalId: apiLlamaindexTsIdentity.outputs.principalId
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Cognitive Services OpenAI User'
+      }
+      {
+        principalId: apiMafPythonIdentity.outputs.principalId
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Cognitive Services OpenAI User'
       }
@@ -726,12 +1013,16 @@ module openAi 'br/public:avm/res/cognitive-services/account:0.10.2' =  {
 }
 
 output AZURE_CONTAINER_REGISTRY_ENDPOINT string = containerRegistry.outputs.loginServer
-output AZURE_RESOURCE_API_ID string = api.outputs.resourceId
-output AZURE_RESOURCE_UI_ID string = ui.outputs.resourceId
+output AZURE_RESOURCE_API_LANGCHAIN_JS_ID string = apiLangchainJs.outputs.resourceId
+output AZURE_RESOURCE_API_LLAMAINDEX_TS_ID string = apiLlamaindexTs.outputs.resourceId
+output AZURE_RESOURCE_API_MAF_PYTHON_ID string = apiMafPython.outputs.resourceId
+output AZURE_RESOURCE_UI_ANGULAR_ID string = uiAngular.outputs.resourceId
 output AZURE_RESOURCE_ITINERARY_PLANNING_ID string = itineraryPlanning.outputs.resourceId
 output AZURE_RESOURCE_CUSTOMER_QUERY_ID string = customerQuery.outputs.resourceId
 output AZURE_RESOURCE_DESTINATION_RECOMMENDATION_ID string = destinationRecommendation.outputs.resourceId
 output AZURE_RESOURCE_ECHO_PING_ID string = echoPing.outputs.resourceId
 output AZURE_OPENAI_ENDPOINT string = openAi.outputs.endpoint
-output NG_API_URL string = 'https://api.${containerAppsEnvironment.outputs.defaultDomain}'
-output AZURE_CLIENT_ID string = apiIdentity.outputs.clientId
+output NG_API_URL_LANGCHAIN_JS string = 'https://api-langchain-js.${containerAppsEnvironment.outputs.defaultDomain}'
+output NG_API_URL_LLAMAINDEX_TS string = 'https://api-llamaindex-ts.${containerAppsEnvironment.outputs.defaultDomain}'
+output NG_API_URL_MAF_PYTHON string = 'https://api-maf-python.${containerAppsEnvironment.outputs.defaultDomain}'
+output AZURE_CLIENT_ID string = apiLangchainJsIdentity.outputs.clientId
