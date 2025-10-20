@@ -8,4 +8,5 @@ RUN npm install -g @angular/cli
 
 RUN npm install
 
-CMD ["ng", "serve", "--host", "0.0.0.0"]
+# Serve in development mode to use environment.development.ts with localhost:4000
+CMD ["ng", "serve", "--host", "0.0.0.0", "--disable-host-check", "--configuration", "development"]

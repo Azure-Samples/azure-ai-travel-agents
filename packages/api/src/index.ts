@@ -5,9 +5,6 @@ import cors from "cors";
 import express from "express";
 import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
-import { mcpToolsList } from "./mcp/mcp-tools.js";
-import { setupAgents } from "./orchestrator/llamaindex/index.js";
-import { McpToolsConfig } from "./orchestrator/llamaindex/tools/index.js";
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -38,19 +35,13 @@ apiRouter.get("/health", (req, res) => {
   res.status(200).json({ status: "OK" });
 });
 
-// MCP tools
+// MCP tools endpoint disabled (simplified mode)
 apiRouter.get("/tools", async (req, res) => {
-  try {
-    const tools = await mcpToolsList(Object.values(McpToolsConfig()));
-    console.log("Available tools:", tools);
-    res.status(200).json({ tools });
-  } catch (error) {
-    console.error("Error fetching MCP tools:", error);
-    res.status(500).json({ error: "Error fetching MCP tools" });
-  }
+  res.status(200).json({ tools: [], message: "Tools endpoint disabled in simplified mode" });
 });
 
 // Chat endpoint with Server-Sent Events (SSE) for streaming responses
+// SIMPLIFIED VERSION - No MCP tools, just basic LLM chat
 // @ts-ignore - Ignoring TypeScript errors for Express route handlers
 apiRouter.post("/chat", async (req, res) => {
   req.on("close", () => {
@@ -68,8 +59,6 @@ apiRouter.post("/chat", async (req, res) => {
   }
 
   const message = req.body.message;
-  let tools = req.body.tools;
-  console.log("Tools to use:", JSON.stringify(tools, null, 2));
 
   if (!message) {
     return res.status(400).json({ error: "Message is required" });
@@ -80,91 +69,57 @@ apiRouter.post("/chat", async (req, res) => {
   res.setHeader("Connection", "keep-alive");
 
   try {
-    // If no tools specified, fetch all available tools from MCP servers
-    if (!tools || tools.length === 0) {
-      console.log("No tools specified, fetching all available MCP tools...");
-      const allMcpTools = await mcpToolsList(Object.values(McpToolsConfig()));
-      tools = allMcpTools
-        .filter((tool: any) => tool.reachable && tool.selected && tool.id !== "echo-ping")
-        .map((tool: any) => tool.id);
-      console.log("Auto-selected tools:", tools);
-    }
-
-    // Convert tool IDs to tool definitions
-    const mcpToolsConfig = McpToolsConfig();
-    const filteredTools = (tools || [])
-      .map((toolId: string) => mcpToolsConfig[toolId as keyof typeof mcpToolsConfig])
-      .filter((tool: any) => tool !== undefined);
+    console.log("Chat request received:", message);
     
-    console.log("Filtered tools for agents:", filteredTools.map((t: any) => t.id));
+    // Use OpenAI client directly (faster and more reliable than LlamaIndex for simple chat)
+    const OpenAI = (await import("openai")).default;
     
-    const workflow = await setupAgents(filteredTools);
+    const client = new OpenAI({
+      baseURL: "https://models.inference.ai.azure.com",
+      apiKey: process.env.GITHUB_TOKEN,
+    });
     
-    // Create an async generator that handles both SimpleChatEngine and MultiAgent
+    console.log("OpenAI client created");
+    
+    // Create an async generator that streams the response
     async function* generateEvents() {
       try {
-        let response;
+        console.log("Making OpenAI API call with message:", message);
         
-        // Check if it's a SimpleChatEngine (has chat method) or MultiAgent (has run method)
-        if (typeof (workflow as any).chat === "function") {
-          console.log("Using SimpleChatEngine");
-          response = await (workflow as any).chat(message);
-        } else if (typeof (workflow as any).run === "function") {
-          console.log("Using MultiAgent workflow");
-          response = await (workflow as any).run(message);
-        } else {
-          throw new Error("Unknown workflow type");
-        }
+        const response = await client.chat.completions.create({
+          model: process.env.GITHUB_MODEL || "gpt-4o-mini",
+          messages: [
+            {
+              role: "user",
+              content: message,
+            },
+          ],
+          temperature: 0.7,
+          max_tokens: 1000,
+        });
         
-        console.log("Workflow response type:", typeof response);
-        console.log("Workflow response:", JSON.stringify(response, null, 2));
+        console.log("OpenAI API response received");
+        console.log("Response:", JSON.stringify(response, null, 2));
         
-        // Extract the message content from various response formats
-        let content = "";
-        if (typeof response === "string") {
-          content = response;
-        } else if (response && typeof response === "object") {
-          // LlamaIndex StopEvent format: { data: { result: "..." }, displayName: "StopEvent" }
-          if ("data" in response && typeof response.data === "object" && "result" in response.data) {
-            content = (response.data as any).result;
-          }
-          // Alternative formats
-          else if ("message" in response) {
-            content = (response as any).message;
-          } else if ("text" in response) {
-            content = (response as any).text;
-          } else if ("content" in response) {
-            content = (response as any).content;
-          } else if ("response" in response) {
-            content = (response as any).response;
-          } else {
-            // Try to find any string property
-            for (const key in response) {
-              if (typeof (response as any)[key] === "string") {
-                content = (response as any)[key];
-                break;
-              }
-            }
-          }
-        } else {
-          content = String(response);
-        }
+        // Extract the message content
+        const content = response.choices[0]?.message?.content || "No response generated";
+        console.log("Extracted content:", content);
         
-        // Emit agent_complete event with the response
         yield {
           eventName: "agent_complete",
           data: {
             agent: "TravelAgent",
-            content: content || "Response received",
+            content,
           },
         };
       } catch (error: any) {
-        console.error("Error in generateEvents:", error?.message);
+        console.error("Error in chat:", error?.message);
+        console.error("Error stack:", error?.stack);
         yield {
           eventName: "error",
           data: {
             agent: "TravelAgent",
-            error: error?.message || "Unknown error",
+            error: error?.message || "Unknown error occurred",
           },
         };
       }

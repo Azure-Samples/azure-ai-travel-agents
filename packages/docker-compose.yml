@@ -1,4 +1,4 @@
-name: ai-travel-agents
+version: '3.8'
 services:
   tool-customer-query:
     container_name: tool-customer-query
@@ -102,8 +102,8 @@ services:
     depends_on:
       - web-api
     env_file: 
-      - "./api/.env"
-      - "./api/.env.docker" # override .env with .env.docker
+      - "./ui/.env"
+      - "./ui/.env.docker" # override .env with .env.docker
 
   aspire-dashboard:
     container_name: aspire-dashboard

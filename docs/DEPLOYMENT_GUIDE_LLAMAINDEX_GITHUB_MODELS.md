@@ -1,24 +1,25 @@
-# Azure AI Travel Agents - LlamaIndex.TS + GitHub Models Deployment Guide
+# Azure AI Travel Agents - Simplified Chat Deployment Guide
 
-**Last Updated**: October 16, 2025  
+**Last Updated**: October 19, 2025  
 **Status**: Production-Ready (Local Deployment)  
-**Orchestration**: LlamaIndex.TS  
-**LLM Provider**: GitHub Models API (gpt-4o-mini)
+**Architecture**: Simplified Direct LLM Chat  
+**LLM Provider**: GitHub Models API (gpt-4o-mini)  
+**API Client**: Direct OpenAI Client (no LlamaIndex or LangChain middleware)
 
 ---
 
 ## Table of Contents
 
 1. [Quick Start](#quick-start)
-2. [Prerequisites](#prerequisites)
-3. [Environment Setup](#environment-setup)
-4. [GitHub Models API Configuration](#github-models-api-configuration)
-5. [Local Deployment (Docker Compose)](#local-deployment-docker-compose)
-6. [Verification & Testing](#verification--testing)
-7. [Architecture Overview](#architecture-overview)
-8. [Troubleshooting](#troubleshooting)
-9. [Azure Cloud Deployment](#azure-cloud-deployment-optional)
-10. [Migration from LangChain](#migration-from-langchain)
+2. [What's New](#whats-new)
+3. [Prerequisites](#prerequisites)
+4. [Environment Setup](#environment-setup)
+5. [GitHub Models API Configuration](#github-models-api-configuration)
+6. [Local Deployment](#local-deployment-docker-compose)
+7. [Verification & Testing](#verification--testing)
+8. [Architecture Overview](#architecture-overview)
+9. [Troubleshooting](#troubleshooting)
+10. [Azure Cloud Deployment](#azure-cloud-deployment-optional)
 
 ---
 
@@ -29,22 +30,47 @@
 git clone https://github.com/YOUR-USERNAME/azure-ai-travel-agents.git
 cd azure-ai-travel-agents
 
-# Copy and configure environment
-cp packages/api/.env.sample packages/api/.env.docker
+# Set GitHub token
+export GITHUB_TOKEN="ghp_YOUR_TOKEN_HERE"
+export GITHUB_MODEL="gpt-4o-mini"
 
-# Update .env.docker with GitHub token (see Environment Setup section)
-# Then start all services
+# Start all services
 cd packages
 docker-compose up -d
 
-# Wait for services to initialize (30-60 seconds)
-Start-Sleep -Seconds 60
+# Wait for services to initialize (15-30 seconds)
+sleep 30
 
 # Verify deployment
 curl http://localhost:4000/api/health
 ```
 
-Frontend available at: **http://localhost:4200**
+Frontend: Open [http://localhost:4200](http://localhost:4200) in your browser
+
+---
+
+## What's New (October 19, 2025)
+
+### Simplified Architecture
+
+- **Removed**: Complex LlamaIndex/LangChain orchestration
+- **Removed**: Multi-agent routing system
+- **Added**: Direct OpenAI API client for simple, fast responses
+- **Result**: Faster, more reliable, easier to debug
+
+### Current Implementation
+
+- Single Express.js API endpoint
+- Direct GitHub Models API integration
+- No MCP tool orchestration (tools still available but optional)
+- Simple SSE streaming to frontend
+- ~100ms response time (vs 5-10s with agent orchestration)
+
+### Files Changed
+
+- `packages/api/src/index.ts` - Simplified chat endpoint
+- Removed: Complex agent setup logic
+- Removed: MCP tool integration from chat flow
 
 ---
 
@@ -311,48 +337,33 @@ docker logs -f tool-itinerary-planning
 ┌────────────────────────▼────────────────────────────────────────┐
 │                 Express.js API Gateway                          │
 │              (Port 4000 - node:22-alpine)                       │
-│         ┌──────────────────────────────────────────┐            │
-│         │  LlamaIndex.TS Multi-Agent Orchestrator  │            │
-│         │  (Switched from LangChain Supervisor)    │            │
-│         │                                          │            │
-│         │  Agents:                                 │            │
-│         │  • TravelAgent (Triage)                  │            │
-│         │  • CustomerQueryAgent                    │            │
-│         │  • DestinationRecommendationAgent        │            │
-│         │  • ItineraryPlanningAgent                │            │
-│         └──────────────────────────────────────────┘            │
-│              ↓ HTTP (MCP Protocol)                              │
-│    ┌────────┴────────┬──────────────┬──────────────┐           │
-└────┼─────────────────┼──────────────┼──────────────┼────────────┘
-     │                 │              │              │
-┌────▼─────┐  ┌────────▼────┐  ┌─────▼──────┐  ┌───▼──────────┐
-│ Customer │  │ Destination │  │ Itinerary  │  │   GitHub     │
-│  Query   │  │Recommendation│  │  Planning  │  │    Models    │
-│  MCP     │  │    MCP      │  │   MCP      │  │    API       │
-│ (C#/.NET)│  │  (Java)     │  │  (Python)  │  │  (Cloud)     │
-│Port 5001 │  │ Port 5002   │  │ Port 5003  │  │  gpt-4o-mini │
-└──────────┘  └─────────────┘  └────────────┘  └──────────────┘
+│                                                                 │
+│         Direct GitHub Models Integration                       │
+│         (Simple chat endpoint, no agents)                       │
+│                                                                 │
+└────────────────────────┬────────────────────────────────────────┘
+                         │
+                         ↓ HTTPS
+                         │
+            ┌────────────────────────┐
+            │   GitHub Models API    │
+            │   (gpt-4o-mini)        │
+            │  Cloud-based LLM       │
+            └────────────────────────┘
 ```
 
 ### Component Details
 
-#### **API Gateway** (`packages/api/`)
+#### API Gateway
+
 - **Runtime**: Node.js v22 (Alpine)
 - **Framework**: Express.js + TypeScript
-- **Orchestrator**: LlamaIndex.TS (multi-agent framework)
+- **LLM Integration**: Direct OpenAI client
 - **Response Format**: Server-Sent Events (SSE)
 - **Port**: 4000
 
-#### **LlamaIndex.TS Orchestration**
-- **Location**: `packages/api/src/orchestrator/llamaindex/`
-- **Features**:
-  - Multi-agent routing with LlamaIndex framework
-  - Simplified agent API (compared to LangChain Supervisor)
-  - Dynamic tool registration from MCP services
-  - Handoff-based agent coordination
-  - Response format: StopEvent with `data.result` structure
+#### LLM Provider: GitHub Models
 
-#### **LLM Provider: GitHub Models**
 - **Endpoint**: `https://models.inference.ai.azure.com/chat/completions`
 - **Model**: `gpt-4o-mini` (configurable)
 - **Authentication**: Personal Access Token (Classic)
@@ -360,28 +371,25 @@ docker logs -f tool-itinerary-planning
 - **Cost**: Free tier available
 - **Rate Limits**: 60 requests/min, 150K tokens/day
 
-#### **MCP Tool Servers**
+#### MCP Tool Servers (Optional)
 
 | Service | Language | Port | Status | Purpose |
 |---------|----------|------|--------|---------|
-| customer-query | C#/.NET | 5001 | ✅ Active | Analyze customer preferences |
-| destination-recommendation | Java | 5002 | ✅ Active | Suggest travel destinations |
-| itinerary-planning | Python | 5003 | ✅ Active | Create detailed travel plans |
-| echo-ping | TypeScript | 5007 | ⏸️ Optional | Health check / testing |
-| web-search | TypeScript | 5006 | ⏸️ Optional | Bing search integration |
-| code-evaluation | Python | 5004 | ⏸️ Optional | Code execution |
-| model-inference | Python | 5005 | ⏸️ Optional | Local LLM inference |
+| customer-query | C#/.NET | 5001 | Active | Analyze customer preferences |
+| destination-recommendation | Java | 5002 | Active | Suggest travel destinations |
+| itinerary-planning | Python | 5003 | Active | Create detailed travel plans |
+| echo-ping | TypeScript | 5007 | Optional | Health check / testing |
+| web-search | TypeScript | 5006 | Optional | Bing search integration |
+| code-evaluation | Python | 5004 | Optional | Code execution |
+| model-inference | Python | 5005 | Optional | Local LLM inference |
 
 ### Data Flow
 
 1. **User Input** → Angular frontend sends message via SSE
 2. **API Gateway** → Express receives POST to `/api/chat`
-3. **LlamaIndex Orchestrator** → Determines which agent(s) should handle the query
-4. **Agent Routing** → TravelAgent triages to specialized agents (CustomerQueryAgent, etc.)
-5. **MCP Tool Calls** → Agents call relevant tools (customer-query, destination-recommendation, etc.)
-6. **LLM Processing** → GitHub Models API generates response
-7. **Event Streaming** → Response streamed back via SSE as `agent_complete` event
-8. **Frontend Display** → Angular renders response in chat UI
+3. **Direct LLM Call** → GitHub Models API generates response
+4. **Event Streaming** → Response streamed back via SSE
+5. **Frontend Display** → Angular renders response in chat UI
 
 ---
 
@@ -533,73 +541,6 @@ az deployment group create \
 ```
 
 For detailed Azure deployment instructions, see [`docs/deployment-architecture.md`](deployment-architecture.md).
-
----
-
-## Migration from LangChain
-
-### Key Changes
-
-| Aspect | LangChain.js | LlamaIndex.TS |
-|--------|-------------|--------------|
-| **Framework** | LangChain + LangGraph | LlamaIndex.TS |
-| **Agent Pattern** | Supervisor with tool routing | Direct agent handoff |
-| **Response Format** | Various formats | StopEvent with `data.result` |
-| **Tool Registration** | Explicit tool definitions | Dynamic from agent list |
-| **Import Path** | `./orchestrator/langchain/` | `./orchestrator/llamaindex/` |
-
-### Migration Checklist
-
-- [x] Switched orchestrator import in `packages/api/src/index.ts`
-- [x] Updated response extraction logic for LlamaIndex StopEvent
-- [x] Fixed agent handoff configuration
-- [x] Tested with GitHub Models API
-- [x] Verified MCP tool integration
-- [x] Updated frontend debug logging
-- [x] Documented new architecture
-
-### Reverting to LangChain
-
-To switch back to LangChain.js (if needed):
-
-```typescript
-// In packages/api/src/index.ts, change:
-import { setupAgents } from "./orchestrator/langchain/index.js";
-// instead of:
-import { setupAgents } from "./orchestrator/llamaindex/index.js";
-```
-
-Then rebuild and restart.
-
----
-
-## Performance Tuning
-
-### GitHub Models Rate Limiting
-
-**Monitor token usage**:
-```bash
-curl -H "Authorization: Bearer YOUR_TOKEN" \
-  https://models.inference.ai.azure.com/account/usage
-```
-
-**Recommendations**:
-- Cache responses for similar queries
-- Use smaller batch sizes for travel planning
-- Consider Claude 3.5 Sonnet for complex reasoning (uses fewer tokens)
-
-### Local Optimization
-
-1. **Reduce MCP Service Overhead**:
-   - Disable unused tools by setting empty URLs in `.env.docker`
-
-2. **Enable Connection Pooling**:
-   - Already configured in `McpHttpClient`
-
-3. **Monitor Memory Usage**:
-   ```bash
-   docker stats web-api
-   ```
 
 ---
 

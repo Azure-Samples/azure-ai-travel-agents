@@ -30,7 +30,9 @@ export async function setupAgents(filteredTools: McpServerDefinition[] = []) {
   // Check if LLM supports tool calls
   const supportsTools = (llm as any).metadata?.functionCalling || 
                         (llm as any).getNodeClass?.() !== undefined ||
-                        llm.constructor.name.includes("OpenAI");
+                        llm.constructor.name.includes("OpenAI") ||
+                        (llm as any).model?.includes?.("gpt") ||
+                        (llm as any).model?.includes?.("claude");
   
   console.log(`LLM supports tool calls: ${supportsTools}`);
 
