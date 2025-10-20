@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Sacred Codex of the Azure Agents - Repo Adventure</title>
+    <link rel="stylesheet" href="assets/theme.css">
+    <link rel="stylesheet" href="../assets/shared/quest-navigator.css">
+    <link rel="stylesheet" href="../assets/theme-toggle.css">
+    <!-- Prism.js for syntax highlighting -->
+    <!-- Using minimal theme since we override all styles with our custom theme -->
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script>
+        // Configure Prism autoloader for syntax highlighting
+        if (window.Prism && window.Prism.plugins && window.Prism.plugins.autoloader) {
+            window.Prism.plugins.autoloader.languages_path = 'https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/';
+        }
+
+        // Trigger Prism highlighting after page load
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.Prism) {
+                window.Prism.highlightAll();
+            }
+        });
+    </script>
+</head>
+<body class="theme-ancient">
+
+    <nav class="navbar">
+        <div class="nav-content">
+            <div class="nav-left">
+                <a href="https://github.com/Azure-Samples/azure-ai-travel-agents" target="_blank" rel="noopener noreferrer" class="github-link">
+                    <img src="../assets/shared/github-mark-white.svg" alt="GitHub" width="24" height="24">
+                </a>
+                <a href="index.html">The Sacred Codex of the Azure Agents</a>
+            </div>
+            <div class="nav-middle">
+            </div>
+            <div class="nav-right">
+                <a href="../index.html" class="nav-link">Change Adventure</a>
+                <a href="#" class="nav-link quest-map-trigger">Quests</a>
+                <button class="theme-toggle-btn" aria-label="Switch to light mode" type="button">
+                    <div class="theme-toggle-slider">
+                        <svg class="toggle-icon sun-icon" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="4" fill="currentColor"/>
+                            <path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        <svg class="toggle-icon moon-icon" viewBox="0 0 24 24">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                        </svg>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="story-content">
+    <h1>The Sacred Codex of the Azure Agents</h1>
+    <p>In the heart of an ancient jungle lies the Temple of Azure, a sanctuary of wisdom built by a lost civilization. Within its sacred halls, a powerful artifact known as the Codex of Orchestration resides. This Codex governs a network of mystical agents, each with unique abilities, working in harmony to guide travelers through perilous journeys. The Codex is powered by the ancient rituals of LlamaIndex and the Model Context Protocol (MCP), enabling seamless communication between the temple&#39;s guardians and the outside world.</p>
+<p><strong>Adventure Awaits</strong> – Choose your quest wisely, brave adventurer!</p>
+
+</div>
+
+<div class="quests-section">
+    <h2>Choose a Quest</h2>
+    <a href="quest-1.html" class="quest-link">
+  <h3>The Ritual of Orchestration</h3>
+  <p>Uncover the Codex's central chamber where <strong>index.ts</strong>, <strong>tools/index.ts</strong>, and <strong>llamaindex/index.ts</strong> govern the sacred workflow of agents.</p>
+</a>
+<a href="quest-2.html" class="quest-link">
+  <h3>The Scrolls of the Divine Models</h3>
+  <p>Explore the temple’s library where <strong>providers/index.ts</strong>, <strong>azure-openai.ts</strong>, <strong>github-models.ts</strong>, and <strong>ollama-models.ts</strong> reveal the secrets of summoning ancient LLMs.</p>
+</a>
+<a href="quest-3.html" class="quest-link">
+  <h3>The Glyphs of Discovery</h3>
+  <p>Decode the ancient glyphs in <strong>mcp-tools.ts</strong>, <strong>mcp-sse-client.ts</strong>, and <strong>mcp-http-client.ts</strong>, which detail the protocols for tool invocation and discovery.</p>
+</a>
+<a href="quest-4.html" class="quest-link">
+  <h3>The Polyglot Shrines</h3>
+  <p>Visit the shrines of the temple where <strong>itinerary-planning/mcp_server.py</strong>, <strong>destination-recommendation/McpServerApplication.java</strong>, <strong>destination-recommendation/DestinationService.java</strong>, and <strong>echo-ping/server.ts</strong> house the sacred tools of travel.</p>
+</a>
+<a href="quest-5.html" class="quest-link">
+  <h3>The Chamber of Streaming Insights</h3>
+  <p>Enter the ceremonial chamber where <strong>chat-conversation.component.ts</strong>, <strong>chat-conversation.service.ts</strong>, and <strong>api.service.ts</strong> orchestrate the flow of wisdom between the temple and the outside world.</p>
+</a>
+</div>
+    </div>
+    
+    <footer class="footer">
+        <div class="footer-content">
+            <span>Created using <a href="https://github.com/DanWahlin/ai-repo-adventures" target="_blank" rel="noopener noreferrer" class="repo-link">AI Repo Adventures</a></span>
+        </div>
+    </footer>
+    
+    <!-- Quest Navigator Script (for navbar Quests button functionality) -->
+    <script src="../assets/shared/quest-navigator.js"></script>
+    <!-- Theme Toggle Script (for light/dark mode toggle) -->
+    <script src="../assets/theme-toggle.js"></script>
+</body>
+</html>

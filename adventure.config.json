@@ -1,0 +1,332 @@
+{
+  "adventure": {
+    "name": "Azure AI Travel Agents",
+    "description": "Multi-agent AI travel planning system showcasing LlamaIndex orchestration, MCP protocol integration, and polyglot microservices.",
+    "url": "https://github.com/Azure-Samples/azure-ai-travel-agents",
+    "customInstructions": "Focus on the multi-agent orchestration pattern where a triage agent coordinates specialized MCP services across multiple languages (TypeScript, Python, Java and .NET). Emphasize how LlamaIndex manages agent workflows and how the MCP protocol enables dynamic tool discovery.",
+    "microsoftClarityCode": "",
+    "googleAnalyticsCode": "",
+    "quests": [
+      {
+        "title": "Multi-Agent Orchestration with LlamaIndex",
+        "description": "Discover how the API creates a coordinated multi-agent system using LlamaIndex, with dynamic agent creation, shared LLM configuration, and intelligent workflow triage.",
+        "files": [
+          {
+            "path": "src/api/src/orchestrator/llamaindex/index.ts",
+            "description": "The heart of the multi-agent system - constructs specialized agents and wires them into a coordinated workflow.",
+            "highlights": [
+              {
+                "name": "setupAgents(filteredTools)",
+                "description": "Dynamically builds the agent roster based on requested MCP tools, creating specialized agents like ItineraryPlanningAgent, CustomerQueryAgent, and WebSearchAgent with shared LLM configuration."
+              },
+              {
+                "name": "multiAgent({ agents: agentsList, rootAgent: travelAgent })",
+                "description": "Creates the coordinated multi-agent runtime anchored by the TravelAgent triage role that intelligently routes user requests to specialized agents."
+              },
+              {
+                "name": "agent() configuration blocks",
+                "description": "Shows the pattern for creating specialized agents with unique system prompts, tool bindings, and LLM configuration - demonstrates the agent factory pattern."
+              }
+            ]
+          },
+          {
+            "path": "src/api/src/index.ts",
+            "description": "Express API gateway that exposes the multi-agent system via REST endpoints with streaming support.",
+            "highlights": [
+              {
+                "name": "apiRouter.post(\"/chat\")",
+                "description": "The main chat endpoint that validates payloads, calls setupAgents() to build the agent workflow, and coordinates the request/response lifecycle."
+              },
+              {
+                "name": "pipeline(readableStream, res)",
+                "description": "Pipes the LlamaIndex-generated event stream into the HTTP response for real-time SSE (Server Sent Events) updates to clients."
+              },
+              {
+                "name": "apiRouter.get(\"/mcp-tools\")",
+                "description": "Discovery endpoint that returns available MCP tools and their reachability status for dynamic agent configuration."
+              }
+            ]
+          },
+          {
+            "path": "src/api/src/orchestrator/llamaindex/tools/index.ts",
+            "description": "Central registry that defines all available MCP tool endpoints, credentials, and transport configuration.",
+            "highlights": [
+              {
+                "name": "McpToolsConfig()",
+                "description": "Returns a typed map of MCP servers with IDs, URLs, access tokens, transport types (SSE vs HTTP), and default selection flags."
+              },
+              {
+                "name": "MCP_API_HTTP_PATH constant",
+                "description": "Defines the shared '/mcp' HTTP route suffix applied when constructing MCP server URLs for consistent addressing."
+              },
+              {
+                "name": "Tool configuration objects",
+                "description": "Shows the structure for each MCP tool definition including echo-ping, customer-query, web-search, itinerary-planning, model-inference, and destination-recommendation."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Flexible LLM Provider Strategy",
+        "description": "Explore the provider abstraction that supports Azure OpenAI, GitHub Models, Foundry, Ollama, and Docker - with production-grade Managed Identity authentication.",
+        "files": [
+          {
+            "path": "src/api/src/orchestrator/llamaindex/providers/index.ts",
+            "description": "Provider factory that selects the appropriate LLM based on LLM_PROVIDER environment variable.",
+            "highlights": [
+              {
+                "name": "llm() factory function",
+                "description": "Strategy pattern implementation that switches between azure-openai, github-models, foundry-local, docker-models, and ollama-models based on configuration."
+              },
+              {
+                "name": "LLMProvider type",
+                "description": "Type-safe enumeration of supported LLM providers ensuring compile-time validation of provider selection."
+              },
+              {
+                "name": "Error handling",
+                "description": "Throws descriptive error for unknown providers, listing all valid options to aid troubleshooting."
+              }
+            ]
+          },
+          {
+            "path": "src/api/src/orchestrator/llamaindex/providers/azure-openai.ts",
+            "description": "Azure OpenAI provider with dual authentication modes - API key for local dev, Managed Identity for production.",
+            "highlights": [
+              {
+                "name": "llm() with environment detection",
+                "description": "Detects IS_LOCAL_DOCKER_ENV to choose between API key authentication (local) and Azure Managed Identity (production)."
+              },
+              {
+                "name": "DefaultAzureCredential and ManagedIdentityCredential",
+                "description": "Production authentication using Azure identity libraries with optional client ID for user-assigned managed identities."
+              },
+              {
+                "name": "getBearerTokenProvider()",
+                "description": "Creates token provider for Azure Cognitive Services scope, enabling secure authentication without API keys in production."
+              }
+            ]
+          },
+          {
+            "path": "src/api/src/orchestrator/llamaindex/providers/github-models.ts",
+            "description": "GitHub Models provider enabling developers to use GitHub's model marketplace.",
+            "highlights": [
+              {
+                "name": "llm() configuration",
+                "description": "Configures OpenAI-compatible client pointing to models.inference.ai.azure.com with GITHUB_TOKEN authentication."
+              },
+              {
+                "name": "Model selection",
+                "description": "Uses GITHUB_MODEL_NAME environment variable to select from GitHub's model catalog."
+              }
+            ]
+          },
+          {
+            "path": "src/api/src/orchestrator/llamaindex/providers/ollama-models.ts",
+            "description": "Local Ollama provider for development and offline scenarios.",
+            "highlights": [
+              {
+                "name": "llm() with local endpoint",
+                "description": "Configures LlamaIndex to use local Ollama instance at localhost:11434 with specified model."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "MCP Protocol Integration & Tool Discovery",
+        "description": "Learn how the Model Context Protocol enables dynamic service discovery, tool catalog harvesting, and flexible transport mechanisms (SSE vs HTTP).",
+        "files": [
+          {
+            "path": "src/api/src/mcp/mcp-tools.ts",
+            "description": "Core MCP client factory and tool discovery system that connects to MCP servers and retrieves their tool catalogs.",
+            "highlights": [
+              {
+                "name": "client(config)",
+                "description": "Factory function that chooses SSE or HTTP transport based on config.type and instantiates appropriate MCP client with authentication."
+              },
+              {
+                "name": "mcpToolsList(config)",
+                "description": "Connects to each configured MCP server in parallel, calls listTools(), and returns reachability status plus tool metadata for UI rendering."
+              },
+              {
+                "name": "McpServerDefinition type",
+                "description": "Defines the structure for MCP server configuration including name, id, URL, transport type, and access token."
+              }
+            ]
+          },
+          {
+            "path": "src/api/src/mcp/mcp-sse-client.ts",
+            "description": "Server-Sent Events (SSE) transport implementation for MCP protocol.",
+            "highlights": [
+              {
+                "name": "MCPClient.connect()",
+                "description": "Establishes SSE connection to MCP server, sets up event listeners, and handles connection lifecycle."
+              },
+              {
+                "name": "MCPClient.listTools()",
+                "description": "Sends tools/list request over SSE and returns available tool definitions from the connected MCP server."
+              },
+              {
+                "name": "MCPClient.callTool()",
+                "description": "Executes tool invocation over SSE transport with parameter serialization and response handling."
+              }
+            ]
+          },
+          {
+            "path": "src/api/src/mcp/mcp-http-client.ts",
+            "description": "Streamable HTTP transport implementation for MCP protocol, enabling streaming support for MCP server communication.",
+            "highlights": [
+              {
+                "name": "MCPClient.connect()",
+                "description": "Validates HTTP connectivity to MCP server endpoint and prepares client for tool operations."
+              },
+              {
+                "name": "MCPClient.listTools()",
+                "description": "Makes HTTP POST to /mcp endpoint to retrieve tool catalog from the MCP server."
+              },
+              {
+                "name": "MCPClient.callTool()",
+                "description": "Executes tool via HTTP POST with JSON-RPC style request/response format."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Polyglot MCP Services Architecture",
+        "description": "Explore specialized MCP agents implemented across Python (itinerary planning), Java/Spring (destination recommendations), and TypeScript (echo utilities).",
+        "files": [
+          {
+            "path": "src/tools/itinerary-planning/src/mcp_server.py",
+            "description": "Python MCP server using FastMCP that provides travel logistics tools for hotels and flights.",
+            "highlights": [
+              {
+                "name": "suggest_hotels(...) tool",
+                "description": "FastMCP tool that validates dates and synthesizes ranked hotel recommendations with amenities, pricing, and ratings."
+              },
+              {
+                "name": "suggest_flights(...) tool",
+                "description": "Builds mock flight itineraries including multi-leg segments, connection times, and fare details for round trips."
+              },
+              {
+                "name": "FastMCP server initialization",
+                "description": "Shows how FastMCP automatically exposes decorated functions as MCP tools with schema generation."
+              }
+            ]
+          },
+          {
+            "path": "src/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/McpServerApplication.java",
+            "description": "Spring Boot entrypoint that bootstraps the Java MCP server for destination recommendations.",
+            "highlights": [
+              {
+                "name": "main(String[] args)",
+                "description": "Bootstraps the destination recommendation MCP server within the Spring application context with auto-configuration."
+              },
+              {
+                "name": "@SpringBootApplication annotation",
+                "description": "Enables Spring Boot auto-configuration, component scanning, and configuration properties for the MCP server."
+              },
+              {
+                "name": "destinationTools(DestinationService) bean",
+                "description": "Registers the service's @McpTool-annotated methods as MCP tool callbacks available through the protocol."
+              }
+            ]
+          },
+          {
+            "path": "src/tools/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/service/DestinationService.java",
+            "description": "Business logic providing destination recommendation tools with sophisticated filtering.",
+            "highlights": [
+              {
+                "name": "getDestinationsByPreferences(...)",
+                "description": "Combines activity type, budget range, season, and family requirements into personalized travel narratives with detailed destination information."
+              },
+              {
+                "name": "getDestinationsByActivity(String activity)",
+                "description": "Validates activity categories and returns themed destination itineraries matching the selected experience type."
+              },
+              {
+                "name": "@McpTool annotations",
+                "description": "Spring MCP library annotations that auto-expose Java methods as MCP tools with parameter schema generation."
+              }
+            ]
+          },
+          {
+            "path": "src/tools/echo-ping/src/server.ts",
+            "description": "TypeScript MCP server demonstrating basic tool implementation patterns.",
+            "highlights": [
+              {
+                "name": "EchoServer class",
+                "description": "Implements MCP server protocol in TypeScript using the @modelcontextprotocol/sdk library."
+              },
+              {
+                "name": "tool handlers",
+                "description": "Shows the pattern for registering tool handlers with the MCP SDK in TypeScript."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Streaming Chat UI with Angular",
+        "description": "See how the Angular frontend consumes Server-Sent Events to render live agent responses, manages tool selection state, and provides an interactive chat experience.",
+        "files": [
+          {
+            "path": "src/ui/src/app/chat-conversation/chat-conversation.component.ts",
+            "description": "Main chat UI component that orchestrates user interactions, sample prompts, and streaming response display.",
+            "highlights": [
+              {
+                "name": "ngOnInit()",
+                "description": "Lifecycle hook that resets conversation state and fetches available MCP tools before first user interaction."
+              },
+              {
+                "name": "sendMessage(event)",
+                "description": "Intercepts Shift+Enter keyboard events to submit user prompts and delegates streaming response processing to the chat service."
+              },
+              {
+                "name": "messages$ observable",
+                "description": "Reactive stream of chat messages that automatically updates the UI as agent responses arrive via SSE."
+              }
+            ]
+          },
+          {
+            "path": "src/ui/src/app/chat-conversation/chat-conversation.service.ts",
+            "description": "Chat state management service maintaining message buffers, tool selections, and coordinating with the API service.",
+            "highlights": [
+              {
+                "name": "fetchAvailableTools()",
+                "description": "Calls /mcp-tools endpoint to populate available agents and their reachability, setting default selections based on tool configuration."
+              },
+              {
+                "name": "processAgentEvents(event)",
+                "description": "SSE event processor that updates UI state for agent name changes, reasoning traces, message updates, and completion events."
+              },
+              {
+                "name": "sendMessage(content, selectedTools)",
+                "description": "Coordinates message sending with the API service, manages optimistic UI updates, and handles error states."
+              }
+            ]
+          },
+          {
+            "path": "src/ui/src/app/services/api.service.ts",
+            "description": "Low-level HTTP service handling API communication and Server-Sent Event stream parsing.",
+            "highlights": [
+              {
+                "name": "streamChatMessage(message, tools)",
+                "description": "Posts chat payload to /chat endpoint and parses the SSE response stream, emitting structured events for downstream consumption."
+              },
+              {
+                "name": "chatStreamState BehaviorSubject",
+                "description": "Reactive state management broadcasting START, MESSAGE, END, and ERROR transitions to UI components."
+              },
+              {
+                "name": "SSE parsing logic",
+                "description": "Demonstrates proper SSE event parsing with 'data:' prefix handling and JSON deserialization of agent events."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
