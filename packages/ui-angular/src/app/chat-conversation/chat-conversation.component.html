@@ -213,7 +213,7 @@
           </button>
           <div
             hlmPopoverContent
-            class="w-80 grid gap-4"
+            class="w-100 grid gap-4"
             *brnPopoverContent="let ctx"
           >
             <div class="space-y-2">
@@ -227,15 +227,16 @@
             <div class="grid gap-2">
               @for(tool of chatService.tools(); track tool) {
               <div class="items-center">
-                <label hlmLabel for="agent-event-{{ tool.id }}">
+                <label class="flex items-center" hlmLabel for="agent-event-{{ tool.id }}">
                   <hlm-switch
                     id="agent-event-{{ tool.id }}"
                     class="mr-2"
                     [disabled]="!tool.reachable"
                     [(ngModel)]="tool.selected"
                   />
+                  {{ tool.name }}
+                  @if(!tool.reachable) { (Offline)  }
                 </label>
-                {{ tool.name }}
               </div>
               }
             </div>
