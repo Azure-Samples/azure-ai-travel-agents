@@ -1,0 +1,320 @@
+{
+  "adventure": {
+    "name": "Azure AI Travel Agents",
+    "description": "Enterprise-grade multi-agent AI travel planning system demonstrating three orchestration frameworks (LangChain.js, LlamaIndex.TS, Microsoft Agent Framework) with Model Context Protocol (MCP) servers in TypeScript, Python, C#, and Java",
+    "url": "https://github.com/Azure-Samples/ai-travel-agents",
+    "customInstructions": "This flagship sample showcases polyglot AI orchestration using MCP as the unified protocol. Each orchestrator is a standalone API service coordinating the same MCP tool servers (customer query analysis, destination recommendation, itinerary planning). Focus on comparing orchestration patterns, understanding MCP integration, and exploring microservices architecture for AI agents.",
+    "quests": [
+      {
+        "title": "LangChain.js Orchestration with LangGraph",
+        "description": "Explore the LangChain.js orchestrator using LangGraph's supervisor pattern to coordinate specialized AI agents. Understand streaming workflows, dynamic tool integration, and event-driven agent communication.",
+        "files": [
+          {
+            "path": "packages/api-langchain-js/src/server.ts",
+            "description": "Express REST API server providing health checks, tool discovery, and streaming chat endpoints",
+            "highlights": [
+              {
+                "name": "POST /api/chat",
+                "description": "Streaming chat endpoint processing user messages through LangGraph workflow with Server-Sent Events (SSE) for real-time agent responses and tool execution updates"
+              },
+              {
+                "name": "GET /api/tools",
+                "description": "Returns all available MCP tools from connected servers, enabling dynamic tool discovery and selection in the UI"
+              },
+              {
+                "name": "GET /api/health",
+                "description": "Health check endpoint identifying the orchestrator type (langchain-js) for multi-orchestrator deployments"
+              }
+            ]
+          },
+          {
+            "path": "packages/api-langchain-js/src/graph/index.ts",
+            "description": "LangGraph supervisor workflow orchestrating multiple specialized travel agents with streaming events",
+            "highlights": [
+              {
+                "name": "TravelAgentsWorkflow.initialize",
+                "description": "Sets up the agent graph with filtered MCP tools and creates the supervisor that intelligently routes requests to specialized agents"
+              },
+              {
+                "name": "TravelAgentsWorkflow.run",
+                "description": "Async generator executing the workflow via streamEvents (v2), yielding llm_token, tool_start, tool_end, and agent_complete events for real-time UI updates"
+              }
+            ]
+          },
+          {
+            "path": "packages/api-langchain-js/src/agents/index.ts",
+            "description": "Agent factory dynamically building specialized agents (CustomerQuery, Destination, Itinerary, Echo) based on available MCP servers",
+            "highlights": [
+              {
+                "name": "setupAgents",
+                "description": "Creates specialized agents using createAgent with tailored system prompts, then assembles them into a supervisor using createSupervisor from @langchain/langgraph-supervisor"
+              },
+              {
+                "name": "createMcpTools",
+                "description": "Transforms MCP server definitions into LangChain DynamicStructuredTools via the mcp-bridge layer for seamless integration"
+              }
+            ]
+          },
+          {
+            "path": "packages/api-langchain-js/src/index.ts",
+            "description": "Main entry point initializing the LangChain orchestrator with LLM provider selection",
+            "highlights": [
+              {
+                "name": "setupAgents",
+                "description": "Orchestrator bootstrap function that initializes the LLM provider (Azure OpenAI, GitHub Models, Docker Models, etc.) and creates the TravelAgentsWorkflow instance"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Model Context Protocol (MCP) - The Universal Tool Layer",
+        "description": "Deep dive into MCP implementation enabling standardized communication between orchestrators and polyglot tool servers. Discover how MCP clients connect to servers, discover tools, and execute cross-language integrations.",
+        "files": [
+          {
+            "path": "packages/api-langchain-js/src/mcp/mcp-http-client.ts",
+            "description": "HTTP transport implementation of MCP client using @modelcontextprotocol/sdk for JSON-RPC 2.0 communication",
+            "highlights": [
+              {
+                "name": "MCPClient.connect",
+                "description": "Establishes HTTP connection to MCP server via StreamableHTTPClientTransport with optional bearer token authentication, enabling secure tool access"
+              },
+              {
+                "name": "MCPClient.listTools",
+                "description": "Retrieves tool schemas from MCP server following the MCP protocol specification for dynamic tool discovery"
+              },
+              {
+                "name": "MCPClient.callTool",
+                "description": "Executes tools on remote MCP servers by sending JSON-RPC requests with parsed arguments and returning structured responses"
+              }
+            ]
+          },
+          {
+            "path": "packages/api-langchain-js/src/mcp/mcp-tools.ts",
+            "description": "MCP server registry and orchestration layer managing connections to all configured tool servers",
+            "highlights": [
+              {
+                "name": "mcpToolsList",
+                "description": "Parallel connection manager that discovers tools from all MCP servers (echo-ping, customer-query, itinerary-planning, destination-recommendation), handles failures gracefully, and returns availability status"
+              },
+              {
+                "name": "client factory",
+                "description": "Flexible client instantiation supporting both HTTP and SSE transport modes based on server configuration"
+              }
+            ]
+          },
+          {
+            "path": "packages/api-langchain-js/src/tools/index.ts",
+            "description": "Central configuration defining all MCP server endpoints, authentication tokens, and connection parameters",
+            "highlights": [
+              {
+                "name": "McpToolsConfig",
+                "description": "Environment-driven configuration mapping for echo-ping (TypeScript), customer-query (C#), itinerary-planning (Python), and destination-recommendation (Java) MCP servers with URLs and auth headers"
+              }
+            ]
+          },
+          {
+            "path": "packages/api-langchain-js/src/tools/mcp-bridge.ts",
+            "description": "Framework adapter converting MCP tools into LangChain DynamicStructuredTools with Zod schema validation",
+            "highlights": [
+              {
+                "name": "createMcpToolsFromDefinition",
+                "description": "Connects to MCP servers, fetches tool schemas (JSON Schema format), converts them to Zod schemas, and wraps as LangChain tools with async execution handlers"
+              },
+              {
+                "name": "Tool invocation wrapper",
+                "description": "Executes MCP callTool requests, serializes/deserializes JSON arguments, and handles MCP protocol responses and errors"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Polyglot MCP Servers - TypeScript, Python, C#, Java",
+        "description": "Explore microservices implementing MCP tools in four different programming languages. See how each language ecosystem implements the same protocol with framework-specific patterns.",
+        "files": [
+          {
+            "path": "packages/mcp-servers/echo-ping/src/index.ts",
+            "description": "TypeScript MCP server with Express, demonstrating bearer token auth and OpenTelemetry instrumentation",
+            "highlights": [
+              {
+                "name": "Express MCP endpoints",
+                "description": "POST /mcp for JSON-RPC tool invocations and GET /mcp for Server-Sent Events, using @modelcontextprotocol/sdk StreamableHTTPServerTransport"
+              },
+              {
+                "name": "Authentication middleware",
+                "description": "Bearer token validation using MCP_ECHO_PING_ACCESS_TOKEN environment variable before processing requests"
+              },
+              {
+                "name": "OpenTelemetry metrics",
+                "description": "Tracks message count and connection metrics using @opentelemetry/api meter for observability"
+              }
+            ]
+          },
+          {
+            "path": "packages/mcp-servers/itinerary-planning/src/mcp_server.py",
+            "description": "Python FastMCP server providing sophisticated hotel and flight search tools with Faker-generated realistic data",
+            "highlights": [
+              {
+                "name": "suggest_hotels",
+                "description": "MCP tool decorated with @mcp.tool() generating hotel recommendations with Pydantic validation, pricing tiers, amenities, and availability based on check-in/check-out dates"
+              },
+              {
+                "name": "suggest_flights",
+                "description": "Complex tool creating round-trip flight itineraries with multi-segment routes, layovers, pricing, and seat availability using dataclass models"
+              },
+              {
+                "name": "validate_iso_date",
+                "description": "Date validation helper ensuring ISO 8601 format (YYYY-MM-DD) compliance with regex and datetime parsing"
+              }
+            ]
+          },
+          {
+            "path": "packages/mcp-servers/customer-query/AITravelAgent.CustomerQueryServer/Program.cs",
+            "description": ".NET minimal API using ASP.NET Core with MCP middleware for stateless HTTP transport",
+            "highlights": [
+              {
+                "name": "builder.Services.AddMcpServer",
+                "description": "Configures MCP server with stateless HTTP transport and automatic tool discovery from assembly attributes"
+              },
+              {
+                "name": "MapMcp(\"/mcp\")",
+                "description": "Exposes MCP protocol endpoint at /mcp path for tool listing and execution via ASP.NET Core routing"
+              },
+              {
+                "name": "WithToolsFromAssembly",
+                "description": "Reflection-based tool discovery scanning for [McpServerToolType] decorated classes in the assembly"
+              }
+            ]
+          },
+          {
+            "path": "packages/mcp-servers/customer-query/AITravelAgent.CustomerQueryServer/Tools/CustomerQueryTool.cs",
+            "description": "C# tool implementation analyzing customer intent, emotion, and preferences from travel queries",
+            "highlights": [
+              {
+                "name": "AnalyzeCustomerQueryAsync",
+                "description": "Async MCP tool method decorated with [McpServerTool] extracting structured insights (emotion: happy/sad/angry/neutral, intent: book/cancel/change, requirements, preferences) from customer text"
+              }
+            ]
+          },
+          {
+            "path": "packages/mcp-servers/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/McpServerApplication.java",
+            "description": "Java Spring Boot application exposing destination recommendation tools via Spring AI's MCP integration",
+            "highlights": [
+              {
+                "name": "@SpringBootApplication",
+                "description": "Spring Boot entry point with component scanning and auto-configuration for MCP server capabilities"
+              },
+              {
+                "name": "destinationTools bean",
+                "description": "Creates ToolCallbackProvider from DestinationService using MethodToolCallbackProvider.builder() for automatic @Tool method discovery"
+              }
+            ]
+          },
+          {
+            "path": "packages/mcp-servers/destination-recommendation/src/main/java/com/microsoft/mcp/sample/server/service/DestinationService.java",
+            "description": "Spring service providing destination filtering based on activity type, budget, season, and preferences",
+            "highlights": [
+              {
+                "name": "getDestinationsByActivity",
+                "description": "@Tool annotated method recommending destinations filtered by ActivityType enum (BEACH, ADVENTURE, CULTURAL, RELAXATION, URBAN_EXPLORATION, NATURE, WINTER_SPORTS)"
+              },
+              {
+                "name": "getDestinationsByBudget",
+                "description": "Budget-aware filtering tool supporting BUDGET, MODERATE, and LUXURY categories with destination matching logic"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Angular Frontend - Real-time Streaming Chat UI",
+        "description": "Discover the Angular-based chat interface handling Server-Sent Events (SSE) streams, progressive message rendering, orchestrator selection, and dynamic tool configuration.",
+        "files": [
+          {
+            "path": "packages/ui-angular/src/app/services/api.service.ts",
+            "description": "Core API service managing SSE streaming, orchestrator health checks, and MCP tool discovery",
+            "highlights": [
+              {
+                "name": "getAvailableApiUrls",
+                "description": "Detects and health-checks all three orchestrators (LangChain.js, LlamaIndex.TS, Microsoft Agent Framework) by calling /api/health endpoints, enabling users to switch between frameworks"
+              },
+              {
+                "name": "sendMessage (stream method)",
+                "description": "Initiates POST request with reportProgress, processes HttpDownloadProgressEvent chunks as NDJSON, parses ChatEvent objects (metadata, error, end), and emits to chatStreamState BehaviorSubject for reactive UI updates"
+              },
+              {
+                "name": "fetchTools",
+                "description": "Retrieves available MCP tools from selected API server's /api/tools endpoint, showing users which agents (customer-query, itinerary-planning, destination-recommendation) are active"
+              }
+            ]
+          },
+          {
+            "path": "packages/ui-angular/src/app/chat-conversation/chat-conversation.component.ts",
+            "description": "Main chat component orchestrating message flow, tool selection UI, and agent event visualization",
+            "highlights": [
+              {
+                "name": "sendMessage",
+                "description": "Handles user input validation, sends messages via ApiService with selected tools, displays sample prompts (Iceland trip, Morocco itinerary), and manages loading states during streaming"
+              },
+              {
+                "name": "toggleToolSelection",
+                "description": "Allows users to enable/disable individual MCP tools before sending queries, controlling which agents participate in the conversation"
+              },
+              {
+                "name": "Event stream processing",
+                "description": "Subscribes to chatStreamState, processes event types (START, MESSAGE, ERROR, END), accumulates agent metadata, and renders markdown responses using marked.js library"
+              }
+            ]
+          },
+          {
+            "path": "packages/ui-angular/src/app/app.component.ts",
+            "description": "Root component bootstrapping the standalone Angular application with chat and theme features",
+            "highlights": [
+              {
+                "name": "AppComponent",
+                "description": "Main shell importing ChatConversationComponent and ThemeToggleComponent, providing the application entry point with routing support"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Multi-Provider LLM Architecture",
+        "description": "Understand the flexible LLM provider system supporting Azure OpenAI, GitHub Models, Docker Models, Ollama, and Azure AI Foundry Local. Learn about provider abstraction enabling deployment flexibility.",
+        "files": [
+          {
+            "path": "packages/api-langchain-js/src/providers/index.ts",
+            "description": "LLM provider factory routing to appropriate implementation based on LLM_PROVIDER environment variable",
+            "highlights": [
+              {
+                "name": "llm factory",
+                "description": "Switch statement selecting provider (azure-openai, github-models, docker-models, ollama-models, foundry-local) and returning configured ChatModel instance with error handling for invalid providers"
+              }
+            ]
+          },
+          {
+            "path": "packages/api-langchain-js/src/providers/azure-openai.ts",
+            "description": "Azure OpenAI and Azure AI Foundry provider with endpoint detection and streaming configuration",
+            "highlights": [
+              {
+                "name": "llm function",
+                "description": "Instantiates AzureChatOpenAI with deployment name, API version, endpoint URL (standard or Foundry-specific), streaming enabled, and temperature/maxTokens controls for production Azure deployments"
+              }
+            ]
+          },
+          {
+            "path": "packages/api-langchain-js/src/providers/docker-models.ts",
+            "description": "Docker Model Runner provider enabling local LLM execution for development without cloud dependencies",
+            "highlights": [
+              {
+                "name": "llm function",
+                "description": "Configures ChatOpenAI pointing to local Docker container (default http://localhost:8000) running models like Phi4 14B, enabling FREE local testing and offline development"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

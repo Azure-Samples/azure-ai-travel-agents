@@ -21,14 +21,14 @@ export default withMermaid({
         { name: "apple-mobile-web-app-status-bar-style", content: "black" },
       ],
     ],
-    navbar: [
+    nav: [
       {
         text: "Getting Started",
         link: "/",
       },
       {
         text: "Architecture",
-        children: [
+        items: [
           {
             text: "Technical Architecture",
             link: "/technical-architecture.md",
@@ -42,18 +42,22 @@ export default withMermaid({
       },
       {
         text: "Implementation",
-        children: [
+        items: [
           { text: "MCP Servers", link: "/mcp-servers.md" },
           { text: "Development Guide", link: "/development-guide.md" },
         ],
       },
       {
         text: "Orchestration",
-        children: [
+        items: [
           { text: "Orchestration Overview", link: "/orchestration.md" },
           { text: "LlamaIndex.TS (Current)", link: "/technical-architecture.md#agent-orchestration" },
           { text: "MAF Implementation", link: "https://github.com/Azure-Samples/azure-ai-travel-agents/tree/main/src/api-python" },
         ],
+      },
+      {
+        text: "Adventures",
+        link: "/adventures/index.md",
       },
       {
         text: "Star Us",
@@ -171,6 +175,10 @@ export default withMermaid({
             link: "/maf-quick-reference.md",
           },
         ],
+      },
+      {
+        text: "Adventures",
+        link: "/adventures/index.md",
       },
     ],
 
