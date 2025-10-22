@@ -12,8 +12,6 @@ McpServerName = Literal[
     "destination-recommendation",
 ]
 
-# MCP API paths
-MCP_API_SSE_PATH = "/sse"
 MCP_API_HTTP_PATH = "/mcp"
 
 

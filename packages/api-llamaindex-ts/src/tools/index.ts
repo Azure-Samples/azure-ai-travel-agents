@@ -6,7 +6,6 @@ export type McpServerName =
   | "itinerary-planning"
   | "destination-recommendation";
 
-const MCP_API_SSE_PATH = "/sse";
 const MCP_API_HTTP_PATH = "/mcp";
 
 export const McpToolsConfig = (): {

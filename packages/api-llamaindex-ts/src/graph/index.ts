@@ -36,8 +36,6 @@ export class TravelAgentsWorkflow {
       throw new Error("Supervisor not initialized. Call initialize() first.");
     }
 
-    console.log("Running workflow with input:", input);
-
     try {
       const eventStream = this.supervisor.runStream(input);
       for await (let event of eventStream) {

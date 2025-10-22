@@ -36,8 +36,6 @@ export class TravelAgentsWorkflow {
       throw new Error("Workflow not initialized. Call initialize() first.");
     }
 
-    console.log("Running workflow with input:", input);
-
     // Compile and run
     const app = this.supervisor.compile();
     const agent = "Supervisor";
