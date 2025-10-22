@@ -29,12 +29,7 @@
   "ignore": {
     "useGitignore": true,
     "useDefaultPatterns": true,
-    "customPatterns": [
-      "infra/abbreviations.json",
-      "packages/ui-angular/libs/ui/",
-      ".vscode/",
-      "*/**/.vscode/"
-    ]
+    "customPatterns": []
   },
   "security": {
     "enableSecurityCheck": true
