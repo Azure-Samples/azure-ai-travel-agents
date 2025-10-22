@@ -23,13 +23,18 @@
     }
   },
   "include": [
-    "src",
+    "packages",
     "infra"
   ],
   "ignore": {
     "useGitignore": true,
     "useDefaultPatterns": true,
-    "customPatterns": []
+    "customPatterns": [
+      "infra/abbreviations.json",
+      "packages/ui-angular/libs/ui/",
+      ".vscode/",
+      "*/**/.vscode/"
+    ]
   },
   "security": {
     "enableSecurityCheck": true
