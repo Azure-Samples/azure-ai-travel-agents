@@ -2,7 +2,7 @@
 
 <img src="./docs/ai-travel-agents-logo.png" alt="" align="center" height="128" />
 
-<h1>Agents and MCP Orchestration <br>with LlamaIndex.TS, Langchain.js <br>and Microsoft Agent Framework!</h1>
+<h1>Agents and MCP Orchestration <br>with Langchain.js, LlamaIndex.TS,<br>and Microsoft Agent Framework!</h1>
 
 [![Join Azure AI Foundry Community Discord](https://img.shields.io/badge/Discord-Azure_AI_Foundry_Community_Discord-blue?style=flat-square&logo=discord&color=5865f2&logoColor=fff)](https://discord.gg/NcwHpz6bRW)
 [![Join Azure AI Foundry Developer Forum](https://img.shields.io/badge/GitHub-Azure_AI_Foundry_Developer_Forum-blue?style=flat-square&logo=github&color=000000&logoColor=fff)](https://aka.ms/foundry/forum)
@@ -33,7 +33,7 @@
 
 ## Overview
 
-The AI Travel Agents is a robust **enterprise application** that leverages multiple **AI agents** to enhance travel agency operations. The application demonstrates how LlamaIndex.TS orchestrates **multiple AI agents** to assist employees in handling customer queries, providing destination recommendations, and planning itineraries. Multiple **MCP** (Model Context Protocol) servers, built with **Python, Node.js, Java and .NET**, are used to provide various tools and services to the agents, enabling them to work together seamlessly.
+The AI Travel Agents is a **modular reference application** that leverages multiple **AI agents** to enhance travel agency operations. The application demonstrates how **LangChain.js**, **LlamaIndex.TS**, and **Microsoft Agent Framework** can orchestrate **multiple AI agents** to assist employees in handling customer queries, providing destination recommendations, and planning itineraries. Multiple **MCP** (Model Context Protocol) servers, built with **Python, Node.js, Java and .NET**, are used to provide various tools and services to the agents, enabling them to work together seamlessly.
 
 | Agent Name                       | Purpose                                                                                                                       |
 | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
@@ -49,7 +49,8 @@ The architecture of the AI Travel Agents application is designed to be modular a
 - All components are containerized using **Docker** so that they can be easily deployed and managed by **[Azure Container Apps](https://learn.microsoft.com/azure/container-apps/)**.
 - All agents tools are available as MCP ([Model Context Protocol](https://github.com/modelcontextprotocol)) servers and are called by the MCP clients.
 - MCP servers are implemented independently using variant technologies, such as **Python**, **Node.js**, **Java**, and **.NET**.
-- The Agent Workflow Service orchestrates the interaction between the agents and MCP clients, allowing them to work together seamlessly.
+- Three orchestration options are available as standalone services: **LangChain.js** (TypeScript/Node.js), **LlamaIndex.TS** (TypeScript/Node.js), and **Microsoft Agent Framework** (Python).
+- Each orchestrator coordinates the interaction between the agents and MCP clients, allowing them to work together seamlessly.
 - The Aspire Dashboard is used to monitor the application, providing insights into the performance and behavior of the agents (through the [OpenTelemetry integration](https://opentelemetry.io/ecosystem/integrations/)).
 
 <div align="center">
@@ -61,10 +62,11 @@ The architecture of the AI Travel Agents application is designed to be modular a
 
 ## Features
 - Multiple AI agents (each with its own specialty)
-- Orchestrated by [LlamaIndex.TS](https://ts.llamaindex.ai/), [Langchain.js](https://js.langchain.com/) and the [Microsoft Agent Framework](https://github.com/microsoft/agent-framework/)
+- Three orchestration options: [LangChain.js](https://js.langchain.com/), [LlamaIndex.TS](https://ts.llamaindex.ai/), and [Microsoft Agent Framework](https://github.com/microsoft/agent-framework/)
 - Supercharged by [MCP](https://modelcontextprotocol.io/introduction)
 - Deployed serverlessly via [Azure Container Apps](https://learn.microsoft.com/azure/container-apps/)
 - Includes an [llms.txt](./llms.txt) file to provide information to help LLMs use this project at inference time ([learn more](https://llmstxt.org/))
+- Includes an [adventure.config.json](./adventure.config.json) file to help you learn in a fun way ([read more](https://github.com/DanWahlin/ai-repo-adventures)
 - OpenTelemetry instrumentation for monitoring with [Aspire Dashboard](https://www.aspiredashboard.com/)
 - Sample code for MCP servers in multiple languages: Python, Node.js, Java, .NET
 - Easy to extend with new agents and tools
