@@ -2,6 +2,7 @@ import { BaseChatModel } from "@langchain/core/language_models/chat_models";
 import { BaseMessage, HumanMessage } from "@langchain/core/messages";
 import { McpServerDefinition } from "../utils/types.js";
 import { AgentState, setupAgents } from "../agents/index.js";
+import { ReactAgent } from "langchain";
 
 export interface WorkflowState extends AgentState {
   messages: BaseMessage[];
@@ -13,7 +14,7 @@ export interface WorkflowState extends AgentState {
 export class TravelAgentsWorkflow {
   private llm: BaseChatModel;
   private agents: any[] = [];
-  private supervisor: any;
+  private deepAgent: ReactAgent | null = null;
 
   constructor(llm: BaseChatModel) {
     this.llm = llm;
@@ -23,9 +24,9 @@ export class TravelAgentsWorkflow {
     console.log("Initializing Langchain workflow with filtered tools:", filteredTools.map(t => t.id));
     
     // Setup agents and tools
-    const { agents, supervisor } = await setupAgents(filteredTools, this.llm);
+    const { agents, deepAgent} = await setupAgents(filteredTools, this.llm);
     this.agents = agents;
-    this.supervisor = supervisor;
+    this.deepAgent = deepAgent;
 
     console.log("Langchain workflow initialized successfully");
     console.log("Available agents:", Object.keys(this.agents));
@@ -36,19 +37,14 @@ export class TravelAgentsWorkflow {
       throw new Error("Workflow not initialized. Call initialize() first.");
     }
 
-    // Compile and run
-    const app = this.supervisor.compile();
-    const agent = "Supervisor";
+    const agent = "TravelAgent";
+    const messages = [new HumanMessage(input)];
 
     try {
-      // Create initial state with HumanMessage
-      const messages = [new HumanMessage(input)];
 
-      // Stream events from the agent execution using streamEvents
-      const eventStream = app.streamEvents(
-        { messages },
-        { version: "v2" }
-      );
+      const eventStream = this.deepAgent!.streamEvents({
+        messages,
+      });
 
       for await (const event of eventStream) {
         // Filter and yield relevant events
