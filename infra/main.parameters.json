@@ -13,21 +13,7 @@
       },
       "apiLangchainJsDefinition": {
         "value": {
-          "settings": [
-            {
-              "name": "",
-              "value": "${VAR}",
-              "_comment_name": "The name of the environment variable when running in Azure. If empty, ignored.",
-              "_comment_value": "The value to provide. This can be a fixed literal, or an expression like ${VAR} to use the value of 'VAR' from the current environment."
-            },
-            {
-              "name": "",
-              "value": "${VAR_S}",
-              "secret": true,
-              "_comment_name": "The name of the environment variable when running in Azure. If empty, ignored.",
-              "_comment_value": "The value to provide. This can be a fixed literal, or an expression like ${VAR_S} to use the value of 'VAR_S' from the current environment."
-            }
-          ]
+          "settings": []
         }
       },
       "apiLlamaindexTsExists": {
@@ -35,21 +21,7 @@
       },
       "apiLlamaindexTsDefinition": {
         "value": {
-          "settings": [
-            {
-              "name": "",
-              "value": "${VAR}",
-              "_comment_name": "The name of the environment variable when running in Azure. If empty, ignored.",
-              "_comment_value": "The value to provide. This can be a fixed literal, or an expression like ${VAR} to use the value of 'VAR' from the current environment."
-            },
-            {
-              "name": "",
-              "value": "${VAR_S}",
-              "secret": true,
-              "_comment_name": "The name of the environment variable when running in Azure. If empty, ignored.",
-              "_comment_value": "The value to provide. This can be a fixed literal, or an expression like ${VAR_S} to use the value of 'VAR_S' from the current environment."
-            }
-          ]
+          "settings": []
         }
       },
       "apiMafPythonExists": {
@@ -57,21 +29,7 @@
       },
       "apiMafPythonDefinition": {
         "value": {
-          "settings": [
-            {
-              "name": "",
-              "value": "${VAR}",
-              "_comment_name": "The name of the environment variable when running in Azure. If empty, ignored.",
-              "_comment_value": "The value to provide. This can be a fixed literal, or an expression like ${VAR} to use the value of 'VAR' from the current environment."
-            },
-            {
-              "name": "",
-              "value": "${VAR_S}",
-              "secret": true,
-              "_comment_name": "The name of the environment variable when running in Azure. If empty, ignored.",
-              "_comment_value": "The value to provide. This can be a fixed literal, or an expression like ${VAR_S} to use the value of 'VAR_S' from the current environment."
-            }
-          ]
+          "settings": []
         }
       },
       "uiAngularExists": {
@@ -79,109 +37,39 @@
       },
       "uiAngularDefinition": {
         "value": {
-          "settings": [
-            {
-              "name": "",
-              "value": "${VAR}",
-              "_comment_name": "The name of the environment variable when running in Azure. If empty, ignored.",
-              "_comment_value": "The value to provide. This can be a fixed literal, or an expression like ${VAR} to use the value of 'VAR' from the current environment."
-            },
-            {
-              "name": "",
-              "value": "${VAR_S}",
-              "secret": true,
-              "_comment_name": "The name of the environment variable when running in Azure. If empty, ignored.",
-              "_comment_value": "The value to provide. This can be a fixed literal, or an expression like ${VAR_S} to use the value of 'VAR_S' from the current environment."
-            }
-          ]
+          "settings": []
         }
       },
-      "itineraryPlanningExists": {
+      "mcpItineraryPlanningExists": {
         "value": "${SERVICE_ITINERARY_PLANNING_RESOURCE_EXISTS=false}"
       },
-      "itineraryPlanningDefinition": {
+      "mcpItineraryPlanningDefinition": {
         "value": {
-          "settings": [
-            {
-              "name": "",
-              "value": "${VAR}",
-              "_comment_name": "The name of the environment variable when running in Azure. If empty, ignored.",
-              "_comment_value": "The value to provide. This can be a fixed literal, or an expression like ${VAR} to use the value of 'VAR' from the current environment."
-            },
-            {
-              "name": "",
-              "value": "${VAR_S}",
-              "secret": true,
-              "_comment_name": "The name of the environment variable when running in Azure. If empty, ignored.",
-              "_comment_value": "The value to provide. This can be a fixed literal, or an expression like ${VAR_S} to use the value of 'VAR_S' from the current environment."
-            }
-          ]
+          "settings": []
         }
       },
-      "customerQueryExists": {
+      "mcpCustomerQueryExists": {
         "value": "${SERVICE_CUSTOMER_QUERY_RESOURCE_EXISTS=false}"
       },
-      "customerQueryDefinition": {
+      "mcpCustomerQueryDefinition": {
         "value": {
-          "settings": [
-            {
-              "name": "",
-              "value": "${VAR}",
-              "_comment_name": "The name of the environment variable when running in Azure. If empty, ignored.",
-              "_comment_value": "The value to provide. This can be a fixed literal, or an expression like ${VAR} to use the value of 'VAR' from the current environment."
-            },
-            {
-              "name": "",
-              "value": "${VAR_S}",
-              "secret": true,
-              "_comment_name": "The name of the environment variable when running in Azure. If empty, ignored.",
-              "_comment_value": "The value to provide. This can be a fixed literal, or an expression like ${VAR_S} to use the value of 'VAR_S' from the current environment."
-            }
-          ]
+          "settings": []
         }
       },
-      "destinationRecommendationExists": {
+      "mcpDestinationRecommendationExists": {
         "value": "${SERVICE_DESTINATION_RECOMMENDATION_RESOURCE_EXISTS=false}"
       },
-      "destinationRecommendationDefinition": {
+      "mcpDestinationRecommendationDefinition": {
         "value": {
-          "settings": [
-            {
-              "name": "",
-              "value": "${VAR}",
-              "_comment_name": "The name of the environment variable when running in Azure. If empty, ignored.",
-              "_comment_value": "The value to provide. This can be a fixed literal, or an expression like ${VAR} to use the value of 'VAR' from the current environment."
-            },
-            {
-              "name": "",
-              "value": "${VAR_S}",
-              "secret": true,
-              "_comment_name": "The name of the environment variable when running in Azure. If empty, ignored.",
-              "_comment_value": "The value to provide. This can be a fixed literal, or an expression like ${VAR_S} to use the value of 'VAR_S' from the current environment."
-            }
-          ]
+          "settings": []
         }
       },
-      "echoPingExists": {
+      "mcpEchoPingExists": {
         "value": "${SERVICE_ECHO_PING_RESOURCE_EXISTS=false}"
       },
-      "echoPingDefinition": {
+      "mcpEchoPingDefinition": {
         "value": {
-          "settings": [
-            {
-              "name": "",
-              "value": "${VAR}",
-              "_comment_name": "The name of the environment variable when running in Azure. If empty, ignored.",
-              "_comment_value": "The value to provide. This can be a fixed literal, or an expression like ${VAR} to use the value of 'VAR' from the current environment."
-            },
-            {
-              "name": "",
-              "value": "${VAR_S}",
-              "secret": true,
-              "_comment_name": "The name of the environment variable when running in Azure. If empty, ignored.",
-              "_comment_value": "The value to provide. This can be a fixed literal, or an expression like ${VAR_S} to use the value of 'VAR_S' from the current environment."
-            }
-          ]
+          "settings": []
         }
       },
       "principalId": {

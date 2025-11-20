@@ -12,27 +12,34 @@ param location string
 param apiLangchainJsExists bool
 @secure()
 param apiLangchainJsDefinition object 
+
 param apiLlamaindexTsExists bool
 @secure()
 param apiLlamaindexTsDefinition object
+
 param apiMafPythonExists bool
 @secure()
 param apiMafPythonDefinition object
+
 param uiAngularExists bool
 @secure()
 param uiAngularDefinition object
-param itineraryPlanningExists bool
+
+param mcpItineraryPlanningExists bool
 @secure()
-param itineraryPlanningDefinition object
-param customerQueryExists bool
+param mcpItineraryPlanningDefinition object
+
+param mcpCustomerQueryExists bool
 @secure()
-param customerQueryDefinition object
-param destinationRecommendationExists bool
+param mcpCustomerQueryDefinition object
+
+param mcpDestinationRecommendationExists bool
 @secure()
-param destinationRecommendationDefinition object
-param echoPingExists bool
+param mcpDestinationRecommendationDefinition object
+
+param mcpEchoPingExists bool
 @secure()
-param echoPingDefinition object
+param mcpEchoPingDefinition object
 
 @description('Id of the user or app to assign application roles')
 param principalId string
@@ -57,7 +64,7 @@ resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 
 var orchestratorConfig = {
   chat: {
-    model: 'gpt-5'
+    model: 'gpt-5-mini'
     version: '2025-08-07'
     capacity: 50
   }
@@ -94,14 +101,14 @@ module resources 'resources.bicep' = {
     uiAngularDefinition: uiAngularDefinition
     orchestratorConfig: orchestratorConfig
     isContinuousIntegration: isContinuousIntegration
-    itineraryPlanningExists: itineraryPlanningExists
-    itineraryPlanningDefinition: itineraryPlanningDefinition
-    customerQueryExists: customerQueryExists
-    customerQueryDefinition: customerQueryDefinition
-    destinationRecommendationExists: destinationRecommendationExists
-    destinationRecommendationDefinition: destinationRecommendationDefinition
-    echoPingExists: echoPingExists
-    echoPingDefinition: echoPingDefinition
+    mcpItineraryPlanningExists: mcpItineraryPlanningExists
+    mcpItineraryPlanningDefinition: mcpItineraryPlanningDefinition
+    mcpCustomerQueryExists: mcpCustomerQueryExists
+    mcpCustomerQueryDefinition: mcpCustomerQueryDefinition
+    mcpDestinationRecommendationExists: mcpDestinationRecommendationExists
+    mcpDestinationRecommendationDefinition: mcpDestinationRecommendationDefinition
+    mcpEchoPingExists: mcpEchoPingExists
+    mcpEchoPingDefinition: mcpEchoPingDefinition
   }
 }
 
