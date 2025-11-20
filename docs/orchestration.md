@@ -181,7 +181,7 @@ flowchart TB
 ### Key Features
 
 **Strengths**:
-- ✅ Native Azure AI Foundry integration
+- ✅ Native Microsoft Foundry integration
 - ✅ Python AI/ML ecosystem access
 - ✅ Microsoft backing and support
 - ✅ Modern agent architecture patterns

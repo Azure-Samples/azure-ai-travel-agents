@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 class FoundryLocalProvider(LLMProvider):
-    """Azure Foundry Local LLM provider.
+    """Foundry Local LLM provider.
 
     Note: This is a placeholder implementation. The actual Foundry Local SDK
     is not yet available in Python. This will need to be updated when the
@@ -25,7 +25,7 @@ class FoundryLocalProvider(LLMProvider):
         Raises:
             NotImplementedError: Foundry Local Python SDK not yet available
         """
-        logger.info("Using Azure Foundry Local")
+        logger.info("Using Foundry Local")
         logger.warning("Foundry Local Python SDK is not yet available. This is a placeholder implementation.")
 
         # Placeholder implementation

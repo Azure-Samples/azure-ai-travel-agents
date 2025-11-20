@@ -281,7 +281,7 @@
       },
       {
         "title": "Multi-Provider LLM Architecture",
-        "description": "Understand the flexible LLM provider system supporting Azure OpenAI, GitHub Models, Docker Models, Ollama, and Azure AI Foundry Local. Learn about provider abstraction enabling deployment flexibility.",
+        "description": "Understand the flexible LLM provider system supporting Azure OpenAI, GitHub Models, Docker Models, Ollama, and Foundry Local. Learn about provider abstraction enabling deployment flexibility.",
         "files": [
           {
             "path": "packages/api-langchain-js/src/providers/index.ts",
@@ -295,7 +295,7 @@
           },
           {
             "path": "packages/api-langchain-js/src/providers/azure-openai.ts",
-            "description": "Azure OpenAI and Azure AI Foundry provider with endpoint detection and streaming configuration",
+            "description": "Azure OpenAI and Microsoft Foundry provider with endpoint detection and streaming configuration",
             "highlights": [
               {
                 "name": "llm function",

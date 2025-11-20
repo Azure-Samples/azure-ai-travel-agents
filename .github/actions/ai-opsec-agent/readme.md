@@ -23,11 +23,11 @@ Copy the [`ai-opsec-agent.yml`](./../../workflows/ai-opsec-agent.yml) file into 
 
 2. **Create and deploy o3-mini LLM model**
    
-In Azure AI Foundry, create a new o3-mini model. This model will be used for the security audit. Ensure it is deployed and accessible.
-For more details on creating and deploying models, refer to the [Azure AI Foundry documentation](https://learn.microsoft.com/azure/ai-foundry/).
+In Microsoft Foundry, create a new o3-mini model. This model will be used for the security audit. Ensure it is deployed and accessible.
+For more details on creating and deploying models, refer to the [Microsoft Foundry documentation](https://learn.microsoft.com/azure/ai-foundry/).
 
 > [!IMPORTANT]
-> If you get rate limit errors, consider increasing the TPM (tokens per minute) for your model in Azure AI Foundry.
+> If you get rate limit errors, consider increasing the TPM (tokens per minute) for your model in Microsoft Foundry.
 
 3. **Set Required Secrets**
 

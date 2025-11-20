@@ -13,7 +13,7 @@ This section provides advanced setup instructions for running the application ei
 If you want to use local LLM providers like [Docker models](https://docs.docker.com/ai/model-runner/) or [Llama](https://ai.meta.com/llama/), you can set the `LLM_PROVIDER` environment variable in the `./packages/api-{orchestrator}-{language}/.env` file to the supported providers. This will configure the application to use the specified local LLM provider.
 
 The application supports the following local LLM providers:
-- **Azure Foundry Local**: This provider allows you to run models locally using Azure's AI Foundry Local service.
+- **Foundry Local**: This provider allows you to run models locally using Microsoft's Foundry Local service.
 - **Ollama Models**: This provider allows you to run models locally using Ollama service.
 - **Docker Models**: This provider allows you to run models locally using Docker's Model Runner service.
   - Make sure to install Docker Desktop v4.42.0 (195023) or later to use this feature (docker engine 28.2.2 or later).
@@ -51,9 +51,9 @@ To use a local LLM provider, you need to set the `LLM_PROVIDER` environment vari
 
 In order to run the application locally, you need to clone the repository and run the preview script. This will set up the necessary environment and start the application. 
 
-#### Using Azure Foundry Local
+#### Using Foundry Local
 
-Before using Azure Foundry Local, ensure you have the [Azure AI Foundry Local](https://github.com/microsoft/Foundry-Local) installed and running. You can find a list of available models by running the following command in your terminal: 
+Before using Foundry Local, ensure you have the [Microsoft's Foundry Local](https://github.com/microsoft/Foundry-Local) installed and running. You can find a list of available models by running the following command in your terminal: 
 
 ```bash
 foundry model list

@@ -4,7 +4,7 @@ createTime: 2025/06/06 13:07:02
 # Getting Started
 
 Welcome to the Azure AI Travel Agents sample application! This project demonstrates how: 
-- To build a multi-agent system using Azure AI Foundry services and LlamaIndex.TS.
+- To build a multi-agent system using Microsoft Foundry services and LlamaIndex.TS.
 - To implement various Model Context Protocol (MCP) servers in different programming languages.
 - To provision and deploy the application to Azure using the Azure Developer CLI (azd).
 
@@ -25,7 +25,7 @@ Welcome to the Azure AI Travel Agents sample application! This project demonstra
 To run and preview the application locally, we will use [Docker Model Runner](https://docs.docker.com/ai/model-runner/).
 
 > [!NOTE]
-> If your machine does not have enough resources to run the Docker Model Runner, you can still run the application using Azure OpenAI. Please refer to the [Preview the application using Azure AI Foundry](#preview-the-application-using-azure-ai-foundry) section below.
+> If your machine does not have enough resources to run the Docker Model Runner, you can still run the application using Azure OpenAI. Please refer to the [Preview the application using Microsoft Foundry](#preview-the-application-using-azure-ai-foundry) section below.
 
 ### Prerequisites
 - **[Git](https://git-scm.com/downloads)** (for cloning the repository)
@@ -108,11 +108,11 @@ You can also view the traces via the [Aspire Dashboard](https://aspiredashboard.
   - On `Structured` tab you'll see the logging messages from the **mcp-echo-ping** and **api** services. The `Traces` tab will show the traces across the services, such as the call from **api** to **echo-agent**.
 
 
-## Preview the application using Azure AI Foundry
+## Preview the application using Microsoft Foundry
 
 ### Prerequisites
 
-In order to run the application using Azure AI Foundry, ensure you have the following installed before running the application:
+In order to run the application using Microsoft Foundry, ensure you have the following installed before running the application:
 
 - **[Git](https://git-scm.com/downloads)** (for cloning the repository)
 - **[Node.js](https://nodejs.org/en/download)** (for the UI and API services)
@@ -176,7 +176,7 @@ azd auth login --use-device-code
 </details>
 <br>
 
-4. Provision the Azure resources. This is an important step that sets up an Azure AI Foundry environment:
+4. Provision the Azure resources. This is an important step that sets up an Microsoft Foundry environment:
 
 ```bash
 azd provision
@@ -297,10 +297,10 @@ We welcome contributions to the AI Travel Agents project! If you have suggestion
 
 ## Join the Community
 
-We encourage you to join our Azure AI Foundry Developer Community​ to share your experiences, ask questions, and get support:
+We encourage you to join our Microsoft Foundry Developer Community​ to share your experiences, ask questions, and get support:
 
 - [aka.ms/foundry/discord​](https://aka.ms/foundry/discord) - Join our Discord community for real-time discussions and support.
-- [aka.ms/foundry/forum](https://aka.ms/foundry/forum) - Visit our Azure AI Foundry Developer Forum to ask questions and share your knowledge.
+- [aka.ms/foundry/forum](https://aka.ms/foundry/forum) - Visit our Microsoft Foundry Developer Forum to ask questions and share your knowledge.
 
 <div align="center">
   <img src="./ai-foundry-developer-community-cta.png" alt="Join us on Discord" width="1000px" />

@@ -4,8 +4,8 @@
 
 <h1>Agents and MCP Orchestration <br>with Langchain.js, LlamaIndex.TS,<br>and Microsoft Agent Framework!</h1>
 
-[![Join Azure AI Foundry Community Discord](https://img.shields.io/badge/Discord-Azure_AI_Foundry_Community_Discord-blue?style=flat-square&logo=discord&color=5865f2&logoColor=fff)](https://discord.gg/NcwHpz6bRW)
-[![Join Azure AI Foundry Developer Forum](https://img.shields.io/badge/GitHub-Azure_AI_Foundry_Developer_Forum-blue?style=flat-square&logo=github&color=000000&logoColor=fff)](https://aka.ms/foundry/forum)
+[![Join Microsoft Foundry Community Discord](https://img.shields.io/badge/Discord-Microsoft_Foundry_Community_Discord-blue?style=flat-square&logo=discord&color=5865f2&logoColor=fff)](https://discord.gg/NcwHpz6bRW)
+[![Join Microsoft Foundry Developer Forum](https://img.shields.io/badge/GitHub-Microsoft_Foundry_Developer_Forum-blue?style=flat-square&logo=github&color=000000&logoColor=fff)](https://aka.ms/foundry/forum)
 [![Announcement blog post](https://img.shields.io/badge/Announcement%20Blog%20post-black?style=flat-square)](https://techcommunity.microsoft.com/blog/AzureDevCommunityBlog/introducing-azure-ai-travel-agents-a-flagship-mcp-powered-sample-for-ai-travel-s/4416683)
 <br>
 [![Open project in GitHub Codespaces](https://img.shields.io/badge/Codespaces-Open-blue?style=flat-square&logo=github)](https://codespaces.new/Azure-Samples/azure-ai-travel-agents?hide_repo_select=true&ref=main&quickstart=true)
@@ -83,7 +83,7 @@ To run and preview the application locally, we will use [Docker Model Runner](ht
 > [!IMPORTANT]
 > The Phi4 14B model requires **significant resources** (at least 16GB RAM and a modern CPU or GPU) to run efficiently. 
 GPU acceleration is only supported on macOS Apple Silicon and NVIDIA GPUs on Windows). 
-> If your machine does not have enough resources to run LLMs locally, you can still run the application using Azure AI Foundry. Please refer to the [Advanced Setup](docs/advanced-setup.md) documentation for more information.
+> If your machine does not have enough resources to run LLMs locally, you can still run the application using Microsoft Foundry. Please refer to the [Advanced Setup](docs/advanced-setup.md) documentation for more information.
 
 ### One setup script
 
@@ -173,10 +173,10 @@ We welcome contributions to the AI Travel Agents project! If you have suggestion
 
 ## Join the Community
 
-We encourage you to join our Azure AI Foundry Developer Community​ to share your experiences, ask questions, and get support:
+We encourage you to join our Microsoft Foundry Developer Community​ to share your experiences, ask questions, and get support:
 
 - [aka.ms/foundry/discord​](https://discord.gg/NcwHpz6bRW) - Join our Discord community for real-time discussions and support.
-- [aka.ms/foundry/forum](https://aka.ms/foundry/forum) - Visit our Azure AI Foundry Developer Forum to ask questions and share your knowledge.
+- [aka.ms/foundry/forum](https://aka.ms/foundry/forum) - Visit our Microsoft Foundry Developer Forum to ask questions and share your knowledge.
 
 <div align="center">
   <img src="./docs/ai-foundry-developer-community-cta.png" alt="Join us on Discord" width="1000px" />

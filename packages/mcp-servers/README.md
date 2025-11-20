@@ -4,12 +4,12 @@ This directory contains various AI agent tools that serve different purposes wit
 
 ## Overview of Tools
 
-| Tool Name                                                  | Technology | Containerized ? | OpenTelemetry ? | AI Foundry Access |
-| ---------------------------------------------------------- | ---------- | --------------- | --------------- | ----------------- |
-| [echo-ping](./echo-ping) (for testing)                     | TypeScript | ✅              | ✅              |                   |
-| [customer-query](./customer-query)                         | C#         | ✅              | ✅              | ✅                |
-| [destination-recommendation](./destination-recommendation) | Java       | ✅              | ✅              | ✅                |
-| [itinerary-planning](./itinerary-planning)                 | Python     | ✅              | ✅              |                   |
+| Tool Name                                                  | Technology | Containerized ? | OpenTelemetry ? | Microsoft Foundry Access |
+| ---------------------------------------------------------- | ---------- | --------------- | --------------- | ------------------------ |
+| [echo-ping](./echo-ping) (for testing)                     | TypeScript | ✅              | ✅              |                          |
+| [customer-query](./customer-query)                         | C#         | ✅              | ✅              | ✅                       |
+| [destination-recommendation](./destination-recommendation) | Java       | ✅              | ✅              | ✅                       |
+| [itinerary-planning](./itinerary-planning)                 | Python     | ✅              | ✅              |                          |
 
 ## Tool Descriptions
 
