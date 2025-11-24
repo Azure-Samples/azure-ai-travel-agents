@@ -9,7 +9,7 @@
         "value": "${AZURE_LOCATION}"
       },
       "apiLangchainJsExists": {
-        "value": "${SERVICE_API_LANGCHAIN_JS_RESOURCE_EXISTS=false}"
+        "value": "${AZURE_SERVICE_API_LANGCHAIN_JS_RESOURCE_EXISTS=false}"
       },
       "apiLangchainJsDefinition": {
         "value": {
@@ -17,7 +17,7 @@
         }
       },
       "apiLlamaindexTsExists": {
-        "value": "${SERVICE_API_LLAMAINDEX_TS_RESOURCE_EXISTS=false}"
+        "value": "${AZURE_SERVICE_API_LLAMAINDEX_TS_RESOURCE_EXISTS=false}"
       },
       "apiLlamaindexTsDefinition": {
         "value": {
@@ -25,7 +25,7 @@
         }
       },
       "apiMafPythonExists": {
-        "value": "${SERVICE_API_MAF_PYTHON_RESOURCE_EXISTS=false}"
+        "value": "${AZURE_SERVICE_API_MAF_PYTHON_RESOURCE_EXISTS=false}"
       },
       "apiMafPythonDefinition": {
         "value": {
@@ -33,7 +33,7 @@
         }
       },
       "uiAngularExists": {
-        "value": "${SERVICE_UI_ANGULAR_RESOURCE_EXISTS=false}"
+        "value": "${AZURE_SERVICE_UI_ANGULAR_RESOURCE_EXISTS=false}"
       },
       "uiAngularDefinition": {
         "value": {
@@ -41,7 +41,7 @@
         }
       },
       "mcpItineraryPlanningExists": {
-        "value": "${SERVICE_ITINERARY_PLANNING_RESOURCE_EXISTS=false}"
+        "value": "${AZURE_SERVICE_MCP_ITINERARY_PLANNING_RESOURCE_EXISTS=false}"
       },
       "mcpItineraryPlanningDefinition": {
         "value": {
@@ -49,7 +49,7 @@
         }
       },
       "mcpCustomerQueryExists": {
-        "value": "${SERVICE_CUSTOMER_QUERY_RESOURCE_EXISTS=false}"
+        "value": "${AZURE_SERVICE_MCP_CUSTOMER_QUERY_RESOURCE_EXISTS=false}"
       },
       "mcpCustomerQueryDefinition": {
         "value": {
@@ -57,7 +57,7 @@
         }
       },
       "mcpDestinationRecommendationExists": {
-        "value": "${SERVICE_DESTINATION_RECOMMENDATION_RESOURCE_EXISTS=false}"
+        "value": "${AZURE_SERVICE_MCP_DESTINATION_RECOMMENDATION_RESOURCE_EXISTS=false}"
       },
       "mcpDestinationRecommendationDefinition": {
         "value": {
@@ -65,7 +65,7 @@
         }
       },
       "mcpEchoPingExists": {
-        "value": "${SERVICE_ECHO_PING_RESOURCE_EXISTS=false}"
+        "value": "${AZURE_SERVICE_MCP_ECHO_PING_RESOURCE_EXISTS=false}"
       },
       "mcpEchoPingDefinition": {
         "value": {

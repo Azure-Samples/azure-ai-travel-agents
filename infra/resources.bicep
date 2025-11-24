@@ -209,19 +209,19 @@ module apiLangchainJs 'br/public:avm/res/app/container-app:0.8.0' = {
           }
           {
             name: 'MCP_ITINERARY_PLANNING_URL'
-            value: 'https://itinerary-planning.internal.${containerAppsEnvironment.outputs.defaultDomain}'
+            value: 'https://mcp-itinerary-planning.internal.${containerAppsEnvironment.outputs.defaultDomain}'
           }
           {
             name: 'MCP_CUSTOMER_QUERY_URL'
-            value: 'https://customer-query.internal.${containerAppsEnvironment.outputs.defaultDomain}'
+            value: 'https://mcp-customer-query.internal.${containerAppsEnvironment.outputs.defaultDomain}'
           }
           {
             name: 'MCP_DESTINATION_RECOMMENDATION_URL'
-            value: 'https://destination-recommendation.internal.${containerAppsEnvironment.outputs.defaultDomain}'
+            value: 'https://mcp-destination-recommendation.internal.${containerAppsEnvironment.outputs.defaultDomain}'
           }
           {
             name: 'MCP_ECHO_PING_URL'
-            value: 'https://echo-ping.internal.${containerAppsEnvironment.outputs.defaultDomain}'
+            value: 'https://mcp-echo-ping.internal.${containerAppsEnvironment.outputs.defaultDomain}'
           }
           {
             name: 'MCP_ECHO_PING_ACCESS_TOKEN'
@@ -340,19 +340,19 @@ module apiLlamaindexTs 'br/public:avm/res/app/container-app:0.8.0' = {
           }
           {
             name: 'MCP_ITINERARY_PLANNING_URL'
-            value: 'https://itinerary-planning.internal.${containerAppsEnvironment.outputs.defaultDomain}'
+            value: 'https://mcp-itinerary-planning.internal.${containerAppsEnvironment.outputs.defaultDomain}'
           }
           {
             name: 'MCP_CUSTOMER_QUERY_URL'
-            value: 'https://customer-query.internal.${containerAppsEnvironment.outputs.defaultDomain}'
+            value: 'https://mcp-customer-query.internal.${containerAppsEnvironment.outputs.defaultDomain}'
           }
           {
             name: 'MCP_DESTINATION_RECOMMENDATION_URL'
-            value: 'https://destination-recommendation.internal.${containerAppsEnvironment.outputs.defaultDomain}'
+            value: 'https://mcp-destination-recommendation.internal.${containerAppsEnvironment.outputs.defaultDomain}'
           }
           {
             name: 'MCP_ECHO_PING_URL'
-            value: 'https://echo-ping.internal.${containerAppsEnvironment.outputs.defaultDomain}'
+            value: 'https://mcp-echo-ping.internal.${containerAppsEnvironment.outputs.defaultDomain}'
           }
           {
             name: 'MCP_ECHO_PING_ACCESS_TOKEN'
@@ -792,7 +792,7 @@ module mcpCustomerQuery 'br/public:avm/res/app/container-app:0.8.0' = {
     ]
     environmentResourceId: containerAppsEnvironment.outputs.resourceId
     location: location
-    tags: union(tags, { 'azd-service-name': 'customer-query' })
+    tags: union(tags, { 'azd-service-name': 'mcp-customer-query' })
   }
 }
 
@@ -882,7 +882,7 @@ module mcpDestinationRecommendation 'br/public:avm/res/app/container-app:0.8.0' 
     ]
     environmentResourceId: containerAppsEnvironment.outputs.resourceId
     location: location
-    tags: union(tags, { 'azd-service-name': 'destination-recommendation' })
+    tags: union(tags, { 'azd-service-name': 'mcp-destination-recommendation' })
   }
 }
 
@@ -988,7 +988,7 @@ module mcpEchoPing 'br/public:avm/res/app/container-app:0.8.0' = {
     ]
     environmentResourceId: containerAppsEnvironment.outputs.resourceId
     location: location
-    tags: union(tags, { 'azd-service-name': 'echo-ping' })
+    tags: union(tags, { 'azd-service-name': 'mcp-echo-ping' })
   }
 }
 
@@ -1048,10 +1048,10 @@ output AZURE_RESOURCE_API_LANGCHAIN_JS_ID string = apiLangchainJs.outputs.resour
 output AZURE_RESOURCE_API_LLAMAINDEX_TS_ID string = apiLlamaindexTs.outputs.resourceId
 output AZURE_RESOURCE_API_MAF_PYTHON_ID string = apiMafPython.outputs.resourceId
 output AZURE_RESOURCE_UI_ANGULAR_ID string = uiAngular.outputs.resourceId
-output AZURE_RESOURCE_ITINERARY_PLANNING_ID string = mcpItineraryPlanning.outputs.resourceId
-output AZURE_RESOURCE_CUSTOMER_QUERY_ID string = mcpCustomerQuery.outputs.resourceId
-output AZURE_RESOURCE_DESTINATION_RECOMMENDATION_ID string = mcpDestinationRecommendation.outputs.resourceId
-output AZURE_RESOURCE_ECHO_PING_ID string = mcpEchoPing.outputs.resourceId
+output AZURE_RESOURCE_MCP_ITINERARY_PLANNING_ID string = mcpItineraryPlanning.outputs.resourceId
+output AZURE_RESOURCE_MCP_CUSTOMER_QUERY_ID string = mcpCustomerQuery.outputs.resourceId
+output AZURE_RESOURCE_MCP_DESTINATION_RECOMMENDATION_ID string = mcpDestinationRecommendation.outputs.resourceId
+output AZURE_RESOURCE_MCP_ECHO_PING_ID string = mcpEchoPing.outputs.resourceId
 output AZURE_OPENAI_ENDPOINT string = openAi.outputs.endpoint
 output NG_API_URL_LANGCHAIN_JS string = 'https://api-langchain-js.${containerAppsEnvironment.outputs.defaultDomain}'
 output NG_API_URL_LLAMAINDEX_TS string = 'https://api-llamaindex-ts.${containerAppsEnvironment.outputs.defaultDomain}'
