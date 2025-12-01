@@ -36,7 +36,7 @@
     "@opentelemetry/sdk-node": "^0.200.0",
     "@opentelemetry/sdk-trace-node": "^2.0.0",
     "dotenv": "^16.5.0",
-    "express": "^5.0.1",
+    "express": "^5.2.1",
     "openai": "^6.6.0",
     "type": "^2.7.3",
     "zod": "^3.23.8"
