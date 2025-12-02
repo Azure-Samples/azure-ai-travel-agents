@@ -21,7 +21,7 @@
     "@llamaindex/openai": "^0.4.20",
     "@llamaindex/tools": "0.1.12",
     "@llamaindex/workflow": "^1.1.24",
-    "@modelcontextprotocol/sdk": "^1.10.2",
+    "@modelcontextprotocol/sdk": "^1.24.0",
     "@opentelemetry/api": "^1.9.0",
     "@opentelemetry/auto-instrumentations-node": "^0.57.0",
     "@opentelemetry/exporter-metrics-otlp-grpc": "^0.200.0",
