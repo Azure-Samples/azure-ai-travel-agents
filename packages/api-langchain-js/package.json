@@ -37,7 +37,7 @@
     "dotenv": "^16.4.7",
     "express": "^5.0.1",
     "foundry-local-sdk": "^0.3.1",
-    "langchain": "^1.0.0",
+    "langchain": "^1.2.3",
     "openai": "^4.96.0",
     "zod": "^3.24.2"
   },
