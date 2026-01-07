@@ -1,3 +1,6 @@
+import { Request, Response } from 'express';
+import { randomUUID } from 'node:crypto';
+
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import {
@@ -8,8 +11,6 @@ import {
   LoggingMessageNotification,
   Notification,
 } from '@modelcontextprotocol/sdk/types.js';
-import { Request, Response } from 'express';
-import { randomUUID } from 'node:crypto';
 import { EchoTools } from './tools.js';
 
 const JSON_RPC = '2.0';
@@ -47,6 +48,7 @@ export class EchoMCPServer {
       console.log('Transport connected. Handling request...');
 
       await transport.handleRequest(req, res, req.body);
+
       res.on('close', () => {
         console.log('Request closed by client');
         transport.close();
@@ -54,6 +56,7 @@ export class EchoMCPServer {
       });
 
       await this.sendMessages(transport);
+      
       console.log(
         `POST request handled successfully (status=${res.statusCode})`
       );
@@ -69,12 +72,14 @@ export class EchoMCPServer {
   }
 
   private setupServerRequestHandlers() {
+    
     this.server.setRequestHandler(ListToolsRequestSchema, async (_request) => {
       return {
         jsonrpc: JSON_RPC,
         tools: EchoTools,
       };
     });
+
     this.server.setRequestHandler(
       CallToolRequestSchema,
       async (request, _extra) => {
@@ -111,6 +116,7 @@ export class EchoMCPServer {
         }
       }
     );
+
   }
 
   private async sendMessages(transport: StreamableHTTPServerTransport) {
