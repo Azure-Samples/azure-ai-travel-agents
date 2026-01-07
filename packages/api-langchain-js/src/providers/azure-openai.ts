@@ -11,9 +11,9 @@ const AZURE_COGNITIVE_SERVICES_SCOPE =
 export const llm = async () => {
   console.log("Using Azure OpenAI");
 
-  const isRunningInLocalDocker = process.env.IS_LOCAL_DOCKER_ENV === "true";
+  const shouldUseAPIKey = process.env.IS_LOCAL_DOCKER_ENV === "true" || process.env.FORCE_AZURE_OPENAI_API_KEY === "true";
 
-  if (isRunningInLocalDocker) {
+  if (shouldUseAPIKey) {
     // running in local Docker environment
     console.log(
       "Running in local Docker environment, Azure Managed Identity is not supported. Authenticating with apiKey."
@@ -31,10 +31,10 @@ export const llm = async () => {
       configuration: {
         baseURL: process.env.AZURE_OPENAI_ENDPOINT,
       },
-      modelName: process.env.AZURE_OPENAI_DEPLOYMENT_NAME ?? "gpt-5",
+      modelName: process.env.AZURE_OPENAI_DEPLOYMENT_NAME ?? "gpt-5-mini",
       streaming: true,
-      useResponsesApi: true,
       apiKey: token,
+      useResponsesApi: true,
       verbose: true,
     });
   }
@@ -69,7 +69,7 @@ export const llm = async () => {
     configuration: {
       baseURL: process.env.AZURE_OPENAI_ENDPOINT,
     },
-    modelName: process.env.AZURE_OPENAI_DEPLOYMENT_NAME ?? "gpt-5",
+    modelName: process.env.AZURE_OPENAI_DEPLOYMENT_NAME ?? "gpt-5-mini",
     streaming: true,
     useResponsesApi: true,
     apiKey: await azureADTokenProvider(),
