@@ -21,10 +21,13 @@ export class TravelAgentsWorkflow {
   }
 
   async initialize(filteredTools: McpServerDefinition[] = []) {
-    console.log("Initializing Langchain workflow with filtered tools:", filteredTools.map(t => t.id));
-    
+    console.log(
+      "Initializing Langchain workflow with filtered tools:",
+      filteredTools.map((t) => t.id)
+    );
+
     // Setup agents and tools
-    const { agents, deepAgent} = await setupAgents(filteredTools, this.llm);
+    const { agents, deepAgent } = await setupAgents(filteredTools, this.llm);
     this.agents = agents;
     this.deepAgent = deepAgent;
 
@@ -41,64 +44,62 @@ export class TravelAgentsWorkflow {
     const messages = [new HumanMessage(input)];
 
     try {
+      const eventStream = this.deepAgent!.streamEvents(
+        { messages },
+        { version: "v2" }
+      );
 
-      const eventStream = this.deepAgent!.streamEvents({
-        messages,
-      });
-
-      for await (const event of eventStream) {
+      for await (const { name, event, data } of eventStream) {
         // Filter and yield relevant events
-        if (event.event === "on_chat_model_stream") {
+        if (event === "on_chat_model_stream") {
           // Stream LLM tokens
           yield {
             eventName: "llm_token",
             data: {
               agent,
-              chunk: event.data?.chunk,
+              chunk: data?.chunk,
             },
           };
-        } else if (event.event === "on_tool_start") {
-          // Tool execution started
+        } else if (event === "on_tool_start") {
+          //   // Tool execution started
           yield {
             eventName: "tool_start",
             data: {
               agent,
-              tool: event.name,
-              input: event.data?.input,
+              tool: name,
+              input: data?.input,
             },
           };
-        } else if (event.event === "on_tool_end") {
+        } else if (event === "on_tool_end") {
           // Tool execution completed
           yield {
             eventName: "tool_end",
             data: {
               agent,
-              tool: event.name,
-              output: event.data?.output,
+              tool: name,
+              output: data?.output,
             },
           };
-        } else if (event.event === "on_chain_end" && event.name === "LangGraph") {
+        } else if (event === "on_chain_end" && name === "LangGraph") {
           // Agent completed - yield final response
           yield {
             eventName: "agent_complete",
             data: {
               agent,
-              messages: event.data?.output?.messages || [],
+              messages: data?.output?.messages || [],
             },
           };
-        }
-        else {
+        } else {
           // Yield other events for debugging
           yield {
-            eventName: event.event,
+            eventName: event,
             data: {
               agent,
-              ...event.data,
+              ...data,
             },
           };
         }
       }
-
     } catch (error) {
       console.error("Error in workflow execution:", error);
       yield {
