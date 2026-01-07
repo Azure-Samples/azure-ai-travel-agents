@@ -99,7 +99,6 @@ apiRouter.post("/chat", async (req, res) => {
               data: data ? JSON.parse(JSON.stringify(data)) : null,
             });
             this.push(serializedData + CHUNK_END);
-            console.log("Pushed event:", serializedData);
           }
           this.push(null); // Close the stream
         } catch (error: any) {
