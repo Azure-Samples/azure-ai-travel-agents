@@ -16,11 +16,7 @@ export const McpToolsConfig = (): {
       url: process.env["MCP_ECHO_PING_URL"] + MCP_API_HTTP_PATH,
       type: "http",
       verbose: true,
-      requestInit: {
-          headers: {
-              "Authorization": "Bearer " + process.env["MCP_ECHO_PING_ACCESS_TOKEN"],
-          }
-      },
+      accessToken: process.env["MCP_ECHO_PING_ACCESS_TOKEN"],
     },
     id: "echo-ping",
     name: "Echo Test",
