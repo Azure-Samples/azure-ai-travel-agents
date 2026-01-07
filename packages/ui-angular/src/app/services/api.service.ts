@@ -200,6 +200,15 @@ export class ApiService {
               const parsedData = JSON.parse(
                 jsonValue.replace(/data:\s+/, '').trim()
               );
+
+              if (parsedData.data.error) {
+                this.handleApiError(
+                  "Server error: " + parsedData.data.error,
+                  0
+                );
+                return null;
+              }
+
               return {
                 type: event.type === HttpEventType.Response ? 'END' : 'MESSAGE',
                 event: parsedData,
