@@ -40,7 +40,7 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^20.3.6",
-    "@angular/cli": "^20.3.6",
+    "@angular/cli": "^21.1.0",
     "@angular/compiler-cli": "^20.3.6",
     "@ngx-env/builder": "^19.0.4",
     "@spartan-ng/cli": "^0.0.1-alpha.532",
