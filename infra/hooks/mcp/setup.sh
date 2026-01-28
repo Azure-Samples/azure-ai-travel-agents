@@ -31,4 +31,12 @@ done
 
 #  only build docker compose, do not start the containers yet
 printf ">> Building MCP servers with Docker Compose...\n"
-docker compose -f docker-compose.yml up --build -d $tools
+
+# Transform tool names to Docker Compose service names with mcp- prefix
+compose_services=""
+for tool in $tools; do
+    compose_services="$compose_services mcp-$tool"
+done
+compose_services=$(echo $compose_services | xargs) # trim leading/trailing whitespace
+
+docker compose -f docker-compose.yml up --build -d $compose_services
