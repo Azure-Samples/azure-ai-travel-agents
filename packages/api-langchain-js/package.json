@@ -48,5 +48,8 @@
   },
   "volta": {
     "node": "22.20.0"
+  },
+  "overrides": {
+    "protobufjs": "7.5.5"
   }
 }
