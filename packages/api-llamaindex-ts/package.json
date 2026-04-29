@@ -46,7 +46,8 @@
     "typescript": "^5.3.3"
   },
   "overrides": {
-    "protobufjs": "7.5.5"
+    "protobufjs": "7.5.5",
+    "axios": ">=1.15.0"
   },
   "volta": {
     "node": "22.20.0"
