@@ -47,5 +47,8 @@
     "shx": "^0.3.4",
     "tsx": "^4.19.4",
     "typescript": "^5.3.3"
+  },
+  "overrides": {
+    "protobufjs": "7.5.5"
   }
 }
