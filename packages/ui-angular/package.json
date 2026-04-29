@@ -33,7 +33,7 @@
     "marked": "^15.0.12",
     "ngx-scrollbar": ">=16.0.0",
     "ngx-sonner": "^3.0.0",
-    "postcss": "^8.5.3",
+    "postcss": "^8.5.10",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
