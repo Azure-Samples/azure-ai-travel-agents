@@ -46,6 +46,9 @@
     "tsx": "^4.19.4",
     "typescript": "^5.3.3"
   },
+  "overrides": {
+    "handlebars": "4.7.9"
+  },
   "volta": {
     "node": "22.20.0"
   }
