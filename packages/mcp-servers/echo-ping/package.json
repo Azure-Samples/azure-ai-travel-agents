@@ -44,7 +44,7 @@
   "devDependencies": {
     "@types/express": "^5.0.0",
     "@types/node": "^20.11.24",
-    "shx": "^0.3.4",
+    "shx": "^0.4.0",
     "tsx": "^4.19.4",
     "typescript": "^5.3.3"
   }
