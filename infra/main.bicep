@@ -46,6 +46,9 @@ param principalId string
 
 param isContinuousIntegration bool // Set in main.parameters.json
 
+@description('Region for the health model, when the primary location does not support Microsoft.CloudHealth/healthmodels')
+param healthModelLocation string = ''
+
 // Tags that should be applied to all resources.
 // 
 // Note that 'azd-service-name' tags should be applied separately to service host resources.
@@ -101,6 +104,7 @@ module resources 'resources.bicep' = {
     uiAngularDefinition: uiAngularDefinition
     orchestratorConfig: orchestratorConfig
     isContinuousIntegration: isContinuousIntegration
+    healthModelLocation: empty(healthModelLocation) ? location : healthModelLocation
     mcpItineraryPlanningExists: mcpItineraryPlanningExists
     mcpItineraryPlanningDefinition: mcpItineraryPlanningDefinition
     mcpCustomerQueryExists: mcpCustomerQueryExists

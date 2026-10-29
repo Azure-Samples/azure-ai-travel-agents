@@ -77,6 +77,9 @@
       },
       "isContinuousIntegration": {
         "value": "${GITHUB_ACTIONS=false}"
+      },
+      "healthModelLocation": {
+        "value": "${AZURE_HEALTH_MODEL_LOCATION}"
       }
     }
 }

@@ -43,6 +43,10 @@ param principalId string
 param orchestratorConfig object = {}
 
 param isContinuousIntegration bool
+
+@description('Region for the health model. Must support Microsoft.CloudHealth/healthmodels.')
+param healthModelLocation string = location
+
 var principalType = isContinuousIntegration ? 'ServicePrincipal' : 'User'
 
 var abbrs = loadJsonContent('./abbreviations.json')
@@ -1041,6 +1045,26 @@ module openAi 'br/public:avm/res/cognitive-services/account:0.10.2' =  {
       }
     ]
   }
+}
+
+module healthModel './modules/healthmodel.bicep' = {
+  name: 'healthmodel'
+  params: {
+    name: 'hm-${resourceToken}'
+    location: healthModelLocation
+    tags: tags
+    aiAccountName: openAi.outputs.name
+    logAnalyticsWorkspaceName: monitoring.outputs.logAnalyticsWorkspaceName
+  }
+  dependsOn: [
+    uiAngular
+    apiLangchainJs
+    apiLlamaindexTs
+    apiMafPython
+    mcpCustomerQuery
+    mcpDestinationRecommendation
+    mcpItineraryPlanning
+  ]
 }
 
 output AZURE_CONTAINER_REGISTRY_ENDPOINT string = containerRegistry.outputs.loginServer
