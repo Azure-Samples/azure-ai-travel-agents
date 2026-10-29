@@ -417,7 +417,7 @@ module apiMafPython 'br/public:avm/res/app/container-app:0.8.0' = {
   name: 'apiMafPython'
   params: {
     name: 'api-maf-python'
-    ingressTargetPort: 4000
+    ingressTargetPort: 4010
     corsPolicy: {
       allowedOrigins: [
         'https://ui-angular.${containerAppsEnvironment.outputs.defaultDomain}'
@@ -491,7 +491,7 @@ module apiMafPython 'br/public:avm/res/app/container-app:0.8.0' = {
           }
           {
             name: 'PORT'
-            value: '4000'
+            value: '4010'
           }
         ],
         apiMafPythonEnv,
