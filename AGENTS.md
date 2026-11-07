@@ -343,7 +343,7 @@ packages/mcp-servers/echo-ping/
 
 **Location**:
 
-- **MCP Servers**: `packages/mcp-servers/itinerary-planning/`, `packages/mcp-servers/code-evaluation/`, `packages/mcp-servers/model-inference/`
+- **MCP Servers**: `packages/mcp-servers/itinerary-planning/`
 - **MAF Orchestration**: `packages/api-{orchestrator}-{language}/` (Microsoft Agent Framework implementation)
 
 **Key Conventions**:
@@ -474,7 +474,7 @@ public static final String DEFAULT_API_PATH = "/api/recommend";
 **Frontend (Angular)**:
 
 - **Unit Tests**: Jasmine + Karma for component testing
-- **Location**: `packages/ui-angularsrc/app/**/*.spec.ts`
+- **Location**: `packages/ui-angular/src/app/**/*.spec.ts`
 - **Command**: `npm test` in `packages/ui-angular`
 - **Coverage**: Components, services, and pipes
 
