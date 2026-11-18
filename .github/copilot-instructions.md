@@ -3,22 +3,22 @@
 ## Big Picture Architecture
 
 - The platform is a modular AI travel agent system, composed of multiple microservices ("tools") for itinerary planning, destination recommendations, customer queries, and more.
-- The main API gateway is in `packages/api/`, with **three orchestration options**:
-  - **LangChain.js** (current default) at `packages/api/src/orchestrator/langchain/`
-  - **LlamaIndex.TS** (available alternative) at `packages/api/src/orchestrator/llamaindex/`
-  - **Microsoft Agent Framework** (Python alternative) at `packages/api-python/`
+- The API gateway has **three orchestration options**, each in its own package:
+  - **LangChain.js** (current default) at `packages/api-langchain-js/`
+  - **LlamaIndex.TS** (available alternative) at `packages/api-llamaindex-ts/`
+  - **Microsoft Agent Framework** (Python alternative) at `packages/api-maf-python/`
 - Each tool is isolated in its own directory under `packages/mcp-servers/` and communicates via HTTP APIs or Model Context Protocol (MCP).
-- The frontend UI is in `packages/ui/` (Angular + Tailwind CSS), talking to the API gateway.
+- The frontend UI is in `packages/ui-angular/` (Angular + Tailwind CSS), talking to the API gateway.
 - Infrastructure is managed with Bicep templates in `infra/` and setup scripts in `infra/hooks/`.
 
 ## Developer Workflows
 
 - **Build & Run All Services:**  
-  Run `./run.sh` from the repo root to build and start all services locally via Docker Compose.
+  Run `docker compose up` from the repo root to build and start all services locally.
 - **Service-Specific Development:**  
   Each tool under `packages/mcp-servers/` can be built and run independently using its language's standard commands (e.g., `npm`, `mvnw`, `python`).
 - **UI Development:**  
-  Run `npm start` in `packages/ui/` for local frontend development.
+  Run `npm start` in `packages/ui-angular/` for local frontend development.
 - **Infrastructure Deployment:**  
   Use Bicep files in `infra/` and scripts in `infra/hooks/` for Azure deployments.
 
@@ -44,9 +44,9 @@
   Provisioned via Bicep templates; see `infra/main.bicep`.
 - **LLMs:**  
   Model integration details are in `llms.txt`.
-  - **LangChain.js orchestrator**: `packages/api/src/orchestrator/langchain/providers/` (Azure OpenAI, Docker Models, GitHub Models, Ollama, Foundry Local)
-  - **LlamaIndex.TS orchestrator**: `packages/api/src/orchestrator/llamaindex/`
-  - **Microsoft Agent Framework**: `packages/api-python/src/orchestrator/`
+  - **LangChain.js orchestrator**: `packages/api-langchain-js/src/providers/` (Azure OpenAI, Docker Models, GitHub Models, Ollama, Foundry Local)
+  - **LlamaIndex.TS orchestrator**: `packages/api-llamaindex-ts/src/`
+  - **Microsoft Agent Framework**: `packages/api-maf-python/src/orchestrator/`
 - **MCP (Model Context Protocol):**  
   All tools implement MCP for standardized communication. MCP servers in `packages/mcp-servers/` (TypeScript, Python, C#, Java).
 
@@ -54,25 +54,23 @@
 
 - **Adding a New Tool:**  
   Scaffold under `packages/mcp-servers/`, provide a `Dockerfile`, and register with the API gateway:
-  - For **LangChain.js**: Update `packages/api/src/mcp/mcp-tools.ts` and `packages/api/src/orchestrator/langchain/tools/index.ts`
-  - For **LlamaIndex.TS**: Update `packages/api/src/orchestrator/llamaindex/tools/index.ts`
-  - For **Microsoft Agent Framework**: Update `packages/api-python/src/orchestrator/tools/tool_config.py`
+  - For **LangChain.js**: Update `packages/api-langchain-js/src/mcp/mcp-tools.ts` and `packages/api-langchain-js/src/tools/index.ts`
+  - For **LlamaIndex.TS**: Update `packages/api-llamaindex-ts/src/tools/index.ts`
+  - For **Microsoft Agent Framework**: Update `packages/api-maf-python/src/orchestrator/tools/tool_config.py`
 - **Extending the UI:**  
-  Add Angular components in `packages/ui/src/app/`, update routing as needed.
+  Add Angular components in `packages/ui-angular/src/app/`, update routing as needed.
 - **Service Communication:**  
-  Use HTTP clients (see `packages/api/src/mcp/mcp-http-client.ts`) for inter-service calls via MCP protocol.
+  Use HTTP clients (see `packages/api-langchain-js/src/mcp/mcp-http-client.ts`) for inter-service calls via MCP protocol.
 - **Switching Orchestrators:**  
-  Change import in `packages/api/src/index.ts` from `./orchestrator/langchain/` to `./orchestrator/llamaindex/` or run `packages/api-python/` separately.
+  Each orchestrator is a separate package: run `packages/api-langchain-js/`, `packages/api-llamaindex-ts/` or `packages/api-maf-python/`.
 
 ## Key Files & Directories
 
-- `packages/api/` - API gateway and orchestrator logic
-  - `src/orchestrator/langchain/` - **LangChain.js orchestrator (current default)**
-  - `src/orchestrator/llamaindex/` - LlamaIndex.TS orchestrator (available alternative)
-  - `src/mcp/` - MCP client implementation
-- `packages/api-python/` - Python-based API with Microsoft Agent Framework orchestrator
+- `packages/api-langchain-js/` - **LangChain.js orchestrator (current default)**; MCP client in `src/mcp/`
+- `packages/api-llamaindex-ts/` - LlamaIndex.TS orchestrator (available alternative)
+- `packages/api-maf-python/` - Python-based API with Microsoft Agent Framework orchestrator
 - `packages/mcp-servers/` - MCP servers (microservices in TypeScript, Python, C#, Java)
-- `packages/ui/` - Angular frontend
+- `packages/ui-angular/` - Angular frontend
 - `infra/` - Infrastructure as code (Bicep, setup scripts)
 - `docs/` - Architecture and API documentation (see `docs/orchestration.md` for orchestrator comparison)
 
