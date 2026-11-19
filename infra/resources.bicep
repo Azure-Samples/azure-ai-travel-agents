@@ -43,6 +43,10 @@ param principalId string
 param orchestratorConfig object = {}
 
 param isContinuousIntegration bool
+
+@description('Region for the health model. Must support Microsoft.CloudHealth/healthmodels.')
+param healthModelLocation string = location
+
 var principalType = isContinuousIntegration ? 'ServicePrincipal' : 'User'
 
 var abbrs = loadJsonContent('./abbreviations.json')
@@ -417,7 +421,7 @@ module apiMafPython 'br/public:avm/res/app/container-app:0.8.0' = {
   name: 'apiMafPython'
   params: {
     name: 'api-maf-python'
-    ingressTargetPort: 4000
+    ingressTargetPort: 4010
     corsPolicy: {
       allowedOrigins: [
         'https://ui-angular.${containerAppsEnvironment.outputs.defaultDomain}'
@@ -491,7 +495,7 @@ module apiMafPython 'br/public:avm/res/app/container-app:0.8.0' = {
           }
           {
             name: 'PORT'
-            value: '4000'
+            value: '4010'
           }
         ],
         apiMafPythonEnv,
@@ -1041,6 +1045,26 @@ module openAi 'br/public:avm/res/cognitive-services/account:0.10.2' =  {
       }
     ]
   }
+}
+
+module healthModel './modules/healthmodel.bicep' = {
+  name: 'healthmodel'
+  params: {
+    name: 'hm-${resourceToken}'
+    location: healthModelLocation
+    tags: tags
+    aiAccountName: openAi.outputs.name
+    logAnalyticsWorkspaceName: monitoring.outputs.logAnalyticsWorkspaceName
+  }
+  dependsOn: [
+    uiAngular
+    apiLangchainJs
+    apiLlamaindexTs
+    apiMafPython
+    mcpCustomerQuery
+    mcpDestinationRecommendation
+    mcpItineraryPlanning
+  ]
 }
 
 output AZURE_CONTAINER_REGISTRY_ENDPOINT string = containerRegistry.outputs.loginServer

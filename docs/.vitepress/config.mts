@@ -108,6 +108,10 @@ export default withMermaid({
             text: "Deployment Architecture",
             link: "/deployment-architecture.md",
           },
+          {
+            text: "Health Model",
+            link: "/health-model.md",
+          },
         ],
       },
       {
