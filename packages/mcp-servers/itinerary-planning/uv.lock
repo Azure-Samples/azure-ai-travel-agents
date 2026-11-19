@@ -147,7 +147,7 @@ dependencies = [
 requires-dist = [
     { name = "faker", specifier = ">=37.1.0" },
     { name = "httpx", specifier = ">=0.28.1" },
-    { name = "mcp", extras = ["cli"], specifier = ">=1.10.1" },
+    { name = "mcp", extras = ["cli"], specifier = ">=1.10.1,<2" },
     { name = "starlette", specifier = ">=0.46.1" },
     { name = "uvicorn", specifier = ">=0.34.0" },
 ]
